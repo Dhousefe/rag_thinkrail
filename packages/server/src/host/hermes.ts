@@ -377,9 +377,11 @@ export async function reindexHermesProject(
 					const trimmed = line.trim();
 					if (trimmed.startsWith("PROGRESS:")) {
 						const parts = trimmed.split(":");
-						if (parts.length >= 4) {
-							const processed = parseInt(parts[1], 10);
-							const total = parseInt(parts[2], 10);
+						const rawProc = parts[1];
+						const rawTotal = parts[2];
+						if (parts.length >= 4 && rawProc !== undefined && rawTotal !== undefined) {
+							const processed = parseInt(rawProc, 10);
+							const total = parseInt(rawTotal, 10);
 							const file = parts.slice(3).join(":");
 							const elapsed = Date.now() - startTime;
 							const pct = total > 0 ? Math.min(100, Math.round((processed / total) * 100)) : 0;

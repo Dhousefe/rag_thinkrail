@@ -112,6 +112,7 @@ import {
 } from "./chatResources";
 import {
 	DEFAULT_HERMES_TOOLS,
+	type HermesIndexingProgress,
 	type HermesManagementState,
 	type HermesProject,
 	INITIAL_HERMES_MANAGEMENT_STATE,

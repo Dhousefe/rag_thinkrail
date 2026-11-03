@@ -25,15 +25,15 @@ export function HermesIndexingBar({ progress }: { progress: HermesIndexingProgre
 			: null;
 
 	return (
-		<div className="flex flex-col gap-3 rounded-lg border border-border-default bg-container-workspace-bg p-4 shadow-xs transition-all">
-			<div className="flex flex-wrap items-center justify-between gap-3">
-				<div className="flex items-center gap-3 min-w-0">
+		<div className="flex flex-col gap-12 rounded-lg border border-border-default bg-container-workspace-bg p-16 shadow-xs transition-all">
+			<div className="flex flex-wrap items-center justify-between gap-12">
+				<div className="flex items-center gap-12 min-w-0">
 					{isCompleted ? (
-						<div className="flex size-8 items-center justify-center rounded-full bg-feedback-success text-text-on-primary shrink-0">
-							<RiCheckLine className="size-4" />
+						<div className="flex size-24 items-center justify-center rounded-full bg-feedback-success text-text-on-primary shrink-0">
+							<RiCheckLine className="size-16" />
 						</div>
 					) : (
-						<RiLoader4Line className="size-5 animate-spin text-primary shrink-0" />
+						<RiLoader4Line className="size-20 animate-spin text-primary shrink-0" />
 					)}
 					<div className="flex flex-col min-w-0">
 						<span className="tr-text-emphasis text-text-default">
@@ -42,29 +42,29 @@ export function HermesIndexingBar({ progress }: { progress: HermesIndexingProgre
 								: `Indexando Projeto Hermes: ${progress.projectSlug || "..."}`}
 						</span>
 						{progress.currentFile ? (
-							<span className="flex items-center gap-1 tr-text-metadata text-text-muted truncate max-w-md">
-								<RiFileCodeLine className="size-3.5 shrink-0" />
+							<span className="flex items-center gap-4 tr-text-metadata text-text-muted truncate max-w-md">
+								<RiFileCodeLine className="size-14 shrink-0" />
 								<span className="truncate tr-code-text">{progress.currentFile}</span>
 							</span>
 						) : null}
 					</div>
 				</div>
 
-				<div className="flex items-center gap-3 text-text-muted tr-text-metadata">
+				<div className="flex items-center gap-12 text-text-muted tr-text-metadata">
 					{filesPerSec !== null ? (
-						<div className="flex items-center gap-1">
-							<RiSpeedUpLine className="size-4 text-primary" />
+						<div className="flex items-center gap-4">
+							<RiSpeedUpLine className="size-16 text-primary" />
 							<span>{filesPerSec} arq/s</span>
 						</div>
 					) : null}
 
-					<div className="flex items-center gap-1">
-						<RiTimeLine className="size-4 text-text-muted" />
+					<div className="flex items-center gap-4">
+						<RiTimeLine className="size-16 text-text-muted" />
 						<span>Decorridos: {formatMs(progress.elapsedMs)}</span>
 					</div>
 
 					<div
-						className={`rounded px-2 py-0.5 tr-text-emphasis ${
+						className={`rounded px-6 py-2 tr-text-emphasis ${
 							isCompleted
 								? "bg-feedback-success text-text-on-primary"
 								: "bg-control-bg text-primary"
@@ -76,7 +76,7 @@ export function HermesIndexingBar({ progress }: { progress: HermesIndexingProgre
 			</div>
 
 			{/* Barra de Progresso com Animação Fluida */}
-			<div className="relative h-2 w-full overflow-hidden rounded-full bg-border-default">
+			<div className="relative h-8 w-full overflow-hidden rounded-full bg-border-default">
 				<div
 					className={`h-full transition-all duration-200 ease-out ${
 						isCompleted ? "bg-feedback-success" : "bg-primary"

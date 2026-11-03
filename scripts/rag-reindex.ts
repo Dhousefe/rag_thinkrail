@@ -7,8 +7,6 @@ import { Database } from "bun:sqlite";
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const DEFAULT_REPO_ROOT = resolve(__dirname, "..");
 const home = process.env.USERPROFILE || process.env.HOME || "";
-const DEFAULT_DB_PATH = join(home, ".hermes", "projects", "project-thinkrail", "hermes.db");
-const EMBEDDINGS_URL = "http://127.0.0.1:9085";
 
 const SUPPORTED_EXTS = new Set([
 	".ts",
@@ -65,10 +63,10 @@ function collectFiles(dir: string, fileList: string[] = []): string[] {
 }
 
 export interface ReindexOptions {
-	projectSlug?: string;
-	dbPath?: string;
-	workspaceRoot?: string;
-	targetPaths?: string[];
+	projectSlug?: string | undefined;
+	dbPath?: string | undefined;
+	workspaceRoot?: string | undefined;
+	targetPaths?: string[] | undefined;
 }
 
 export async function runIncrementalReindex(options: ReindexOptions = {}) {
@@ -258,12 +256,16 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
 
 	for (let i = 0; i < args.length; i++) {
 		const arg = args[i];
+		if (!arg) continue;
 		if (arg === "--project" && args[i + 1]) {
-			opts.projectSlug = args[++i];
+			const val = args[++i];
+			if (val) opts.projectSlug = val;
 		} else if (arg === "--db" && args[i + 1]) {
-			opts.dbPath = args[++i];
+			const val = args[++i];
+			if (val) opts.dbPath = val;
 		} else if (arg === "--workspace" && args[i + 1]) {
-			opts.workspaceRoot = args[++i];
+			const val = args[++i];
+			if (val) opts.workspaceRoot = val;
 		} else if (!arg.startsWith("--")) {
 			targets.push(arg);
 		}
