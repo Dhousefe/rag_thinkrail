@@ -2,12 +2,6 @@
 setlocal EnableExtensions EnableDelayedExpansion
 chcp 65001 > nul
 
-REM ============================================================================
-REM Reindexação Incremental RAG para ThinkRail
-REM Invalida e reindexa apenas arquivos modificados (sha256 + mtime)
-REM Paths totalmente relativos a partir da raiz do repositório
-REM ============================================================================
-
 set "REPO_ROOT=%~dp0.."
 cd /d "%REPO_ROOT%"
 
