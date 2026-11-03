@@ -252,6 +252,7 @@ import {
 	createHermesProject,
 	deleteHermesProject,
 	getActiveHermesProjects,
+	getHermesIndexingProgress,
 	listHermesProjects,
 	reindexHermesProject,
 	setActiveHermesProjects,
@@ -1214,6 +1215,7 @@ const handlers: WsHandlers = {
 	"hermes.testConnection": (params) => testHermesConnection(params),
 	"hermes.getActiveProjects": () => getActiveHermesProjects(),
 	"hermes.setActiveProjects": (params) => setActiveHermesProjects(params),
+	"hermes.getIndexingProgress": () => getHermesIndexingProgress(),
 	"session.resources": (params) => {
 		const p = resourceParams(params, ["workspaceId", "sessionId"]);
 		return getSessionResources(p.workspaceId, p.sessionId, resourceCwd(p.workspaceId));

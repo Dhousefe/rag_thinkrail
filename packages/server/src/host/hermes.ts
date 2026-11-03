@@ -17,6 +17,7 @@ import type {
 	HermesCreateProjectInput,
 	HermesDeleteProjectInput,
 	HermesGetActiveProjectsResult,
+	HermesIndexingProgress,
 	HermesListProjectsResult,
 	HermesProjectInfo,
 	HermesReindexProjectInput,
@@ -82,6 +83,59 @@ export function resolveRunnerScript(): string | null {
 		} catch {}
 	}
 	return null;
+}
+
+export function resolveReindexScript(): string | null {
+	const candidates = [
+		join(process.cwd(), "scripts", "rag-reindex.ts"),
+		"D:/Projet_Thinkrail/source/thinkrail/scripts/rag-reindex.ts",
+		join(dirname(process.execPath), "..", "..", "scripts", "rag-reindex.ts"),
+		join(dirname(process.execPath), "scripts", "rag-reindex.ts"),
+	];
+
+	for (const candidate of candidates) {
+		try {
+			if (existsSync(candidate)) {
+				return resolve(candidate);
+			}
+		} catch {}
+	}
+	return null;
+}
+
+let activeIndexingProgress: HermesIndexingProgress = {
+	isIndexing: false,
+	projectSlug: null,
+	processedFiles: 0,
+	totalFiles: 0,
+	percentage: 0,
+	startTime: null,
+	elapsedMs: 0,
+	estimatedRemainingMs: null,
+	status: "idle",
+};
+
+export function getHermesIndexingProgress(): HermesIndexingProgress {
+	if (activeIndexingProgress.isIndexing && activeIndexingProgress.startTime) {
+		const now = Date.now();
+		const elapsed = now - activeIndexingProgress.startTime;
+		let remaining: number | null = null;
+		if (
+			activeIndexingProgress.processedFiles > 0 &&
+			activeIndexingProgress.totalFiles > activeIndexingProgress.processedFiles
+		) {
+			const rate = elapsed / activeIndexingProgress.processedFiles;
+			remaining = Math.round(
+				rate * (activeIndexingProgress.totalFiles - activeIndexingProgress.processedFiles),
+			);
+		}
+		return {
+			...activeIndexingProgress,
+			elapsedMs: elapsed,
+			estimatedRemainingMs: remaining,
+		};
+	}
+	return activeIndexingProgress;
 }
 
 function formatBytes(bytes: number): string {
@@ -255,44 +309,150 @@ export async function reindexHermesProject(
 		targetPath = projectDir;
 	}
 
+	const dbPath = join(projectDir, "hermes.db");
 	log.info(`Iniciando reindexação Hermes para [${input.slug}] no caminho: ${targetPath}`);
 
-	// Aciona o runner real do Hermes RAG se disponível
-	const javaPath = existsSync("D:/jdk21/bin/java.exe") ? "D:/jdk21/bin/java.exe" : "java";
-	const hermesJar = "D:/Projeto_Germes/hermes-3.0/dist/germes.jar";
+	// Inicializa o progresso no singleton do host
+	activeIndexingProgress = {
+		isIndexing: true,
+		projectSlug: input.slug,
+		processedFiles: 0,
+		totalFiles: 0,
+		percentage: 0,
+		startTime,
+		elapsedMs: 0,
+		estimatedRemainingMs: null,
+		currentFile: "Varrendo arquivos elegíveis...",
+		status: "scanning",
+	};
 
-	if (existsSync(hermesJar)) {
+	// Executa o script incremental inteligente rag-reindex.ts em subprocesso Bun
+	const reindexScript = resolveReindexScript();
+	const userHome = process.env.USERPROFILE || "";
+	const bunCandidate = join(
+		userHome,
+		"AppData",
+		"Roaming",
+		"npm",
+		"node_modules",
+		"bun",
+		"bin",
+		"bun.exe",
+	);
+	const bunExe = existsSync(bunCandidate) ? bunCandidate : "bun";
+
+	if (reindexScript) {
 		try {
 			const proc = spawn(
-				javaPath,
+				bunExe,
 				[
-					"--enable-native-access=ALL-UNNAMED",
-					"-cp",
-					hermesJar,
-					"br.com.hermes.rag.MainKt",
-					"index",
+					"run",
+					reindexScript,
+					"--project",
+					input.slug,
+					"--db",
+					dbPath,
+					"--workspace",
 					targetPath,
 				],
 				{
-					detached: true,
-					stdio: "ignore",
 					cwd: targetPath,
 					env: {
 						...process.env,
 						HERMES_PROJECT: input.slug,
+						HERMES_WORKSPACE_ROOT: targetPath,
 					},
+					stdio: ["ignore", "pipe", "pipe"],
+					windowsHide: true,
 				},
 			);
-			proc.unref();
-			log.info(`Processo de reindexação Hermes disparado (PID: ${proc.pid})`);
-		} catch (procErr) {
-			log.warn(`Não foi possível disparar runner Java do Hermes: ${procErr}`);
+
+			let stdoutBuffer = "";
+			proc.stdout?.on("data", (chunk: Buffer) => {
+				stdoutBuffer += chunk.toString("utf-8");
+				const lines = stdoutBuffer.split("\n");
+				stdoutBuffer = lines.pop() || "";
+
+				for (const line of lines) {
+					const trimmed = line.trim();
+					if (trimmed.startsWith("PROGRESS:")) {
+						const parts = trimmed.split(":");
+						if (parts.length >= 4) {
+							const processed = parseInt(parts[1], 10);
+							const total = parseInt(parts[2], 10);
+							const file = parts.slice(3).join(":");
+							const elapsed = Date.now() - startTime;
+							const pct = total > 0 ? Math.min(100, Math.round((processed / total) * 100)) : 0;
+							let remaining: number | null = null;
+							if (processed > 0 && total > processed) {
+								const rate = elapsed / processed;
+								remaining = Math.round(rate * (total - processed));
+							}
+
+							activeIndexingProgress = {
+								isIndexing: true,
+								projectSlug: input.slug,
+								processedFiles: processed,
+								totalFiles: total,
+								percentage: pct,
+								startTime,
+								elapsedMs: elapsed,
+								estimatedRemainingMs: remaining,
+								currentFile: file,
+								status: "indexing",
+							};
+						}
+					}
+				}
+			});
+
+			proc.on("close", (code) => {
+				const totalElapsed = Date.now() - startTime;
+				if (code === 0) {
+					log.info(`Reindexação Hermes para [${input.slug}] concluída em ${totalElapsed}ms`);
+					activeIndexingProgress = {
+						...activeIndexingProgress,
+						isIndexing: false,
+						percentage: 100,
+						elapsedMs: totalElapsed,
+						estimatedRemainingMs: 0,
+						currentFile: undefined,
+						status: "completed",
+					};
+				} else {
+					log.warn(`Reindexação Hermes para [${input.slug}] finalizada com código ${code}`);
+					activeIndexingProgress = {
+						...activeIndexingProgress,
+						isIndexing: false,
+						status: "error",
+						error: `Processo finalizado com código ${code}`,
+					};
+				}
+			});
+
+			proc.on("error", (err) => {
+				log.error(`Erro ao disparar processo de reindexação Hermes: ${err}`);
+				activeIndexingProgress = {
+					...activeIndexingProgress,
+					isIndexing: false,
+					status: "error",
+					error: err.message,
+				};
+			});
+		} catch (err) {
+			log.error(`Exceção ao disparar runner: ${err}`);
+			activeIndexingProgress = {
+				...activeIndexingProgress,
+				isIndexing: false,
+				status: "error",
+				error: String(err),
+			};
 		}
 	}
 
 	return {
 		success: true,
-		message: `Reindexação iniciada para o projeto ${input.slug}. O subsistema Hermes RAG está atualizando o banco SQLite e vetores.`,
+		message: `Reindexação iniciada para o projeto ${input.slug}. Progresso em tempo real ativo.`,
 		projectSlug: input.slug,
 		elapsedMs: Date.now() - startTime,
 	};
