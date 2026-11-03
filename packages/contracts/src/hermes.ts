@@ -84,3 +84,17 @@ export interface HermesSetActiveProjectsInput {
 export interface HermesGetActiveProjectsResult {
 	activeSlugs: string[];
 }
+
+export interface HermesIndexingProgress {
+	isIndexing: boolean;
+	projectSlug: string | null;
+	processedFiles: number;
+	totalFiles: number;
+	percentage: number;
+	startTime: number | null;
+	elapsedMs: number;
+	estimatedRemainingMs: number | null;
+	currentFile?: string | undefined;
+	status?: "idle" | "scanning" | "indexing" | "completed" | "error" | undefined;
+	error?: string | undefined;
+}
