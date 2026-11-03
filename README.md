@@ -77,6 +77,11 @@ create the tools it needs based on how you actually work.
   the tools you trust in a project), keeps servers a repository
   defines off until you approve them, signs you in to OAuth servers from Settings, and shows each chat's
   servers next to its background commands and subagents.
+- **Hermes Code RAG & MCP.** Native, incremental AST/vector codebase indexing and search powered by
+  `germes.exe` and SQLite (`hermes.db`). The RAG engine automatically synchronizes changes after every
+  work turn via surgical cache invalidation (SHA-256 + mtime), skipping untouched files in milliseconds
+  without rebuilding from scratch. Use `bun run rag:reindex`, `bun run rag:status`, or `bun run rag:prune`
+  locally, or query tools directly via the sidebar's MCP server (`mcp__hermes_rag__*`).
 - **Your providers, your credentials.** Sign in with [JetBrains AI](https://www.jetbrains.com/ai/) or
   connect any provider through `pi`'s own auth. ThinkRail has no accounts of its own.
 - **Your pi setup.** ThinkRail reads your existing `pi` configuration (`~/.pi/agent`). To use another one
@@ -273,6 +278,17 @@ bun run --filter @thinkrail/cli dev  # browser launcher
 bun run build:binary                 # standalone CLI artifact
 bun run desktop:dev                  # package and open the Electrobun app
 bun run desktop:build                # package without opening it
+```
+
+### Hermes RAG Commands
+
+The repository includes native incremental Code RAG utilities backed by `apps/cli/dist/germes.exe` and
+SQLite (`hermes.db`):
+
+```bash
+bun run rag:reindex   # Incrementally reindexes modified files and updates FTS5/vector indices
+bun run rag:status    # Inspects indexed files, chunks, symbols, and coverage metrics
+bun run rag:prune     # Purges orphaned records of deleted or renamed files from the index
 ```
 
 [`CONTRIBUTING.md`](CONTRIBUTING.md) covers the checks, the end-to-end suites, desktop packaging, and the
