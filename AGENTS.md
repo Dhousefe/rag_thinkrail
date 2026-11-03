@@ -144,9 +144,14 @@ Dependencies pin exact versions. Cross-cutting dependencies are pinned once in t
 `workspaces.catalog` and referenced through `catalog:`; peer dependencies and local protocols are the
 only exemptions. `architecture.md` Decision #10 owns the rationale.
 
-## RAG-First Code Navigation
+## RAG-First Code Navigation & Leitura Mandatória
 
-- Prioritize RAG-first tools via MCP (`code_search`, `ast_skeleton_tree`, `ast_predict_context`) to pinpoint relevant files, symbols, and architecture before resorting to blind repository-wide grep or brute-force file reads.
-- Use targeted tools (`read`, `grep`, `edit`) only after the RAG index or AST map isolates the exact symbols or line intervals.
-- Keep index fresh incrementally via `bun run rag:reindex` or `scripts/rag-reindex.bat` post-implementation.
+- **REGRA MANDATÓRIA RAG-FIRST**: Nunca inicie a exploração de uma tarefa com leituras cegas (`read` de múltiplos arquivos) ou buscas genéricas no terminal (`git grep`, `find`). Utilize SEMPRE as ferramentas do Hermes RAG como primeiro passo de navegação e leitura.
+- **Ordem Obrigatória de Investigação**:
+  1. `mcp__hermes_rag__code_search(query)`: Busca semântica + FTS5 + RRF no código indexado para localizar classes, métodos, handlers, rotas e componentes.
+  2. `mcp__hermes_rag__ast_skeleton_tree(target_path)`: Visão arquitetural compacta do arquivo ou diretório sem consumir janela de contexto com corpos de métodos.
+  3. `mcp__hermes_rag__ast_predict_context(target)`: Identifica instantaneamente callers, callees e arquivos correlatos que precisam de modificação.
+  4. `read(path, offset, limit)`: Leitura cirúrgica pontual APENAS nas linhas e símbolos já isolados pelo RAG.
+- **Multi-Projeto Automático**: O RAG busca concorrentemente em todos os projetos ativos definidos em `~/.hermes/active_projects.json` com fusão recíproca (RRF).
+- **Sincronização Pós-Edição**: Mantenha o índice SQLite sempre atualizado após modificações de código via `bun run rag:reindex` ou `scripts/rag-reindex.bat`.
 
