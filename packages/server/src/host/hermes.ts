@@ -9,7 +9,7 @@ import {
 	writeFileSync,
 } from "node:fs";
 import { homedir } from "node:os";
-import { join, resolve } from "node:path";
+import { dirname, join, resolve } from "node:path";
 import type {
 	Ack,
 	HermesActiveProjectStatus,
@@ -44,6 +44,44 @@ export function resolveHermesHome(): string {
 		}
 	}
 	return defaultHermes;
+}
+
+export function resolveGermesExecutable(): string | null {
+	const candidates = [
+		join(dirname(process.execPath), "germes.exe"),
+		join(process.cwd(), "apps", "cli", "dist", "germes.exe"),
+		join(process.cwd(), "dist", "germes.exe"),
+		join(process.cwd(), "germes.exe"),
+		"D:/Projet_Thinkrail/source/thinkrail/apps/cli/dist/germes.exe",
+		"D:/Projeto_Germes/hermes-3.0/dist/germes.exe",
+		join(homedir(), ".hermes", "bin", "germes.exe"),
+	];
+
+	for (const candidate of candidates) {
+		try {
+			if (existsSync(candidate)) {
+				return resolve(candidate);
+			}
+		} catch {}
+	}
+	return null;
+}
+
+export function resolveRunnerScript(): string | null {
+	const candidates = [
+		join(process.cwd(), "apps", "cli", "scripts", "hermes-mcp-server.ts"),
+		"D:/Projet_Thinkrail/source/thinkrail/apps/cli/scripts/hermes-mcp-server.ts",
+		join(dirname(process.execPath), "..", "scripts", "hermes-mcp-server.ts"),
+	];
+
+	for (const candidate of candidates) {
+		try {
+			if (existsSync(candidate)) {
+				return resolve(candidate);
+			}
+		} catch {}
+	}
+	return null;
 }
 
 function formatBytes(bytes: number): string {
@@ -345,11 +383,10 @@ export async function testHermesConnection(
 
 	const mcpStart = Date.now();
 	try {
-		const rootDir = process.cwd();
-		const runnerPath = join(rootDir, "apps", "cli", "scripts", "hermes-mcp-server.ts");
-		const germesPath = join(rootDir, "apps", "cli", "dist", "germes.exe");
+		const germesPath = resolveGermesExecutable();
+		const runnerPath = resolveRunnerScript();
 
-		if (!existsSync(runnerPath) && !existsSync(germesPath)) {
+		if (!germesPath && !runnerPath) {
 			mcpStatusText = "Binário germes.exe não encontrado em apps/cli/dist";
 		} else {
 			const probeResult = await new Promise<{ ok: boolean; toolsCount?: number; error?: string }>(
@@ -365,16 +402,38 @@ export async function testHermesConnection(
 						"bin",
 						"bun.exe",
 					);
+					const hasBun = existsSync(bunCandidate) || existsSync("bun");
 					const bunExe = existsSync(bunCandidate) ? bunCandidate : "bun";
+
+					let cmd: string;
+					let args: string[];
+
+					if (runnerPath && hasBun) {
+						cmd = bunExe;
+						args = ["run", runnerPath];
+					} else if (germesPath) {
+						cmd = germesPath;
+						args = ["mcp"];
+					} else {
+						resolvePromise({ ok: false, error: "Nenhum executável viável para o Hermes MCP" });
+						return;
+					}
+
+					const targetWorkspace =
+						process.env.HERMES_WORKSPACE_ROOT ||
+						(existsSync("D:/Projet_Thinkrail/source/thinkrail")
+							? "D:/Projet_Thinkrail/source/thinkrail"
+							: process.cwd());
+
 					const proc = spawn(
-						bunExe,
-						["run", existsSync(runnerPath) ? runnerPath : germesPath],
+						cmd,
+						args,
 						{
-							cwd: rootDir,
+							cwd: targetWorkspace,
 							env: {
 								...process.env,
 								HERMES_PROJECT: "project-thinkrail",
-								HERMES_WORKSPACE_ROOT: rootDir,
+								HERMES_WORKSPACE_ROOT: targetWorkspace,
 							},
 							stdio: ["pipe", "pipe", "ignore"],
 							windowsHide: true,
