@@ -143,3 +143,10 @@ Bun + Turbo monorepo · TypeScript strict · React 19 + Zustand + Tailwind v4 ·
 Dependencies pin exact versions. Cross-cutting dependencies are pinned once in the root
 `workspaces.catalog` and referenced through `catalog:`; peer dependencies and local protocols are the
 only exemptions. `architecture.md` Decision #10 owns the rationale.
+
+## RAG-First Code Navigation
+
+- Prioritize RAG-first tools via MCP (`code_search`, `ast_skeleton_tree`, `ast_predict_context`) to pinpoint relevant files, symbols, and architecture before resorting to blind repository-wide grep or brute-force file reads.
+- Use targeted tools (`read`, `grep`, `edit`) only after the RAG index or AST map isolates the exact symbols or line intervals.
+- Keep index fresh incrementally via `bun run rag:reindex` or `scripts/rag-reindex.bat` post-implementation.
+
