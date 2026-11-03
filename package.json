@@ -49,6 +49,9 @@
 	},
 	"type": "module",
 	"scripts": {
+		"rag:reindex": "scripts/rag-reindex.bat",
+		"rag:prune": "bun scripts/rag-prune.ts",
+		"rag:status": "bun scripts/rag-status.ts",
 		"build": "turbo run build",
 		"dev": "bun scripts/dev.ts",
 		"dev:server": "turbo run dev --filter=@thinkrail/server",
