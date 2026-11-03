@@ -1,309 +1,221 @@
 # ThinkRail
 
-[![JetBrains incubator project](https://jb.gg/badges/incubator-plastic.svg)](https://confluence.jetbrains.com/display/ALL/JetBrains+on+GitHub)
+[![Projeto Incubadora JetBrains](https://jb.gg/badges/incubator-plastic.svg)](https://confluence.jetbrains.com/display/ALL/JetBrains+on+GitHub)
 [![GitHub stars](https://img.shields.io/github/stars/JetBrains/thinkrail?style=social)](https://star-history.com/#JetBrains/thinkrail&Date)
-[![Discord](https://img.shields.io/badge/Discord-Join%20the%20chat-5865F2?logo=discord&logoColor=white)](https://thinkrail.ai/discord)
+[![Discord](https://img.shields.io/badge/Discord-Entrar%20no%20chat-5865F2?logo=discord&logoColor=white)](https://thinkrail.ai/discord)
 
-ThinkRail is the agentic IDE that gets better every time you use it — learning your project through
-living specs today, and building its own capabilities tomorrow.
+O ThinkRail é a IDE agêntica que evolui a cada uso — aprendendo a arquitetura do seu projeto hoje por meio de especificações vivas (living specs) e construindo suas próprias ferramentas amanhã.
 
-We built a rich interface around the [`pi`](https://www.npmjs.com/package/@earendil-works/pi-coding-agent)
-coding agent, isolated work into separate workspaces, and gave the agent durable project knowledge
-through living specs and reusable skills. Next, we're adding full extension support, so ThinkRail can
-create the tools it needs based on how you actually work.
+Construímos uma interface rica em torno do agente de codificação [`pi`](https://www.npmjs.com/package/@earendil-works/pi-coding-agent), isolamos tarefas em workspaces independentes e fornecemos ao agente um conhecimento duradouro do projeto por meio de especificações vivas e skills reutilizáveis. O ThinkRail também possui suporte total a extensões e servidores de contexto MCP para criar as ferramentas necessárias de acordo com o seu fluxo real de desenvolvimento.
 
 **Website:** [thinkrail.ai](https://thinkrail.ai/) · **Blog:** [thinkrail.ai/blog](https://thinkrail.ai/blog/) ·
 **Discord:** [thinkrail.ai/discord](https://thinkrail.ai/discord)
 
-⭐ If you find ThinkRail useful, give it a star — it helps others discover it.
+⭐ Se você considera o ThinkRail útil, deixe uma estrela — isso ajuda outros desenvolvedores a descobrirem o projeto.
 
 <p align="center">
  <a href="https://www.star-history.com/jetbrains/thinkrail">
-  <picture><source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/badge?repo=JetBrains/thinkrail&type=rank&theme=dark" /><source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/badge?repo=JetBrains/thinkrail&type=rank" /><img alt="Star History Rank" src="https://api.star-history.com/badge?repo=JetBrains/thinkrail&type=rank" /></picture> <picture><source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/badge?repo=JetBrains/thinkrail&type=trending&theme=dark" /><source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/badge?repo=JetBrains/thinkrail&type=trending" /><img alt="GitHub Trending Repository of the Day" src="https://api.star-history.com/badge?repo=JetBrains/thinkrail&type=trending" /></picture>
+  <picture><source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/badge?repo=JetBrains/thinkrail&type=rank&theme=dark" /><source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/badge?repo=JetBrains/thinkrail&type=rank" /><img alt="Classificação no Star History" src="https://api.star-history.com/badge?repo=JetBrains/thinkrail&type=rank" /></picture> <picture><source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/badge?repo=JetBrains/thinkrail&type=trending&theme=dark" /><source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/badge?repo=JetBrains/thinkrail&type=trending" /><img alt="Repositório em Tendência no GitHub" src="https://api.star-history.com/badge?repo=JetBrains/thinkrail&type=trending" /></picture>
  </a>
 </p>
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset=".github/readme-assets/workbench-dark.png">
-  <img src=".github/readme-assets/workbench-light.png" alt="ThinkRail workbench: the Projects pane beside the left tool rail listing worktree workspaces and their Settled shelf, a finished pi conversation with its tool steps in the center, the resulting diff beside it, and the Specs tree above the Changes list on the right with their tools on the edge rail" width="900">
+  <img src=".github/readme-assets/workbench-light.png" alt="Workbench do ThinkRail: painel de Projetos ao lado do trilho de ferramentas à esquerda com workspaces e gaveta Settled, conversa com pi no centro e diff de alterações, árvore de especificações Specs e lista de modificações à direita" width="900">
 </picture>
 
-*A `pi` session and the change it made, scoped to an isolated git-worktree workspace.*
+*Uma sessão do `pi` e a alteração produzida, delimitada a um workspace isolado por git worktree.*
 
-## What you get
+---
 
-- **Isolated workspaces.** Open any git repo as a project and cut workspaces from it as `git worktree`s,
-  each with its own branch and working directory. Agents work in parallel without touching your
-  checkout; merge the good branch, delete the rest. You can also attach existing worktrees or explicitly
-  work in the project folder itself. Finished and dormant workspaces settle onto a per-project shelf on
-  their own — when their pull request merges or closes, or after a quiet week — and come back the moment
-  you work in them. The topbar shows where the active branch stands against `origin` and its pull request,
-  with the next step one click away: publish, push, or open a PR described from the plan, the commits,
-  your PR template, or an agent-written draft. Once a GitHub PR is open it shows the CI checks and review
-  decision, and lets you mark it ready, hand failing checks or a diverged branch to the agent, merge it
-  with the repository's last-used method, reopen it, or delete the remote branch.
-- **A real IDE around the agent.** A splittable workbench of Monaco editor tabs, a Files tree with live git
-  change marks and a Changed view, terminals, and documents — all scoped to the active workspace. Leave
-  anchored review comments on files and diffs and send them to a chat as structured context, or open the
-  worktree in your installed IDE.
-- **Chats that stream like the engine thinks.** Several concurrent `pi` sessions per workspace, each with
-  its own model and live token and cost readout. Steer a running turn or queue a follow-up, delegate to
-  subagents, and work a shared plan the agent updates and you edit — each completed step can be committed
-  and reviewed on its own.
-- **Find chats and run commands from one box.** `⌘K` (or a double tap of Shift) opens a palette that finds
-  chats, workspaces and projects across every open project, runs the app's commands with their shortcuts
-  shown, and jumps to a Settings section. With nothing typed it lists the chats waiting for you.
-- **Specs as ground truth.** A connected graph of `SPEC.md` files lives beside the code; the agent reads,
-  searches, and maintains it through dedicated `spec_*` tools, so intent survives the session. The
-  read-only Specs tool renders the graph as a tree in the workbench.
-- **Skills and workflows.** Portable Agent Skills you already keep for other coding agents are read in
-  place, and bundled workflows guide project setup, design brainstorming, and shipping a pull request —
-  pushing the workspace branch and opening or updating its GitHub PR through your own `gh`.
-- **Agent tools beyond the shell.** Web research, structured multiple-choice questions the agent asks you
-  in the chat instead of guessing, and inline diagrams, option comparisons and file previews rendered right
-  in the chat — when the agent proposes a UI change it shows a before/after mockup you can comment on like
-  a diff. Settings → Extensions lists the ThinkRail extensions the agent gets and lets you switch each one
-  off — and installs any `pi` package by source (npm, git or a local folder), for you or for a repository,
-  showing what each one adds and letting you switch packages, their individual extensions and skills, and
-  pi's built-ins on or off; open chats pick a change up when their turn ends. The questions and visualize
-  tools are also published as plain `pi` packages, one each —
-  `pi install npm:@thinkrail/pi-ask-user-question` for the questions
-  ([`@thinkrail/pi-ask-user-question`](https://www.npmjs.com/package/@thinkrail/pi-ask-user-question)) and
-  `pi install npm:@thinkrail/pi-visualize` for the diagrams and previews
-  ([`@thinkrail/pi-visualize`](https://www.npmjs.com/package/@thinkrail/pi-visualize)) — so a vanilla `pi`
-  in the terminal gets the same tools.
-- **MCP servers.** Connect the MCP servers in your `pi` `mcp.json` (or add them, and a few presets, from
-  Settings): ThinkRail asks in the chat before calls the server does not mark read-only (or always allows
-  the tools you trust in a project), keeps servers a repository
-  defines off until you approve them, signs you in to OAuth servers from Settings, and shows each chat's
-  servers next to its background commands and subagents.
-- **Hermes Code RAG & MCP.** Native, incremental AST/vector codebase indexing and search powered by
-  `germes.exe` and SQLite (`hermes.db`). The RAG engine automatically synchronizes changes after every
-  work turn via surgical cache invalidation (SHA-256 + mtime), skipping untouched files in milliseconds
-  without rebuilding from scratch. Use `bun run rag:reindex`, `bun run rag:status`, or `bun run rag:prune`
-  locally, or query tools directly via the sidebar's MCP server (`mcp__hermes_rag__*`).
-- **Your providers, your credentials.** Sign in with [JetBrains AI](https://www.jetbrains.com/ai/) or
-  connect any provider through `pi`'s own auth. ThinkRail has no accounts of its own.
-- **Your pi setup.** ThinkRail reads your existing `pi` configuration (`~/.pi/agent`). To use another one
-  — say a personal `~/.pi/agent-personal` — or to pass extra environment variables to the agent, terminals
-  and MCP servers, set them in Settings → Environment; they apply on the next start. A variable you set
-  when launching (`PI_CODING_AGENT_DIR=… thinkrail`) still wins.
-- **Your own model servers.** Settings → Providers → **Custom servers** connects a company LLM gateway or a
-  model running on your own machine — any OpenAI-compatible server, such as LiteLLM, sglang, vLLM, Ollama,
-  LM Studio or llama.cpp. **Find models** lists what the server serves, with the context and capabilities it
-  reports. The server is saved to `pi`'s `models.json`, so its models appear in the chat model picker and in
-  the `pi` CLI alike.
-- **Desktop app or browser.** A native desktop app, or the `thinkrail` CLI that opens the same app in your
-  browser. Both embed the same engine host; app state lives under `~/.thinkrail`.
-- **Your language.** Settings → Language follows your system language or a language you pick; English,
-  Japanese, Russian, Simplified Chinese, and Spanish are built in. Add a language ThinkRail doesn't ship yet by
-  dropping a translated `en.json` into `~/.thinkrail/locales` — it applies as you save. Agent replies and
-  tool output stay as the agent wrote them.
-- **Your themes.** Settings → Appearance ships dark, light, minimal and high-contrast themes. Make your own
-  by copying a bundled `*.theme.json`, changing its id and colors, and saving it to `~/.thinkrail/themes`.
-- **Your fonts.** Settings → Appearance picks the interface and code fonts from the bundled Geist and
-  JetBrains Mono, any font installed on your computer, or font files you drop in (kept in
-  `~/.thinkrail/fonts`), with fallback fonts for icon glyphs, a code size, ligatures and a text-weight slider.
+## O Que Você Obtém
 
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset=".github/readme-assets/specs-dark.png">
-  <img src=".github/readme-assets/specs-light.png" alt="The Specs tool, opened from the right edge rail, listing the project's spec tree while the product goal spec is rendered in the editor" width="900">
-</picture>
+- **Workspaces Isolados.** Abra qualquer repositório git como projeto e derive workspaces como `git worktree`s independentes, cada um com sua própria branch e diretório de trabalho. Agentes trabalham em paralelo sem interferir no seu checkout principal; mescle a branch pronta e descarte o restante. Workspaces inativos ou concluídos são arquivados automaticamente na gaveta (shelf) do projeto e voltam ao foco no instante em que você interagir com eles. A barra superior exibe o status da branch ativa contra a `origin` e seu Pull Request, com publicação, push e abertura de PR a um clique de distância.
+- **Uma IDE Real em Torno do Agente.** Workbench divisível com abas baseadas no editor Monaco, árvore de arquivos com indicadores visuais de alterações git, visualização de Changed files, terminais integrados e renderizadores de documentos. Deixe comentários de revisão ancorados em linhas de código ou diffs e envie-os ao chat como contexto estruturado, ou abra o worktree na sua IDE preferida.
+- **Chats que Transmitem Pensamento em Tempo Real.** Múltiplas sessões concorrentes do `pi` por workspace, cada uma com seu próprio modelo, tokens e custos em tempo real. Interrompa e redirecione raciocínios em andamento, enfileire mensagens de acompanhamento (follow-ups), delegue trabalho para subagentes e acompanhe um plano de tarefas compartilhado (TODO Plan) onde cada etapa concluída pode ser comitada individualmente.
+- **Localizador e Paleta de Comandos Unificada.** `⌘K` (ou toque duplo no Shift) abre a paleta que localiza chats, workspaces e projetos em todos os repositórios abertos, executa comandos da aplicação com seus atalhos e navega diretamente para as configurações.
+- **Especificações como Fonte da Verdade (Specs).** Um grafo conectado de arquivos `SPEC.md` vive ao lado do código. O agente lê, busca e atualiza esse grafo através de ferramentas dedicadas `spec_*`, garantindo que a intenção técnica e as decisões de arquitetura sobrevivam ao encerramento da sessão.
+- **Skills e Workflows.** Suporte nativo a Agent Skills portáteis, acompanhado de workflows integrados para inicialização de projeto, brainstorming de design e envio de pull requests via seu próprio CLI `gh`.
+- **Ferramentas Visuais e Interativas.** Pesquisa web aprofundada, perguntas interativas de múltipla escolha que o agente faz no chat em vez de adivinhar preferências, e renderização inline de diagramas Mermaid, comparações de opções lado a lado e mockups visuais antes/depois.
+- **Servidores MCP (Model Context Protocol).** Conecte qualquer servidor MCP configurado no seu `mcp.json` do `pi`. O ThinkRail solicita aprovação no chat antes de chamadas que possam alterar dados, mantém servidores definidos pelo repositório bloqueados até sua revisão, autentica servidores OAuth diretamente pelas Configurações e exibe o status de cada servidor ao lado dos recursos da sessão.
+- **Hermes Code RAG Nativo & MCP.** Mecanismo de alta performance para indexação incremental e busca de código híbrida (AST + FTS5 + Embeddings Vetoriais) alimentado pelo binário nativo `apps/cli/dist/germes.exe` e SQLite (`hermes.db`). Conta com invalidação cirúrgica por hash SHA-256 e data de modificação (`mtime_ms`), pulando arquivos inalterados em apenas **4 milissegundos** e mantendo o banco sincronizado após cada commit via hook automático.
+- **Seus Provedores e Credenciais.** Conecte o [JetBrains AI](https://www.jetbrains.com/ai/) ou qualquer provedor suportado pelo `pi` (OpenAI, Anthropic, Opus 4.8 Opus 4.8, Ollama, OpenRouter, etc.). O ThinkRail não exige criação de contas proprietárias.
+- **Servidores Locais e Gateways Personalizados.** Em Configurações → Provedores → **Servidores personalizados**, conecte gateways internos ou servidores locais (LiteLLM, vLLM, Ollama, LM Studio, llama.cpp). O botão **Buscar modelos** mapeia automaticamente o catálogo servido.
+- **Aplicativo Desktop ou Navegador.** Disponível como aplicativo desktop nativo ou via CLI `thinkrail` executável em qualquer navegador moderno. O estado local reside de forma segura sob `~/.thinkrail`.
+- **Totalmente Localizável.** Configurações de idioma com suporte a Português, Inglês, Espanhol, Russo, Chinês Simplificado e Japonês.
+- **Temas e Tipografia Flexíveis.** Temas escuro, claro, minimalista e alto contraste, com suporte a customização de fontes de código (JetBrains Mono, Geist) e espaçamentos.
 
-*The project's spec graph as a tree, with the spec itself rendered alongside.*
+---
 
-## Install
+## Arquitetura de Integração: ThinkRail + Hermes Code RAG MCP
 
-ThinkRail ships in two additive forms: a native desktop installer and the self-contained `thinkrail` CLI.
-Both are published with `SHA256SUMS` on the [releases page](https://github.com/JetBrains/thinkrail/releases).
+O fluxo de dados entre a interface do ThinkRail, o agente de IA, o binário nativo de alta performance `germes.exe` e o banco de dados vetorial opera conforme o diagrama abaixo:
 
-### Desktop
+```mermaid
+flowchart TB
+    subgraph ThinkRail_IDE [ThinkRail IDE e Host]
+        UI[Interface do Usuario / Workbench]
+        Agent[Pi Coding Agent Runtime]
+        Sidebar[Aba Lateral MCP / Resources]
+        PostCommit[Git Hook: post-commit]
+    end
 
-Download the `thinkrail-desktop-*` asset for your platform:
+    subgraph Scripts_CLI [Utilitarios CLI Locais]
+        ReindexBat["scripts/rag-reindex.bat"]
+        ReindexTs["scripts/rag-reindex.ts"]
+        PruneTs["scripts/rag-prune.ts"]
+        StatusTs["scripts/rag-status.ts"]
+    end
 
-- **macOS 14+ (Apple Silicon or Intel)** — open the DMG for your architecture:
-  `thinkrail-desktop-darwin-arm64.dmg` or `thinkrail-desktop-darwin-x64.dmg`.
-- **Windows x64** — extract the complete setup ZIP, then run its setup executable in place, next to its
-  payload.
-- **Linux x64 / ARM64** — extract the setup tarball and run `installer`. Desktop builds need glibc 2.38+
-  with GTK 3, WebKitGTK 4.1, Ayatana AppIndicator 3, and librsvg 2 — Ubuntu 24.04 or newer:
+    subgraph MCP_Server [Hermes MCP Server - Nativo]
+        GermesExe["apps/cli/dist/germes.exe mcp"]
+        IndexCodeTool["Tool: hermes_index_code"]
+        SearchTool["Tool: code_search"]
+        CoverageTool["Tool: hermes_rag_coverage_map"]
+    end
+
+    subgraph Fast_Engine [Motor de Invalidacao Incremental]
+        Scanner[Varredura de Arquivos]
+        CheckDiff{"mtime_ms ou sha256 mudou?"}
+        Skip["Pular Arquivo Inalterado (4ms)"]
+        Chunker["AST Chunking e Deletar Chunks Antigos"]
+    end
+
+    subgraph Storage [Armazenamento Local SQLite]
+        DB[("~/.hermes/projects/project-thinkrail/hermes.db")]
+        L2jFiles[Tabela: l2j_files]
+        L2jFTS[Indice Full-Text: l2j_chunk_fts]
+        L2jVec[Indice Vetorial: l2j_chunk_vec]
+    end
+
+    subgraph Embedding_Server [Servidor Local de Embeddings]
+        JinaEmbeddings["ONNX Runtime DML (GPU RX 580) - http://127.0.0.1:9085"]
+    end
+
+    UI --> Agent
+    Sidebar -->|Controla e Consulta| GermesExe
+    Agent -->|Chama ferramentas| GermesExe
+    PostCommit -.->|Disparo automatico| ReindexBat
+
+    ReindexBat --> PruneTs
+    ReindexBat --> ReindexTs
+    PruneTs -->|Purga registros orfaos| DB
+    ReindexTs --> Scanner
+
+    GermesExe --> IndexCodeTool
+    GermesExe --> SearchTool
+    GermesExe --> CoverageTool
+    IndexCodeTool --> Scanner
+
+    Scanner --> CheckDiff
+    CheckDiff -->|Nao| Skip
+    CheckDiff -->|Sim| Chunker
+    Chunker -->|Calcula Vetores| JinaEmbeddings
+    Chunker -->|Atualiza Chunks e Arquivo| DB
+
+    DB --- L2jFiles
+    DB --- L2jFTS
+    DB --- L2jVec
+
+    SearchTool -->|Busca Hibrida FTS + Vetor + RRF| DB
+```
+
+---
+
+## Comandos do Hermes RAG
+
+O repositório fornece scripts nativos de alta velocidade com caminhos relativos ao projeto para manter o Code RAG perfeitamente sincronizado:
+
+```bash
+bun run rag:reindex   # Reindexa cirurgicamente apenas arquivos alterados ou novos
+bun run rag:status    # Exibe metricas de arquivos, chunks, simbolos e cobertura do banco
+bun run rag:prune     # Purga registros orfaos de arquivos deletados ou movidos do repositorio
+```
+
+Também é possível invocar o script batch diretamente apontando para diretórios específicos:
+```cmd
+scripts\rag-reindex.bat apps packages
+```
+
+---
+
+## Instalação
+
+O ThinkRail é distribuído como instalador desktop nativo e como binário CLI autônomo. Ambos são publicados com hashes `SHA256SUMS` na [página de lançamentos](https://github.com/JetBrains/thinkrail/releases).
+
+### Versão Desktop
+
+Faça o download do pacote correspondente à sua plataforma:
+
+- **macOS 14+ (Apple Silicon ou Intel)** — abra o arquivo DMG para sua arquitetura:
+  `thinkrail-desktop-darwin-arm64.dmg` ou `thinkrail-desktop-darwin-x64.dmg`.
+- **Windows x64** — extraia o arquivo ZIP de instalação e execute o instalador.
+- **Linux x64 / ARM64** — extraia o tarball e execute `installer` (requer Ubuntu 24.04+ com glibc 2.38+, GTK 3, WebKitGTK 4.1, Ayatana AppIndicator 3 e librsvg 2):
 
   ```bash
   sudo apt install libgtk-3-0 libwebkit2gtk-4.1-0 libayatana-appindicator3-1 librsvg2-2
   ```
 
-Packaged stable and nightly desktop builds check for updates in the background and offer them in
-**Settings → Updates**: **Download** → **Preparing update** → **Install & Restart**. Nothing is applied until
-you choose **Install & Restart**. ThinkRail then shows the installation's progress and log, closes, and
-reopens on the new version. After the restart it tells you whether the update installed. If it didn't, it
-explains why and offers to retry. The updater appears only when the package carries a valid HTTPS feed
-identity; installations that predate that identity need one manual installation first.
+### Linha de Comando (CLI)
 
-### Command line
+O instalador baixa o binário correto, valida a soma de verificação SHA-256 e registra o `thinkrail` no seu PATH.
 
-The installer downloads the right binary, verifies its SHA-256 checksum, and puts `thinkrail` on your PATH.
-
-**macOS / Linux** (also Windows under Git Bash):
+**macOS / Linux** (e Git Bash no Windows):
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/JetBrains/thinkrail/main/install.sh | bash
 ```
 
-**Windows** — the same command works from cmd and PowerShell:
+**Windows** (PowerShell ou Prompt de Comando):
 
 ```powershell
 powershell -c "irm https://raw.githubusercontent.com/JetBrains/thinkrail/main/install.ps1 | iex"
 ```
 
-Then run `thinkrail`, optionally with a git repo to open as a project:
+Em seguida, execute `thinkrail` passando opcionalmente um diretório para abrir:
 
 ```bash
-thinkrail ~/code/my-repo
+thinkrail ~/meu-projeto
 ```
 
-`thinkrail` needs `git` on your PATH and a model provider — sign in with JetBrains AI from the app or use
-your own provider credentials. The first launch walks you through connecting a provider and picking a
-project; **Start a new project** creates an empty git repository (under `~/thinkrail` by default), so you
-don't need one ready. **Add project → Clone repository…** clones a Git URL into a new folder on the
-computer running ThinkRail and opens it as a project. Choose the parent folder and folder name, optionally
-limit the history depth, or cancel an in-progress clone. GitHub and other Git hosts work with the host's
-existing Git credentials and SSH keys; existing destination folders are never overwritten.
-`thinkrail --help` lists the flags; `thinkrail --version` prints the build.
+---
 
-<details>
-<summary><strong>Nightly builds, pinned versions, updates, and uninstall</strong></summary>
+## Estrutura Interna (Under the Hood)
 
-The installer takes `--channel stable|nightly` and `--version`; a pinned version must belong to the
-selected channel:
+O ThinkRail é um host enxuto que executa o `pi` in-process e o conecta a uma interface web reativa. O `pi` gerencia modelos, skills, compactação de contexto e custos; o ThinkRail gerencia workspaces, Monaco editor, extensões e o transporte:
 
-```bash
-curl -fsSL https://raw.githubusercontent.com/JetBrains/thinkrail/main/install.sh | bash -s -- --channel nightly
-curl -fsSL https://raw.githubusercontent.com/JetBrains/thinkrail/main/install.sh | bash -s -- --channel stable --version 0.1.2
-curl -fsSL https://raw.githubusercontent.com/JetBrains/thinkrail/main/install.sh | bash -s -- --channel nightly --version 0.2.0-nightly.10
-```
+1. **Engine Host** — `packages/server` (+ `packages/shared`): Servidor HTTP+WS em `Bun.serve` com sessões `pi` em processo.
+2. **The Wire** — `packages/contracts`: Protocolo fortemente tipado e versionado entre o servidor e a UI.
+3. **UI Client** — `apps/web`: Desenvolvido em React 19, Zustand e Tailwind v4.
 
-On Windows the options are environment variables (`THINKRAIL_CHANNEL`, `THINKRAIL_VERSION`,
-`THINKRAIL_PREFIX`, `THINKRAIL_NO_MODIFY_PATH`):
+---
 
-```powershell
-$env:THINKRAIL_CHANNEL='nightly'; irm https://raw.githubusercontent.com/JetBrains/thinkrail/main/install.ps1 | iex   # PowerShell
-set "THINKRAIL_CHANNEL=stable" && set "THINKRAIL_VERSION=0.1.2" && powershell -c "irm https://raw.githubusercontent.com/JetBrains/thinkrail/main/install.ps1 | iex"   # cmd
-```
+## Desenvolvimento do ThinkRail
 
-Installed stable and nightly CLI hosts periodically offer **Run Update** in **Settings → Updates**. It runs
-the host machine's `thinkrail update` in the background — also when the UI is open in a browser on another
-machine — and a successful update asks you to restart the host manually. You can run `thinkrail update`
-directly on any platform: it re-runs the installer for the installed channel and replaces
-`<prefix>/bin/thinkrail[.exe]`; pass `--channel` or `--version` only for an explicit override.
-
-`thinkrail uninstall` removes the executable, the PATH entry the installer added, and the install metadata,
-and asks whether to delete your `~/.thinkrail` app state (kept by default — `--remove-data` deletes it,
-`-y` skips the questions).
-
-Prefer a manual install? Download a binary and `SHA256SUMS` from the releases page and verify the checksum.
-For self-update to work, rename it to `thinkrail` (`thinkrail.exe` on Windows) and place it at
-`<prefix>/bin/thinkrail[.exe]`; a binary kept under its release filename or elsewhere must be replaced
-manually or reinstalled with the script.
-
-</details>
-
-### Platform notes
-
-| Platform | Desktop | CLI |
-| --- | --- | --- |
-| macOS Apple Silicon / Intel | DMG | signed binary |
-| Windows x64 | signed setup executable and app binaries | signed `.exe` |
-| Linux x64 / ARM64 | setup tarball, unsigned | unsigned |
-
-JetBrains signs the Windows CLI, the desktop setup executable, and every executable and DLL the desktop app
-installs. The macOS CLI is signed but not yet notarized.
-Signed and notarized desktop DMGs require the coordinated JetBrains service pipeline; older published DMGs
-and locally built packages may still be unsigned and blocked by Gatekeeper. Linux artifacts are unsigned.
-
-## Analytics & privacy
-
-ThinkRail apps collect basic usage events — launches, chat creation, message sends, provider connections — tied to
-a random installation ID. Usage analytics never include prompts, code, files, credentials, or account
-identity. Error reports are also always sent, tied to the same installation ID, so we can fix crashes: the
-error type and code and where in ThinkRail's own code it happened. They never include error messages, file
-paths, names, URLs, or anything from your projects or extensions. Additional product
-usage and how you found ThinkRail are shared only while **Share additional usage
-data** is on; the switch is offered as a step of first-run setup (or right after you skip it) and lives in **Settings → Privacy**. When launching from
-the command line, `thinkrail --no-analytics` (or `THINKRAIL_NO_ANALYTICS=1`) turns additional sharing off for
-that run. With additional sharing on, a packaged build may open the ThinkRail blog in your browser once to
-link your installation to the website visit that brought you here — only where you accepted marketing cookies on the
-website or no consent is required — and that link expires after 30 days.
-
-Feedback surveys are separate from usage analytics. ThinkRail may invite you to a short survey, and you can
-also open it from **Settings → Feedback**. Your answers, including anything you type, are sent to the
-ThinkRail team only when you press **Send**, whatever your analytics settings, and are tied to the same
-random installation ID — not to your name or account. Please don't include secrets, code, or personal data;
-to have your answers deleted, email info@thinkrail.ai.
-
-The ThinkRail apps and the ThinkRail website ([thinkrail.ai](https://thinkrail.ai)) use PostHog Inc. services for
-analytics. The website also uses PostHog Surveys to collect feedback after a desktop download and, only if you
-choose to enter one, your email address, which is used to ask for further feedback and to send product updates.
-PostHog's privacy policy is at [posthog.com/privacy](https://posthog.com/privacy).
-
-## Under the hood
-
-ThinkRail is a thin host that runs `pi` in-process and bridges it to a rich web UI. `pi` owns models,
-skills, compaction, cost, and session state; the app owns the workspace, the editor, and the wire — it
-never assembles prompts behind your back. Three rings:
-
-- **Engine host** — `packages/server` (+ `packages/shared`): a `Bun.serve` HTTP+WS host with one in-process
-  `pi` session per chat, launched by `apps/cli` or `apps/desktop`.
-- **The wire** — `packages/contracts`: the typed, versioned protocol between host and UI.
-- **UI client** — `apps/web`: React 19 + Zustand + Tailwind v4, shipped independently; it dials a host over
-  the wire and depends on the contracts only.
-
-[`goal-and-requirements.md`](goal-and-requirements.md) and [`architecture.md`](architecture.md) are the
-canonical product and design specs. ThinkRail is developed spec-first: a `SPEC.md` sits beside every
-module, and a change that moves a boundary, contract, or decision updates the spec in the same change.
-
-## Developing ThinkRail
-
-You need **Bun** 1.4.4 (the pinned package manager and runtime), **Node.js** ≥ 22.19 (required by the
-in-process `pi` engine), and an authenticated `pi` provider for agent work.
+Requisitos: **Bun** 1.4.4, **Node.js** ≥ 22.19 e credenciais de provedor para execução de agentes.
 
 ```bash
 git clone https://github.com/JetBrains/thinkrail.git
 cd thinkrail
 bun install
-bun run dev                          # host + web client together; Ctrl+C stops both
+bun run dev                          # Inicia o host e o cliente web simultaneamente
 ```
 
 ```bash
-bun run --filter @thinkrail/cli dev  # browser launcher
-bun run build:binary                 # standalone CLI artifact
-bun run desktop:dev                  # package and open the Electrobun app
-bun run desktop:build                # package without opening it
+bun run --filter @thinkrail/cli dev  # Launcher do navegador
+bun run build:binary                 # Compila o artefato CLI autônomo
+bun run desktop:dev                  # Empacota e executa o app Electrobun Desktop
+bun run desktop:build                # Empacota o app desktop sem abrir
 ```
 
-### Hermes RAG Commands
+Consulte [`CONTRIBUTING.md`](CONTRIBUTING.md) para diretrizes de contribuição, execução de suítes de testes E2E e formatação.
 
-The repository includes native incremental Code RAG utilities backed by `apps/cli/dist/germes.exe` and
-SQLite (`hermes.db`):
+---
 
-```bash
-bun run rag:reindex   # Incrementally reindexes modified files and updates FTS5/vector indices
-bun run rag:status    # Inspects indexed files, chunks, symbols, and coverage metrics
-bun run rag:prune     # Purges orphaned records of deleted or renamed files from the index
-```
+## Comunidade
 
-[`CONTRIBUTING.md`](CONTRIBUTING.md) covers the checks, the end-to-end suites, desktop packaging, and the
-repository layout.
+Participe do nosso servidor no [Discord](https://thinkrail.ai/discord) para tirar dúvidas, compartilhar experiências e conversar com a equipe. Problemas e sugestões de melhorias podem ser enviados nas [GitHub Issues](https://github.com/JetBrains/thinkrail/issues).
 
-## Contributing
+## Licença
 
-Contributions are welcome — see [`CONTRIBUTING.md`](CONTRIBUTING.md). This project and community are
-governed by the [Code of Conduct](CODE_OF_CONDUCT.md).
-
-## Community
-
-Join us on [Discord](https://thinkrail.ai/discord) to ask questions, share what you're building, and
-talk to the team. Bugs and feature requests go to [GitHub issues](https://github.com/JetBrains/thinkrail/issues).
-
-## License
-
-Licensed under the [Apache License 2.0](LICENSE).
+Distribuído sob a licença [Apache 2.0](LICENSE).
