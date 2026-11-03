@@ -62,7 +62,7 @@ function collectFiles(dir: string, fileList: string[] = []): string[] {
 	return fileList;
 }
 
-async function getEmbedding(text: string): Promise<number[] | null> {
+export async function getEmbedding(text: string): Promise<number[] | null> {
 	try {
 		const res = await fetch(`${EMBEDDINGS_URL}/embed`, {
 			method: "POST",

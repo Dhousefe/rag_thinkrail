@@ -12,12 +12,17 @@ import { homedir } from "node:os";
 import { join, resolve } from "node:path";
 import type {
 	Ack,
+	HermesActiveProjectStatus,
+	HermesConnectionStatus,
 	HermesCreateProjectInput,
 	HermesDeleteProjectInput,
+	HermesGetActiveProjectsResult,
 	HermesListProjectsResult,
 	HermesProjectInfo,
 	HermesReindexProjectInput,
 	HermesReindexResult,
+	HermesSetActiveProjectsInput,
+	HermesTestConnectionInput,
 } from "@thinkrail/contracts";
 import { logger } from "../log";
 
@@ -252,5 +257,288 @@ export async function reindexHermesProject(
 		message: `Reindexação iniciada para o projeto ${input.slug}. O subsistema Hermes RAG está atualizando o banco SQLite e vetores.`,
 		projectSlug: input.slug,
 		elapsedMs: Date.now() - startTime,
+	};
+}
+
+export function getActiveHermesProjects(): HermesGetActiveProjectsResult {
+	const hermesHome = resolveHermesHome();
+	const activeFile = join(hermesHome, "active_projects.json");
+	if (existsSync(activeFile)) {
+		try {
+			const content = readFileSync(activeFile, "utf8");
+			const data = JSON.parse(content) as { activeSlugs?: string[] };
+			if (Array.isArray(data.activeSlugs) && data.activeSlugs.length > 0) {
+				return { activeSlugs: data.activeSlugs };
+			}
+		} catch {}
+	}
+	return { activeSlugs: ["project-thinkrail"] };
+}
+
+export function setActiveHermesProjects(
+	input: HermesSetActiveProjectsInput,
+): HermesGetActiveProjectsResult {
+	const hermesHome = resolveHermesHome();
+	const activeFile = join(hermesHome, "active_projects.json");
+	const cleanSlugs = (input.slugs || [])
+		.map((s) => s.trim().toLowerCase())
+		.filter(Boolean);
+	const activeSlugs = cleanSlugs.length > 0 ? cleanSlugs : ["project-thinkrail"];
+	try {
+		writeFileSync(activeFile, JSON.stringify({ activeSlugs }, null, 2), "utf8");
+		log.info(`Projetos Hermes ativos atualizados: ${activeSlugs.join(", ")}`);
+	} catch (err) {
+		log.error(`Falha ao salvar active_projects.json: ${err}`);
+	}
+	return { activeSlugs };
+}
+
+export async function testHermesConnection(
+	_input?: HermesTestConnectionInput,
+): Promise<HermesConnectionStatus> {
+	const timestamp = Date.now();
+
+	// 1. Testa Servidor Jina Embeddings
+	const embeddingsUrl = process.env.EMBEDDINGS_URL || "http://127.0.0.1:9085/api/embeddings";
+	let jinaBaseUrl = "http://127.0.0.1:9085";
+	try {
+		const u = new URL(embeddingsUrl);
+		jinaBaseUrl = `${u.protocol}//${u.host}`;
+	} catch {
+		jinaBaseUrl = "http://127.0.0.1:9085";
+	}
+
+	let jinaActive = false;
+	let jinaLatencyMs: number | undefined;
+	let jinaStatusText = "Não iniciado (offline)";
+
+	const jinaStart = Date.now();
+	try {
+		const controller = new AbortController();
+		const timeoutId = setTimeout(() => controller.abort(), 2000);
+		const res = await fetch(`${jinaBaseUrl}/health`, {
+			method: "GET",
+			signal: controller.signal,
+		});
+		clearTimeout(timeoutId);
+		jinaLatencyMs = Date.now() - jinaStart;
+		if (res.ok) {
+		jinaActive = true;
+			const data = (await res.json().catch(() => ({}))) as { provider?: string; gpu?: boolean };
+			const gpuInfo = data.gpu ? " (GPU DirectML ativo)" : "";
+			jinaStatusText = `Online e respondendo${gpuInfo}`;
+		} else {
+			jinaStatusText = `Resposta HTTP ${res.status}`;
+		}
+	} catch (err: unknown) {
+		jinaLatencyMs = Date.now() - jinaStart;
+		const msg = err instanceof Error ? err.message : String(err);
+		jinaStatusText = msg.includes("aborted") ? "Timeout de conexão (>2s)" : "Inacessível na porta 9085";
+	}
+
+	// 2. Testa Servidor Hermes MCP
+	let mcpConnected = false;
+	let mcpLatencyMs: number | undefined;
+	let mcpStatusText = "Não configurado";
+	let toolsCount: number | undefined;
+	const mcpServerName = "hermes-rag";
+
+	const mcpStart = Date.now();
+	try {
+		const rootDir = process.cwd();
+		const runnerPath = join(rootDir, "apps", "cli", "scripts", "hermes-mcp-server.ts");
+		const germesPath = join(rootDir, "apps", "cli", "dist", "germes.exe");
+
+		if (!existsSync(runnerPath) && !existsSync(germesPath)) {
+			mcpStatusText = "Binário germes.exe não encontrado em apps/cli/dist";
+		} else {
+			const probeResult = await new Promise<{ ok: boolean; toolsCount?: number; error?: string }>(
+				(resolvePromise) => {
+					const userHome = process.env.USERPROFILE || "";
+					const bunCandidate = join(
+						userHome,
+						"AppData",
+						"Roaming",
+						"npm",
+						"node_modules",
+						"bun",
+						"bin",
+						"bun.exe",
+					);
+					const bunExe = existsSync(bunCandidate) ? bunCandidate : "bun";
+					const proc = spawn(
+						bunExe,
+						["run", existsSync(runnerPath) ? runnerPath : germesPath],
+						{
+							cwd: rootDir,
+							env: {
+								...process.env,
+								HERMES_PROJECT: "project-thinkrail",
+								HERMES_WORKSPACE_ROOT: rootDir,
+							},
+							stdio: ["pipe", "pipe", "ignore"],
+							windowsHide: true,
+						},
+					);
+
+					let stdoutData = "";
+					const timer = setTimeout(() => {
+						proc.kill();
+						resolvePromise({ ok: false, error: "Timeout ao inicializar handshake MCP (>3s)" });
+					}, 3000);
+
+					proc.stdout?.on("data", (chunk: Buffer) => {
+						stdoutData += chunk.toString("utf-8");
+						const lines = stdoutData.split("\n");
+						for (const line of lines) {
+							const trimmed = line.trim();
+							if (trimmed.startsWith("{") && trimmed.endsWith("}")) {
+								try {
+									const parsed = JSON.parse(trimmed) as {
+										id?: number;
+										result?: { serverInfo?: unknown; tools?: unknown[] };
+									};
+									if (parsed.id === 1 && parsed.result?.serverInfo) {
+										proc.stdin?.write(
+											JSON.stringify({
+												jsonrpc: "2.0",
+												id: 2,
+												method: "tools/list",
+												params: {},
+											}) + "\n",
+										);
+									} else if (parsed.id === 2 && Array.isArray(parsed.result?.tools)) {
+										clearTimeout(timer);
+										proc.kill();
+										resolvePromise({ ok: true, toolsCount: parsed.result.tools.length });
+										return;
+									}
+								} catch {}
+							}
+						}
+					});
+
+					proc.on("error", (err) => {
+						clearTimeout(timer);
+						resolvePromise({ ok: false, error: err.message });
+					});
+
+					proc.stdin?.write(
+						JSON.stringify({
+							jsonrpc: "2.0",
+							id: 1,
+							method: "initialize",
+							params: {
+								protocolVersion: "2024-11-05",
+								capabilities: {},
+								clientInfo: { name: "probe", version: "1.0" },
+							},
+						}) + "\n",
+					);
+				},
+			);
+
+			mcpLatencyMs = Date.now() - mcpStart;
+			if (probeResult.ok) {
+				mcpConnected = true;
+				toolsCount = probeResult.toolsCount ?? 30;
+				mcpStatusText = `Conectado e operacional (${toolsCount} ferramentas ativas)`;
+			} else {
+				mcpStatusText = probeResult.error || "Falha na inicialização do protocolo MCP";
+			}
+		}
+	} catch (err: unknown) {
+		mcpLatencyMs = Date.now() - mcpStart;
+		mcpStatusText = err instanceof Error ? err.message : String(err);
+	}
+
+	// 3. Testa e audita cada Projeto Ativo listado para o RAG
+	const { activeSlugs } = getActiveHermesProjects();
+	const hermesHome = resolveHermesHome();
+	const activeProjects: HermesActiveProjectStatus[] = [];
+
+	for (const slug of activeSlugs) {
+		const projectDir = join(hermesHome, "projects", slug);
+		const dbPath = join(projectDir, "hermes.db");
+		let workspacePath = "";
+		const wsFile = join(projectDir, "workspace.path");
+		if (existsSync(wsFile)) {
+			try {
+				workspacePath = readFileSync(wsFile, "utf8").trim();
+			} catch {}
+		}
+
+		if (!existsSync(projectDir)) {
+			activeProjects.push({
+				slug,
+				name: slug,
+				path: workspacePath || projectDir,
+				hasDb: false,
+				status: "error",
+				errorMessage: "Diretório do projeto não encontrado",
+			});
+			continue;
+		}
+
+		if (!existsSync(dbPath)) {
+			activeProjects.push({
+				slug,
+				name: slug,
+				path: workspacePath || projectDir,
+				hasDb: false,
+				status: "missing_db",
+				errorMessage: "Banco hermes.db ausente. Execute indexação.",
+			});
+			continue;
+		}
+
+		let dbSizeBytes: number | undefined;
+		let dbSizeFormatted: string | undefined;
+		let chunksCount: number | undefined;
+		try {
+			const st = statSync(dbPath);
+			dbSizeBytes = st.size;
+			dbSizeFormatted = formatBytes(st.size);
+
+			try {
+				const { Database } = await import("bun:sqlite");
+				const db = new Database(dbPath, { readonly: true });
+				const row = db.query("SELECT count(*) as cnt FROM l2j_chunks").get() as { cnt?: number };
+				chunksCount = row?.cnt ?? 0;
+				db.close();
+			} catch {}
+		} catch {
+			dbSizeFormatted = "Erro ao inspecionar DB";
+		}
+
+		activeProjects.push({
+			slug,
+			name: slug,
+			path: workspacePath || projectDir,
+			hasDb: true,
+			dbSizeBytes,
+			dbSizeFormatted,
+			chunksCount,
+			status: "ok",
+		});
+	}
+
+	const allProjectsOk = activeProjects.length > 0 && activeProjects.every((p) => p.status === "ok");
+	const overallSuccess = jinaActive && mcpConnected && allProjectsOk;
+
+	return {
+		jinaActive,
+		jinaUrl: `${jinaBaseUrl}/health`,
+		jinaLatencyMs,
+		jinaStatusText,
+		mcpConnected,
+		mcpServerName,
+		mcpLatencyMs,
+		mcpStatusText,
+		toolsCount,
+		activeProjects,
+		activeProjectsCount: activeProjects.length,
+		overallSuccess,
+		timestamp,
 	};
 }

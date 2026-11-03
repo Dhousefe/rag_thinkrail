@@ -6,14 +6,16 @@ import {
 	RiHistoryLine,
 	RiPlugLine,
 	RiRefreshLine,
+	RiServerLine,
 	RiSpeedUpLine,
 	RiTimeLine,
 	RiToolsLine,
 } from "@remixicon/react";
+import type { HermesConnectionStatus } from "@thinkrail/contracts";
 import { Button } from "@thinkrail/ui/button";
 import { cn } from "@thinkrail/ui/utils";
 import { useMemo, useState } from "react";
-import { deriveMcpServerRows, selectActiveWorkspace, useAppStore } from "@/store";
+import { deriveMcpServerRows, selectActiveWorkspace, toast, useAppStore } from "@/store";
 import { getTransport } from "@/transport";
 import { HermesProjectsView } from "./hermes/HermesProjectsView";
 import { HermesToolsView } from "./hermes/HermesToolsView";
@@ -27,6 +29,7 @@ export function HermesMcpPanel() {
 	const hermesManagement = useAppStore((s) => s.hermesManagement);
 
 	const [testingPing, setTestingPing] = useState(false);
+	const [connectionDiagnosis, setConnectionDiagnosis] = useState<HermesConnectionStatus | null>(null);
 	const [panelTab, setPanelTab] = useState<"projects" | "tools" | "telemetry">("projects");
 	const [activeTelemetryFilter, setActiveTelemetryFilter] = useState<"hermes" | "all">("hermes");
 
@@ -86,14 +89,28 @@ export function HermesMcpPanel() {
 	const handleTestPing = async () => {
 		if (!workspaceId) return;
 		setTestingPing(true);
-		const targetName = hermesServer?.summary.name || "hermes_rag";
 		try {
-			await getTransport().request("mcp.testConnection", {
+			const status = await getTransport().request("hermes.testConnection", {
 				workspaceId,
-				name: targetName,
 			});
-		} catch {
-			// handled or logged
+			setConnectionDiagnosis(status);
+
+			if (status.overallSuccess) {
+				toast.success(
+					`Conexão OK! Jina (${status.jinaLatencyMs ?? 0}ms), MCP (${status.mcpLatencyMs ?? 0}ms) e ${status.activeProjectsCount} projeto(s) ativo(s) no RAG.`,
+				);
+			} else if (!status.jinaActive) {
+				toast.error(`Servidor Jina Embeddings offline na porta 9085: ${status.jinaStatusText}`);
+			} else if (!status.mcpConnected) {
+				toast.error(`Servidor Hermes MCP inacessível: ${status.mcpStatusText}`);
+			} else {
+				toast.warning(
+					`Serviços online, porém algum projeto ativo não possui banco de dados pronto para RAG.`,
+				);
+			}
+		} catch (err) {
+			const msg = err instanceof Error ? err.message : String(err);
+			toast.error(`Falha no teste de conexão Hermes: ${msg}`);
 		} finally {
 			setTestingPing(false);
 		}
@@ -181,6 +198,80 @@ export function HermesMcpPanel() {
 						</span>
 					</div>
 				</div>
+
+				{/* Card Detalhado de Diagnóstico de Conexão (Jina + Servidor MCP + Multi-Projetos) */}
+				{connectionDiagnosis && (
+					<div className="mt-4 flex flex-col gap-8 rounded-md border border-border-default bg-container-workspace-bg p-12">
+						<div className="flex items-center justify-between">
+							<span className="tr-text-emphasis text-text-default flex items-center gap-6">
+								<RiServerLine className="size-16 text-primary" />
+								Diagnóstico de Conexão em Tempo Real
+							</span>
+							<span className="tr-text-metadata text-text-muted">
+								{formatTimestamp(connectionDiagnosis.timestamp)}
+							</span>
+						</div>
+
+						<div className="grid grid-cols-1 gap-8 sm:grid-cols-2">
+							{/* Status Jina */}
+							<div className="flex items-start gap-8 rounded border border-border-default bg-container-elevated-bg p-8">
+								<div className={cn("size-8 mt-4 rounded-full shrink-0", connectionDiagnosis.jinaActive ? "bg-feedback-success" : "bg-feedback-error")} />
+								<div className="flex flex-col gap-2 min-w-0">
+									<div className="flex items-center gap-6">
+										<span className="tr-text-emphasis text-text-default">Jina Embeddings</span>
+										{connectionDiagnosis.jinaLatencyMs !== undefined && (
+											<span className="tr-text-metadata text-text-muted">{connectionDiagnosis.jinaLatencyMs}ms</span>
+										)}
+									</div>
+									<span className="tr-text-metadata text-text-muted break-all">
+										{connectionDiagnosis.jinaStatusText}
+									</span>
+								</div>
+							</div>
+
+							{/* Status Servidor MCP */}
+							<div className="flex items-start gap-8 rounded border border-border-default bg-container-elevated-bg p-8">
+								<div className={cn("size-8 mt-4 rounded-full shrink-0", connectionDiagnosis.mcpConnected ? "bg-feedback-success" : "bg-feedback-error")} />
+								<div className="flex flex-col gap-2 min-w-0">
+									<div className="flex items-center gap-6">
+										<span className="tr-text-emphasis text-text-default">Servidor Hermes MCP</span>
+										{connectionDiagnosis.mcpLatencyMs !== undefined && (
+											<span className="tr-text-metadata text-text-muted">{connectionDiagnosis.mcpLatencyMs}ms</span>
+										)}
+									</div>
+									<span className="tr-text-metadata text-text-muted break-all">
+										{connectionDiagnosis.mcpStatusText}
+									</span>
+								</div>
+							</div>
+						</div>
+
+						{/* Status dos Projetos Ativos no RAG */}
+						<div className="flex flex-col gap-4 mt-4 pt-8 border-t border-border-default">
+							<span className="tr-text-emphasis text-text-default">
+								Projetos Ativos no RAG Multi-Projeto ({connectionDiagnosis.activeProjectsCount}):
+							</span>
+							<div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+								{connectionDiagnosis.activeProjects.map((p) => (
+									<div key={p.slug} className="flex items-center justify-between rounded border border-border-default bg-container-elevated-bg p-6 tr-text-metadata">
+										<div className="flex items-center gap-6 min-w-0 flex-1">
+											<span className={cn("size-6 rounded-full shrink-0", p.status === "ok" ? "bg-feedback-success" : "bg-feedback-error")} />
+											<span className="tr-text-emphasis text-text-default truncate">{p.slug}</span>
+										</div>
+										<div className="flex items-center gap-6 text-text-muted shrink-0">
+											{p.dbSizeFormatted && <span>{p.dbSizeFormatted}</span>}
+											{p.chunksCount !== undefined && (
+												<span className="rounded bg-feedback-info-subtle px-4 text-primary tr-text-metadata">
+													{p.chunksCount.toLocaleString()} chunks
+												</span>
+											)}
+										</div>
+									</div>
+								))}
+							</div>
+						</div>
+					</div>
+				)}
 			</div>
 
 			{/* Abas Internas: Projetos, Ferramentas & Lechs, Telemetria */}

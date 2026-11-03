@@ -35,6 +35,7 @@ export interface HermesManagementState {
 	error: string | null;
 	hermesHome: string | null;
 	activeProjectSlug: string | null;
+	activeProjectSlugs: string[];
 	toolToggles: Record<string, boolean>;
 	indexingProgress: HermesIndexingProgress;
 }
@@ -117,6 +118,7 @@ export const INITIAL_HERMES_MANAGEMENT_STATE: HermesManagementState = {
 	error: null,
 	hermesHome: null,
 	activeProjectSlug: null,
+	activeProjectSlugs: ["project-thinkrail"],
 	toolToggles: Object.fromEntries(DEFAULT_HERMES_TOOLS.map((t) => [t.id, true])),
 	indexingProgress: {
 		isIndexing: false,

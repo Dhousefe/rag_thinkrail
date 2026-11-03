@@ -49,6 +49,18 @@ export interface HermesTestConnectionInput {
 	workspaceId?: string | undefined;
 }
 
+export interface HermesActiveProjectStatus {
+	slug: string;
+	name: string;
+	path: string;
+	hasDb: boolean;
+	dbSizeBytes?: number | undefined;
+	dbSizeFormatted?: string | undefined;
+	chunksCount?: number | undefined;
+	status: "ok" | "missing_db" | "error";
+	errorMessage?: string | undefined;
+}
+
 export interface HermesConnectionStatus {
 	jinaActive: boolean;
 	jinaUrl: string;
@@ -59,6 +71,16 @@ export interface HermesConnectionStatus {
 	mcpLatencyMs?: number | undefined;
 	mcpStatusText: string;
 	toolsCount?: number | undefined;
+	activeProjects: HermesActiveProjectStatus[];
+	activeProjectsCount: number;
 	overallSuccess: boolean;
 	timestamp: number;
+}
+
+export interface HermesSetActiveProjectsInput {
+	slugs: string[];
+}
+
+export interface HermesGetActiveProjectsResult {
+	activeSlugs: string[];
 }

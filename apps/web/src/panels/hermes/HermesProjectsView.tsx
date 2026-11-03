@@ -32,7 +32,7 @@ export function HermesProjectsView() {
 	const setHermesProjects = useAppStore((s) => s.setHermesProjects);
 	const setHermesLoading = useAppStore((s) => s.setHermesLoading);
 	const setHermesError = useAppStore((s) => s.setHermesError);
-	const setActiveHermesProject = useAppStore((s) => s.setActiveHermesProject);
+	const setHermesActiveProjectSlugs = useAppStore((s) => s.setHermesActiveProjectSlugs);
 	const startHermesIndexing = useAppStore((s) => s.startHermesIndexing);
 	const updateHermesIndexingProgress = useAppStore((s) => s.updateHermesIndexingProgress);
 	const finishHermesIndexing = useAppStore((s) => s.finishHermesIndexing);
@@ -72,18 +72,59 @@ export function HermesProjectsView() {
 	const loadProjects = useCallback(async () => {
 		setHermesLoading(true);
 		try {
-			const result = await getTransport().request("hermes.listProjects", {});
+			const [result, activeResult] = await Promise.all([
+				getTransport().request("hermes.listProjects", {}),
+				getTransport().request("hermes.getActiveProjects", {}).catch(() => ({ activeSlugs: ["project-thinkrail"] })),
+			]);
 			setHermesProjects(result.projects, result.hermesHome);
+			if (Array.isArray(activeResult.activeSlugs)) {
+				setHermesActiveProjectSlugs(activeResult.activeSlugs);
+			}
 		} catch (err) {
 			const msg = err instanceof Error ? err.message : String(err);
 			setHermesError(msg);
 			toast.error(`Falha ao carregar projetos Hermes: ${msg}`);
 		}
-	}, [setHermesLoading, setHermesProjects, setHermesError]);
+	}, [setHermesLoading, setHermesProjects, setHermesActiveProjectSlugs, setHermesError]);
 
 	useEffect(() => {
 		void loadProjects();
 	}, [loadProjects]);
+
+	const activeSlugs = useMemo(() => {
+		return hermesManagement.activeProjectSlugs && hermesManagement.activeProjectSlugs.length > 0
+			? hermesManagement.activeProjectSlugs
+			: hermesManagement.activeProjectSlug
+				? [hermesManagement.activeProjectSlug]
+				: ["project-thinkrail"];
+	}, [hermesManagement.activeProjectSlugs, hermesManagement.activeProjectSlug]);
+
+	const handleToggleProjectActive = async (slug: string) => {
+		const isCurrentlyActive = activeSlugs.includes(slug);
+		let nextSlugs: string[];
+		if (isCurrentlyActive) {
+			if (activeSlugs.length <= 1) {
+				toast.error("Pelo menos um projeto deve permanecer ativo para o RAG.");
+				return;
+			}
+			nextSlugs = activeSlugs.filter((s) => s !== slug);
+		} else {
+			nextSlugs = [...activeSlugs, slug];
+		}
+
+		setHermesActiveProjectSlugs(nextSlugs);
+		try {
+			await getTransport().request("hermes.setActiveProjects", { slugs: nextSlugs });
+			if (isCurrentlyActive) {
+				toast.success(`Projeto "${slug}" desativado. Agora ${nextSlugs.length} ativo(s) no RAG.`);
+			} else {
+				toast.success(`Projeto "${slug}" ativado! Agora ${nextSlugs.length} projetos ativos para busca cruzada.`);
+			}
+		} catch (err) {
+			const msg = err instanceof Error ? err.message : String(err);
+			toast.error(`Falha ao persistir projetos ativos: ${msg}`);
+		}
+	};
 
 	const handleCopyPath = (path: string, slug: string) => {
 		void navigator.clipboard.writeText(path);
@@ -193,18 +234,18 @@ export function HermesProjectsView() {
 
 			if (!matchesQuery) return false;
 			if (filterStatus === "withDb") return p.hasDb;
-			if (filterStatus === "active") return p.hasActiveSession;
+			if (filterStatus === "active") return activeSlugs.includes(p.slug);
 			return true;
 		});
-	}, [hermesManagement.projects, searchQuery, filterStatus]);
+	}, [hermesManagement.projects, searchQuery, filterStatus, activeSlugs]);
 
 	// Estatísticas de resumo
 	const stats = useMemo(() => {
 		const total = hermesManagement.projects.length;
 		const withDb = hermesManagement.projects.filter((p) => p.hasDb).length;
-		const active = hermesManagement.projects.filter((p) => p.hasActiveSession).length;
+		const active = activeSlugs.length;
 		return { total, withDb, active };
-	}, [hermesManagement.projects]);
+	}, [hermesManagement.projects, activeSlugs]);
 
 	return (
 		<div className="space-y-4">
@@ -278,8 +319,23 @@ export function HermesProjectsView() {
 					)}
 				>
 					<span className="tr-text-emphasis text-primary">{stats.active}</span>
-					<span className="tr-text-metadata text-text-muted">Sessão Ativa</span>
+					<span className="tr-text-metadata text-text-muted">Ativos no RAG</span>
 				</button>
+			</div>
+
+			{/* Banner de RAG Multi-Projeto */}
+			<div className="flex items-center justify-between rounded-md border border-border-default bg-feedback-info-subtle p-4 gap-2">
+				<div className="flex items-center gap-2 min-w-0 flex-1">
+					<RiDatabase2Line className="size-16 text-primary shrink-0" />
+					<div className="flex flex-col">
+						<span className="tr-text-emphasis text-text-default">
+							RAG Multi-Projeto Ativo ({activeSlugs.length} selecionado{activeSlugs.length > 1 ? "s" : ""})
+						</span>
+						<span className="tr-text-metadata text-text-muted">
+							A busca semântica (code_search) pesquisa simultaneamente em: {activeSlugs.join(", ")}
+						</span>
+					</div>
+				</div>
 			</div>
 
 			{/* Barra de Busca */}
@@ -308,7 +364,7 @@ export function HermesProjectsView() {
 					</div>
 				) : (
 					filteredProjects.map((project) => {
-						const isActive = hermesManagement.activeProjectSlug === project.slug;
+						const isActive = activeSlugs.includes(project.slug);
 						const isIndexing =
 							hermesManagement.indexingProgress.isIndexing &&
 							hermesManagement.indexingProgress.projectSlug === project.slug;
@@ -335,7 +391,7 @@ export function HermesProjectsView() {
 											</span>
 											{isActive && (
 												<span className="rounded px-2 py-0 tr-text-metadata bg-primary text-text-default">
-													Ativo
+													✓ Ativo no RAG
 												</span>
 											)}
 										</div>
@@ -386,17 +442,15 @@ export function HermesProjectsView() {
 								{/* Ações do Card */}
 								<div className="flex items-center justify-between pt-2 border-t border-border-default">
 									<div className="flex items-center gap-2">
-										{!isActive ? (
-											<Button
-												size="s"
-												variant="outline"
-												onClick={() => setActiveHermesProject(project.slug)}
-											>
-												Tornar Ativo
-											</Button>
-										) : (
-											<span className="tr-text-metadata text-text-muted">Projeto em foco</span>
-										)}
+										<Button
+											size="s"
+											variant={isActive ? "primary" : "outline"}
+											onClick={() => void handleToggleProjectActive(project.slug)}
+											tooltip={isActive ? "Clique para desativar este projeto do RAG" : "Ativar este projeto no RAG multi-projeto"}
+										>
+											<RiCheckLine className={cn("size-12 mr-4", !isActive && "opacity-40")} />
+											{isActive ? "Ativo no RAG" : "Ativar no RAG"}
+										</Button>
 										<Button
 											size="s"
 											variant="ghost"

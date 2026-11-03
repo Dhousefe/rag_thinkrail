@@ -994,6 +994,8 @@ interface AppState {
 	setHermesLoading: (loading: boolean) => void;
 	setHermesError: (error: string | null) => void;
 	setActiveHermesProject: (slug: string | null) => void;
+	setHermesActiveProjectSlugs: (slugs: string[]) => void;
+	toggleHermesActiveProject: (slug: string) => void;
 	createHermesProject: (project: HermesProject) => void;
 	deleteHermesProject: (slug: string) => void;
 	toggleHermesTool: (toolId: string, enabled?: boolean) => void;
@@ -2473,8 +2475,33 @@ export const useAppStore = create<AppState>((set, get) => ({
 		})),
 	setActiveHermesProject: (slug) =>
 		set((s) => ({
-			hermesManagement: { ...s.hermesManagement, activeProjectSlug: slug },
+			hermesManagement: {
+				...s.hermesManagement,
+				activeProjectSlug: slug,
+				activeProjectSlugs: slug ? [slug] : [],
+			},
 		})),
+	setHermesActiveProjectSlugs: (slugs) =>
+		set((s) => ({
+			hermesManagement: {
+				...s.hermesManagement,
+				activeProjectSlugs: slugs,
+				activeProjectSlug: slugs[0] ?? null,
+			},
+		})),
+	toggleHermesActiveProject: (slug) =>
+		set((s) => {
+			const current = s.hermesManagement.activeProjectSlugs || [];
+			const exists = current.includes(slug);
+			const next = exists ? current.filter((item) => item !== slug) : [...current, slug];
+			return {
+				hermesManagement: {
+					...s.hermesManagement,
+					activeProjectSlugs: next,
+					activeProjectSlug: next[0] ?? null,
+				},
+			};
+		}),
 	createHermesProject: (project) =>
 		set((s) => ({
 			hermesManagement: {

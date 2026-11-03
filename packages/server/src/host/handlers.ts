@@ -251,8 +251,11 @@ import { nudgeBaseRefWorkspaces } from "./fsNudge";
 import {
 	createHermesProject,
 	deleteHermesProject,
+	getActiveHermesProjects,
 	listHermesProjects,
 	reindexHermesProject,
+	setActiveHermesProjects,
+	testHermesConnection,
 } from "./hermes";
 import { buildHistoryScope } from "./historyScope";
 import { provisionInitialTerminal } from "./initialTerminal";
@@ -1208,6 +1211,9 @@ const handlers: WsHandlers = {
 	"hermes.createProject": (params) => createHermesProject(params),
 	"hermes.deleteProject": (params) => deleteHermesProject(params),
 	"hermes.reindexProject": (params) => reindexHermesProject(params),
+	"hermes.testConnection": (params) => testHermesConnection(params),
+	"hermes.getActiveProjects": () => getActiveHermesProjects(),
+	"hermes.setActiveProjects": (params) => setActiveHermesProjects(params),
 	"session.resources": (params) => {
 		const p = resourceParams(params, ["workspaceId", "sessionId"]);
 		return getSessionResources(p.workspaceId, p.sessionId, resourceCwd(p.workspaceId));
