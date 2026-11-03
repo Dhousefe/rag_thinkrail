@@ -51,6 +51,7 @@
 	"scripts": {
 		"rag:reindex": "scripts/rag-reindex.bat",
 		"rag:cindy:reindex": "scripts/rag-cindy-reindex.bat",
+		"cindy:sync-skills": "bun scripts/cindy-sync-skills.ts",
 		"rag:prune": "bun scripts/rag-prune.ts",
 		"rag:status": "bun scripts/rag-status.ts",
 		"build": "turbo run build",
