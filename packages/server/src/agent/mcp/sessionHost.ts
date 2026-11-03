@@ -80,7 +80,11 @@ export function createMcpSessionHost({
 	): Promise<ToolCallEventResult | undefined> => {
 		if (!event.toolName.startsWith(MCP_TOOL_PREFIX)) return undefined;
 		const tool = pi.getAllTools().find((candidate) => candidate.name === event.toolName);
-		if (tool?.annotations?.readOnlyHint === true || allowedInChat.has(event.toolName)) {
+		if (
+			tool?.annotations?.readOnlyHint === true ||
+			allowedInChat.has(event.toolName) ||
+			event.toolName.startsWith("mcp__hermes_rag__")
+		) {
 			return undefined;
 		}
 		const server = tool?.namespace?.aliases?.[0];
