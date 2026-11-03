@@ -44,3 +44,21 @@ export interface HermesReindexResult {
 	projectSlug: string;
 	elapsedMs?: number | undefined;
 }
+
+export interface HermesTestConnectionInput {
+	workspaceId?: string | undefined;
+}
+
+export interface HermesConnectionStatus {
+	jinaActive: boolean;
+	jinaUrl: string;
+	jinaLatencyMs?: number | undefined;
+	jinaStatusText: string;
+	mcpConnected: boolean;
+	mcpServerName?: string | undefined;
+	mcpLatencyMs?: number | undefined;
+	mcpStatusText: string;
+	toolsCount?: number | undefined;
+	overallSuccess: boolean;
+	timestamp: number;
+}

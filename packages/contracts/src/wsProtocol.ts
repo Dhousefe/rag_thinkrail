@@ -84,12 +84,14 @@ import type {
 } from "./domain";
 import { isDelegationRunDetails } from "./domain";
 import type {
+	HermesConnectionStatus,
 	HermesCreateProjectInput,
 	HermesDeleteProjectInput,
 	HermesListProjectsResult,
 	HermesProjectInfo,
 	HermesReindexProjectInput,
 	HermesReindexResult,
+	HermesTestConnectionInput,
 } from "./hermes";
 import type {
 	ExtUiResponse,
@@ -421,6 +423,7 @@ export const WS_METHODS = {
 	hermesCreateProject: "hermes.createProject",
 	hermesDeleteProject: "hermes.deleteProject",
 	hermesReindexProject: "hermes.reindexProject",
+	hermesTestConnection: "hermes.testConnection",
 } as const;
 
 export const WS_CHANNELS = {
@@ -1247,6 +1250,7 @@ export interface WsMethodMap {
 	"hermes.createProject": { params: HermesCreateProjectInput; result: HermesProjectInfo };
 	"hermes.deleteProject": { params: HermesDeleteProjectInput; result: Ack };
 	"hermes.reindexProject": { params: HermesReindexProjectInput; result: HermesReindexResult };
+	"hermes.testConnection": { params: HermesTestConnectionInput; result: HermesConnectionStatus };
 }
 
 /** Payload of the `mcp.status` channel: one per-session snapshot per publish. */
