@@ -92,6 +92,8 @@ export async function runIncrementalReindex(options: ReindexOptions = {}) {
 	}
 
 	const db = new Database(dbPath);
+	db.run("PRAGMA journal_mode = WAL;");
+	db.run("PRAGMA busy_timeout = 30000;");
 	db.run("PRAGMA foreign_keys = ON;");
 
 	const checkUnchangedStmt = db.prepare(`
@@ -170,74 +172,92 @@ export async function runIncrementalReindex(options: ReindexOptions = {}) {
 			continue;
 		}
 
-		// Arquivo modificado ou novo: invalidação e indexação
-		const existingRow = getFileIdStmt.get(projectSlug, filePath) as
-			| { id: string }
-			| undefined;
-		if (existingRow) {
-			deleteFtsStmt.run(existingRow.id);
-			deleteFileStmt.run(existingRow.id);
+		const indexFileTx = db.transaction(() => {
+			const existingRow = getFileIdStmt.get(projectSlug, filePath) as
+				| { id: string }
+				| undefined;
+			if (existingRow) {
+				deleteFtsStmt.run(existingRow.id);
+				deleteFileStmt.run(existingRow.id);
+			}
+
+			const fileId = sha256(`${projectSlug}|${filePath}`);
+			const now = Date.now();
+			insertFileStmt.run(fileId, projectSlug, filePath, hash, mtime, now);
+
+			// Chunking baseado em quebras de bloco de até 60 linhas
+			const textContent = content.toString("utf-8");
+			const lines = textContent.split(/\r?\n/);
+			const chunkSize = 60;
+			let chunkIdx = 0;
+
+			for (let i = 0; i < lines.length; i += chunkSize) {
+				const chunkLines = lines.slice(i, i + chunkSize);
+				const chunkText = chunkLines.join("\n");
+				if (chunkText.trim().length === 0) continue;
+
+				const chunkSeed = `chunk:${i}:${chunkText.length}`;
+				const chunkId = sha256(`${projectSlug}|${filePath}|${chunkSeed}`);
+				const keywords = [
+					extname(filePath).replace(".", ""),
+					filePath.split(/[\\/]/).pop() || "",
+				].join(" ");
+
+				insertChunkStmt.run(
+					chunkId,
+					fileId,
+					null,
+					projectSlug,
+					filePath,
+					"block",
+					"",
+					filePath,
+					"",
+					chunkText,
+					keywords,
+					i + 1,
+					Math.min(i + chunkSize, lines.length),
+					Math.ceil(chunkText.length / 4),
+					"jina-embeddings-v2-base-code",
+					768,
+					now,
+				);
+
+				insertFtsStmt.run(
+					chunkId,
+					projectSlug,
+					fileId,
+					filePath,
+					filePath,
+					"",
+					chunkText,
+					keywords,
+				);
+
+				chunkIdx++;
+				chunksTotal++;
+			}
+			return chunkIdx;
+		});
+
+		let fileChunks = 0;
+		let attempts = 0;
+		while (attempts < 5) {
+			try {
+				fileChunks = indexFileTx();
+				break;
+			} catch (err: any) {
+				if (err?.code === "SQLITE_BUSY" && attempts < 4) {
+					attempts++;
+					const waitMs = 50 * attempts;
+					Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, waitMs);
+					continue;
+				}
+				throw err;
+			}
 		}
-
-		const fileId = sha256(`${projectSlug}|${filePath}`);
-		const now = Date.now();
-		insertFileStmt.run(fileId, projectSlug, filePath, hash, mtime, now);
-
-		// Chunking baseado em quebras de bloco de até 60 linhas
-		const textContent = content.toString("utf-8");
-		const lines = textContent.split(/\r?\n/);
-		const chunkSize = 60;
-		let chunkIdx = 0;
-
-		for (let i = 0; i < lines.length; i += chunkSize) {
-			const chunkLines = lines.slice(i, i + chunkSize);
-			const chunkText = chunkLines.join("\n");
-			if (chunkText.trim().length === 0) continue;
-
-			const chunkSeed = `chunk:${i}:${chunkText.length}`;
-			const chunkId = sha256(`${projectSlug}|${filePath}|${chunkSeed}`);
-			const keywords = [
-				extname(filePath).replace(".", ""),
-				filePath.split(/[\\/]/).pop() || "",
-			].join(" ");
-
-			insertChunkStmt.run(
-				chunkId,
-				fileId,
-				null,
-				projectSlug,
-				filePath,
-				"block",
-				"",
-				filePath,
-				"",
-				chunkText,
-				keywords,
-				i + 1,
-				Math.min(i + chunkSize, lines.length),
-				Math.ceil(chunkText.length / 4),
-				"jina-embeddings-v2-base-code",
-				768,
-				now,
-			);
-
-			insertFtsStmt.run(
-				chunkId,
-				projectSlug,
-				fileId,
-				filePath,
-				filePath,
-				"",
-				chunkText,
-				keywords,
-			);
-
-			chunkIdx++;
-			chunksTotal++;
-		}
-
 		indexed++;
-		console.log(` [indexed] ${relPath} (chunks=${chunkIdx})`);
+		console.log(` [indexed] ${relPath} (chunks=${fileChunks})`);
 	}
 
 	console.log("\n============================================================");

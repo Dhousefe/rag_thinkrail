@@ -50,6 +50,7 @@
 	"type": "module",
 	"scripts": {
 		"rag:reindex": "scripts/rag-reindex.bat",
+		"rag:cindy:reindex": "scripts/rag-cindy-reindex.bat",
 		"rag:prune": "bun scripts/rag-prune.ts",
 		"rag:status": "bun scripts/rag-status.ts",
 		"build": "turbo run build",
