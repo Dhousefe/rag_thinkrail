@@ -107,7 +107,11 @@
 		"spacing:generate": "bun --filter @thinkrail/web spacing:generate",
 		"spacing:check": "bun --filter @thinkrail/web spacing:check",
 		"provider-glyphs:check": "bun --filter @thinkrail/web provider-glyphs:check",
-		"compiler:census:generate": "bun --filter @thinkrail/web compiler:census:generate"
+		"compiler:census:generate": "bun --filter @thinkrail/web compiler:census:generate",
+		"mcp:hermes": "bun apps/cli/scripts/hermes-mcp-server.ts",
+		"rag:reindex": "scripts\\rag-reindex.bat",
+		"rag:status": "bun scripts/rag-status.ts",
+		"rag:prune": "bun scripts/rag-prune.ts"
 	},
 	"devDependencies": {
 		"@changesets/changelog-github": "catalog:",
