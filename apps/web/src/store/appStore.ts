@@ -1006,6 +1006,7 @@ interface AppState {
 		totalFiles: number,
 		currentFile?: string,
 	) => void;
+	setHermesIndexingProgress: (progress: Partial<HermesIndexingProgress>) => void;
 	finishHermesIndexing: (slug: string) => void;
 	mcpByWorkspace: Record<string, McpWorkspaceProjection>;
 	mcpRevision: number;
@@ -2584,6 +2585,16 @@ export const useAppStore = create<AppState>((set, get) => ({
 				},
 			};
 		}),
+	setHermesIndexingProgress: (progress) =>
+		set((s) => ({
+			hermesManagement: {
+				...s.hermesManagement,
+				indexingProgress: {
+					...s.hermesManagement.indexingProgress,
+					...progress,
+				},
+			},
+		})),
 	finishHermesIndexing: (slug) =>
 		set((s) => ({
 			hermesManagement: {

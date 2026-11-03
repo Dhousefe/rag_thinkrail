@@ -1,8 +1,15 @@
-import { RiLoader4Line, RiSpeedUpLine, RiTimeLine } from "@remixicon/react";
+import {
+	RiCheckLine,
+	RiFileCodeLine,
+	RiLoader4Line,
+	RiSpeedUpLine,
+	RiTimeLine,
+} from "@remixicon/react";
 import type { HermesIndexingProgress } from "@/store";
 
 export function HermesIndexingBar({ progress }: { progress: HermesIndexingProgress }) {
-	if (!progress.isIndexing) return null;
+	const isVisible = progress.isIndexing || progress.status === "completed";
+	if (!isVisible) return null;
 
 	const formatMs = (ms: number) => {
 		if (ms < 1000) return `${ms}ms`;
@@ -10,67 +17,89 @@ export function HermesIndexingBar({ progress }: { progress: HermesIndexingProgre
 		return `${seconds}s`;
 	};
 
+	const isCompleted = progress.status === "completed" || (!progress.isIndexing && progress.percentage >= 100);
+
 	const filesPerSec =
 		progress.elapsedMs > 0 && progress.processedFiles > 0
 			? Math.round((progress.processedFiles / (progress.elapsedMs / 1000)) * 10) / 10
 			: null;
 
 	return (
-		<div className="flex flex-col gap-8 rounded-lg border border-primary-muted bg-control-bg-hovered p-12 shadow-xs transition-all">
-			<div className="flex flex-wrap items-center justify-between gap-8">
-				<div className="flex items-center gap-8 min-w-0">
-					<RiLoader4Line className="size-16 animate-spin text-primary shrink-0" />
+		<div className="flex flex-col gap-3 rounded-lg border border-border-default bg-container-workspace-bg p-4 shadow-xs transition-all">
+			<div className="flex flex-wrap items-center justify-between gap-3">
+				<div className="flex items-center gap-3 min-w-0">
+					{isCompleted ? (
+						<div className="flex size-8 items-center justify-center rounded-full bg-feedback-success text-text-on-primary shrink-0">
+							<RiCheckLine className="size-4" />
+						</div>
+					) : (
+						<RiLoader4Line className="size-5 animate-spin text-primary shrink-0" />
+					)}
 					<div className="flex flex-col min-w-0">
 						<span className="tr-text-emphasis text-text-default">
-							Indexando Projeto Hermes: {progress.projectSlug}
+							{isCompleted
+								? `Reindexação Concluída: ${progress.projectSlug}`
+								: `Indexando Projeto Hermes: ${progress.projectSlug || "..."}`}
 						</span>
 						{progress.currentFile ? (
-							<span className="tr-text-metadata text-text-muted truncate max-w-sm">
-								{progress.currentFile}
+							<span className="flex items-center gap-1 tr-text-metadata text-text-muted truncate max-w-md">
+								<RiFileCodeLine className="size-3.5 shrink-0" />
+								<span className="truncate tr-code-text">{progress.currentFile}</span>
 							</span>
 						) : null}
 					</div>
 				</div>
 
-				<div className="flex items-center gap-12 text-text-muted tr-text-metadata">
+				<div className="flex items-center gap-3 text-text-muted tr-text-metadata">
 					{filesPerSec !== null ? (
-						<div className="flex items-center gap-4">
-							<RiSpeedUpLine className="size-14 text-primary" />
+						<div className="flex items-center gap-1">
+							<RiSpeedUpLine className="size-4 text-primary" />
 							<span>{filesPerSec} arq/s</span>
 						</div>
 					) : null}
 
-					<div className="flex items-center gap-4">
-						<RiTimeLine className="size-14 text-text-muted" />
+					<div className="flex items-center gap-1">
+						<RiTimeLine className="size-4 text-text-muted" />
 						<span>Decorridos: {formatMs(progress.elapsedMs)}</span>
 					</div>
 
-					<div className="rounded-sm bg-control-bg px-6 py-2 tr-text-emphasis text-primary">
+					<div
+						className={`rounded px-2 py-0.5 tr-text-emphasis ${
+							isCompleted
+								? "bg-feedback-success text-text-on-primary"
+								: "bg-control-bg text-primary"
+						}`}
+					>
 						{progress.percentage}%
 					</div>
 				</div>
 			</div>
 
-			{/* Barra de Progresso Minimalista */}
-			<div className="relative h-6 w-full overflow-hidden rounded-full bg-border-default">
+			{/* Barra de Progresso com Animação Fluida */}
+			<div className="relative h-2 w-full overflow-hidden rounded-full bg-border-default">
 				<div
-					className="h-full bg-primary transition-all duration-300 ease-out"
-					style={{ width: `${progress.percentage}%` }}
+					className={`h-full transition-all duration-200 ease-out ${
+						isCompleted ? "bg-feedback-success" : "bg-primary"
+					}`}
+					style={{ width: `${Math.max(2, Math.min(100, progress.percentage))}%` }}
 				/>
 			</div>
 
-			{/* Predição de tempo restante */}
+			{/* Predição de tempo restante e contadores */}
 			<div className="flex items-center justify-between tr-text-metadata text-text-muted">
 				<span>
-					{progress.processedFiles} de {progress.totalFiles} arquivos processados (AST + FTS5 +
-					Embeddings)
+					{progress.totalFiles > 0
+						? `${progress.processedFiles.toLocaleString()} de ${progress.totalFiles.toLocaleString()} arquivos processados (AST + FTS5 + Embeddings)`
+						: "Varrendo diretórios do projeto..."}
 				</span>
 				<span className="tr-text-emphasis text-text-default">
-					{progress.estimatedRemainingMs !== null
-						? progress.estimatedRemainingMs > 0
-							? `~${formatMs(progress.estimatedRemainingMs)} restantes`
-							: "Concluindo..."
-						: "Calculando estimativa..."}
+					{isCompleted
+						? "Concluído!"
+						: progress.estimatedRemainingMs !== null
+							? progress.estimatedRemainingMs > 0
+								? `~${formatMs(progress.estimatedRemainingMs)} restantes`
+								: "Concluindo..."
+							: "Calculando estimativa preditiva..."}
 				</span>
 			</div>
 		</div>

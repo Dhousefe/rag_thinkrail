@@ -1,10 +1,12 @@
-import type { HermesProjectInfo } from "@thinkrail/contracts";
+import type { HermesIndexingProgress, HermesProjectInfo } from "@thinkrail/contracts";
 
 /**
  * Contratos e tipos para o gerenciamento de projetos e ferramentas Hermes MCP.
  */
 
 export type HermesProject = HermesProjectInfo;
+export type { HermesIndexingProgress };
+
 
 export type HermesToolCategory = "rag" | "analysis" | "delegation" | "workflow" | "diagnostic";
 
@@ -15,18 +17,6 @@ export interface HermesToolDefinition {
 	description: string;
 	readOnly: boolean;
 	enabled: boolean;
-}
-
-export interface HermesIndexingProgress {
-	isIndexing: boolean;
-	projectSlug: string | null;
-	processedFiles: number;
-	totalFiles: number;
-	percentage: number;
-	startTime: number | null;
-	elapsedMs: number;
-	estimatedRemainingMs: number | null;
-	currentFile?: string | undefined;
 }
 
 export interface HermesManagementState {

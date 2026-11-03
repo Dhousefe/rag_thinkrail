@@ -17,6 +17,7 @@ import { cn } from "@thinkrail/ui/utils";
 import { useMemo, useState } from "react";
 import { deriveMcpServerRows, selectActiveWorkspace, toast, useAppStore } from "@/store";
 import { getTransport } from "@/transport";
+import { HermesIndexingBar } from "./hermes/HermesIndexingBar";
 import { HermesProjectsView } from "./hermes/HermesProjectsView";
 import { HermesToolsView } from "./hermes/HermesToolsView";
 
@@ -323,6 +324,10 @@ export function HermesMcpPanel() {
 			</div>
 
 			{/* Conteúdo da Aba Selecionada */}
+			{panelTab !== "projects" && (
+				<HermesIndexingBar progress={hermesManagement.indexingProgress} />
+			)}
+
 			{panelTab === "projects" && <HermesProjectsView />}
 
 			{panelTab === "tools" && <HermesToolsView />}

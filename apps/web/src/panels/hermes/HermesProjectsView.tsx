@@ -470,7 +470,7 @@ export function HermesProjectsView() {
 											size="s"
 											variant="outline"
 											onClick={() => void handleStartReindex(project)}
-											disabled={isIndexing}
+											disabled={hermesManagement.indexingProgress.isIndexing}
 										>
 											{isIndexing ? (
 												<RiRefreshLine className="size-12 animate-spin" />
