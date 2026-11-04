@@ -52,6 +52,7 @@ import { UpdateInstallSurfaces, UpdateReadyButton, UpdateSettings, useUpdates } 
 import { AppShortcuts } from "./AppShortcuts";
 import { BrandLogo } from "./BrandLogo";
 import { toggleBottomPanel, toggleLeftSide, toggleRightSide } from "./chordActions";
+import { HermesIndexingTopbarIndicator, useHermesIndexingSync } from "./HermesIndexingTopbar";
 import { JbcentralQuotaTopbar } from "./JbcentralQuotaTopbar";
 import { LayoutSettings } from "./LayoutSettings";
 import { useLocalLayoutState } from "./layoutState";
@@ -81,6 +82,7 @@ export function Shell() {
 	const t = useT();
 	useLocalLayoutState();
 	useAttentionNotifications();
+	useHermesIndexingSync();
 	const status = useAppStore((s) => s.status);
 	const analyticsConsentOpen = useAppStore(selectAnalyticsConsentPromptOpen);
 	const onboardingActive = useAppStore(selectOnboardingActive);
@@ -215,6 +217,7 @@ export function Shell() {
 						data-testid="open-search"
 						onClick={() => useAppStore.getState().openSearch()}
 					/>
+					<HermesIndexingTopbarIndicator />
 					<JbcentralQuotaTopbar />
 					<span
 						data-testid="connection-status"

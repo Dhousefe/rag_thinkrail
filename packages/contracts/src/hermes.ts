@@ -29,6 +29,23 @@ export interface HermesCreateProjectInput {
 	path: string;
 }
 
+export interface HermesEnsureProjectForPathInput {
+	path: string;
+	name?: string | undefined;
+	autoIndex?: boolean | undefined;
+}
+
+export interface HermesEnsureProjectForPathResult {
+	slug: string;
+	name: string;
+	path: string;
+	isNewlyCreated: boolean;
+	isAlreadyIndexed: boolean;
+	isIndexing: boolean;
+	dbSizeBytes?: number | undefined;
+	message: string;
+}
+
 export interface HermesDeleteProjectInput {
 	slug: string;
 }
