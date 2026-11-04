@@ -574,9 +574,12 @@ export class NeuralCoreEngine {
 	}
 
 	/**
-	 * Detecta o nó vetorial sob as coordenadas da tela (mouse hover / clique)
+	 * Detecta com precisão determinística o polígono vetorial sob as coordenadas da tela (mouse hover / clique).
+	 * Utiliza z-sorting (ordenação por profundidade da câmera): quando o cursor passa sobre uma região,
+	 * seleciona sempre o polígono mais próximo dos olhos do observador (menor depth), eliminando qualquer
+	 * oclusão ou confusão entre polígonos adjacentes.
 	 */
-	public findNodeUnderScreenCoord(screenX: number, screenY: number, tolerancePx = 22): number | null {
+	public findNodeUnderScreenCoord(screenX: number, screenY: number, tolerancePx = 24): number | null {
 		if (!this.showVectorConstellation || this.vectorNodes.length === 0) return null;
 
 		const w = this.canvas.clientWidth || this.canvas.width;
@@ -592,13 +595,13 @@ export class NeuralCoreEngine {
 
 		const baseDist = Math.max(1.0, this.cameraOrbit.distance);
 
-		let closestIdx: number | null = null;
-		let minDistance = tolerancePx;
+		// Candidatos dentro da tolerância do ponteiro
+		const candidates: Array<{ index: number; distance2D: number; depth: number }> = [];
 
 		for (let i = 0; i < this.vectorNodes.length; i++) {
 			const [vx, vy, vz] = this.vectorNodes[i]!.position;
 
-			// Rotação orbital combinada
+			// Projeção da rotação orbital da câmera
 			const rx = vx * cosO - vz * sinO;
 			const rz = vx * sinO + vz * cosO;
 			const ry = vy * cosPhi - rz * sinPhi;
@@ -611,13 +614,33 @@ export class NeuralCoreEngine {
 			const dy = screenY - py;
 			const d = Math.sqrt(dx * dx + dy * dy);
 
-			if (d < minDistance) {
-				minDistance = d;
-				closestIdx = i;
+			// Tolerância adaptativa baseada no zoom/profundidade (polígonos mais próximos parecem maiores)
+			const dynamicTolerance = tolerancePx * Math.min(1.6, Math.max(0.7, 5.0 / depth));
+
+			if (d <= dynamicTolerance) {
+				candidates.push({
+					index: i,
+					distance2D: d,
+					depth,
+				});
 			}
 		}
 
-		return closestIdx;
+		if (candidates.length === 0) return null;
+
+		// Ordenação por profundidade da câmera (o mais à frente tem prioridade total)
+		// e desempate secundário pela menor distância ao centro do cursor
+		candidates.sort((a, b) => {
+			const depthDiff = a.depth - b.depth;
+			// Se a diferença de profundidade for perceptível (> 0.12), o mais frontal vence sempre
+			if (Math.abs(depthDiff) > 0.12) {
+				return depthDiff;
+			}
+			// Para nós em profundidade quase idêntica, escolhe o mais próximo do cursor
+			return a.distance2D - b.distance2D;
+		});
+
+		return candidates[0]?.index ?? null;
 	}
 
 	private renderGeometricCanvas2D() {
