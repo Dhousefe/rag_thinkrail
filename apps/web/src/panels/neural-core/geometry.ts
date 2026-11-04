@@ -426,6 +426,7 @@ const MODULE_COLORS: Record<string, [number, number, number, number]> = {
 	"packages/ui": [0.1, 1.0, 0.6, 0.9], // Esmeralda
 	scripts: [1.0, 0.4, 0.4, 0.85], // Coral
 	extensions: [0.4, 0.6, 1.0, 0.85], // Safira
+	skills: [0.2, 0.95, 0.8, 0.9], // Turquesa
 	core: [0.9, 0.9, 1.0, 0.8], // Prata
 };
 
@@ -489,10 +490,10 @@ export function createVectorConstellationWireframe(
 		const isHighlight = i === highlightedNodeIndex;
 		const isMatched = Boolean(n.isMatchedBySearch);
 
-		// Tamanho base reduzido e harmonioso para visual limpo sem sobreposição
-		let s = 0.024;
-		if (isMatched) s *= 1.8;
-		else if (isHighlight) s *= 1.4;
+		// Tamanho adaptativo proporcional à visibilidade e desoclusão
+		let s = 0.028;
+		if (isMatched) s *= 1.85;
+		else if (isHighlight) s *= 1.45;
 
 		const defaultCol: [number, number, number, number] = MODULE_COLORS.core ?? [0.9, 0.9, 1.0, 0.8];
 		const col: [number, number, number, number] = isMatched
