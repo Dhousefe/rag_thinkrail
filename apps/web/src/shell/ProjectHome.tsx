@@ -2,6 +2,7 @@ import { useT } from "@thinkrail/locales/react";
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@thinkrail/ui/resizable";
 import { useState } from "react";
 import { QuietScrollArea } from "../components/QuietScrollArea";
+import { CindyPanel } from "../panels/CindyPanel";
 import { HermesMcpPanel } from "../panels/HermesMcpPanel";
 import { ProjectTree } from "../panels/ProjectTree";
 import { WelcomePanel } from "../panels/WelcomePanel";
@@ -22,6 +23,7 @@ const PROJECT_HOME_AUTOSAVE_ID = "thinkrail-shell-welcome";
 const PROJECTS_PANE_ID = "project-home-projects";
 const PROJECTS_RAIL_ENTRY_KEY = "projects";
 const HERMES_RAIL_ENTRY_KEY = "hermes-mcp";
+const CINDY_RAIL_ENTRY_KEY = "cindy";
 const PROJECTS_PANE_DEFAULT_PERCENT =
 	resolveLayoutPreset(DEFAULT_LAYOUT_PRESET_ID, []).left.width * 100;
 const PROJECTS_PANE_MIN_PERCENT = 12;
@@ -41,7 +43,7 @@ export function ProjectHome({ projects }: { projects: CollapsibleRegion<HTMLDivE
 	} = projects;
 	const t = useT();
 	const onboarding = useAppStore(selectOnboardingActive);
-	const [activeTool, setActiveTool] = useState<"projects" | "hermes-mcp">("projects");
+	const [activeTool, setActiveTool] = useState<"projects" | "hermes-mcp" | "cindy">("projects");
 
 	const projectsEntry: AuxiliaryRailToolEntry = {
 		key: PROJECTS_RAIL_ENTRY_KEY,
@@ -65,7 +67,18 @@ export function ProjectHome({ projects }: { projects: CollapsibleRegion<HTMLDivE
 		expanded: !collapsed && activeTool === "hermes-mcp",
 	};
 
-	const handleToolActivate = (tool: "projects" | "hermes-mcp") => {
+	const cindyEntry: AuxiliaryRailToolEntry = {
+		key: CINDY_RAIL_ENTRY_KEY,
+		region: "left",
+		kind: "tool",
+		groupId: null,
+		tool: "cindy",
+		tab: null,
+		selected: activeTool === "cindy",
+		expanded: !collapsed && activeTool === "cindy",
+	};
+
+	const handleToolActivate = (tool: "projects" | "hermes-mcp" | "cindy") => {
 		if (collapsed) {
 			setActiveTool(tool);
 			toggle();
@@ -86,7 +99,7 @@ export function ProjectHome({ projects }: { projects: CollapsibleRegion<HTMLDivE
 			{onboarding ? null : (
 				<AuxiliaryRail
 					region="left"
-					entries={[projectsEntry, hermesEntry]}
+					entries={[projectsEntry, hermesEntry, cindyEntry]}
 					renderEntry={(entry, control) => (
 						<AuxiliaryRailToolButton
 							ref={entry.key === PROJECTS_RAIL_ENTRY_KEY ? railRef : undefined}
@@ -95,7 +108,7 @@ export function ProjectHome({ projects }: { projects: CollapsibleRegion<HTMLDivE
 							control={control}
 							onActivate={() =>
 								handleToolActivate(
-									(entry as AuxiliaryRailToolEntry).tool as "projects" | "hermes-mcp",
+									(entry as AuxiliaryRailToolEntry).tool as "projects" | "hermes-mcp" | "cindy",
 								)
 							}
 						/>

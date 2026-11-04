@@ -7,8 +7,8 @@
  * Totalmente compatível com JSON-RPC 2.0 STDIO, sem logs poluindo o STDOUT.
  */
 
-import { existsSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
-import { join, resolve } from "node:path";
+import { existsSync, readdirSync } from "node:fs";
+import { join } from "node:path";
 import { homedir } from "node:os";
 import { Database } from "bun:sqlite";
 

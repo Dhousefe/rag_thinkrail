@@ -422,7 +422,7 @@ export function ProjectTree() {
 						<RiSparklingLine className="size-16 shrink-0 text-text-muted transition-colors group-hover:text-primary" />
 						<span className="truncate">{t("workbench.tool.cindy")}</span>
 					</span>
-					<span className="rounded-sm bg-emerald-500/10 px-6 py-2 tr-text-metadata text-emerald-600 dark:text-emerald-400">
+					<span className="rounded-sm bg-feedback-success-subtle px-6 py-2 tr-text-metadata text-feedback-success">
 						33
 					</span>
 				</button>
