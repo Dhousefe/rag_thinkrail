@@ -1,21 +1,25 @@
 import { spawn } from "node:child_process";
 import {
+	copyFileSync,
 	existsSync,
 	mkdirSync,
 	readdirSync,
 	readFileSync,
+	realpathSync,
 	rmSync,
 	statSync,
 	writeFileSync,
 } from "node:fs";
 import { homedir } from "node:os";
-import { dirname, join, resolve } from "node:path";
+import { basename, dirname, join, resolve } from "node:path";
 import type {
 	Ack,
 	HermesActiveProjectStatus,
 	HermesConnectionStatus,
 	HermesCreateProjectInput,
 	HermesDeleteProjectInput,
+	HermesEnsureProjectForPathInput,
+	HermesEnsureProjectForPathResult,
 	HermesGetActiveProjectsResult,
 	HermesGetVectorGraphInput,
 	HermesIndexingProgress,
@@ -34,7 +38,7 @@ import { logger } from "../log";
 const log = logger("hermes");
 
 export function resolveHermesHome(): string {
-	if (process.env.HERMES_HOME && existsSync(process.env.HERMES_HOME)) {
+	if (process.env.HERMES_HOME) {
 		return resolve(process.env.HERMES_HOME);
 	}
 	const userProfile = homedir();
@@ -48,10 +52,69 @@ export function resolveHermesHome(): string {
 			return localAppDataHermes;
 		}
 	}
+	if (process.env.APPDATA) {
+		const appDataHermes = join(process.env.APPDATA, "hermes");
+		if (existsSync(join(appDataHermes, "projects"))) {
+			return appDataHermes;
+		}
+	}
+	// Para novas máquinas no Windows, prefere APPDATA se disponível
+	if (process.env.APPDATA) {
+		return join(process.env.APPDATA, "hermes");
+	}
 	return defaultHermes;
 }
 
+export function ensureHermesEnvironment(): {
+	hermesHome: string;
+	projectsDir: string;
+	binDir: string;
+} {
+	const hermesHome = resolveHermesHome();
+	const projectsDir = join(hermesHome, "projects");
+	const binDir = join(hermesHome, "bin");
+	const logsDir = join(hermesHome, "logs");
+	const cacheDir = join(hermesHome, "cache");
+
+	for (const dir of [hermesHome, projectsDir, binDir, logsDir, cacheDir]) {
+		if (!existsSync(dir)) {
+			try {
+				mkdirSync(dir, { recursive: true });
+			} catch (err) {
+				log.warn(`Falha ao criar diretório Hermes: ${dir}`, { error: String(err) });
+			}
+		}
+	}
+
+	const activeFile = join(hermesHome, "active_projects.json");
+	if (!existsSync(activeFile)) {
+		try {
+			writeFileSync(activeFile, JSON.stringify({ activeSlugs: [] }, null, 2), "utf8");
+			log.info(`Arquivo active_projects.json inicializado em: ${activeFile}`);
+		} catch (err) {
+			log.warn(`Falha ao criar active_projects.json: ${err}`);
+		}
+	}
+
+	// Se germes.exe não estiver no bin/ do Hermes, tenta copiar dos locais de distribuição
+	const targetGermesExe = join(binDir, "germes.exe");
+	if (!existsSync(targetGermesExe)) {
+		const candidate = resolveGermesExecutable();
+		if (candidate && existsSync(candidate) && resolve(candidate) !== resolve(targetGermesExe)) {
+			try {
+				copyFileSync(candidate, targetGermesExe);
+				log.info(`germes.exe copiado com sucesso para: ${targetGermesExe}`);
+			} catch (err) {
+				log.warn(`Não foi possível copiar germes.exe para ${targetGermesExe}: ${err}`);
+			}
+		}
+	}
+
+	return { hermesHome, projectsDir, binDir };
+}
+
 export function resolveGermesExecutable(): string | null {
+	const userProfile = homedir();
 	const candidates = [
 		join(dirname(process.execPath), "germes.exe"),
 		join(process.cwd(), "apps", "cli", "dist", "germes.exe"),
@@ -59,7 +122,9 @@ export function resolveGermesExecutable(): string | null {
 		join(process.cwd(), "germes.exe"),
 		"D:/Projet_Thinkrail/source/thinkrail/apps/cli/dist/germes.exe",
 		"D:/Projeto_Germes/hermes-3.0/dist/germes.exe",
-		join(homedir(), ".hermes", "bin", "germes.exe"),
+		join(userProfile, ".hermes", "bin", "germes.exe"),
+		...(process.env.APPDATA ? [join(process.env.APPDATA, "hermes", "bin", "germes.exe")] : []),
+		...(process.env.LOCALAPPDATA ? [join(process.env.LOCALAPPDATA, "hermes", "bin", "germes.exe")] : []),
 	];
 
 	for (const candidate of candidates) {
@@ -235,8 +300,115 @@ export function listHermesProjects(): HermesListProjectsResult {
 	return { hermesHome, projects };
 }
 
+export function canonicalizeProjectPath(rawPath: string): string {
+	if (!rawPath || typeof rawPath !== "string") return "";
+	let resolved = rawPath.trim();
+	try {
+		if (existsSync(resolved)) {
+			resolved = realpathSync(resolved);
+		}
+	} catch {}
+	resolved = resolve(resolved).replace(/\\/g, "/");
+	if (/^[a-zA-Z]:\//.test(resolved)) {
+		resolved = (resolved[0]?.toLowerCase() ?? "") + resolved.slice(1);
+	}
+	if (resolved.length > 3 && resolved.endsWith("/")) {
+		resolved = resolved.slice(0, -1);
+	}
+	// No Windows caminhos de arquivo são case-insensitive
+	if (process.platform === "win32") {
+		resolved = resolved.toLowerCase();
+	}
+	return resolved;
+}
+
+export function ensureHermesDatabaseSchema(dbPath: string, projectName: string): void {
+	if (existsSync(dbPath)) {
+		return;
+	}
+	try {
+		const dir = dirname(dbPath);
+		if (!existsSync(dir)) {
+			mkdirSync(dir, { recursive: true });
+		}
+		// eslint-disable-next-line @typescript-eslint/no-require-imports
+		const { Database } = require("bun:sqlite");
+		const db = new Database(dbPath);
+		db.run("PRAGMA journal_mode = WAL;");
+		db.run("PRAGMA busy_timeout = 30000;");
+		db.run("PRAGMA foreign_keys = ON;");
+
+		db.run(`
+			CREATE TABLE IF NOT EXISTS l2j_files (
+				id TEXT PRIMARY KEY,
+				project_name TEXT NOT NULL,
+				path TEXT NOT NULL,
+				sha256 TEXT NOT NULL,
+				mtime_ms INTEGER NOT NULL,
+				indexed_at INTEGER NOT NULL
+			);
+		`);
+		db.run(`
+			CREATE TABLE IF NOT EXISTS l2j_symbols (
+				id TEXT PRIMARY KEY,
+				file_id TEXT NOT NULL,
+				project_name TEXT NOT NULL,
+				path TEXT NOT NULL,
+				symbol_kind TEXT NOT NULL,
+				package_name TEXT,
+				qualified_name TEXT NOT NULL,
+				simple_name TEXT NOT NULL,
+				signature TEXT,
+				start_line INTEGER,
+				end_line INTEGER,
+				token_estimate INTEGER,
+				ast_fingerprint TEXT,
+				created_at INTEGER NOT NULL
+			);
+		`);
+		db.run(`
+			CREATE TABLE IF NOT EXISTS l2j_chunks (
+				id TEXT PRIMARY KEY,
+				file_id TEXT NOT NULL,
+				symbol_id TEXT,
+				project_name TEXT NOT NULL,
+				path TEXT NOT NULL,
+				chunk_kind TEXT NOT NULL,
+				package_name TEXT,
+				qualified_name TEXT NOT NULL,
+				signature TEXT,
+				content TEXT NOT NULL,
+				keywords TEXT,
+				start_line INTEGER,
+				end_line INTEGER,
+				token_estimate INTEGER,
+				embedding_model TEXT,
+				embedding_dim INTEGER,
+				created_at INTEGER NOT NULL
+			);
+		`);
+		db.run(`
+			CREATE VIRTUAL TABLE IF NOT EXISTS l2j_chunk_fts USING fts5(
+				chunk_id UNINDEXED,
+				project_name UNINDEXED,
+				file_id UNINDEXED,
+				path UNINDEXED,
+				qualified_name,
+				signature,
+				content,
+				keywords,
+				tokenize = 'porter unicode61'
+			);
+		`);
+		db.close();
+		log.info(`Schema Hermes DB criado com sucesso para [${projectName}] em: ${dbPath}`);
+	} catch (err) {
+		log.error(`Erro ao criar schema Hermes DB em ${dbPath}: ${err}`);
+	}
+}
+
 export function createHermesProject(input: HermesCreateProjectInput): HermesProjectInfo {
-	const hermesHome = resolveHermesHome();
+	const { hermesHome } = ensureHermesEnvironment();
 	const cleanSlug = input.slug
 		.toLowerCase()
 		.trim()
@@ -253,6 +425,9 @@ export function createHermesProject(input: HermesCreateProjectInput): HermesProj
 	const workspaceFile = join(projectDir, "workspace.path");
 	writeFileSync(workspaceFile, input.path.trim(), "utf8");
 
+	const dbPath = join(projectDir, "hermes.db");
+	ensureHermesDatabaseSchema(dbPath, cleanSlug);
+
 	const name = input.name.trim() || cleanSlug;
 	log.info(`Projeto Hermes criado: ${cleanSlug} -> ${input.path}`);
 
@@ -262,10 +437,10 @@ export function createHermesProject(input: HermesCreateProjectInput): HermesProj
 		path: input.path.trim(),
 		hermesHome,
 		projectDir,
-		hasDb: false,
+		hasDb: existsSync(dbPath),
 		hasActiveSession: false,
 		hasVectorsJson: false,
-		files: ["workspace.path"],
+		files: ["workspace.path", ...(existsSync(dbPath) ? ["hermes.db"] : [])],
 		lastModifiedMs: Date.now(),
 	};
 }
@@ -462,6 +637,151 @@ export async function reindexHermesProject(
 		projectSlug: input.slug,
 		elapsedMs: Date.now() - startTime,
 	};
+}
+
+const pendingEnsureProjectPromises = new Map<string, Promise<HermesEnsureProjectForPathResult>>();
+
+export function addActiveHermesProject(slug: string): void {
+	const current = getActiveHermesProjects();
+	const cleanSlug = slug.trim().toLowerCase();
+	if (!current.activeSlugs.includes(cleanSlug)) {
+		setActiveHermesProjects({
+			slugs: [...current.activeSlugs, cleanSlug],
+		});
+	}
+}
+
+export async function ensureHermesProjectForPath(
+	input: HermesEnsureProjectForPathInput,
+): Promise<HermesEnsureProjectForPathResult> {
+	const rawPath = input.path?.trim();
+	if (!rawPath) {
+		throw new Error("O caminho (path) do projeto não pode ser vazio.");
+	}
+
+	const canonicalPath = canonicalizeProjectPath(rawPath);
+	if (!canonicalPath) {
+		throw new Error(`Caminho de projeto inválido: ${rawPath}`);
+	}
+
+	// Lock atômico por caminho canônico para evitar race conditions
+	const existingPromise = pendingEnsureProjectPromises.get(canonicalPath);
+	if (existingPromise) {
+		return existingPromise;
+	}
+
+	let resolvePromise!: (val: HermesEnsureProjectForPathResult) => void;
+	let rejectPromise!: (err: unknown) => void;
+	const promise = new Promise<HermesEnsureProjectForPathResult>((res, rej) => {
+		resolvePromise = res;
+		rejectPromise = rej;
+	});
+
+	pendingEnsureProjectPromises.set(canonicalPath, promise);
+
+	(async () => {
+		try {
+			ensureHermesEnvironment();
+
+			// 1. Varre todos os projetos existentes procurando match exato de path canônico
+			const { projects } = listHermesProjects();
+			const matchedProject = projects.find((p) => {
+				const pCanonical = canonicalizeProjectPath(p.path);
+				return pCanonical === canonicalPath;
+			});
+
+			if (matchedProject) {
+				// Projeto JÁ EXISTE e está registrado!
+				addActiveHermesProject(matchedProject.slug);
+
+				const shouldAutoIndex = input.autoIndex !== false;
+				const isCurrentlyIndexing =
+					activeIndexingProgress.isIndexing &&
+					activeIndexingProgress.projectSlug === matchedProject.slug;
+
+				if (shouldAutoIndex && !matchedProject.hasDb && !isCurrentlyIndexing) {
+					// Dispara indexação em background sem bloquear o retorno
+					void reindexHermesProject({
+						slug: matchedProject.slug,
+						path: rawPath,
+					}).catch((err) => {
+						log.error(`Erro ao disparar auto-indexação para [${matchedProject.slug}]: ${err}`);
+					});
+				}
+
+				resolvePromise({
+					slug: matchedProject.slug,
+					name: matchedProject.name,
+					path: rawPath,
+					isNewlyCreated: false,
+					isAlreadyIndexed: matchedProject.hasDb,
+					isIndexing: isCurrentlyIndexing || (!matchedProject.hasDb && shouldAutoIndex),
+					dbSizeBytes: matchedProject.dbSizeBytes,
+					message: `Projeto já registrado no Hermes RAG: ${matchedProject.slug}`,
+				});
+				return;
+			}
+
+			// 2. Projeto INÉDITO: Gerar slug único sem colisão
+			const folderName = basename(canonicalPath) || "project";
+			let baseSlug = (input.name || folderName)
+				.toLowerCase()
+				.trim()
+				.replace(/[^a-z0-9-_]/g, "-")
+				.replace(/-+/g, "-");
+			if (!baseSlug || baseSlug === "-") {
+				baseSlug = "project";
+			}
+
+			// Previne colisão se o slug já for usado por OUTRO caminho
+			let uniqueSlug = baseSlug;
+			let counter = 2;
+			const existingSlugs = new Set(projects.map((p) => p.slug));
+			while (existingSlugs.has(uniqueSlug)) {
+				uniqueSlug = `${baseSlug}-${counter}`;
+				counter++;
+			}
+
+			const displayName = input.name?.trim() || folderName;
+			log.info(`Registrando novo projeto Hermes: ${uniqueSlug} para ${rawPath}`);
+
+			// Cria o projeto e o schema do banco
+			createHermesProject({
+				slug: uniqueSlug,
+				name: displayName,
+				path: rawPath,
+			});
+
+			// Ativa no active_projects.json
+			addActiveHermesProject(uniqueSlug);
+
+			const shouldAutoIndex = input.autoIndex !== false;
+			if (shouldAutoIndex) {
+				void reindexHermesProject({
+					slug: uniqueSlug,
+					path: rawPath,
+				}).catch((err) => {
+					log.error(`Erro ao disparar indexação inicial para [${uniqueSlug}]: ${err}`);
+				});
+			}
+
+			resolvePromise({
+				slug: uniqueSlug,
+				name: displayName,
+				path: rawPath,
+				isNewlyCreated: true,
+				isAlreadyIndexed: false,
+				isIndexing: shouldAutoIndex,
+				message: `Projeto registrado com sucesso no Hermes RAG: ${uniqueSlug}`,
+			});
+		} catch (err) {
+			rejectPromise(err);
+		} finally {
+			pendingEnsureProjectPromises.delete(canonicalPath);
+		}
+	})();
+
+	return promise;
 }
 
 export function getActiveHermesProjects(): HermesGetActiveProjectsResult {
@@ -770,105 +1090,120 @@ export async function testHermesConnection(
 
 /**
  * Retorna amostra representativa de nós e arestas semânticas do banco vetorial
- * do projeto ativo para visualização geométrica 3D no Neural Core.
+ * dos projetos ativos para visualização geométrica 3D no Neural Core.
+ * Organiza os polígonos em disposição semântica tipo 'louça' (bandeja/prato aberto sem oclusão),
+ * garantindo espaçamento anti-colisão e visibilidade desimpedida de cada nó.
  */
 export async function getHermesVectorGraph(
 	params: HermesGetVectorGraphInput,
 ): Promise<HermesVectorGraphSample> {
 	const hermesHome = resolveHermesHome();
-	let projectSlug = params.projectSlug;
-	if (!projectSlug) {
-		const active = await getActiveHermesProjects();
-		projectSlug = active.activeSlugs[0] || "project-thinkrail";
+	const active = await getActiveHermesProjects();
+	const targetSlugs = params.projectSlug
+		? [params.projectSlug]
+		: active.activeSlugs.length > 0
+			? active.activeSlugs
+			: ["project-thinkrail"];
+
+	const primarySlug = targetSlugs[0] || "project-thinkrail";
+
+	interface RawChunkRow {
+		id: string;
+		path: string;
+		qualified_name?: string;
+		chunk_kind?: string;
+		token_estimate?: number;
+		snippet?: string;
+		vector_blob: Uint8Array;
+		projectSlug: string;
 	}
 
-	const dbPath = join(hermesHome, "projects", projectSlug, "hermes.db");
-	if (!existsSync(dbPath)) {
-		return {
-			projectSlug,
-			nodes: [],
-			edges: [],
-			totalChunks: 0,
-			totalEmbeddings: 0,
-			modules: [],
-		};
+	interface RawMethodRow {
+		id: string;
+		path: string;
+		qualified_name?: string;
+		chunk_kind?: string;
+		token_estimate?: number;
+		snippet?: string;
 	}
+
+	const collectedRows: RawChunkRow[] = [];
+	const methodsByPath = new Map<string, RawMethodRow[]>();
+	let totalChunks = 0;
+	let totalEmbeddings = 0;
+
+	const targetLimit = Math.min(180, Math.max(24, params.limit || 100));
+	const perProjectLimit = Math.max(12, Math.floor(targetLimit / targetSlugs.length));
 
 	try {
 		const { Database } = await import("bun:sqlite");
-		const db = new Database(dbPath, { readonly: true });
 
-		const totalChunksRow = db.query("SELECT count(*) as c FROM l2j_chunks").get() as { c?: number };
-		const totalEmbeddingsRow = db.query("SELECT count(*) as c FROM l2j_embeddings_cache").get() as { c?: number };
-		const totalChunks = totalChunksRow?.c ?? 0;
-		const totalEmbeddings = totalEmbeddingsRow?.c ?? 0;
+		for (const slug of targetSlugs) {
+			const dbPath = join(hermesHome, "projects", slug, "hermes.db");
+			if (!existsSync(dbPath)) continue;
 
-		const targetLimit = Math.min(160, Math.max(20, params.limit || 90));
+			try {
+				const db = new Database(dbPath, { readonly: true });
+				const totalChunksRow = db.query("SELECT count(*) as c FROM l2j_chunks").get() as { c?: number };
+				const totalEmbeddingsRow = db.query("SELECT count(*) as c FROM l2j_embeddings_cache").get() as { c?: number };
+				totalChunks += totalChunksRow?.c ?? 0;
+				totalEmbeddings += totalEmbeddingsRow?.c ?? 0;
 
-		// Busca chunks priorizando classes, interfaces e arquivos estruturais com seus embeddings
-		const rows = db.query(`
-			SELECT c.id, c.path, c.qualified_name, c.chunk_kind, c.token_estimate,
-			       substr(c.content, 1, 140) as snippet, e.vector_blob
-			FROM l2j_chunks c
-			JOIN l2j_embeddings_cache e ON c.rowid = e.rowid
-			WHERE c.token_estimate >= 20
-			ORDER BY CASE
-				WHEN c.chunk_kind IN ('class', 'interface', 'struct', 'document') THEN 1
-				WHEN c.chunk_kind IN ('type', 'function') THEN 2
-				ELSE 3
-			END, c.token_estimate DESC
-			LIMIT ?;
-		`).all(targetLimit) as Array<{
-			id: string;
-			path: string;
-			qualified_name?: string;
-			chunk_kind?: string;
-			token_estimate?: number;
-			snippet?: string;
-			vector_blob: Uint8Array;
-		}>;
+				const rows = db.query(`
+					SELECT c.id, c.path, c.qualified_name, c.chunk_kind, c.token_estimate,
+					       substr(c.content, 1, 140) as snippet, e.vector_blob
+					FROM l2j_chunks c
+					JOIN l2j_embeddings_cache e ON c.rowid = e.rowid
+					WHERE c.token_estimate >= 20
+					ORDER BY CASE
+						WHEN c.chunk_kind IN ('class', 'interface', 'struct', 'document') THEN 1
+						WHEN c.chunk_kind IN ('type', 'function') THEN 2
+						ELSE 3
+					END, c.token_estimate DESC
+					LIMIT ?;
+				`).all(perProjectLimit) as Array<{
+					id: string;
+					path: string;
+					qualified_name?: string;
+					chunk_kind?: string;
+					token_estimate?: number;
+					snippet?: string;
+					vector_blob: Uint8Array;
+				}>;
 
-		// Coleta métodos e funções filhos para classes e arquivos selecionados
-		const uniquePaths = Array.from(new Set(rows.map((r) => r.path)));
-		const methodsByPath = new Map<string, Array<{
-			id: string;
-			qualified_name?: string;
-			chunk_kind?: string;
-			token_estimate?: number;
-			snippet?: string;
-		}>>();
-
-		if (uniquePaths.length > 0) {
-			const pathPlaceholders = uniquePaths.map(() => "?").join(", ");
-			const methodRows = db.query(`
-				SELECT id, path, qualified_name, chunk_kind, token_estimate, substr(content, 1, 120) as snippet
-				FROM l2j_chunks
-				WHERE chunk_kind IN ('method', 'function', 'constructor')
-				  AND path IN (${pathPlaceholders})
-				ORDER BY token_estimate DESC;
-			`).all(...uniquePaths) as Array<{
-				id: string;
-				path: string;
-				qualified_name?: string;
-				chunk_kind?: string;
-				token_estimate?: number;
-				snippet?: string;
-			}>;
-
-			for (const m of methodRows) {
-				const list = methodsByPath.get(m.path) || [];
-				if (list.length < 8) {
-					list.push(m);
-					methodsByPath.set(m.path, list);
+				for (const r of rows) {
+					collectedRows.push({ ...r, projectSlug: slug });
 				}
+
+				const uniquePaths = Array.from(new Set(rows.map((r) => r.path)));
+				if (uniquePaths.length > 0) {
+					const pathPlaceholders = uniquePaths.map(() => "?").join(", ");
+					const methodRows = db.query(`
+						SELECT id, path, qualified_name, chunk_kind, token_estimate, substr(content, 1, 120) as snippet
+						FROM l2j_chunks
+						WHERE chunk_kind IN ('method', 'function', 'constructor')
+						  AND path IN (${pathPlaceholders})
+						ORDER BY token_estimate DESC;
+					`).all(...uniquePaths) as RawMethodRow[];
+
+					for (const m of methodRows) {
+						const list = methodsByPath.get(m.path) || [];
+						if (list.length < 8) {
+							list.push(m);
+							methodsByPath.set(m.path, list);
+						}
+					}
+				}
+
+				db.close();
+			} catch (projErr) {
+				log.warn(`Erro ao ler banco hermes.db do projeto [${slug}]: ${projErr}`);
 			}
 		}
 
-		db.close();
-
-		if (rows.length === 0) {
+		if (collectedRows.length === 0) {
 			return {
-				projectSlug,
+				projectSlug: primarySlug,
 				nodes: [],
 				edges: [],
 				totalChunks,
@@ -891,7 +1226,7 @@ export async function getHermesVectorGraph(
 		const rawCoords: Array<[number, number, number]> = [];
 		const vectors: Float32Array[] = [];
 
-		for (const r of rows) {
+		for (const r of collectedRows) {
 			const vec = new Float32Array(r.vector_blob.buffer, r.vector_blob.byteOffset, dim);
 			vectors.push(vec);
 			let x = 0;
@@ -937,27 +1272,22 @@ export async function getHermesVectorGraph(
 			methods: Array<any>;
 		}> = [];
 
-		// Distribuição por Orbição Semântica Estratificada
-		const goldenAngle = Math.PI * (3 - Math.sqrt(5)); // ~2.39996 rad
-		const layerRadii: Record<number, number> = { 1: 1.45, 2: 2.35, 3: 3.25 };
-
-		for (let i = 0; i < rows.length; i++) {
-			const r = rows[i]!;
+		// Mapeia módulos semânticos
+		const categorizedItems = collectedRows.map((r, i) => {
 			const normalizedPath = r.path.replace(/\\/g, "/");
 			const lang = detectLanguage(normalizedPath);
-
 			let mod = "core";
 			let layer = 2;
 
 			if (normalizedPath.includes("/packages/contracts") || normalizedPath.includes("/domain") || r.chunk_kind === "interface") {
 				mod = "contracts";
-				layer = 1; // Núcleo / Contratos
+				layer = 1;
 			} else if (normalizedPath.includes("/packages/server") || normalizedPath.includes("/br/com/hermes") || normalizedPath.includes("/agent/") || normalizedPath.includes("/rag/")) {
 				mod = "packages/server";
-				layer = 2; // Engine / Server
+				layer = 2;
 			} else if (normalizedPath.includes("/apps/web")) {
 				mod = "apps/web";
-				layer = 3; // Web UI
+				layer = 3;
 			} else if (normalizedPath.includes("/packages/ui")) {
 				mod = "packages/ui";
 				layer = 2;
@@ -968,89 +1298,138 @@ export async function getHermesVectorGraph(
 				mod = "extensions";
 				layer = 3;
 			}
+
+			// Se multi-projeto, prefixa com slug do projeto
+			if (targetSlugs.length > 1) {
+				mod = `${r.projectSlug}:${mod}`;
+			}
 			moduleSet.add(mod);
 
-			const relPath = normalizedPath.split("/").slice(-2).join("/");
+			return { r, index: i, mod, layer, lang, normalizedPath };
+		});
 
-			// Posição orbital inicial via Fibonacci Sphere na esfera da camada
-			const baseRadius = layerRadii[layer] || 2.2;
-			const yRatio = 1 - (i / Math.max(1, rows.length - 1)) * 2; // de 1 a -1
-			const radiusAtY = Math.sqrt(Math.max(0, 1 - yRatio * yRatio));
-			const theta = i * goldenAngle;
-
-			// Incorpora orientação semântica do embedding 768D (perturbação harmônica)
-			const [rx, ry, rz] = rawCoords[i]!;
-			const normEmbDist = Math.sqrt(rx * rx + ry * ry + rz * rz) || 1;
-			const embOffsetX = (rx / normEmbDist) * 0.22;
-			const embOffsetY = (ry / normEmbDist) * 0.22;
-			const embOffsetZ = (rz / normEmbDist) * 0.22;
-
-			const px = (Math.cos(theta) * radiusAtY + embOffsetX) * baseRadius;
-			const py = (yRatio + embOffsetY) * baseRadius;
-			const pz = (Math.sin(theta) * radiusAtY + embOffsetZ) * baseRadius;
-
-			// Métodos/Funções filhos da classe
-			const rawMethods = methodsByPath.get(r.path) || [];
-			const childMethods = rawMethods.map((m, mIdx) => {
-				const totalM = rawMethods.length;
-				const angle = (mIdx / Math.max(1, totalM)) * Math.PI * 2;
-				const simpleName = (m.qualified_name || "").split(".").pop() || "fn";
-				return {
-					id: m.id,
-					name: simpleName,
-					kind: (m.chunk_kind as any) || "method",
-					signature: m.qualified_name || simpleName,
-					tokenEstimate: m.token_estimate || 0,
-					contentSnippet: (m.snippet || "").trim(),
-					orbitAngle: angle,
-					orbitRadius: 0.18 + (mIdx % 2) * 0.04,
-				};
-			});
-
-			preliminaryNodes.push({
-				id: r.id,
-				path: r.path,
-				relPath,
-				qualifiedName: r.qualified_name || relPath,
-				chunkKind: r.chunk_kind || "code",
-				module: mod,
-				language: lang,
-				tokenEstimate: r.token_estimate || 0,
-				contentSnippet: (r.snippet || "").trim(),
-				orbitLayer: layer,
-				pos: [px, py, pz],
-				methods: childMethods,
-			});
+		// Agrupa itens por módulo para ordenação e layout harmonioso em "Louça" (Dish / Tray layout)
+		// Em vez de esferas concêntricas densas onde nós ficam na frente uns dos outros na mesma linha de visada,
+		// organizamos como peças de louça dispostas sobre uma bandeja convexa elíptica aberta (plano suave XZ com leve curvatura Y).
+		const itemsByModule = new Map<string, typeof categorizedItems>();
+		for (const it of categorizedItems) {
+			const list = itemsByModule.get(it.mod) || [];
+			list.push(it);
+			itemsByModule.set(it.mod, list);
 		}
 
-		// Algoritmo Anti-Colisão (Relaxação Esférica de Repulsão)
-		// Garante que nenhum polígono sobreponha o outro (distância mínima de 0.44)
-		const minSafeDist = 0.44;
-		const relaxationIterations = 16;
+		const moduleNames = Array.from(itemsByModule.keys());
+		const totalModules = moduleNames.length;
+
+		// Raio e proporções da bandeja (dish)
+		const dishBaseRadius = 2.4;
+		const dishSectorAngle = (Math.PI * 2) / Math.max(1, totalModules);
+
+		for (let mIdx = 0; mIdx < totalModules; mIdx++) {
+			const modName = moduleNames[mIdx]!;
+			const items = itemsByModule.get(modName)!;
+			const clusterAngle = mIdx * dishSectorAngle;
+
+			// Centro do setor do módulo na bandeja
+			const clusterDist = dishBaseRadius * (0.65 + (mIdx % 2) * 0.25);
+			const clusterCenterX = Math.cos(clusterAngle) * clusterDist;
+			const clusterCenterZ = Math.sin(clusterAngle) * clusterDist;
+
+			const nItems = items.length;
+			const goldenRatio = 1.6180339887;
+
+			for (let itemIdx = 0; itemIdx < nItems; itemIdx++) {
+				const it = items[itemIdx]!;
+				const r = it.r;
+
+				// Distribuição tipo phyllotaxis (girassol/louça) dentro de cada setor do prato
+				// Garante que cada item tenha raio radial crescente e ângulo sem colisão frontal
+				const spiralRadius = 0.32 * Math.sqrt(itemIdx + 0.5);
+				const spiralAngle = clusterAngle + itemIdx * goldenRatio * Math.PI * 2;
+
+				const [rx, ry, rz] = rawCoords[it.index]!;
+				const normEmb = Math.sqrt(rx * rx + ry * ry + rz * rz) || 1;
+				const semOffX = (rx / normEmb) * 0.12;
+				const semOffZ = (rz / normEmb) * 0.12;
+
+				const px = clusterCenterX + Math.cos(spiralAngle) * spiralRadius + semOffX;
+				const pz = clusterCenterZ + Math.sin(spiralAngle) * spiralRadius + semOffZ;
+
+				// Elevação suave tipo "louça côncava" (Y eleva-se levemente com a distância do centro)
+				const distFromCenter = Math.sqrt(px * px + pz * pz);
+				// Tigela/prato suave: nós no centro são mais baixos, bordas sobem levemente
+				const py = (distFromCenter * distFromCenter * 0.08) - 0.45 + ((ry / normEmb) * 0.14);
+
+				const relPath = it.normalizedPath.split("/").slice(-2).join("/");
+
+				const rawMethods = methodsByPath.get(r.path) || [];
+				const childMethods = rawMethods.map((m, cmIdx) => {
+					const totalM = rawMethods.length;
+					const angle = (cmIdx / Math.max(1, totalM)) * Math.PI * 2;
+					const simpleName = (m.qualified_name || "").split(".").pop() || "fn";
+					return {
+						id: m.id,
+						name: simpleName,
+						kind: (m.chunk_kind as any) || "method",
+						signature: m.qualified_name || simpleName,
+						tokenEstimate: m.token_estimate || 0,
+						contentSnippet: (m.snippet || "").trim(),
+						orbitAngle: angle,
+						orbitRadius: 0.18 + (cmIdx % 2) * 0.04,
+					};
+				});
+
+				preliminaryNodes.push({
+					id: r.id,
+					path: r.path,
+					relPath,
+					qualifiedName: r.qualified_name || relPath,
+					chunkKind: r.chunk_kind || "code",
+					module: it.mod,
+					language: it.lang,
+					tokenEstimate: r.token_estimate || 0,
+					contentSnippet: (r.snippet || "").trim(),
+					orbitLayer: it.layer,
+					pos: [px, py, pz],
+					methods: childMethods,
+				});
+			}
+		}
+
+		// Relaxação anti-colisão em 2.5D com restrição de separação mínima no plano da louça
+		// Garante que nenhum polígono fique em cima ou logo atrás de outro
+		const minSafeDist2D = 0.46; // Distância mínima estrita no plano XZ
+		const minSafeDist3D = 0.42;
+		const relaxationIterations = 24;
 
 		for (let iter = 0; iter < relaxationIterations; iter++) {
 			for (let i = 0; i < preliminaryNodes.length; i++) {
 				const n1 = preliminaryNodes[i]!;
 				for (let j = i + 1; j < preliminaryNodes.length; j++) {
 					const n2 = preliminaryNodes[j]!;
-					const dx = n2.pos[0] - n1.pos[0];
-					const dy = n2.pos[1] - n1.pos[1];
-					const dz = n2.pos[2] - n1.pos[2];
-					const dist = Math.sqrt(dx * dx + dy * dy + dz * dz) || 0.0001;
 
-					if (dist < minSafeDist) {
-						const overlap = (minSafeDist - dist) * 0.45;
-						const nx = (dx / dist) * overlap;
-						const ny = (dy / dist) * overlap;
-						const nz = (dz / dist) * overlap;
+					const dx = n2.pos[0] - n1.pos[0];
+					const dz = n2.pos[2] - n1.pos[2];
+					const dist2D = Math.sqrt(dx * dx + dz * dz) || 0.0001;
+
+					if (dist2D < minSafeDist2D) {
+						const overlap2D = (minSafeDist2D - dist2D) * 0.5;
+						const nx = (dx / dist2D) * overlap2D;
+						const nz = (dz / dist2D) * overlap2D;
 
 						n1.pos[0] -= nx;
-						n1.pos[1] -= ny;
 						n1.pos[2] -= nz;
-
 						n2.pos[0] += nx;
-						n2.pos[1] += ny;
 						n2.pos[2] += nz;
+					}
+
+					const dy = n2.pos[1] - n1.pos[1];
+					const dist3D = Math.sqrt(dx * dx + dy * dy + dz * dz) || 0.0001;
+					if (dist3D < minSafeDist3D) {
+						const overlap3D = (minSafeDist3D - dist3D) * 0.35;
+						const ny = (dy / dist3D) * overlap3D;
+						n1.pos[1] -= ny;
+						n2.pos[1] += ny;
 					}
 				}
 			}
@@ -1103,7 +1482,7 @@ export async function getHermesVectorGraph(
 		}
 
 		return {
-			projectSlug,
+			projectSlug: primarySlug,
 			nodes,
 			edges,
 			totalChunks,
@@ -1111,9 +1490,9 @@ export async function getHermesVectorGraph(
 			modules: Array.from(moduleSet),
 		};
 	} catch (err) {
-		log.warn("getHermesVectorGraph.failed", { error: String(err), projectSlug });
+		log.warn("getHermesVectorGraph.failed", { error: String(err), projectSlug: primarySlug });
 		return {
-			projectSlug,
+			projectSlug: primarySlug,
 			nodes: [],
 			edges: [],
 			totalChunks: 0,

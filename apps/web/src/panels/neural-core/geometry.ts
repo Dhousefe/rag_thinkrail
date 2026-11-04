@@ -492,13 +492,13 @@ export function createVectorConstellationWireframe(
 		// Tamanho base reduzido e harmonioso para visual limpo sem sobreposição
 		let s = 0.024;
 		if (isMatched) s *= 1.8;
-		else if (isHighlight) s *= 1.4;
+		else if (isHighlight) s *= 1.7; // Destaque nítido ao passar o mouse
 
 		const defaultCol: [number, number, number, number] = MODULE_COLORS.core ?? [0.9, 0.9, 1.0, 0.8];
 		const col: [number, number, number, number] = isMatched
 			? [1.0, 0.9, 0.2, 1.0] // Dourado brilhante quando pesquisado no RAG
 			: isHighlight
-				? [1.0, 1.0, 1.0, 1.0] // Branco estelar sob cursor
+				? [0.2, 1.0, 0.85, 1.0] // Ciano-água incandescente sob cursor
 				: (MODULE_COLORS[n.module] ?? defaultCol);
 		const [colR, colG, colB, colA] = col;
 

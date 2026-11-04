@@ -41,6 +41,19 @@ export function useOpenProject(
 	) => {
 		if (!isCurrent()) return;
 		useAppStore.getState().applyProjectUpdated(project);
+		// Auto-registra o projeto no Hermes RAG e inicia indexação se inédito
+		void getTransport()
+			.request("hermes.ensureProjectForPath", {
+				path: project.path,
+				name: project.name,
+				autoIndex: true,
+			})
+			.then((res) => {
+				if (res.isIndexing) {
+					useAppStore.getState().startHermesIndexing(res.slug);
+				}
+			})
+			.catch(() => {});
 		if (!isCurrent()) return;
 		await onOpened(project, intent);
 	};

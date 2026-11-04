@@ -25,9 +25,9 @@ export function HermesIndexingBar({ progress }: { progress: HermesIndexingProgre
 			: null;
 
 	return (
-		<div className="flex flex-col gap-12 rounded-lg border border-border-default bg-container-workspace-bg p-16 shadow-xs transition-all">
-			<div className="flex flex-wrap items-center justify-between gap-12">
-				<div className="flex items-center gap-12 min-w-0">
+		<div className="flex flex-col gap-12 rounded-lg border border-border-default bg-container-workspace-bg p-12 sm:p-16 shadow-xs transition-all min-w-0 max-w-full overflow-hidden">
+			<div className="flex flex-wrap items-center justify-between gap-8 sm:gap-12 min-w-0">
+				<div className="flex items-center gap-8 sm:gap-12 min-w-0 flex-1">
 					{isCompleted ? (
 						<div className="flex size-24 items-center justify-center rounded-full bg-feedback-success text-text-on-primary shrink-0">
 							<RiCheckLine className="size-16" />
@@ -35,14 +35,14 @@ export function HermesIndexingBar({ progress }: { progress: HermesIndexingProgre
 					) : (
 						<RiLoader4Line className="size-20 animate-spin text-primary shrink-0" />
 					)}
-					<div className="flex flex-col min-w-0">
-						<span className="tr-text-emphasis text-text-default">
+					<div className="flex flex-col min-w-0 flex-1">
+						<span className="tr-text-emphasis text-text-default truncate">
 							{isCompleted
 								? `Reindexação Concluída: ${progress.projectSlug}`
 								: `Indexando Projeto Hermes: ${progress.projectSlug || "..."}`}
 						</span>
 						{progress.currentFile ? (
-							<span className="flex items-center gap-4 tr-text-metadata text-text-muted truncate max-w-md">
+							<span className="flex items-center gap-4 tr-text-metadata text-text-muted truncate min-w-0">
 								<RiFileCodeLine className="size-14 shrink-0" />
 								<span className="truncate tr-code-text">{progress.currentFile}</span>
 							</span>
@@ -50,21 +50,21 @@ export function HermesIndexingBar({ progress }: { progress: HermesIndexingProgre
 					</div>
 				</div>
 
-				<div className="flex items-center gap-12 text-text-muted tr-text-metadata">
+				<div className="flex flex-wrap items-center gap-8 sm:gap-12 text-text-muted tr-text-metadata shrink-0">
 					{filesPerSec !== null ? (
 						<div className="flex items-center gap-4">
-							<RiSpeedUpLine className="size-16 text-primary" />
-							<span>{filesPerSec} arq/s</span>
+							<RiSpeedUpLine className="size-16 text-primary shrink-0" />
+							<span className="whitespace-nowrap">{filesPerSec} arq/s</span>
 						</div>
 					) : null}
 
 					<div className="flex items-center gap-4">
-						<RiTimeLine className="size-16 text-text-muted" />
-						<span>Decorridos: {formatMs(progress.elapsedMs)}</span>
+						<RiTimeLine className="size-16 text-text-muted shrink-0" />
+						<span className="whitespace-nowrap">Decorridos: {formatMs(progress.elapsedMs)}</span>
 					</div>
 
 					<div
-						className={`rounded px-6 py-2 tr-text-emphasis ${
+						className={`rounded px-6 py-2 tr-text-emphasis shrink-0 ${
 							isCompleted
 								? "bg-feedback-success text-text-on-primary"
 								: "bg-control-bg text-primary"
@@ -85,14 +85,14 @@ export function HermesIndexingBar({ progress }: { progress: HermesIndexingProgre
 				/>
 			</div>
 
-			{/* Predição de tempo restante e contadores */}
-			<div className="flex items-center justify-between tr-text-metadata text-text-muted">
-				<span>
+			{/* Predição de tempo restante e contadores com quebra fluida */}
+			<div className="flex flex-wrap items-center justify-between gap-4 tr-text-metadata text-text-muted min-w-0">
+				<span className="truncate min-w-0 flex-1">
 					{progress.totalFiles > 0
 						? `${progress.processedFiles.toLocaleString()} de ${progress.totalFiles.toLocaleString()} arquivos processados (AST + FTS5 + Embeddings)`
 						: "Varrendo diretórios do projeto..."}
 				</span>
-				<span className="tr-text-emphasis text-text-default">
+				<span className="tr-text-emphasis text-text-default shrink-0">
 					{isCompleted
 						? "Concluído!"
 						: progress.estimatedRemainingMs !== null

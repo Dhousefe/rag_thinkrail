@@ -86,9 +86,10 @@ export async function runIncrementalReindex(options: ReindexOptions = {}) {
 	console.log(` Alvos     : ${targetPaths.join(", ")}`);
 	console.log("============================================================\n");
 
-	if (!existsSync(dbPath)) {
-		console.error(`[X] Banco Hermes não encontrado em: ${dbPath}`);
-		process.exit(1);
+	const dbDir = dirname(dbPath);
+	if (!existsSync(dbDir)) {
+		const { mkdirSync } = await import("node:fs");
+		mkdirSync(dbDir, { recursive: true });
 	}
 
 	const db = new Database(dbPath);
@@ -96,13 +97,79 @@ export async function runIncrementalReindex(options: ReindexOptions = {}) {
 	db.run("PRAGMA busy_timeout = 30000;");
 	db.run("PRAGMA foreign_keys = ON;");
 
+	// Garante schema inicial caso seja um banco novo
+	db.run(`
+		CREATE TABLE IF NOT EXISTS l2j_files (
+			id TEXT PRIMARY KEY,
+			project_name TEXT NOT NULL,
+			path TEXT NOT NULL,
+			sha256 TEXT NOT NULL,
+			mtime_ms INTEGER NOT NULL,
+			indexed_at INTEGER NOT NULL
+		);
+	`);
+	db.run(`
+		CREATE TABLE IF NOT EXISTS l2j_symbols (
+			id TEXT PRIMARY KEY,
+			file_id TEXT NOT NULL,
+			project_name TEXT NOT NULL,
+			path TEXT NOT NULL,
+			symbol_kind TEXT NOT NULL,
+			package_name TEXT,
+			qualified_name TEXT NOT NULL,
+			simple_name TEXT NOT NULL,
+			signature TEXT,
+			start_line INTEGER,
+			end_line INTEGER,
+			token_estimate INTEGER,
+			ast_fingerprint TEXT,
+			created_at INTEGER NOT NULL
+		);
+	`);
+	db.run(`
+		CREATE TABLE IF NOT EXISTS l2j_chunks (
+			id TEXT PRIMARY KEY,
+			file_id TEXT NOT NULL,
+			symbol_id TEXT,
+			project_name TEXT NOT NULL,
+			path TEXT NOT NULL,
+			chunk_kind TEXT NOT NULL,
+			package_name TEXT,
+			qualified_name TEXT NOT NULL,
+			signature TEXT,
+			content TEXT NOT NULL,
+			keywords TEXT,
+			start_line INTEGER,
+			end_line INTEGER,
+			token_estimate INTEGER,
+			embedding_model TEXT,
+			embedding_dim INTEGER,
+			created_at INTEGER NOT NULL
+		);
+	`);
+	db.run(`
+		CREATE VIRTUAL TABLE IF NOT EXISTS l2j_chunk_fts USING fts5(
+			chunk_id UNINDEXED,
+			project_name UNINDEXED,
+			file_id UNINDEXED,
+			path UNINDEXED,
+			qualified_name,
+			signature,
+			content,
+			keywords,
+			tokenize = 'porter unicode61'
+		);
+	`);
+
 	const checkUnchangedStmt = db.prepare(`
-		SELECT 1 FROM l2j_files 
-		WHERE project_name = ? AND path = ? AND sha256 = ? AND mtime_ms = ? 
+		SELECT 1 FROM l2j_files f
+		JOIN l2j_chunks c ON c.file_id = f.id
+		WHERE f.project_name = ? AND f.path = ? AND f.sha256 = ? AND f.mtime_ms = ? 
 		LIMIT 1;
 	`);
 
 	const deleteFtsStmt = db.prepare("DELETE FROM l2j_chunk_fts WHERE file_id = ?;");
+	const deleteChunksStmt = db.prepare("DELETE FROM l2j_chunks WHERE file_id = ?;");
 	const deleteFileStmt = db.prepare("DELETE FROM l2j_files WHERE id = ?;");
 	const getFileIdStmt = db.prepare(
 		"SELECT id FROM l2j_files WHERE project_name = ? AND path = ? LIMIT 1;",
@@ -178,6 +245,7 @@ export async function runIncrementalReindex(options: ReindexOptions = {}) {
 				| undefined;
 			if (existingRow) {
 				deleteFtsStmt.run(existingRow.id);
+				deleteChunksStmt.run(existingRow.id);
 				deleteFileStmt.run(existingRow.id);
 			}
 

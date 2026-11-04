@@ -133,10 +133,10 @@ export function HermesMcpPanel() {
 	}, [hermesManagement.toolToggles]);
 
 	return (
-		<div className="flex h-full min-h-0 w-full flex-col gap-16 overflow-y-auto p-16">
+		<div className="flex h-full min-h-0 w-full flex-col gap-16 overflow-y-auto overflow-x-hidden p-12 sm:p-16 max-w-full">
 			{/* Top Header & Server Status Card */}
-			<div className="flex flex-col gap-12 rounded-lg border border-border-default bg-control-bg p-16 shadow-xs">
-				<div className="flex flex-wrap items-center justify-between gap-12">
+			<div className="flex flex-col gap-12 rounded-lg border border-border-default bg-control-bg p-12 sm:p-16 shadow-xs min-w-0 max-w-full overflow-hidden">
+				<div className="flex flex-wrap items-center justify-between gap-12 min-w-0">
 					<div className="flex items-center gap-8">
 						<div className="flex size-36 items-center justify-center rounded-md bg-feedback-info-subtle text-primary">
 							<RiPlugLine className="size-20" />
@@ -276,12 +276,12 @@ export function HermesMcpPanel() {
 			</div>
 
 			{/* Abas Internas: Projetos, Ferramentas & Lechs, Telemetria */}
-			<div className="flex items-center gap-8 border-b border-border-default pb-4">
+			<div className="flex items-center gap-8 border-b border-border-default pb-4 overflow-x-auto min-w-0 max-w-full">
 				<button
 					type="button"
 					data-testid="hermes-tab-projects"
 					className={cn(
-						"flex items-center gap-6 rounded-md px-12 py-6 tr-text-ui transition-colors",
+						"flex items-center gap-6 rounded-md px-12 py-6 tr-text-ui transition-colors shrink-0 whitespace-nowrap",
 						panelTab === "projects"
 							? "bg-control-bg-selected text-primary shadow-xs"
 							: "text-text-muted hover:bg-control-bg-hovered hover:text-text-default",
@@ -296,7 +296,7 @@ export function HermesMcpPanel() {
 					type="button"
 					data-testid="hermes-tab-tools"
 					className={cn(
-						"flex items-center gap-6 rounded-md px-12 py-6 tr-text-ui transition-colors",
+						"flex items-center gap-6 rounded-md px-12 py-6 tr-text-ui transition-colors shrink-0 whitespace-nowrap",
 						panelTab === "tools"
 							? "bg-control-bg-selected text-primary shadow-xs"
 							: "text-text-muted hover:bg-control-bg-hovered hover:text-text-default",
@@ -311,7 +311,7 @@ export function HermesMcpPanel() {
 					type="button"
 					data-testid="hermes-tab-telemetry"
 					className={cn(
-						"flex items-center gap-6 rounded-md px-12 py-6 tr-text-ui transition-colors",
+						"flex items-center gap-6 rounded-md px-12 py-6 tr-text-ui transition-colors shrink-0 whitespace-nowrap",
 						panelTab === "telemetry"
 							? "bg-control-bg-selected text-primary shadow-xs"
 							: "text-text-muted hover:bg-control-bg-hovered hover:text-text-default",

@@ -87,6 +87,8 @@ import type {
 	HermesConnectionStatus,
 	HermesCreateProjectInput,
 	HermesDeleteProjectInput,
+	HermesEnsureProjectForPathInput,
+	HermesEnsureProjectForPathResult,
 	HermesGetActiveProjectsResult,
 	HermesGetVectorGraphInput,
 	HermesIndexingProgress,
@@ -425,6 +427,7 @@ export const WS_METHODS = {
 	mcpReadOutput: "mcp.readOutput",
 	mcpReadLog: "mcp.readLog",
 	hermesListProjects: "hermes.listProjects",
+	hermesEnsureProjectForPath: "hermes.ensureProjectForPath",
 	hermesCreateProject: "hermes.createProject",
 	hermesDeleteProject: "hermes.deleteProject",
 	hermesReindexProject: "hermes.reindexProject",
@@ -1256,12 +1259,22 @@ export interface WsMethodMap {
 	};
 	"mcp.readLog": { params: { workspaceId: string; name: string }; result: McpServerLog };
 	"hermes.listProjects": { params: Record<string, never>; result: HermesListProjectsResult };
+	"hermes.ensureProjectForPath": {
+		params: HermesEnsureProjectForPathInput;
+		result: HermesEnsureProjectForPathResult;
+	};
 	"hermes.createProject": { params: HermesCreateProjectInput; result: HermesProjectInfo };
 	"hermes.deleteProject": { params: HermesDeleteProjectInput; result: Ack };
 	"hermes.reindexProject": { params: HermesReindexProjectInput; result: HermesReindexResult };
 	"hermes.testConnection": { params: HermesTestConnectionInput; result: HermesConnectionStatus };
-	"hermes.getActiveProjects": { params: Record<string, never>; result: HermesGetActiveProjectsResult };
-	"hermes.setActiveProjects": { params: HermesSetActiveProjectsInput; result: HermesGetActiveProjectsResult };
+	"hermes.getActiveProjects": {
+		params: Record<string, never>;
+		result: HermesGetActiveProjectsResult;
+	};
+	"hermes.setActiveProjects": {
+		params: HermesSetActiveProjectsInput;
+		result: HermesGetActiveProjectsResult;
+	};
 	"hermes.getIndexingProgress": { params: Record<string, never>; result: HermesIndexingProgress };
 	"hermes.getVectorGraph": { params: HermesGetVectorGraphInput; result: HermesVectorGraphSample };
 }

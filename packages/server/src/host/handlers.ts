@@ -251,6 +251,7 @@ import { nudgeBaseRefWorkspaces } from "./fsNudge";
 import {
 	createHermesProject,
 	deleteHermesProject,
+	ensureHermesProjectForPath,
 	getActiveHermesProjects,
 	getHermesIndexingProgress,
 	getHermesVectorGraph,
@@ -581,13 +582,31 @@ function invalidSurveyOnThrow<T>(build: () => T): T {
 }
 
 const handlers: WsHandlers = {
-	"project.open": (params) => observeSetupAction("project_open", () => openProject(params.path)),
+	"project.open": (params) =>
+		observeSetupAction("project_open", () => {
+			const project = openProject(params.path);
+			void ensureHermesProjectForPath({ path: project.path, name: project.name }).catch((err) => {
+				log.warn(`Falha no auto-registro Hermes para ${project.path}: ${err}`);
+			});
+			return project;
+		}),
 	"project.inspect": (params) => inspectProjectPath(params.path),
-	"project.init": (params) => observeSetupAction("project_init", () => initProject(params.path)),
+	"project.init": (params) =>
+		observeSetupAction("project_init", () => {
+			const project = initProject(params.path);
+			void ensureHermesProjectForPath({ path: project.path, name: project.name }).catch((err) => {
+				log.warn(`Falha no auto-registro Hermes para ${project.path}: ${err}`);
+			});
+			return project;
+		}),
 	"project.create": (params) =>
-		observeSetupAction("project_create", () =>
-			createProject(params.parentPath, params.name, params.displayName),
-		),
+		observeSetupAction("project_create", () => {
+			const project = createProject(params.parentPath, params.name, params.displayName);
+			void ensureHermesProjectForPath({ path: project.path, name: project.name }).catch((err) => {
+				log.warn(`Falha no auto-registro Hermes para ${project.path}: ${err}`);
+			});
+			return project;
+		}),
 	"project.cloneDestination": (params) => ({
 		path: inspectCloneDestination(params.parentPath, params.name),
 	}),
@@ -1069,6 +1088,16 @@ const handlers: WsHandlers = {
 	"session.create": async (p) => {
 		const ws = getWorkspace(p.workspaceId);
 		ensureWorkspaceScratchDir(ws);
+		const parentProject = listProjects().find((candidate) => candidate.id === ws.projectId);
+		if (parentProject) {
+			void ensureHermesProjectForPath({
+				path: parentProject.path,
+				name: parentProject.name,
+				autoIndex: true,
+			}).catch((err) => {
+				log.warn(`Auto-registro Hermes na criação da sessão ignorado para ${parentProject.path}: ${err}`);
+			});
+		}
 		const defaults = await resolveNewChatModel(p);
 		const created = await createSession({
 			cwd: ws.worktreePath,
@@ -1210,6 +1239,7 @@ const handlers: WsHandlers = {
 	"mcp.readLog": (params) => mcpReadLog(params),
 	"mcp.testConnection": (params, ctx) => mcpTestConnection(params, ctx.clientKey),
 	"hermes.listProjects": () => listHermesProjects(),
+	"hermes.ensureProjectForPath": (params) => ensureHermesProjectForPath(params),
 	"hermes.createProject": (params) => createHermesProject(params),
 	"hermes.deleteProject": (params) => deleteHermesProject(params),
 	"hermes.reindexProject": (params) => reindexHermesProject(params),

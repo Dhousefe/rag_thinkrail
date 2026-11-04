@@ -22,7 +22,7 @@ import {
 	DialogTitle,
 } from "@thinkrail/ui/dialog";
 import { cn } from "@thinkrail/ui/utils";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { toast, useAppStore } from "@/store";
 import { getTransport } from "@/transport";
 import { HermesIndexingBar } from "./HermesIndexingBar";
@@ -34,7 +34,7 @@ export function HermesProjectsView() {
 	const setHermesError = useAppStore((s) => s.setHermesError);
 	const setHermesActiveProjectSlugs = useAppStore((s) => s.setHermesActiveProjectSlugs);
 	const startHermesIndexing = useAppStore((s) => s.startHermesIndexing);
-	const updateHermesIndexingProgress = useAppStore((s) => s.updateHermesIndexingProgress);
+	const setHermesIndexingProgress = useAppStore((s) => s.setHermesIndexingProgress);
 	const finishHermesIndexing = useAppStore((s) => s.finishHermesIndexing);
 
 	const [searchQuery, setSearchQuery] = useState("");
@@ -57,17 +57,6 @@ export function HermesProjectsView() {
 
 	const [copiedSlug, setCopiedSlug] = useState<string | null>(null);
 
-	// Timer para a barra de progresso preditiva durante indexação
-	const indexingTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
-
-	useEffect(() => {
-		return () => {
-			if (indexingTimerRef.current) {
-				clearInterval(indexingTimerRef.current);
-			}
-		};
-	}, []);
-
 	// Carregamento de projetos via transporte WebSocket
 	const loadProjects = useCallback(async () => {
 		setHermesLoading(true);
@@ -86,6 +75,34 @@ export function HermesProjectsView() {
 			toast.error(`Falha ao carregar projetos Hermes: ${msg}`);
 		}
 	}, [setHermesLoading, setHermesProjects, setHermesActiveProjectSlugs, setHermesError]);
+
+	// Polling em tempo real do progresso real da reindexação vindo do backend/ThinkRail
+	const pollIndexingProgress = useCallback(async () => {
+		try {
+			const progress = await getTransport().request("hermes.getIndexingProgress", {});
+			if (progress) {
+				setHermesIndexingProgress(progress);
+				if (
+					progress.status === "completed" ||
+					(!progress.isIndexing && progress.percentage >= 100)
+				) {
+					if (progress.projectSlug) {
+						finishHermesIndexing(progress.projectSlug);
+					}
+					void loadProjects();
+				}
+			}
+		} catch {}
+	}, [setHermesIndexingProgress, finishHermesIndexing, loadProjects]);
+
+	// Loop contínuo: 400ms enquanto indexa, 2000ms em idle (detecta disparos do ThinkRail em background)
+	useEffect(() => {
+		const intervalMs = hermesManagement.indexingProgress.isIndexing ? 400 : 2000;
+		const timer = setInterval(() => {
+			void pollIndexingProgress();
+		}, intervalMs);
+		return () => clearInterval(timer);
+	}, [hermesManagement.indexingProgress.isIndexing, pollIndexingProgress]);
 
 	useEffect(() => {
 		void loadProjects();
@@ -193,34 +210,25 @@ export function HermesProjectsView() {
 			return;
 		}
 
+		startHermesIndexing(project.slug, 100);
+
 		try {
-			await getTransport().request("hermes.reindexProject", {
+			void getTransport().request("hermes.reindexProject", {
 				slug: project.slug,
 				path: project.path,
+			}).then(() => {
+				void loadProjects();
+			}).catch((err) => {
+				const msg = err instanceof Error ? err.message : String(err);
+				toast.error(`Falha no processo de reindexação: ${msg}`);
 			});
-			toast.success(`Indexação acionada para o projeto ${project.slug}.`);
+			toast.success(`Indexação iniciada para o projeto "${project.slug}".`);
+			// Dispara primeiro poll imediato
+			setTimeout(() => void pollIndexingProgress(), 150);
 		} catch (err) {
 			const msg = err instanceof Error ? err.message : String(err);
-			toast.error(`Falha no gatilho de reindexação: ${msg}`);
+			toast.error(`Falha ao disparar reindexação: ${msg}`);
 		}
-
-		const total = 4200;
-		startHermesIndexing(project.slug, total);
-
-		let current = 0;
-		if (indexingTimerRef.current) clearInterval(indexingTimerRef.current);
-
-		indexingTimerRef.current = setInterval(() => {
-			current += Math.floor(Math.random() * 60) + 25;
-			if (current >= total) {
-				if (indexingTimerRef.current) clearInterval(indexingTimerRef.current);
-				finishHermesIndexing(project.slug);
-				toast.success(`Reindexação concluída para o projeto "${project.slug}"!`);
-				void loadProjects();
-			} else {
-				updateHermesIndexingProgress(current, total, `src/core/chunk_${current}.kt`);
-			}
-		}, 400);
 	};
 
 	// Filtros de busca e status
@@ -248,19 +256,19 @@ export function HermesProjectsView() {
 	}, [hermesManagement.projects, activeSlugs]);
 
 	return (
-		<div className="space-y-4">
+		<div className="space-y-4 min-w-0 max-w-full overflow-hidden">
 			{/* Barra de Progresso Preditiva durante reindexação */}
 			<HermesIndexingBar progress={hermesManagement.indexingProgress} />
 
 			{/* Cabeçalho e Ações */}
-			<div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-				<div>
-					<h3 className="tr-text-emphasis text-text-default">Projetos Hermes RAG</h3>
-					<p className="tr-text-metadata text-text-muted">
+			<div className="flex flex-wrap items-center justify-between gap-8 min-w-0">
+				<div className="min-w-0 flex-1">
+					<h3 className="tr-text-emphasis text-text-default truncate">Projetos Hermes RAG</h3>
+					<p className="tr-text-metadata text-text-muted truncate">
 						Gerencie e indexe bases de código no subsistema AST e vetorial SQLite.
 					</p>
 				</div>
-				<div className="flex items-center gap-2">
+				<div className="flex flex-wrap items-center gap-6 shrink-0">
 					<Button
 						size="s"
 						variant="outline"
@@ -281,7 +289,7 @@ export function HermesProjectsView() {
 			</div>
 
 			{/* Barra de Métricas Rápidas */}
-			<div className="grid grid-cols-3 gap-2">
+			<div className="grid grid-cols-1 gap-8 sm:grid-cols-3 min-w-0 max-w-full">
 				<button
 					type="button"
 					onClick={() => setFilterStatus("all")}
@@ -373,16 +381,16 @@ export function HermesProjectsView() {
 							<div
 								key={project.slug}
 								className={cn(
-									"rounded-md border p-4 transition-all bg-container-elevated-bg space-y-4",
+									"rounded-md border p-12 transition-all bg-container-elevated-bg space-y-8 min-w-0 max-w-full overflow-hidden",
 									isActive
 										? "border-primary ring-1 ring-primary"
 										: "border-border-default hover:border-border-muted",
 								)}
 							>
 								{/* Cabeçalho do Card */}
-								<div className="flex items-start justify-between gap-4">
-									<div className="space-y-2 min-w-0 flex-1">
-										<div className="flex items-center gap-2 flex-wrap">
+								<div className="flex flex-wrap items-start justify-between gap-8 min-w-0">
+									<div className="space-y-4 min-w-0 flex-1">
+										<div className="flex items-center gap-6 flex-wrap min-w-0">
 											<span className="tr-text-emphasis text-text-default truncate">
 												{project.name}
 											</span>
@@ -398,7 +406,7 @@ export function HermesProjectsView() {
 									</div>
 
 									{/* Badges de Status do DB e Sessão */}
-									<div className="flex items-center gap-2 shrink-0">
+									<div className="flex flex-wrap items-center gap-4 shrink-0">
 										{project.hasDb ? (
 											<span className="flex items-center gap-2 rounded px-2 py-0 tr-text-metadata border border-feedback-success text-feedback-success bg-container-workspace-bg">
 												<RiDatabase2Line className="size-12" />
@@ -420,14 +428,15 @@ export function HermesProjectsView() {
 								</div>
 
 								{/* Caminho do Workspace com Botão Copiar */}
-								<div className="flex items-center justify-between rounded bg-container-workspace-bg px-4 py-2 border border-border-default gap-2">
-									<div className="flex items-center gap-2 min-w-0 flex-1">
+								<div className="flex flex-wrap items-center justify-between rounded bg-container-workspace-bg px-8 py-4 border border-border-default gap-6 min-w-0">
+									<div className="flex items-center gap-6 min-w-0 flex-1">
 										<RiFolder2Line className="size-14 text-text-muted shrink-0" />
-										<span className="tr-code-text text-text-muted truncate">{project.path}</span>
+										<span className="tr-code-text text-text-muted truncate min-w-0">{project.path}</span>
 									</div>
 									<Button
 										size="s"
 										variant="ghost"
+										className="shrink-0"
 										onClick={() => handleCopyPath(project.path, project.slug)}
 										tooltip="Copiar caminho do projeto"
 									>
@@ -440,13 +449,14 @@ export function HermesProjectsView() {
 								</div>
 
 								{/* Ações do Card */}
-								<div className="flex items-center justify-between pt-2 border-t border-border-default">
-									<div className="flex items-center gap-2">
+								<div className="flex flex-wrap items-center justify-between gap-8 pt-8 border-t border-border-default min-w-0">
+									<div className="flex flex-wrap items-center gap-6 min-w-0">
 										<Button
 											size="s"
 											variant={isActive ? "primary" : "outline"}
 											onClick={() => void handleToggleProjectActive(project.slug)}
 											tooltip={isActive ? "Clique para desativar este projeto do RAG" : "Ativar este projeto no RAG multi-projeto"}
+											className="shrink-0"
 										>
 											<RiCheckLine className={cn("size-12 mr-4", !isActive && "opacity-40")} />
 											{isActive ? "Ativo no RAG" : "Ativar no RAG"}
@@ -459,18 +469,20 @@ export function HermesProjectsView() {
 												setInfoModalOpen(true);
 											}}
 											tooltip="Ver arquivos e diagnóstico do projeto"
+											className="shrink-0"
 										>
 											<RiInformationLine className="size-12" />
 											Detalhes
 										</Button>
 									</div>
 
-									<div className="flex items-center gap-2">
+									<div className="flex flex-wrap items-center gap-6 shrink-0">
 										<Button
 											size="s"
 											variant="outline"
 											onClick={() => void handleStartReindex(project)}
 											disabled={hermesManagement.indexingProgress.isIndexing}
+											className="shrink-0"
 										>
 											{isIndexing ? (
 												<RiRefreshLine className="size-12 animate-spin" />
@@ -482,7 +494,7 @@ export function HermesProjectsView() {
 										<Button
 											size="s"
 											variant="ghost"
-											className="text-feedback-error hover:text-feedback-error"
+											className="text-feedback-error hover:text-feedback-error shrink-0"
 											onClick={() => {
 												setProjectToDelete(project);
 												setConfirmSlugInput("");

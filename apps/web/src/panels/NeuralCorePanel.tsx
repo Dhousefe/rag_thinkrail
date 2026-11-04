@@ -32,11 +32,19 @@ export function NeuralCorePanel() {
 	const [inspectedNode, setInspectedNode] = useState<HermesVectorNode | null>(null);
 	const [selectedNode, setSelectedNode] = useState<HermesVectorNode | null>(null);
 
+	// Sincronização e Reatividade com Projetos Ativos do Hermes RAG
+	const activeProjectSlugs = useAppStore(
+		(s) => s.hermesManagement.activeProjectSlugs,
+	);
+	const activeProjectSlug = useAppStore(
+		(s) => s.hermesManagement.activeProjectSlug,
+	);
+
 	// Carregamento dos vetores do banco SQLite hermes.db
 	const loadVectorGraph = useCallback(async () => {
 		try {
 			const res = await getTransport().request("hermes.getVectorGraph", {
-				limit: 120,
+				limit: 140,
 			});
 			if (res && Array.isArray(res.nodes)) {
 				setVectorNodes(res.nodes);
@@ -49,6 +57,11 @@ export function NeuralCorePanel() {
 			console.warn("[NeuralCorePanel] Erro ao carregar grafo vetorial:", err);
 		}
 	}, []);
+
+	// Recarrega automaticamente a representação gráfica quando projetos RAG do Hermes forem ativados/desativados
+	useEffect(() => {
+		void loadVectorGraph();
+	}, [activeProjectSlugs, activeProjectSlug, loadVectorGraph]);
 
 	// Inicialização do Motor WebGPU Geométrico
 	useEffect(() => {
