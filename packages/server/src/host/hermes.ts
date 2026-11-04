@@ -921,25 +921,15 @@ export async function getHermesVectorGraph(
 			return "code";
 		};
 
-		const moduleSet = new Set<string>();
-		const preliminaryNodes: Array<{
-			id: string;
-			path: string;
-			relPath: string;
-			qualifiedName: string;
-			chunkKind: string;
+		// Identificação semântica dos módulos e clusters
+		const moduleStats = new Map<string, number>();
+		const classifiedRows: Array<{
+			row: (typeof rows)[0];
 			module: string;
-			language: string;
-			tokenEstimate: number;
-			contentSnippet: string;
-			orbitLayer: number;
-			pos: [number, number, number];
-			methods: Array<any>;
+			layer: number;
+			lang: string;
+			relPath: string;
 		}> = [];
-
-		// Distribuição por Orbição Semântica Estratificada
-		const goldenAngle = Math.PI * (3 - Math.sqrt(5)); // ~2.39996 rad
-		const layerRadii: Record<number, number> = { 1: 1.45, 2: 2.35, 3: 3.25 };
 
 		for (let i = 0; i < rows.length; i++) {
 			const r = rows[i]!;
@@ -949,13 +939,24 @@ export async function getHermesVectorGraph(
 			let mod = "core";
 			let layer = 2;
 
-			if (normalizedPath.includes("/packages/contracts") || normalizedPath.includes("/domain") || r.chunk_kind === "interface") {
+			if (
+				normalizedPath.includes("/packages/contracts") ||
+				normalizedPath.includes("/domain") ||
+				normalizedPath.includes("/types/") ||
+				r.chunk_kind === "interface"
+			) {
 				mod = "contracts";
-				layer = 1; // Núcleo / Contratos
-			} else if (normalizedPath.includes("/packages/server") || normalizedPath.includes("/br/com/hermes") || normalizedPath.includes("/agent/") || normalizedPath.includes("/rag/")) {
+				layer = 1; // Núcleo / Contratos / Interfaces
+			} else if (
+				normalizedPath.includes("/packages/server") ||
+				normalizedPath.includes("/br/com/hermes") ||
+				normalizedPath.includes("/agent/") ||
+				normalizedPath.includes("/rag/") ||
+				normalizedPath.includes("/host/")
+			) {
 				mod = "packages/server";
-				layer = 2; // Engine / Server
-			} else if (normalizedPath.includes("/apps/web")) {
+				layer = 2; // Engine / Server / AI
+			} else if (normalizedPath.includes("/apps/web") || normalizedPath.includes("/components/") || normalizedPath.includes("/panels/")) {
 				mod = "apps/web";
 				layer = 3; // Web UI
 			} else if (normalizedPath.includes("/packages/ui")) {
@@ -967,27 +968,66 @@ export async function getHermesVectorGraph(
 			} else if (normalizedPath.includes("/extensions/")) {
 				mod = "extensions";
 				layer = 3;
+			} else if (normalizedPath.includes("/skills/")) {
+				mod = "skills";
+				layer = 1;
 			}
+
 			moduleSet.add(mod);
+			moduleStats.set(mod, (moduleStats.get(mod) || 0) + 1);
 
 			const relPath = normalizedPath.split("/").slice(-2).join("/");
+			classifiedRows.push({ row: r, module: mod, layer, lang, relPath });
+		}
 
-			// Posição orbital inicial via Fibonacci Sphere na esfera da camada
-			const baseRadius = layerRadii[layer] || 2.2;
-			const yRatio = 1 - (i / Math.max(1, rows.length - 1)) * 2; // de 1 a -1
-			const radiusAtY = Math.sqrt(Math.max(0, 1 - yRatio * yRatio));
-			const theta = i * goldenAngle;
+		// Atribui a cada cluster/módulo um centroide espacial 3D único (Clusters Semânticos 3D)
+		// Evita enfileiramento linear e projeta os grupos em setores tridimensionais bem definidos
+		const allModules = Array.from(moduleSet).sort();
+		const clusterCentroids = new Map<string, [number, number, number]>();
+		const clusterCount = Math.max(1, allModules.length);
 
-			// Incorpora orientação semântica do embedding 768D (perturbação harmônica)
+		allModules.forEach((m, idx) => {
+			const angle = (idx / clusterCount) * Math.PI * 2;
+			// Deslocamento vertical e radial alternado para que os clusters nunca fiquem coplanares
+			const elevation = Math.sin(idx * 1.618) * 0.9;
+			const radius = 2.1 + (idx % 2 === 0 ? 0.35 : -0.35);
+			const cx = Math.cos(angle) * radius;
+			const cy = elevation;
+			const cz = Math.sin(angle) * radius;
+			clusterCentroids.set(m, [cx, cy, cz]);
+		});
+
+		// Orbição e dispersão dentro de cada cluster usando espirais áureas locais + perturbação de embedding
+		const moduleItemIndex = new Map<string, number>();
+		const goldenAngle = Math.PI * (3 - Math.sqrt(5)); // ~2.39996 rad
+
+		for (let i = 0; i < classifiedRows.length; i++) {
+			const { row: r, module: mod, layer, lang, relPath } = classifiedRows[i]!;
+			const itemIdxInCluster = moduleItemIndex.get(mod) || 0;
+			moduleItemIndex.set(mod, itemIdxInCluster + 1);
+			const totalInCluster = Math.max(1, moduleStats.get(mod) || 1);
+
+			const centroid = clusterCentroids.get(mod) || [0, 0, 0];
+
+			// Fibonacci Sphere local ao redor do centroide do módulo
+			// Raios locais variáveis em cascas semitransparentes (0.35 a 1.1) para evitar alinhamento linear
+			const localYRatio = totalInCluster === 1 ? 0 : 1 - (itemIdxInCluster / (totalInCluster - 1)) * 2;
+			const localRadiusAtY = Math.sqrt(Math.max(0.04, 1 - localYRatio * localYRatio));
+			const localTheta = itemIdxInCluster * goldenAngle + (layer * 0.5);
+
+			// Espalhamento volumétrico variável (sem raio fixo constante)
+			const clusterSpreadRadius = 0.42 + (itemIdxInCluster % 3) * 0.28 + ((itemIdxInCluster * 1.618) % 0.25);
+
+			// Perturbação orientada pelo embedding 768D (afinidade semântica)
 			const [rx, ry, rz] = rawCoords[i]!;
 			const normEmbDist = Math.sqrt(rx * rx + ry * ry + rz * rz) || 1;
-			const embOffsetX = (rx / normEmbDist) * 0.22;
-			const embOffsetY = (ry / normEmbDist) * 0.22;
-			const embOffsetZ = (rz / normEmbDist) * 0.22;
+			const embOffsetX = (rx / normEmbDist) * 0.18;
+			const embOffsetY = (ry / normEmbDist) * 0.18;
+			const embOffsetZ = (rz / normEmbDist) * 0.18;
 
-			const px = (Math.cos(theta) * radiusAtY + embOffsetX) * baseRadius;
-			const py = (yRatio + embOffsetY) * baseRadius;
-			const pz = (Math.sin(theta) * radiusAtY + embOffsetZ) * baseRadius;
+			const px = centroid[0] + (Math.cos(localTheta) * localRadiusAtY + embOffsetX) * clusterSpreadRadius;
+			const py = centroid[1] + (localYRatio + embOffsetY) * clusterSpreadRadius;
+			const pz = centroid[2] + (Math.sin(localTheta) * localRadiusAtY + embOffsetZ) * clusterSpreadRadius;
 
 			// Métodos/Funções filhos da classe
 			const rawMethods = methodsByPath.get(r.path) || [];
@@ -1003,7 +1043,7 @@ export async function getHermesVectorGraph(
 					tokenEstimate: m.token_estimate || 0,
 					contentSnippet: (m.snippet || "").trim(),
 					orbitAngle: angle,
-					orbitRadius: 0.18 + (mIdx % 2) * 0.04,
+					orbitRadius: 0.16 + (mIdx % 2) * 0.04,
 				};
 			});
 
@@ -1023,10 +1063,10 @@ export async function getHermesVectorGraph(
 			});
 		}
 
-		// Algoritmo Anti-Colisão (Relaxação Esférica de Repulsão)
-		// Garante que nenhum polígono sobreponha o outro (distância mínima de 0.44)
-		const minSafeDist = 0.44;
-		const relaxationIterations = 16;
+		// Algoritmo Anti-Colisão e Anti-Oclusão 3D Avançado
+		// Repulsão espacial estrita para garantir distância mínima e visibilidade clara
+		const minSafeDist = 0.38;
+		const relaxationIterations = 24;
 
 		for (let iter = 0; iter < relaxationIterations; iter++) {
 			for (let i = 0; i < preliminaryNodes.length; i++) {
@@ -1039,7 +1079,7 @@ export async function getHermesVectorGraph(
 					const dist = Math.sqrt(dx * dx + dy * dy + dz * dz) || 0.0001;
 
 					if (dist < minSafeDist) {
-						const overlap = (minSafeDist - dist) * 0.45;
+						const overlap = (minSafeDist - dist) * 0.5;
 						const nx = (dx / dist) * overlap;
 						const ny = (dy / dist) * overlap;
 						const nz = (dz / dist) * overlap;
