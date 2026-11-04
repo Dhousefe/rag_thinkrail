@@ -1162,7 +1162,7 @@ export async function getHermesVectorGraph(
 		}
 
 		return {
-			projectSlug,
+			projectSlug: primarySlug,
 			nodes,
 			edges,
 			totalChunks,
@@ -1170,9 +1170,9 @@ export async function getHermesVectorGraph(
 			modules: Array.from(moduleSet),
 		};
 	} catch (err) {
-		log.warn("getHermesVectorGraph.failed", { error: String(err), projectSlug });
+		log.warn("getHermesVectorGraph.failed", { error: String(err), projectSlug: primarySlug });
 		return {
-			projectSlug,
+			projectSlug: primarySlug,
 			nodes: [],
 			edges: [],
 			totalChunks: 0,
