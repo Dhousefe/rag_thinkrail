@@ -97,12 +97,14 @@ export async function runIncrementalReindex(options: ReindexOptions = {}) {
 	db.run("PRAGMA foreign_keys = ON;");
 
 	const checkUnchangedStmt = db.prepare(`
-		SELECT 1 FROM l2j_files 
-		WHERE project_name = ? AND path = ? AND sha256 = ? AND mtime_ms = ? 
+		SELECT 1 FROM l2j_files f
+		JOIN l2j_chunks c ON c.file_id = f.id
+		WHERE f.project_name = ? AND f.path = ? AND f.sha256 = ? AND f.mtime_ms = ? 
 		LIMIT 1;
 	`);
 
 	const deleteFtsStmt = db.prepare("DELETE FROM l2j_chunk_fts WHERE file_id = ?;");
+	const deleteChunksStmt = db.prepare("DELETE FROM l2j_chunks WHERE file_id = ?;");
 	const deleteFileStmt = db.prepare("DELETE FROM l2j_files WHERE id = ?;");
 	const getFileIdStmt = db.prepare(
 		"SELECT id FROM l2j_files WHERE project_name = ? AND path = ? LIMIT 1;",
@@ -178,6 +180,7 @@ export async function runIncrementalReindex(options: ReindexOptions = {}) {
 				| undefined;
 			if (existingRow) {
 				deleteFtsStmt.run(existingRow.id);
+				deleteChunksStmt.run(existingRow.id);
 				deleteFileStmt.run(existingRow.id);
 			}
 
