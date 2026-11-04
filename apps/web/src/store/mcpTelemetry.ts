@@ -45,21 +45,22 @@ export function recordMcpToolStart(
 export function recordMcpToolEnd(
 	state: McpTelemetryState,
 	toolCallId: string,
-	toolName: string,
+	toolName: string | undefined,
 	isError: boolean,
 	result?: unknown,
 	endedAt: number = Date.now(),
 ): McpTelemetryState {
 	const active = state.activeCalls[toolCallId];
+	const resolvedToolName = toolName || active?.toolName || "";
 	const startedAt = active?.startedAt ?? endedAt;
 	const durationMs = Math.max(0, endedAt - startedAt);
 
 	let server = "";
-	let tool = toolName;
-	if (toolName.startsWith("mcp__")) {
-		const parts = toolName.slice(5).split("__");
+	let tool = resolvedToolName;
+	if (resolvedToolName.startsWith("mcp__")) {
+		const parts = resolvedToolName.slice(5).split("__");
 		server = parts[0] || "";
-		tool = parts.slice(1).join("__") || parts[0] || toolName;
+		tool = parts.slice(1).join("__") || parts[0] || resolvedToolName;
 	}
 
 	const nextActive = { ...state.activeCalls };
@@ -70,7 +71,7 @@ export function recordMcpToolEnd(
 		toolCallId,
 		server,
 		tool,
-		toolName,
+		toolName: resolvedToolName,
 		startedAt,
 		endedAt,
 		durationMs,

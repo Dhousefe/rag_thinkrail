@@ -88,6 +88,7 @@ import type {
 	HermesCreateProjectInput,
 	HermesDeleteProjectInput,
 	HermesGetActiveProjectsResult,
+	HermesGetVectorGraphInput,
 	HermesIndexingProgress,
 	HermesListProjectsResult,
 	HermesProjectInfo,
@@ -95,6 +96,7 @@ import type {
 	HermesReindexResult,
 	HermesSetActiveProjectsInput,
 	HermesTestConnectionInput,
+	HermesVectorGraphSample,
 } from "./hermes";
 import type {
 	ExtUiResponse,
@@ -430,6 +432,7 @@ export const WS_METHODS = {
 	hermesGetActiveProjects: "hermes.getActiveProjects",
 	hermesSetActiveProjects: "hermes.setActiveProjects",
 	hermesGetIndexingProgress: "hermes.getIndexingProgress",
+	hermesGetVectorGraph: "hermes.getVectorGraph",
 } as const;
 
 export const WS_CHANNELS = {
@@ -1260,6 +1263,7 @@ export interface WsMethodMap {
 	"hermes.getActiveProjects": { params: Record<string, never>; result: HermesGetActiveProjectsResult };
 	"hermes.setActiveProjects": { params: HermesSetActiveProjectsInput; result: HermesGetActiveProjectsResult };
 	"hermes.getIndexingProgress": { params: Record<string, never>; result: HermesIndexingProgress };
+	"hermes.getVectorGraph": { params: HermesGetVectorGraphInput; result: HermesVectorGraphSample };
 }
 
 /** Payload of the `mcp.status` channel: one per-session snapshot per publish. */

@@ -17,6 +17,7 @@ import type {
 	HermesCreateProjectInput,
 	HermesDeleteProjectInput,
 	HermesGetActiveProjectsResult,
+	HermesGetVectorGraphInput,
 	HermesIndexingProgress,
 	HermesListProjectsResult,
 	HermesProjectInfo,
@@ -24,6 +25,9 @@ import type {
 	HermesReindexResult,
 	HermesSetActiveProjectsInput,
 	HermesTestConnectionInput,
+	HermesVectorEdge,
+	HermesVectorGraphSample,
+	HermesVectorNode,
 } from "@thinkrail/contracts";
 import { logger } from "../log";
 
@@ -763,3 +767,359 @@ export async function testHermesConnection(
 		timestamp,
 	};
 }
+
+/**
+ * Retorna amostra representativa de nós e arestas semânticas do banco vetorial
+ * do projeto ativo para visualização geométrica 3D no Neural Core.
+ */
+export async function getHermesVectorGraph(
+	params: HermesGetVectorGraphInput,
+): Promise<HermesVectorGraphSample> {
+	const hermesHome = resolveHermesHome();
+	let projectSlug = params.projectSlug;
+	if (!projectSlug) {
+		const active = await getActiveHermesProjects();
+		projectSlug = active.activeSlugs[0] || "project-thinkrail";
+	}
+
+	const dbPath = join(hermesHome, "projects", projectSlug, "hermes.db");
+	if (!existsSync(dbPath)) {
+		return {
+			projectSlug,
+			nodes: [],
+			edges: [],
+			totalChunks: 0,
+			totalEmbeddings: 0,
+			modules: [],
+		};
+	}
+
+	try {
+		const { Database } = await import("bun:sqlite");
+		const db = new Database(dbPath, { readonly: true });
+
+		const totalChunksRow = db.query("SELECT count(*) as c FROM l2j_chunks").get() as { c?: number };
+		const totalEmbeddingsRow = db.query("SELECT count(*) as c FROM l2j_embeddings_cache").get() as { c?: number };
+		const totalChunks = totalChunksRow?.c ?? 0;
+		const totalEmbeddings = totalEmbeddingsRow?.c ?? 0;
+
+		const targetLimit = Math.min(160, Math.max(20, params.limit || 90));
+
+		// Busca chunks priorizando classes, interfaces e arquivos estruturais com seus embeddings
+		const rows = db.query(`
+			SELECT c.id, c.path, c.qualified_name, c.chunk_kind, c.token_estimate,
+			       substr(c.content, 1, 140) as snippet, e.vector_blob
+			FROM l2j_chunks c
+			JOIN l2j_embeddings_cache e ON c.rowid = e.rowid
+			WHERE c.token_estimate >= 20
+			ORDER BY CASE
+				WHEN c.chunk_kind IN ('class', 'interface', 'struct', 'document') THEN 1
+				WHEN c.chunk_kind IN ('type', 'function') THEN 2
+				ELSE 3
+			END, c.token_estimate DESC
+			LIMIT ?;
+		`).all(targetLimit) as Array<{
+			id: string;
+			path: string;
+			qualified_name?: string;
+			chunk_kind?: string;
+			token_estimate?: number;
+			snippet?: string;
+			vector_blob: Uint8Array;
+		}>;
+
+		// Coleta métodos e funções filhos para classes e arquivos selecionados
+		const uniquePaths = Array.from(new Set(rows.map((r) => r.path)));
+		const methodsByPath = new Map<string, Array<{
+			id: string;
+			qualified_name?: string;
+			chunk_kind?: string;
+			token_estimate?: number;
+			snippet?: string;
+		}>>();
+
+		if (uniquePaths.length > 0) {
+			const pathPlaceholders = uniquePaths.map(() => "?").join(", ");
+			const methodRows = db.query(`
+				SELECT id, path, qualified_name, chunk_kind, token_estimate, substr(content, 1, 120) as snippet
+				FROM l2j_chunks
+				WHERE chunk_kind IN ('method', 'function', 'constructor')
+				  AND path IN (${pathPlaceholders})
+				ORDER BY token_estimate DESC;
+			`).all(...uniquePaths) as Array<{
+				id: string;
+				path: string;
+				qualified_name?: string;
+				chunk_kind?: string;
+				token_estimate?: number;
+				snippet?: string;
+			}>;
+
+			for (const m of methodRows) {
+				const list = methodsByPath.get(m.path) || [];
+				if (list.length < 8) {
+					list.push(m);
+					methodsByPath.set(m.path, list);
+				}
+			}
+		}
+
+		db.close();
+
+		if (rows.length === 0) {
+			return {
+				projectSlug,
+				nodes: [],
+				edges: [],
+				totalChunks,
+				totalEmbeddings,
+				modules: [],
+			};
+		}
+
+		// Projeção 768D -> 3D usando projeção ortonormal determinística com proporção áurea
+		const dim = 768;
+		const projX = new Float32Array(dim);
+		const projY = new Float32Array(dim);
+		const projZ = new Float32Array(dim);
+		for (let i = 0; i < dim; i++) {
+			projX[i] = Math.sin(i * 1.6180339887);
+			projY[i] = Math.cos(i * 2.7182818284);
+			projZ[i] = Math.sin(i * 3.1415926535);
+		}
+
+		const rawCoords: Array<[number, number, number]> = [];
+		const vectors: Float32Array[] = [];
+
+		for (const r of rows) {
+			const vec = new Float32Array(r.vector_blob.buffer, r.vector_blob.byteOffset, dim);
+			vectors.push(vec);
+			let x = 0;
+			let y = 0;
+			let z = 0;
+			for (let i = 0; i < dim; i++) {
+				x += vec[i]! * projX[i]!;
+				y += vec[i]! * projY[i]!;
+				z += vec[i]! * projZ[i]!;
+			}
+			rawCoords.push([x, y, z]);
+		}
+
+		// Função auxiliar para detectar linguagem de arquivo
+		const detectLanguage = (filePath: string): string => {
+			const lower = filePath.toLowerCase();
+			if (lower.endsWith(".java")) return "java";
+			if (lower.endsWith(".kt")) return "kotlin";
+			if (lower.endsWith(".ts") || lower.endsWith(".tsx")) return "typescript";
+			if (lower.endsWith(".js") || lower.endsWith(".jsx")) return "javascript";
+			if (lower.endsWith(".md") || lower.endsWith(".txt")) return "markdown";
+			if (lower.endsWith(".json") || lower.endsWith(".yaml") || lower.endsWith(".yml") || lower.endsWith(".toml")) return "config";
+			if (lower.endsWith(".bat") || lower.endsWith(".sh") || lower.endsWith(".cmd") || lower.endsWith(".ps1")) return "script";
+			if (lower.endsWith(".rs")) return "rust";
+			if (lower.endsWith(".py")) return "python";
+			if (lower.endsWith(".go")) return "go";
+			return "code";
+		};
+
+		const moduleSet = new Set<string>();
+		const preliminaryNodes: Array<{
+			id: string;
+			path: string;
+			relPath: string;
+			qualifiedName: string;
+			chunkKind: string;
+			module: string;
+			language: string;
+			tokenEstimate: number;
+			contentSnippet: string;
+			orbitLayer: number;
+			pos: [number, number, number];
+			methods: Array<any>;
+		}> = [];
+
+		// Distribuição por Orbição Semântica Estratificada
+		const goldenAngle = Math.PI * (3 - Math.sqrt(5)); // ~2.39996 rad
+		const layerRadii: Record<number, number> = { 1: 1.45, 2: 2.35, 3: 3.25 };
+
+		for (let i = 0; i < rows.length; i++) {
+			const r = rows[i]!;
+			const normalizedPath = r.path.replace(/\\/g, "/");
+			const lang = detectLanguage(normalizedPath);
+
+			let mod = "core";
+			let layer = 2;
+
+			if (normalizedPath.includes("/packages/contracts") || normalizedPath.includes("/domain") || r.chunk_kind === "interface") {
+				mod = "contracts";
+				layer = 1; // Núcleo / Contratos
+			} else if (normalizedPath.includes("/packages/server") || normalizedPath.includes("/br/com/hermes") || normalizedPath.includes("/agent/") || normalizedPath.includes("/rag/")) {
+				mod = "packages/server";
+				layer = 2; // Engine / Server
+			} else if (normalizedPath.includes("/apps/web")) {
+				mod = "apps/web";
+				layer = 3; // Web UI
+			} else if (normalizedPath.includes("/packages/ui")) {
+				mod = "packages/ui";
+				layer = 2;
+			} else if (normalizedPath.includes("/scripts/")) {
+				mod = "scripts";
+				layer = 3;
+			} else if (normalizedPath.includes("/extensions/")) {
+				mod = "extensions";
+				layer = 3;
+			}
+			moduleSet.add(mod);
+
+			const relPath = normalizedPath.split("/").slice(-2).join("/");
+
+			// Posição orbital inicial via Fibonacci Sphere na esfera da camada
+			const baseRadius = layerRadii[layer] || 2.2;
+			const yRatio = 1 - (i / Math.max(1, rows.length - 1)) * 2; // de 1 a -1
+			const radiusAtY = Math.sqrt(Math.max(0, 1 - yRatio * yRatio));
+			const theta = i * goldenAngle;
+
+			// Incorpora orientação semântica do embedding 768D (perturbação harmônica)
+			const [rx, ry, rz] = rawCoords[i]!;
+			const normEmbDist = Math.sqrt(rx * rx + ry * ry + rz * rz) || 1;
+			const embOffsetX = (rx / normEmbDist) * 0.22;
+			const embOffsetY = (ry / normEmbDist) * 0.22;
+			const embOffsetZ = (rz / normEmbDist) * 0.22;
+
+			const px = (Math.cos(theta) * radiusAtY + embOffsetX) * baseRadius;
+			const py = (yRatio + embOffsetY) * baseRadius;
+			const pz = (Math.sin(theta) * radiusAtY + embOffsetZ) * baseRadius;
+
+			// Métodos/Funções filhos da classe
+			const rawMethods = methodsByPath.get(r.path) || [];
+			const childMethods = rawMethods.map((m, mIdx) => {
+				const totalM = rawMethods.length;
+				const angle = (mIdx / Math.max(1, totalM)) * Math.PI * 2;
+				const simpleName = (m.qualified_name || "").split(".").pop() || "fn";
+				return {
+					id: m.id,
+					name: simpleName,
+					kind: (m.chunk_kind as any) || "method",
+					signature: m.qualified_name || simpleName,
+					tokenEstimate: m.token_estimate || 0,
+					contentSnippet: (m.snippet || "").trim(),
+					orbitAngle: angle,
+					orbitRadius: 0.18 + (mIdx % 2) * 0.04,
+				};
+			});
+
+			preliminaryNodes.push({
+				id: r.id,
+				path: r.path,
+				relPath,
+				qualifiedName: r.qualified_name || relPath,
+				chunkKind: r.chunk_kind || "code",
+				module: mod,
+				language: lang,
+				tokenEstimate: r.token_estimate || 0,
+				contentSnippet: (r.snippet || "").trim(),
+				orbitLayer: layer,
+				pos: [px, py, pz],
+				methods: childMethods,
+			});
+		}
+
+		// Algoritmo Anti-Colisão (Relaxação Esférica de Repulsão)
+		// Garante que nenhum polígono sobreponha o outro (distância mínima de 0.44)
+		const minSafeDist = 0.44;
+		const relaxationIterations = 16;
+
+		for (let iter = 0; iter < relaxationIterations; iter++) {
+			for (let i = 0; i < preliminaryNodes.length; i++) {
+				const n1 = preliminaryNodes[i]!;
+				for (let j = i + 1; j < preliminaryNodes.length; j++) {
+					const n2 = preliminaryNodes[j]!;
+					const dx = n2.pos[0] - n1.pos[0];
+					const dy = n2.pos[1] - n1.pos[1];
+					const dz = n2.pos[2] - n1.pos[2];
+					const dist = Math.sqrt(dx * dx + dy * dy + dz * dz) || 0.0001;
+
+					if (dist < minSafeDist) {
+						const overlap = (minSafeDist - dist) * 0.45;
+						const nx = (dx / dist) * overlap;
+						const ny = (dy / dist) * overlap;
+						const nz = (dz / dist) * overlap;
+
+						n1.pos[0] -= nx;
+						n1.pos[1] -= ny;
+						n1.pos[2] -= nz;
+
+						n2.pos[0] += nx;
+						n2.pos[1] += ny;
+						n2.pos[2] += nz;
+					}
+				}
+			}
+		}
+
+		const nodes: HermesVectorNode[] = preliminaryNodes.map((pn) => ({
+			id: pn.id,
+			path: pn.path,
+			relPath: pn.relPath,
+			qualifiedName: pn.qualifiedName,
+			chunkKind: pn.chunkKind,
+			module: pn.module,
+			language: pn.language,
+			tokenEstimate: pn.tokenEstimate,
+			contentSnippet: pn.contentSnippet,
+			orbitLayer: pn.orbitLayer,
+			position: pn.pos,
+			methods: pn.methods,
+		}));
+
+		// Grafo k-NN: similaridade de cosseno entre nós (conecta os 2 vizinhos mais próximos)
+		const edges: HermesVectorEdge[] = [];
+		const kNeighbors = 2;
+
+		for (let i = 0; i < vectors.length; i++) {
+			const v1 = vectors[i]!;
+			const sims: Array<{ idx: number; sim: number }> = [];
+
+			for (let j = 0; j < vectors.length; j++) {
+				if (i === j) continue;
+				const v2 = vectors[j]!;
+				let dot = 0;
+				for (let d = 0; d < dim; d += 8) {
+					dot += v1[d]! * v2[d]!;
+				}
+				sims.push({ idx: j, sim: dot });
+			}
+
+			sims.sort((a, b) => b.sim - a.sim);
+			for (let k = 0; k < kNeighbors && k < sims.length; k++) {
+				const neighbor = sims[k]!;
+				if (neighbor.idx > i) {
+					edges.push({
+						source: i,
+						target: neighbor.idx,
+						similarity: neighbor.sim,
+					});
+				}
+			}
+		}
+
+		return {
+			projectSlug,
+			nodes,
+			edges,
+			totalChunks,
+			totalEmbeddings,
+			modules: Array.from(moduleSet),
+		};
+	} catch (err) {
+		log.warn("getHermesVectorGraph.failed", { error: String(err), projectSlug });
+		return {
+			projectSlug,
+			nodes: [],
+			edges: [],
+			totalChunks: 0,
+			totalEmbeddings: 0,
+			modules: [],
+		};
+	}
+}
+

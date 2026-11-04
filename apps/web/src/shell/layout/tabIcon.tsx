@@ -16,6 +16,8 @@ import {
 	RiListCheck3,
 	RiPlugFill,
 	RiPlugLine,
+	RiPulseFill,
+	RiPulseLine,
 	RiSparklingFill,
 	RiSparklingLine,
 	RiTaskFill,
@@ -61,6 +63,8 @@ export function tabIcon(tab: LayoutTab, active = false, cls = "size-14 shrink-0"
 					return active ? <RiDiscussFill className={cls} /> : <RiDiscussLine className={cls} />;
 				case "plan":
 					return active ? <RiTaskFill className={cls} /> : <RiTaskLine className={cls} />;
+				case "neural-core":
+					return active ? <RiPulseFill className={cls} /> : <RiPulseLine className={cls} />;
 				default:
 					return active ? <RiLayout2Fill className={cls} /> : <RiLayout2Line className={cls} />;
 			}

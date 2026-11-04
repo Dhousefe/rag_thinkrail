@@ -21,6 +21,7 @@ import {
 	RiMailUnreadLine,
 	RiNodeTree,
 	RiPlugLine,
+	RiPulseLine,
 	RiSearchEyeLine,
 	RiSettings3Line,
 	RiSparkling2Line,
@@ -44,6 +45,7 @@ const TOOL_LABELS: Record<PaletteTool, MessageKey> = {
 	files: "workbench.tool.files",
 	review: "workbench.tool.review",
 	plan: "workbench.tool.plan",
+	"neural-core": "workbench.tool.neuralCore",
 };
 
 const TOOL_ICONS: Record<PaletteTool, RemixiconComponentType> = {
@@ -53,6 +55,7 @@ const TOOL_ICONS: Record<PaletteTool, RemixiconComponentType> = {
 	files: RiFolderLine,
 	review: RiFileList3Line,
 	plan: RiListCheck3,
+	"neural-core": RiPulseLine,
 };
 
 export interface PaletteCatalogDeps {

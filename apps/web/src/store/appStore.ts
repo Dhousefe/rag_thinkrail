@@ -4481,7 +4481,12 @@ export const useAppStore = create<AppState>((set, get) => ({
 				if (event.type === "tool_execution_start") {
 					state = {
 						...state,
-						mcpTelemetry: recordMcpToolStart(state.mcpTelemetry, event.toolCallId, event.toolName),
+						mcpTelemetry: recordMcpToolStart(
+							state.mcpTelemetry,
+							event.toolCallId,
+							event.toolName,
+							"args" in event ? event.args : undefined,
+						),
 					};
 				} else if (event.type === "tool_execution_end") {
 					state = {
@@ -4489,7 +4494,7 @@ export const useAppStore = create<AppState>((set, get) => ({
 						mcpTelemetry: recordMcpToolEnd(
 							state.mcpTelemetry,
 							event.toolCallId,
-							event.toolName,
+							event.toolName ?? state.mcpTelemetry.activeCalls[event.toolCallId]?.toolName ?? "",
 							event.isError,
 							event.result,
 						),

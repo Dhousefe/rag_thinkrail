@@ -29,6 +29,7 @@ import { DiffPane } from "../panels/DiffPane";
 import { FilePane } from "../panels/FilePane";
 import { FilesPanel } from "../panels/FilesPanel";
 import { HermesMcpPanel } from "../panels/HermesMcpPanel";
+import { NeuralCorePanel } from "../panels/NeuralCorePanel";
 import { startChatInTab } from "../panels/openChat";
 import { fileComparisonTab, openFileInTab } from "../panels/openTabs";
 import { ProjectTree } from "../panels/ProjectTree";
@@ -681,6 +682,7 @@ export function WorkspaceWorkbench({ workspaceId }: { workspaceId: string }) {
 					{t("shell.workbench.planRailEmpty")}
 				</div>
 			),
+			"neural-core": <NeuralCorePanel />,
 		};
 		for (const tool of Object.keys(bodies) as LayoutToolId[]) {
 			bodies[tool] = (

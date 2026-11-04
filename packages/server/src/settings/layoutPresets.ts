@@ -15,6 +15,7 @@ const TOOL_IDS = new Set<LayoutToolId>([
 	"plan",
 	"hermes-mcp",
 	"cindy",
+	"neural-core",
 ]);
 
 function record(value: unknown): Record<string, unknown> | null {

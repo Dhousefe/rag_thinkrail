@@ -85,6 +85,54 @@ export interface HermesGetActiveProjectsResult {
 	activeSlugs: string[];
 }
 
+export interface HermesAstChildSymbol {
+	id: string;
+	name: string;
+	kind: "method" | "function" | "constructor" | "field" | "section";
+	signature?: string | undefined;
+	startLine?: number | undefined;
+	endLine?: number | undefined;
+	tokenEstimate?: number | undefined;
+	contentSnippet?: string | undefined;
+	orbitAngle?: number | undefined;
+	orbitRadius?: number | undefined;
+}
+
+export interface HermesVectorNode {
+	id: string;
+	path: string;
+	relPath: string;
+	qualifiedName: string;
+	chunkKind: string;
+	module: string;
+	position: [number, number, number];
+	tokenEstimate: number;
+	contentSnippet: string;
+	language?: string | undefined;
+	methods?: HermesAstChildSymbol[] | undefined;
+	orbitLayer?: number | undefined;
+}
+
+export interface HermesVectorEdge {
+	source: number;
+	target: number;
+	similarity: number;
+}
+
+export interface HermesVectorGraphSample {
+	projectSlug: string;
+	nodes: HermesVectorNode[];
+	edges: HermesVectorEdge[];
+	totalChunks: number;
+	totalEmbeddings: number;
+	modules: string[];
+}
+
+export interface HermesGetVectorGraphInput {
+	projectSlug?: string | undefined;
+	limit?: number | undefined;
+}
+
 export interface HermesIndexingProgress {
 	isIndexing: boolean;
 	projectSlug: string | null;

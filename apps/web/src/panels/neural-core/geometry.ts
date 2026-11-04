@@ -1,9 +1,4 @@
-export type GeometryShapeType =
-	| "tesseract"
-	| "icosahedron"
-	| "merkaba"
-	| "torus"
-	| "dodecahedron";
+export type GeometryShapeType = "tesseract" | "icosahedron" | "merkaba" | "torus" | "dodecahedron";
 
 export interface GeometryMeshData {
 	// Array intercalado: [x, y, z, r, g, b, a, ...]
@@ -15,7 +10,7 @@ export interface GeometryMeshData {
 
 // 1. Gerador do Hipercubo 4D (Tesseract rotativo projetado em 3D)
 export function createTesseractWireframe(scale = 1.0, angle4D = 0.0): GeometryMeshData {
-	const v4: number[][] = [];
+	const v4: [number, number, number, number][] = [];
 	for (let x = -1; x <= 1; x += 2) {
 		for (let y = -1; y <= 1; y += 2) {
 			for (let z = -1; z <= 1; z += 2) {
@@ -32,13 +27,12 @@ export function createTesseractWireframe(scale = 1.0, angle4D = 0.0): GeometryMe
 	const projDistance = 2.2;
 
 	const vertexFloats: number[] = [];
-	for (let i = 0; i < 16; i++) {
-		const p = v4[i]!;
+	for (const [px0, py0, pz0, pw0] of v4) {
 		// Rotação no plano XW
-		const x = p[0]! * cosA - p[3]! * sinA;
-		const w = p[0]! * sinA + p[3]! * cosA;
-		const y = p[1]!;
-		const z = p[2]!;
+		const x = px0 * cosA - pw0 * sinA;
+		const w = px0 * sinA + pw0 * cosA;
+		const y = py0;
+		const z = pz0;
 
 		// Projeção perspectiva 4D -> 3D
 		const perspective = 1.0 / (projDistance - w * 0.6);
@@ -74,28 +68,33 @@ export function createIcosahedronWireframe(radius = 1.0): GeometryMeshData {
 	const a = 1.0;
 	const b = 1.0 / phi;
 
-	const rawVertices = [
-		[-a, b, 0], [a, b, 0], [-a, -b, 0], [a, -b, 0],
-		[0, -a, b], [0, a, b], [0, -a, -b], [0, a, -b],
-		[b, 0, -a], [b, 0, a], [-b, 0, -a], [-b, 0, a],
+	const rawVertices: [number, number, number][] = [
+		[-a, b, 0],
+		[a, b, 0],
+		[-a, -b, 0],
+		[a, -b, 0],
+		[0, -a, b],
+		[0, a, b],
+		[0, -a, -b],
+		[0, a, -b],
+		[b, 0, -a],
+		[b, 0, a],
+		[-b, 0, -a],
+		[-b, 0, a],
 	];
 
 	const vertexFloats: number[] = [];
-	for (const v of rawVertices) {
-		const len = Math.sqrt(v[0]! * v[0]! + v[1]! * v[1]! + v[2]! * v[2]! || 1);
-		const x = (v[0]! / len) * radius;
-		const y = (v[1]! / len) * radius;
-		const z = (v[2]! / len) * radius;
+	for (const [vx, vy, vz] of rawVertices) {
+		const len = Math.sqrt(vx * vx + vy * vy + vz * vz || 1);
+		const x = (vx / len) * radius;
+		const y = (vy / len) * radius;
+		const z = (vz / len) * radius;
 		vertexFloats.push(x, y, z, 0.7, 0.3, 1.0, 0.85); // Magenta neural
 	}
 
 	const indices = [
-		0, 11, 0, 5, 0, 1, 0, 7, 0, 10,
-		3, 9, 3, 4, 3, 2, 3, 6, 3, 8,
-		1, 5, 5, 9, 9, 4, 4, 2, 2, 10,
-		10, 7, 7, 8, 8, 1, 1, 9, 4, 6,
-		2, 6, 6, 8, 7, 10, 5, 11, 11, 2,
-		11, 10, 11, 4, 11, 9, 5, 1, 7, 8
+		0, 11, 0, 5, 0, 1, 0, 7, 0, 10, 3, 9, 3, 4, 3, 2, 3, 6, 3, 8, 1, 5, 5, 9, 9, 4, 4, 2, 2, 10, 10,
+		7, 7, 8, 8, 1, 1, 9, 4, 6, 2, 6, 6, 8, 7, 10, 5, 11, 11, 2, 11, 10, 11, 4, 11, 9, 5, 1, 7, 8,
 	];
 
 	return {
@@ -106,12 +105,19 @@ export function createIcosahedronWireframe(radius = 1.0): GeometryMeshData {
 }
 
 // 3. Gerador dos Anéis Giroscópicos Cardânicos (Gimbal Rings)
-export function createGimbalRingsWireframe(radii: [number, number, number], segments = 48): GeometryMeshData {
+export function createGimbalRingsWireframe(
+	radii: [number, number, number],
+	segments = 48,
+): GeometryMeshData {
 	const vertexFloats: number[] = [];
 	const edgeIndices: number[] = [];
 	let vertexOffset = 0;
 
-	const axes = [
+	const axes: Array<{
+		axis: "xy" | "yz" | "xz";
+		r: number;
+		color: [number, number, number, number];
+	}> = [
 		{ axis: "xy", r: radii[0], color: [0.0, 0.9, 1.0, 0.7] }, // Pitch ring (Ciano)
 		{ axis: "yz", r: radii[1], color: [0.8, 0.2, 1.0, 0.7] }, // Roll ring (Magenta)
 		{ axis: "xz", r: radii[2], color: [1.0, 0.75, 0.0, 0.8] }, // Yaw ring (Ouro/Âmbar)
@@ -119,6 +125,7 @@ export function createGimbalRingsWireframe(radii: [number, number, number], segm
 
 	for (const item of axes) {
 		const startIdx = vertexOffset;
+		const [cr, cg, cb, ca] = item.color;
 		for (let i = 0; i < segments; i++) {
 			const theta = (i / segments) * Math.PI * 2;
 			const c = Math.cos(theta) * item.r;
@@ -128,14 +135,20 @@ export function createGimbalRingsWireframe(radii: [number, number, number], segm
 			let y = 0;
 			let z = 0;
 			if (item.axis === "xy") {
-				x = c; y = s; z = 0;
+				x = c;
+				y = s;
+				z = 0;
 			} else if (item.axis === "yz") {
-				x = 0; y = c; z = s;
+				x = 0;
+				y = c;
+				z = s;
 			} else {
-				x = c; y = 0; z = s;
+				x = c;
+				y = 0;
+				z = s;
 			}
 
-			vertexFloats.push(x, y, z, item.color[0]!, item.color[1]!, item.color[2]!, item.color[3]!);
+			vertexFloats.push(x, y, z, cr, cg, cb, ca);
 
 			const next = startIdx + ((i + 1) % segments);
 			edgeIndices.push(vertexOffset, next);
@@ -159,13 +172,13 @@ export function createToolNodeSatellites(count = 6, orbitRadius = 2.4): Geometry
 	for (let i = 0; i < count; i++) {
 		const angle = (i / count) * Math.PI * 2;
 		const cx = Math.cos(angle) * orbitRadius;
-		const cy = (Math.sin(angle * 2) * 0.4);
+		const cy = Math.sin(angle * 2) * 0.4;
 		const cz = Math.sin(angle) * orbitRadius;
 
 		// Pequeno octaedro satélite
 		const s = 0.12;
 		const base = vOffset;
-		const pts = [
+		const pts: [number, number, number][] = [
 			[cx, cy + s, cz],
 			[cx, cy - s, cz],
 			[cx + s, cy, cz],
@@ -174,17 +187,13 @@ export function createToolNodeSatellites(count = 6, orbitRadius = 2.4): Geometry
 			[cx, cy, cz - s],
 		];
 
-		for (const pt of pts) {
-			vertexFloats.push(pt[0]!, pt[1]!, pt[2]!, 0.0, 1.0, 0.6, 0.9);
+		for (const [px, py, pz] of pts) {
+			vertexFloats.push(px, py, pz, 0.0, 1.0, 0.6, 0.9);
 			vOffset++;
 		}
 
 		// Conexões internas do octaedro
-		const octEdges = [
-			0, 2, 0, 3, 0, 4, 0, 5,
-			1, 2, 1, 3, 1, 4, 1, 5,
-			2, 4, 4, 3, 3, 5, 5, 2,
-		];
+		const octEdges = [0, 2, 0, 3, 0, 4, 0, 5, 1, 2, 1, 3, 1, 4, 1, 5, 2, 4, 4, 3, 3, 5, 5, 2];
 		for (const e of octEdges) {
 			edgeIndices.push(base + e);
 		}
@@ -203,18 +212,21 @@ export function createMerkabaWireframe(scale = 1.2): GeometryMeshData {
 	const edgeIndices: number[] = [];
 
 	// Tetraedro 1 (Vértices dourados/âmbar com energia ascendente)
-	const t1 = [
+	const t1: [number, number, number][] = [
 		[1, 1, 1],
 		[1, -1, -1],
 		[-1, 1, -1],
 		[-1, -1, 1],
 	];
-	for (const v of t1) {
+	for (const [vx, vy, vz] of t1) {
 		vertexFloats.push(
-			v[0]! * scale * 0.8,
-			v[1]! * scale * 0.8,
-			v[2]! * scale * 0.8,
-			1.0, 0.8, 0.2, 0.95 // Ouro Solar
+			vx * scale * 0.8,
+			vy * scale * 0.8,
+			vz * scale * 0.8,
+			1.0,
+			0.8,
+			0.2,
+			0.95, // Ouro Solar
 		);
 	}
 
@@ -223,18 +235,21 @@ export function createMerkabaWireframe(scale = 1.2): GeometryMeshData {
 	edgeIndices.push(...t1Edges);
 
 	// Tetraedro 2 (Invertido, Ciano/Azul elétrico com energia descendente)
-	const t2 = [
+	const t2: [number, number, number][] = [
 		[-1, -1, -1],
 		[-1, 1, 1],
 		[1, -1, 1],
 		[1, 1, -1],
 	];
-	for (const v of t2) {
+	for (const [vx, vy, vz] of t2) {
 		vertexFloats.push(
-			v[0]! * scale * 0.8,
-			v[1]! * scale * 0.8,
-			v[2]! * scale * 0.8,
-			0.0, 0.85, 1.0, 0.95 // Ciano Elétrico
+			vx * scale * 0.8,
+			vy * scale * 0.8,
+			vz * scale * 0.8,
+			0.0,
+			0.85,
+			1.0,
+			0.95, // Ciano Elétrico
 		);
 	}
 
@@ -244,10 +259,7 @@ export function createMerkabaWireframe(scale = 1.2): GeometryMeshData {
 	}
 
 	// Arestas de Harmonia Sagrada conectando os centros das faces opostas
-	const harmEdges = [
-		0, 5, 0, 6, 0, 7,
-		4, 1, 4, 2, 4, 3,
-	];
+	const harmEdges = [0, 5, 0, 6, 0, 7, 4, 1, 4, 2, 4, 3];
 	edgeIndices.push(...harmEdges);
 
 	return {
@@ -283,7 +295,7 @@ export function createTorusWireframe(
 			const z = (majorRadius + minorRadius * cv) * su;
 
 			// Gradiente espectral de vórtice (Ciano a Violeta)
-			const t = (i / radarRings);
+			const t = i / radarRings;
 			const r = 0.2 + 0.6 * Math.sin(t * Math.PI);
 			const g = 0.8 * Math.cos(t * Math.PI * 0.5);
 			const b = 1.0;
@@ -313,24 +325,39 @@ export function createDodecahedronWireframe(radius = 1.15): GeometryMeshData {
 	const phi = (1.0 + Math.sqrt(5.0)) / 2.0;
 	const invPhi = 1.0 / phi;
 
-	const rawVertices: number[][] = [
+	const rawVertices: [number, number, number][] = [
 		// 8 vértices do cubo unitário (+-1, +-1, +-1)
-		[-1, -1, -1], [-1, -1, 1], [-1, 1, -1], [-1, 1, 1],
-		[1, -1, -1], [1, -1, 1], [1, 1, -1], [1, 1, 1],
+		[-1, -1, -1],
+		[-1, -1, 1],
+		[-1, 1, -1],
+		[-1, 1, 1],
+		[1, -1, -1],
+		[1, -1, 1],
+		[1, 1, -1],
+		[1, 1, 1],
 		// 4 vértices (0, +-invPhi, +-phi)
-		[0, -invPhi, -phi], [0, -invPhi, phi], [0, invPhi, -phi], [0, invPhi, phi],
+		[0, -invPhi, -phi],
+		[0, -invPhi, phi],
+		[0, invPhi, -phi],
+		[0, invPhi, phi],
 		// 4 vértices (+-invPhi, +-phi, 0)
-		[-invPhi, -phi, 0], [-invPhi, phi, 0], [invPhi, -phi, 0], [invPhi, phi, 0],
+		[-invPhi, -phi, 0],
+		[-invPhi, phi, 0],
+		[invPhi, -phi, 0],
+		[invPhi, phi, 0],
 		// 4 vértices (+-phi, 0, +-invPhi)
-		[-phi, 0, -invPhi], [-phi, 0, invPhi], [phi, 0, -invPhi], [phi, 0, invPhi],
+		[-phi, 0, -invPhi],
+		[-phi, 0, invPhi],
+		[phi, 0, -invPhi],
+		[phi, 0, invPhi],
 	];
 
 	const vertexFloats: number[] = [];
-	for (const v of rawVertices) {
-		const len = Math.sqrt(v[0]! * v[0]! + v[1]! * v[1]! + v[2]! * v[2]! || 1);
-		const x = (v[0]! / len) * radius;
-		const y = (v[1]! / len) * radius;
-		const z = (v[2]! / len) * radius;
+	for (const [vx, vy, vz] of rawVertices) {
+		const len = Math.sqrt(vx * vx + vy * vy + vz * vz || 1);
+		const x = (vx / len) * radius;
+		const y = (vy / len) * radius;
+		const z = (vz / len) * radius;
 		vertexFloats.push(x, y, z, 0.3, 1.0, 0.7, 0.88); // Esmeralda / Jade Geométrico
 	}
 
@@ -340,12 +367,16 @@ export function createDodecahedronWireframe(radius = 1.15): GeometryMeshData {
 	const threshold = minDist * 1.15;
 
 	for (let i = 0; i < rawVertices.length; i++) {
-		const vi = [vertexFloats[i * 7]!, vertexFloats[i * 7 + 1]!, vertexFloats[i * 7 + 2]!];
+		const vxi = vertexFloats[i * 7] ?? 0;
+		const vyi = vertexFloats[i * 7 + 1] ?? 0;
+		const vzi = vertexFloats[i * 7 + 2] ?? 0;
 		for (let j = i + 1; j < rawVertices.length; j++) {
-			const vj = [vertexFloats[j * 7]!, vertexFloats[j * 7 + 1]!, vertexFloats[j * 7 + 2]!];
-			const dx = vi[0]! - vj[0]!;
-			const dy = vi[1]! - vj[1]!;
-			const dz = vi[2]! - vj[2]!;
+			const vxj = vertexFloats[j * 7] ?? 0;
+			const vyj = vertexFloats[j * 7 + 1] ?? 0;
+			const vzj = vertexFloats[j * 7 + 2] ?? 0;
+			const dx = vxi - vxj;
+			const dy = vyi - vyj;
+			const dz = vzi - vzj;
 			const dist = Math.sqrt(dx * dx + dy * dy + dz * dz);
 			if (dist < threshold) {
 				edgeIndices.push(i, j);
@@ -361,6 +392,15 @@ export function createDodecahedronWireframe(radius = 1.15): GeometryMeshData {
 }
 
 // 8. Gerador de Malha da Constelação Vetorial (RAG VectorDB)
+export interface VectorMethodNode {
+	id: string;
+	name: string;
+	kind?: string | undefined;
+	signature?: string | undefined;
+	orbitAngle?: number | undefined;
+	orbitRadius?: number | undefined;
+}
+
 export interface VectorNodeInput {
 	id: string;
 	module: string;
@@ -370,7 +410,7 @@ export interface VectorNodeInput {
 	language?: string | undefined;
 	position: [number, number, number];
 	isMatchedBySearch?: boolean | undefined;
-	methods?: Array<any> | undefined;
+	methods?: VectorMethodNode[] | undefined;
 }
 
 export interface VectorEdgeInput {
@@ -382,18 +422,27 @@ export interface VectorEdgeInput {
 const MODULE_COLORS: Record<string, [number, number, number, number]> = {
 	"apps/web": [0.0, 0.85, 1.0, 0.9], // Ciano brilhante
 	"packages/server": [0.8, 0.3, 1.0, 0.9], // Magenta
-	"contracts": [1.0, 0.75, 0.0, 0.95], // Ouro
+	contracts: [1.0, 0.75, 0.0, 0.95], // Ouro
 	"packages/ui": [0.1, 1.0, 0.6, 0.9], // Esmeralda
-	"scripts": [1.0, 0.4, 0.4, 0.85], // Coral
-	"extensions": [0.4, 0.6, 1.0, 0.85], // Safira
-	"core": [0.9, 0.9, 1.0, 0.8], // Prata
+	scripts: [1.0, 0.4, 0.4, 0.85], // Coral
+	extensions: [0.4, 0.6, 1.0, 0.85], // Safira
+	core: [0.9, 0.9, 1.0, 0.8], // Prata
 };
 
 /** Detecta tipo de polígono conforme a extensão do arquivo */
-export function getPolygonKindForFile(pathOrExt?: string): "cube" | "octahedron" | "tetrahedron" | "hex_bipyramid" | "prism" | "diamond" {
+export function getPolygonKindForFile(
+	pathOrExt?: string,
+): "cube" | "octahedron" | "tetrahedron" | "hex_bipyramid" | "prism" | "diamond" {
 	if (!pathOrExt) return "octahedron";
 	const clean = pathOrExt.toLowerCase();
-	if (clean.endsWith(".ts") || clean.endsWith(".tsx") || clean.endsWith(".js") || clean.endsWith(".jsx") || clean === "ts" || clean === "tsx") {
+	if (
+		clean.endsWith(".ts") ||
+		clean.endsWith(".tsx") ||
+		clean.endsWith(".js") ||
+		clean.endsWith(".jsx") ||
+		clean === "ts" ||
+		clean === "tsx"
+	) {
 		return "cube"; // TypeScript / React -> Cubo
 	}
 	if (clean.endsWith(".kt") || clean.endsWith(".java") || clean === "kt" || clean === "java") {
@@ -402,10 +451,21 @@ export function getPolygonKindForFile(pathOrExt?: string): "cube" | "octahedron"
 	if (clean.endsWith(".md") || clean.endsWith(".txt") || clean.endsWith(".doc") || clean === "md") {
 		return "tetrahedron"; // Docs / Markdown -> Tetraedro
 	}
-	if (clean.endsWith(".json") || clean.endsWith(".yaml") || clean.endsWith(".yml") || clean.endsWith(".toml") || clean.endsWith(".xml")) {
+	if (
+		clean.endsWith(".json") ||
+		clean.endsWith(".yaml") ||
+		clean.endsWith(".yml") ||
+		clean.endsWith(".toml") ||
+		clean.endsWith(".xml")
+	) {
 		return "hex_bipyramid"; // Configurações -> Bipirâmide Hexagonal
 	}
-	if (clean.endsWith(".bat") || clean.endsWith(".sh") || clean.endsWith(".ps1") || clean.endsWith(".cmd")) {
+	if (
+		clean.endsWith(".bat") ||
+		clean.endsWith(".sh") ||
+		clean.endsWith(".ps1") ||
+		clean.endsWith(".cmd")
+	) {
 		return "prism"; // Scripts / Shell -> Prisma Triangular
 	}
 	return "diamond";
@@ -423,7 +483,8 @@ export function createVectorConstellationWireframe(
 
 	// 1. Gera nós com poliedros específicos por tipo de arquivo
 	for (let i = 0; i < nodes.length; i++) {
-		const n = nodes[i]!;
+		const n = nodes[i];
+		if (!n) continue;
 		const [cx, cy, cz] = n.position;
 		const isHighlight = i === highlightedNodeIndex;
 		const isMatched = Boolean(n.isMatchedBySearch);
@@ -433,11 +494,13 @@ export function createVectorConstellationWireframe(
 		if (isMatched) s *= 1.8;
 		else if (isHighlight) s *= 1.4;
 
-		let col = isMatched
+		const defaultCol: [number, number, number, number] = MODULE_COLORS.core ?? [0.9, 0.9, 1.0, 0.8];
+		const col: [number, number, number, number] = isMatched
 			? [1.0, 0.9, 0.2, 1.0] // Dourado brilhante quando pesquisado no RAG
 			: isHighlight
 				? [1.0, 1.0, 1.0, 1.0] // Branco estelar sob cursor
-				: (MODULE_COLORS[n.module] || MODULE_COLORS.core!);
+				: (MODULE_COLORS[n.module] ?? defaultCol);
+		const [colR, colG, colB, colA] = col;
 
 		const polyKind = getPolygonKindForFile(n.fileExtension || n.relPath || n.path);
 		const base = vOffset;
@@ -448,28 +511,24 @@ export function createVectorConstellationWireframe(
 			for (let dx = -1; dx <= 1; dx += 2) {
 				for (let dy = -1; dy <= 1; dy += 2) {
 					for (let dz = -1; dz <= 1; dz += 2) {
-						vertexFloats.push(cx + dx * d, cy + dy * d, cz + dz * d, col[0]!, col[1]!, col[2]!, col[3]!);
+						vertexFloats.push(cx + dx * d, cy + dy * d, cz + dz * d, colR, colG, colB, colA);
 						vOffset++;
 					}
 				}
 			}
-			const cubeEdges = [
-				0, 1, 1, 3, 3, 2, 2, 0,
-				4, 5, 5, 7, 7, 6, 6, 4,
-				0, 4, 1, 5, 2, 6, 3, 7,
-			];
+			const cubeEdges = [0, 1, 1, 3, 3, 2, 2, 0, 4, 5, 5, 7, 7, 6, 6, 4, 0, 4, 1, 5, 2, 6, 3, 7];
 			for (const e of cubeEdges) edgeIndices.push(base + e);
 		} else if (polyKind === "tetrahedron") {
 			// Tetraedro Sagrado (Markdown/Docs): 4 vértices, 6 arestas
 			const d = s * 1.3;
-			const tPts = [
+			const tPts: [number, number, number][] = [
 				[cx + d, cy + d, cz + d],
 				[cx + d, cy - d, cz - d],
 				[cx - d, cy + d, cz - d],
 				[cx - d, cy - d, cz + d],
 			];
-			for (const pt of tPts) {
-				vertexFloats.push(pt[0]!, pt[1]!, pt[2]!, col[0]!, col[1]!, col[2]!, col[3]!);
+			for (const [ptX, ptY, ptZ] of tPts) {
+				vertexFloats.push(ptX, ptY, ptZ, colR, colG, colB, colA);
 				vOffset++;
 			}
 			const tetEdges = [0, 1, 0, 2, 0, 3, 1, 2, 2, 3, 3, 1];
@@ -481,28 +540,40 @@ export function createVectorConstellationWireframe(
 			for (let tri = -1; tri <= 1; tri += 2) {
 				for (let a = 0; a < 3; a++) {
 					const angle = (a / 3) * Math.PI * 2;
-					vertexFloats.push(cx + Math.cos(angle) * r, cy + tri * h, cz + Math.sin(angle) * r, col[0]!, col[1]!, col[2]!, col[3]!);
+					vertexFloats.push(
+						cx + Math.cos(angle) * r,
+						cy + tri * h,
+						cz + Math.sin(angle) * r,
+						colR,
+						colG,
+						colB,
+						colA,
+					);
 					vOffset++;
 				}
 			}
-			const prismEdges = [
-				0, 1, 1, 2, 2, 0,
-				3, 4, 4, 5, 5, 3,
-				0, 3, 1, 4, 2, 5,
-			];
+			const prismEdges = [0, 1, 1, 2, 2, 0, 3, 4, 4, 5, 5, 3, 0, 3, 1, 4, 2, 5];
 			for (const e of prismEdges) edgeIndices.push(base + e);
 		} else if (polyKind === "hex_bipyramid") {
 			// Bipirâmide Hexagonal (JSON/Configs): 8 vértices, 18 arestas
 			const r = s * 1.0;
 			const h = s * 1.4;
 			// Ápice superior e inferior
-			vertexFloats.push(cx, cy + h, cz, col[0]!, col[1]!, col[2]!, col[3]!);
-			vertexFloats.push(cx, cy - h, cz, col[0]!, col[1]!, col[2]!, col[3]!);
+			vertexFloats.push(cx, cy + h, cz, colR, colG, colB, colA);
+			vertexFloats.push(cx, cy - h, cz, colR, colG, colB, colA);
 			vOffset += 2;
 			// Anel equatorial de 6 vértices
 			for (let k = 0; k < 6; k++) {
 				const ang = (k / 6) * Math.PI * 2;
-				vertexFloats.push(cx + Math.cos(ang) * r, cy, cz + Math.sin(ang) * r, col[0]!, col[1]!, col[2]!, col[3]!);
+				vertexFloats.push(
+					cx + Math.cos(ang) * r,
+					cy,
+					cz + Math.sin(ang) * r,
+					colR,
+					colG,
+					colB,
+					colA,
+				);
 				vOffset++;
 			}
 			for (let k = 0; k < 6; k++) {
@@ -514,7 +585,7 @@ export function createVectorConstellationWireframe(
 			}
 		} else {
 			// Octaedro Padrão (Kotlin/Java/Core): 6 vértices, 12 arestas
-			const pts = [
+			const pts: [number, number, number][] = [
 				[cx, cy + s, cz],
 				[cx, cy - s, cz],
 				[cx + s, cy, cz],
@@ -522,15 +593,11 @@ export function createVectorConstellationWireframe(
 				[cx, cy, cz + s],
 				[cx, cy, cz - s],
 			];
-			for (const pt of pts) {
-				vertexFloats.push(pt[0]!, pt[1]!, pt[2]!, col[0]!, col[1]!, col[2]!, col[3]!);
+			for (const [ptX, ptY, ptZ] of pts) {
+				vertexFloats.push(ptX, ptY, ptZ, colR, colG, colB, colA);
 				vOffset++;
 			}
-			const octEdges = [
-				0, 2, 0, 3, 0, 4, 0, 5,
-				1, 2, 1, 3, 1, 4, 1, 5,
-				2, 4, 4, 3, 3, 5, 5, 2,
-			];
+			const octEdges = [0, 2, 0, 3, 0, 4, 0, 5, 1, 2, 1, 3, 1, 4, 1, 5, 2, 4, 4, 3, 3, 5, 5, 2];
 			for (const e of octEdges) edgeIndices.push(base + e);
 		}
 
@@ -538,7 +605,8 @@ export function createVectorConstellationWireframe(
 		if (n.methods && n.methods.length > 0) {
 			const totalM = n.methods.length;
 			for (let mIdx = 0; mIdx < totalM; mIdx++) {
-				const m = n.methods[mIdx]!;
+				const m = n.methods[mIdx];
+				if (!m) continue;
 				const mAngle = m.orbitAngle ?? (mIdx / totalM) * Math.PI * 2;
 				const mRadius = m.orbitRadius ?? 0.16;
 
@@ -549,11 +617,11 @@ export function createVectorConstellationWireframe(
 				// Micro-diamante para a função na sub-órbita
 				const ms = s * 0.38;
 				const mBase = vOffset;
-				const mCol = isMatched
+				const [mColR, mColG, mColB, mColA]: [number, number, number, number] = isMatched
 					? [1.0, 0.9, 0.2, 0.95]
-					: [col[0]!, col[1]!, col[2]!, 0.75];
+					: [colR, colG, colB, 0.75];
 
-				const mPts = [
+				const mPts: [number, number, number][] = [
 					[mx, my + ms, mz],
 					[mx, my - ms, mz],
 					[mx + ms, my, mz],
@@ -561,21 +629,17 @@ export function createVectorConstellationWireframe(
 					[mx, my, mz + ms],
 					[mx, my, mz - ms],
 				];
-				for (const pt of mPts) {
-					vertexFloats.push(pt[0]!, pt[1]!, pt[2]!, mCol[0]!, mCol[1]!, mCol[2]!, mCol[3]!);
+				for (const [ptX, ptY, ptZ] of mPts) {
+					vertexFloats.push(ptX, ptY, ptZ, mColR, mColG, mColB, mColA);
 					vOffset++;
 				}
-				const mOctEdges = [
-					0, 2, 0, 3, 0, 4, 0, 5,
-					1, 2, 1, 3, 1, 4, 1, 5,
-					2, 4, 4, 3, 3, 5, 5, 2,
-				];
+				const mOctEdges = [0, 2, 0, 3, 0, 4, 0, 5, 1, 2, 1, 3, 1, 4, 1, 5, 2, 4, 4, 3, 3, 5, 5, 2];
 				for (const me of mOctEdges) edgeIndices.push(mBase + me);
 
 				// Linha orbital conectando o centro da classe ao ponto do método
 				const lineStart = vOffset;
-				vertexFloats.push(cx, cy, cz, col[0]!, col[1]!, col[2]!, 0.25);
-				vertexFloats.push(mx, my, mz, mCol[0]!, mCol[1]!, mCol[2]!, 0.45);
+				vertexFloats.push(cx, cy, cz, colR, colG, colB, 0.25);
+				vertexFloats.push(mx, my, mz, mColR, mColG, mColB, 0.45);
 				vOffset += 2;
 				edgeIndices.push(lineStart, lineStart + 1);
 			}
@@ -594,8 +658,9 @@ export function createVectorConstellationWireframe(
 	// 2. Conexões de arestas k-NN entre os nós com linha direta
 	for (const edge of edges) {
 		if (edge.source >= nodes.length || edge.target >= nodes.length) continue;
-		const n1 = nodes[edge.source]!;
-		const n2 = nodes[edge.target]!;
+		const n1 = nodes[edge.source];
+		const n2 = nodes[edge.target];
+		if (!n1 || !n2) continue;
 
 		const p1 = n1.position;
 		const p2 = n2.position;
