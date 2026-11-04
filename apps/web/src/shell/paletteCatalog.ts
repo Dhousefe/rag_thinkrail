@@ -39,6 +39,7 @@ export type PaletteTool = Exclude<LayoutToolId, "projects">;
 
 const TOOL_LABELS: Record<PaletteTool, MessageKey> = {
 	"hermes-mcp": "workbench.tool.hermesMcp",
+	cindy: "workbench.tool.cindy",
 	specs: "workbench.tool.specs",
 	files: "workbench.tool.files",
 	review: "workbench.tool.review",
@@ -47,6 +48,7 @@ const TOOL_LABELS: Record<PaletteTool, MessageKey> = {
 
 const TOOL_ICONS: Record<PaletteTool, RemixiconComponentType> = {
 	"hermes-mcp": RiPlugLine,
+	cindy: RiSparkling2Line,
 	specs: RiNodeTree,
 	files: RiFolderLine,
 	review: RiFileList3Line,

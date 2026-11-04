@@ -79,6 +79,7 @@ export function createLayoutId(prefix: string): string {
 export const LAYOUT_TOOLS: readonly LayoutToolId[] = [
 	"projects",
 	"hermes-mcp",
+	"cindy",
 	"specs",
 	"files",
 	"review",
@@ -88,6 +89,7 @@ export const LAYOUT_TOOLS: readonly LayoutToolId[] = [
 export const LAYOUT_TOOL_DEFAULT_SIDES: Record<LayoutToolId, LayoutSide> = {
 	projects: "left",
 	"hermes-mcp": "left",
+	cindy: "left",
 	specs: "right",
 	files: "right",
 	review: "right",
@@ -97,6 +99,7 @@ export const LAYOUT_TOOL_DEFAULT_SIDES: Record<LayoutToolId, LayoutSide> = {
 const LAYOUT_TOOL_NAMES: Record<LayoutToolId, string> = {
 	projects: "Projects",
 	"hermes-mcp": "Hermes MCP",
+	cindy: "Cindy",
 	specs: "Specs",
 	files: "Files",
 	review: "Review",
@@ -106,6 +109,7 @@ const LAYOUT_TOOL_NAMES: Record<LayoutToolId, string> = {
 const LAYOUT_TOOL_NAME_KEYS = {
 	projects: "workbench.tool.projects",
 	"hermes-mcp": "workbench.tool.hermesMcp",
+	cindy: "workbench.tool.cindy",
 	specs: "workbench.tool.specs",
 	files: "workbench.tool.files",
 	review: "workbench.tool.review",

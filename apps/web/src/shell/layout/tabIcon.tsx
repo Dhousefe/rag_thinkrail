@@ -16,6 +16,8 @@ import {
 	RiListCheck3,
 	RiPlugFill,
 	RiPlugLine,
+	RiSparklingFill,
+	RiSparklingLine,
 	RiTaskFill,
 	RiTaskLine,
 	RiTerminalBoxFill,
@@ -49,6 +51,8 @@ export function tabIcon(tab: LayoutTab, active = false, cls = "size-14 shrink-0"
 					return active ? <RiFolder2Fill className={cls} /> : <RiFolder2Line className={cls} />;
 				case "hermes-mcp":
 					return active ? <RiPlugFill className={cls} /> : <RiPlugLine className={cls} />;
+				case "cindy":
+					return active ? <RiSparklingFill className={cls} /> : <RiSparklingLine className={cls} />;
 				case "specs":
 					return active ? <RiBookOpenFill className={cls} /> : <RiBookOpenLine className={cls} />;
 				case "files":

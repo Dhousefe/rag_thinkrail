@@ -419,6 +419,7 @@ export const SettingsSection = {
 	Models: "models",
 	Mcp: "mcp",
 	HermesMcp: "hermes-mcp",
+	Cindy: "cindy",
 	Github: "github",
 	Appearance: "appearance",
 	Language: "language",
