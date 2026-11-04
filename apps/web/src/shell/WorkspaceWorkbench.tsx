@@ -24,6 +24,7 @@ import { ErrorBoundary } from "../components/ErrorBoundary";
 import { preloadedLazy } from "../components/preloadedLazy";
 import { QuietScrollArea } from "../components/QuietScrollArea";
 import { type LayoutAttention, layoutResourceIdentity } from "../lib";
+import { CindyPanel } from "../panels/CindyPanel";
 import { DiffPane } from "../panels/DiffPane";
 import { FilePane } from "../panels/FilePane";
 import { FilesPanel } from "../panels/FilesPanel";
@@ -648,6 +649,11 @@ export function WorkspaceWorkbench({ workspaceId }: { workspaceId: string }) {
 			"hermes-mcp": (
 				<QuietScrollArea className="h-full" viewportClassName="p-panel-inset">
 					<HermesMcpPanel />
+				</QuietScrollArea>
+			),
+			cindy: (
+				<QuietScrollArea className="h-full" viewportClassName="p-panel-inset">
+					<CindyPanel />
 				</QuietScrollArea>
 			),
 			specs: (

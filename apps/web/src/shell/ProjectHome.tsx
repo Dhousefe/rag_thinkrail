@@ -126,6 +126,8 @@ export function ProjectHome({ projects }: { projects: CollapsibleRegion<HTMLDivE
 								aria-label={
 									activeTool === "hermes-mcp"
 										? t("workbench.tool.hermesMcp")
+										: activeTool === "cindy"
+										? t("workbench.tool.cindy")
 										: t("shell.projectHome.projects")
 								}
 								aria-hidden={collapsed || undefined}
@@ -136,6 +138,8 @@ export function ProjectHome({ projects }: { projects: CollapsibleRegion<HTMLDivE
 									title={
 										activeTool === "hermes-mcp"
 											? t("workbench.tool.hermesMcp")
+											: activeTool === "cindy"
+											? t("workbench.tool.cindy")
 											: t("shell.projectHome.projects")
 									}
 									actions={
@@ -156,7 +160,13 @@ export function ProjectHome({ projects }: { projects: CollapsibleRegion<HTMLDivE
 										className="min-h-0 flex-1"
 										viewportClassName="p-panel-inset"
 									>
-										{activeTool === "hermes-mcp" ? <HermesMcpPanel /> : <ProjectTree />}
+										{activeTool === "hermes-mcp" ? (
+											<HermesMcpPanel />
+										) : activeTool === "cindy" ? (
+											<CindyPanel />
+										) : (
+											<ProjectTree />
+										)}
 									</QuietScrollArea>
 								</div>
 							</section>

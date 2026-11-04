@@ -21,6 +21,7 @@ import {
 	RiGitBranchFill,
 	RiHome2Fill,
 	RiPlugLine,
+	RiSparklingLine,
 	RiDeleteBin6Line as Trash2,
 	RiCloseLine as X,
 } from "@remixicon/react";
@@ -281,6 +282,14 @@ export function ProjectTree() {
 		}
 	};
 
+	const handleOpenCindy = () => {
+		if (activeWorkspaceId) {
+			requestToolView(activeWorkspaceId, "cindy");
+		} else {
+			openSettings(SettingsSection.Cindy);
+		}
+	};
+
 	return (
 		<nav data-testid="project-tree" className="flex flex-col gap-4">
 			<header className="flex h-panel-row items-center justify-between pr-4 pl-8">
@@ -385,7 +394,7 @@ export function ProjectTree() {
 				})}
 			</ul>
 
-			<div className="mt-8 border-t border-border-default pt-8">
+			<div className="mt-8 flex flex-col gap-2 border-t border-border-default pt-8">
 				<button
 					type="button"
 					data-testid="project-tree-hermes-mcp"
@@ -401,6 +410,21 @@ export function ProjectTree() {
 							{mcpMetricsCount}
 						</span>
 					) : null}
+				</button>
+
+				<button
+					type="button"
+					data-testid="project-tree-cindy"
+					onClick={handleOpenCindy}
+					className="group flex w-full items-center justify-between rounded-sm px-8 py-6 tr-text-ui text-text-muted transition-colors hover:bg-control-bg-hovered hover:text-text-default"
+				>
+					<span className="flex min-w-0 items-center gap-8">
+						<RiSparklingLine className="size-16 shrink-0 text-text-muted transition-colors group-hover:text-primary" />
+						<span className="truncate">{t("workbench.tool.cindy")}</span>
+					</span>
+					<span className="rounded-sm bg-emerald-500/10 px-6 py-2 tr-text-metadata text-emerald-600 dark:text-emerald-400">
+						33
+					</span>
 				</button>
 			</div>
 
