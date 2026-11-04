@@ -33,14 +33,18 @@ export function NeuralCorePanel() {
 	const [selectedNode, setSelectedNode] = useState<HermesVectorNode | null>(null);
 
 	// Carregamento dos vetores do banco SQLite hermes.db
-	const loadVectorGraph = useCallback(async () => {
+	const currentProjectRef = useRef<string | undefined>(undefined);
+
+	const loadVectorGraph = useCallback(async (projectSlug?: string) => {
 		try {
 			const res = await getTransport().request("hermes.getVectorGraph", {
 				limit: 120,
+				projectSlug,
 			});
 			if (res && Array.isArray(res.nodes)) {
 				setVectorNodes(res.nodes);
 				setTotalChunks(res.totalChunks);
+				currentProjectRef.current = res.projectSlug || projectSlug;
 				if (engineRef.current) {
 					engineRef.current.setVectorGraphData(res.nodes, res.edges);
 				}
@@ -94,6 +98,13 @@ export function NeuralCorePanel() {
 			engine.stop();
 		};
 	}, [loadVectorGraph]);
+
+	// Reage dinamicamente a ativação de projetos do Hermes MCP
+	useEffect(() => {
+		if (state.activeRagProject && state.activeRagProject !== currentProjectRef.current) {
+			void loadVectorGraph(state.activeRagProject);
+		}
+	}, [state.activeRagProject, loadVectorGraph]);
 
 	// Reage a mudanças de telemetria do ThinkRail
 	useEffect(() => {

@@ -7,6 +7,7 @@ export interface NeuralTelemetryState {
 	activeToolName?: string | undefined;
 	activeRagQuery?: string | undefined;
 	activeRagToolName?: string | undefined;
+	activeRagProject?: string | undefined;
 	isRagSearching?: boolean | undefined;
 	terminalCommand?: string | undefined;
 	shockwavePulse: number;

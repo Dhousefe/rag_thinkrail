@@ -19,6 +19,7 @@ export function useNeuralCoreState() {
 		let activeToolName: string | undefined;
 		let activeRagQuery: string | undefined;
 		let activeRagToolName: string | undefined;
+		let activeRagProject: string | undefined;
 		let isRagSearching = false;
 		let toolArgs: any = undefined;
 
@@ -44,7 +45,7 @@ export function useNeuralCoreState() {
 			}
 		}
 
-		// Extrai query/símbolo se for ferramenta RAG do Hermes ou Cindy
+		// Extrai query/símbolo e projeto se for ferramenta RAG do Hermes ou Cindy
 		if (activeToolName) {
 			const lower = activeToolName.toLowerCase();
 			if (
@@ -54,12 +55,15 @@ export function useNeuralCoreState() {
 				lower.includes("ast_impact") ||
 				lower.includes("memory_search") ||
 				lower.includes("cindy_search") ||
-				lower.includes("spec_grep")
+				lower.includes("spec_grep") ||
+				lower.includes("hermes_index") ||
+				lower.includes("hermes_project")
 			) {
 				isRagSearching = true;
 				activeRagToolName = activeToolName.split("__").pop() || activeToolName;
 				if (toolArgs && typeof toolArgs === "object") {
 					activeRagQuery = toolArgs.query || toolArgs.target || toolArgs.symbol || toolArgs.target_path || toolArgs.pattern;
+					activeRagProject = toolArgs.project_slug || toolArgs.project || toolArgs.projX;
 				}
 			}
 		}
@@ -76,6 +80,7 @@ export function useNeuralCoreState() {
 			activeToolName,
 			activeRagQuery,
 			activeRagToolName,
+			activeRagProject,
 			isRagSearching,
 			shockwavePulse: 0,
 			electricArcsCount: isRagSearching ? 24 : activity === "tool_exec" ? 16 : 0,
