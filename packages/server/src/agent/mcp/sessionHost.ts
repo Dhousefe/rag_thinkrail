@@ -83,7 +83,8 @@ export function createMcpSessionHost({
 		if (
 			tool?.annotations?.readOnlyHint === true ||
 			allowedInChat.has(event.toolName) ||
-			event.toolName.startsWith("mcp__hermes_rag__")
+			event.toolName.startsWith("mcp__hermes_rag__") ||
+			event.toolName.startsWith("mcp__cindy_tools__")
 		) {
 			return undefined;
 		}
