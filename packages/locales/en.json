@@ -1960,6 +1960,7 @@
 	"settings.models.saveModelFailed": "Couldn't save the default model",
 	"settings.nav.appearance": "Appearance",
 	"settings.nav.chat": "Chat",
+	"settings.nav.cindy": "Cindy",
 	"settings.nav.environment": "Environment",
 	"settings.nav.extensions": "Extensions",
 	"settings.nav.github": "Integrations",

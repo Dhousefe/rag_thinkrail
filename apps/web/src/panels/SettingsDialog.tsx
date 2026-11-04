@@ -14,6 +14,7 @@ import { SettingsSection, useAppStore } from "@/store";
 import { loadInAppSurvey } from "@/transport";
 import { AppearanceSettings } from "./AppearanceSettings";
 import { ChatSettings } from "./ChatSettings";
+import { CindyPanel } from "./CindyPanel";
 import { EnvironmentSettings } from "./EnvironmentSettings";
 import { ExtensionsSettings } from "./ExtensionsSettings";
 import { FeedbackSettings } from "./FeedbackSettings";
@@ -141,6 +142,8 @@ export function SettingsDialog({
 								<McpSettings />
 							) : selectedSection === SettingsSection.HermesMcp ? (
 								<HermesMcpPanel />
+							) : selectedSection === SettingsSection.Cindy ? (
+								<CindyPanel />
 							) : selectedSection === SettingsSection.Templates ? (
 								<TemplatesSettings />
 							) : selectedSection === SettingsSection.Environment ? (

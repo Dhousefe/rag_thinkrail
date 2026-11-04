@@ -15,6 +15,7 @@ import {
 	RiPlugLine,
 	RiPuzzle2Line,
 	RiShieldCheckLine,
+	RiSparklingLine,
 	RiTerminalBoxLine,
 	RiTranslate2,
 } from "@remixicon/react";
@@ -64,6 +65,11 @@ const NAV_GROUPS: SettingsNavGroup[] = [
 				label: "settings.nav.hermesMcp",
 				icon: RiPlugLine,
 				requiresProtocolVersion: MCP_PROTOCOL_VERSION,
+			},
+			{
+				id: SettingsSection.Cindy,
+				label: "settings.nav.cindy",
+				icon: RiSparklingLine,
 			},
 			{ id: SettingsSection.Templates, label: "settings.nav.templates", icon: RiLayoutGridLine },
 			{
