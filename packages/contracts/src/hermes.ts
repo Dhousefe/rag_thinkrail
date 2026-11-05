@@ -145,6 +145,24 @@ export interface HermesVectorGraphSample {
 	modules: string[];
 }
 
+export interface HermesProjectFreshnessItem {
+	slug: string;
+	name: string;
+	path: string;
+	isStale: boolean;
+	changedFilesCount: number;
+	changedFilesSample: string[];
+	lastIndexedMs?: number | undefined;
+	lastFileModifiedMs?: number | undefined;
+	suggestedCommand: string;
+}
+
+export interface HermesCheckFreshnessResult {
+	timestamp: number;
+	projects: HermesProjectFreshnessItem[];
+	anyStale: boolean;
+}
+
 export interface HermesGetVectorGraphInput {
 	projectSlug?: string | undefined;
 	limit?: number | undefined;
@@ -162,4 +180,63 @@ export interface HermesIndexingProgress {
 	currentFile?: string | undefined;
 	status?: "idle" | "scanning" | "indexing" | "completed" | "error" | undefined;
 	error?: string | undefined;
+}
+
+// ---------------------------------------------------------------------------
+// Contratos para Descoberta, Instalação e Gestão de Skills do Hermes MCP
+// ---------------------------------------------------------------------------
+
+export interface HermesSkillRepoResult {
+	fullName: string;
+	description: string;
+	stars: number;
+	url: string;
+	topics: string[];
+	source: string;
+	installCmd: string;
+	installs: number;
+}
+
+export interface HermesFindSkillsInput {
+	query: string;
+	limit?: number | undefined;
+	minStars?: number | undefined;
+}
+
+export interface HermesFindSkillsResult {
+	query: string;
+	results: HermesSkillRepoResult[];
+	formattedText?: string | undefined;
+}
+
+export interface HermesInstallSkillInput {
+	repoUrl: string;
+	skillName?: string | undefined;
+}
+
+export interface HermesInstallSkillResult {
+	success: boolean;
+	message: string;
+	skillName?: string | undefined;
+	destPath?: string | undefined;
+}
+
+export interface HermesInstalledSkill {
+	name: string;
+	active: boolean;
+	path: string;
+	folderName?: string | undefined;
+	skillMdPath?: string | undefined;
+	description?: string | undefined;
+}
+
+export interface HermesManageSkillsInput {
+	action: "list" | "enable" | "disable" | "remove";
+	skillName?: string | undefined;
+}
+
+export interface HermesManageSkillsResult {
+	success: boolean;
+	message: string;
+	skills: HermesInstalledSkill[];
 }
