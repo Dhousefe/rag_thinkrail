@@ -1,13 +1,14 @@
+import { Database } from "bun:sqlite";
 import { afterEach, beforeEach, describe, expect, it } from "bun:test";
 import { existsSync, mkdirSync, readFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { Database } from "bun:sqlite";
 import {
 	canonicalizeProjectPath,
 	ensureHermesDatabaseSchema,
 	ensureHermesEnvironment,
 	ensureHermesProjectForPath,
+	getHermesVectorGraph,
 	listHermesProjects,
 } from "./hermes";
 
@@ -78,7 +79,7 @@ describe("Hermes RAG Auto-Index e Portabilidade", () => {
 		expect(res1.slug).toBe("dummy-app");
 
 		// Segundo registro com formatação diferente do caminho
-		const variedPath = dummyDir.replace(/\\/g, "/") + "/";
+		const variedPath = `${dummyDir.replace(/\\/g, "/")}/`;
 		const res2 = await ensureHermesProjectForPath({
 			path: variedPath,
 			name: "Dummy App Alternate",
@@ -158,5 +159,44 @@ describe("Hermes RAG Auto-Index e Portabilidade", () => {
 		expect(names).toContain("l2j_chunks");
 		expect(names).toContain("l2j_chunk_fts");
 		db.close();
+	});
+
+	it("UC-07: getHermesVectorGraph suporta embeddings de dimensões arbitrárias (384D, 768D) sem RangeError", async () => {
+		const projDir = join(testHermesHome, "sample-multi-dim");
+		mkdirSync(projDir, { recursive: true });
+
+		const reg = await ensureHermesProjectForPath({
+			path: projDir,
+			name: "Multi Dim App",
+			autoIndex: false,
+		});
+
+		const dbPath = join(testHermesHome, "projects", reg.slug, "hermes.db");
+		const db = new Database(dbPath);
+
+		// Insere chunk e embeddings de 384 dimensões (1536 bytes) - simulando caso Cindy
+		db.run(
+			"CREATE TABLE IF NOT EXISTS l2j_embeddings_cache (rowid INTEGER PRIMARY KEY, cache_key TEXT, model TEXT, dim INTEGER, vector_blob BLOB, created_at INTEGER);",
+		);
+		db.run(`
+			INSERT INTO l2j_chunks (id, file_id, project_name, path, qualified_name, chunk_kind, content, token_estimate, created_at)
+			VALUES ('c1', 'f1', '${reg.slug}', 'src/Service.ts', 'Service', 'class', 'class Service {}', 100, 1000);
+		`);
+		const f32_384 = new Float32Array(384);
+		for (let i = 0; i < 384; i++) f32_384[i] = Math.sin(i);
+		const blob384 = new Uint8Array(f32_384.buffer);
+
+		db.run(
+			"INSERT INTO l2j_embeddings_cache (rowid, cache_key, model, dim, vector_blob, created_at) VALUES (1, 'k1', 'm1', 384, ?, 1000)",
+			[blob384],
+		);
+		db.close();
+
+		// Executa getHermesVectorGraph e assegura que não lança RangeError e retorna o nó
+		const result = await getHermesVectorGraph({ projectSlug: reg.slug });
+		expect(result.nodes.length).toBe(1);
+		expect(result.nodes[0]?.chunkKind).toBe("class");
+		expect(result.nodes[0]?.position).toBeDefined();
+		expect(result.nodes[0]?.position.length).toBe(3);
 	});
 });

@@ -30,7 +30,9 @@ export function HermesMcpPanel() {
 	const hermesManagement = useAppStore((s) => s.hermesManagement);
 
 	const [testingPing, setTestingPing] = useState(false);
-	const [connectionDiagnosis, setConnectionDiagnosis] = useState<HermesConnectionStatus | null>(null);
+	const [connectionDiagnosis, setConnectionDiagnosis] = useState<HermesConnectionStatus | null>(
+		null,
+	);
 	const [panelTab, setPanelTab] = useState<"projects" | "tools" | "telemetry">("projects");
 	const [activeTelemetryFilter, setActiveTelemetryFilter] = useState<"hermes" | "all">("hermes");
 
@@ -88,11 +90,10 @@ export function HermesMcpPanel() {
 	}, [metrics]);
 
 	const handleTestPing = async () => {
-		if (!workspaceId) return;
 		setTestingPing(true);
 		try {
 			const status = await getTransport().request("hermes.testConnection", {
-				workspaceId,
+				...(workspaceId ? { workspaceId } : {}),
 			});
 			setConnectionDiagnosis(status);
 
@@ -150,12 +151,7 @@ export function HermesMcpPanel() {
 					</div>
 
 					<div className="flex items-center gap-8">
-						<Button
-							size="s"
-							variant="outline"
-							disabled={testingPing || !workspaceId}
-							onClick={handleTestPing}
-						>
+						<Button size="s" variant="outline" disabled={testingPing} onClick={handleTestPing}>
 							<RiRefreshLine className={cn("size-14 mr-4", testingPing && "animate-spin")} />
 							{testingPing ? "Testando..." : "Testar Conexão"}
 						</Button>
@@ -216,12 +212,19 @@ export function HermesMcpPanel() {
 						<div className="grid grid-cols-1 gap-8 sm:grid-cols-2">
 							{/* Status Jina */}
 							<div className="flex items-start gap-8 rounded border border-border-default bg-container-elevated-bg p-8">
-								<div className={cn("size-8 mt-4 rounded-full shrink-0", connectionDiagnosis.jinaActive ? "bg-feedback-success" : "bg-feedback-error")} />
+								<div
+									className={cn(
+										"size-8 mt-4 rounded-full shrink-0",
+										connectionDiagnosis.jinaActive ? "bg-feedback-success" : "bg-feedback-error",
+									)}
+								/>
 								<div className="flex flex-col gap-2 min-w-0">
 									<div className="flex items-center gap-6">
 										<span className="tr-text-emphasis text-text-default">Jina Embeddings</span>
 										{connectionDiagnosis.jinaLatencyMs !== undefined && (
-											<span className="tr-text-metadata text-text-muted">{connectionDiagnosis.jinaLatencyMs}ms</span>
+											<span className="tr-text-metadata text-text-muted">
+												{connectionDiagnosis.jinaLatencyMs}ms
+											</span>
 										)}
 									</div>
 									<span className="tr-text-metadata text-text-muted break-all">
@@ -232,12 +235,19 @@ export function HermesMcpPanel() {
 
 							{/* Status Servidor MCP */}
 							<div className="flex items-start gap-8 rounded border border-border-default bg-container-elevated-bg p-8">
-								<div className={cn("size-8 mt-4 rounded-full shrink-0", connectionDiagnosis.mcpConnected ? "bg-feedback-success" : "bg-feedback-error")} />
+								<div
+									className={cn(
+										"size-8 mt-4 rounded-full shrink-0",
+										connectionDiagnosis.mcpConnected ? "bg-feedback-success" : "bg-feedback-error",
+									)}
+								/>
 								<div className="flex flex-col gap-2 min-w-0">
 									<div className="flex items-center gap-6">
 										<span className="tr-text-emphasis text-text-default">Servidor Hermes MCP</span>
 										{connectionDiagnosis.mcpLatencyMs !== undefined && (
-											<span className="tr-text-metadata text-text-muted">{connectionDiagnosis.mcpLatencyMs}ms</span>
+											<span className="tr-text-metadata text-text-muted">
+												{connectionDiagnosis.mcpLatencyMs}ms
+											</span>
 										)}
 									</div>
 									<span className="tr-text-metadata text-text-muted break-all">
@@ -254,9 +264,17 @@ export function HermesMcpPanel() {
 							</span>
 							<div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
 								{connectionDiagnosis.activeProjects.map((p) => (
-									<div key={p.slug} className="flex items-center justify-between rounded border border-border-default bg-container-elevated-bg p-6 tr-text-metadata">
+									<div
+										key={p.slug}
+										className="flex items-center justify-between rounded border border-border-default bg-container-elevated-bg p-6 tr-text-metadata"
+									>
 										<div className="flex items-center gap-6 min-w-0 flex-1">
-											<span className={cn("size-6 rounded-full shrink-0", p.status === "ok" ? "bg-feedback-success" : "bg-feedback-error")} />
+											<span
+												className={cn(
+													"size-6 rounded-full shrink-0",
+													p.status === "ok" ? "bg-feedback-success" : "bg-feedback-error",
+												)}
+											/>
 											<span className="tr-text-emphasis text-text-default truncate">{p.slug}</span>
 										</div>
 										<div className="flex items-center gap-6 text-text-muted shrink-0">
