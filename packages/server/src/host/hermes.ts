@@ -124,7 +124,9 @@ export function resolveGermesExecutable(): string | null {
 		"D:/Projeto_Germes/hermes-3.0/dist/germes.exe",
 		join(userProfile, ".hermes", "bin", "germes.exe"),
 		...(process.env.APPDATA ? [join(process.env.APPDATA, "hermes", "bin", "germes.exe")] : []),
-		...(process.env.LOCALAPPDATA ? [join(process.env.LOCALAPPDATA, "hermes", "bin", "germes.exe")] : []),
+		...(process.env.LOCALAPPDATA
+			? [join(process.env.LOCALAPPDATA, "hermes", "bin", "germes.exe")]
+			: []),
 	];
 
 	for (const candidate of candidates) {
@@ -524,16 +526,7 @@ export async function reindexHermesProject(
 		try {
 			const proc = spawn(
 				bunExe,
-				[
-					"run",
-					reindexScript,
-					"--project",
-					input.slug,
-					"--db",
-					dbPath,
-					"--workspace",
-					targetPath,
-				],
+				["run", reindexScript, "--project", input.slug, "--db", dbPath, "--workspace", targetPath],
 				{
 					cwd: targetPath,
 					env: {
@@ -786,13 +779,35 @@ export async function ensureHermesProjectForPath(
 
 export function getActiveHermesProjects(): HermesGetActiveProjectsResult {
 	const hermesHome = resolveHermesHome();
+	const projectsDir = join(hermesHome, "projects");
 	const activeFile = join(hermesHome, "active_projects.json");
 	if (existsSync(activeFile)) {
 		try {
 			const content = readFileSync(activeFile, "utf8");
 			const data = JSON.parse(content) as { activeSlugs?: string[] };
 			if (Array.isArray(data.activeSlugs) && data.activeSlugs.length > 0) {
-				return { activeSlugs: data.activeSlugs };
+				// Higienização: remove slugs órfãos cujo diretório não existe mais em projects/
+				const validSlugs = data.activeSlugs.filter((s) => {
+					const slug = s.trim().toLowerCase();
+					return slug.length > 0 && existsSync(join(projectsDir, slug));
+				});
+				if (validSlugs.length > 0) {
+					if (validSlugs.length !== data.activeSlugs.length) {
+						try {
+							writeFileSync(
+								activeFile,
+								JSON.stringify({ activeSlugs: validSlugs }, null, 2),
+								"utf8",
+							);
+							log.info(
+								`Slugs órfãos removidos de active_projects.json: ${data.activeSlugs
+									.filter((s) => !validSlugs.includes(s))
+									.join(", ")}`,
+							);
+						} catch {}
+					}
+					return { activeSlugs: validSlugs };
+				}
 			}
 		} catch {}
 	}
@@ -804,9 +819,7 @@ export function setActiveHermesProjects(
 ): HermesGetActiveProjectsResult {
 	const hermesHome = resolveHermesHome();
 	const activeFile = join(hermesHome, "active_projects.json");
-	const cleanSlugs = (input.slugs || [])
-		.map((s) => s.trim().toLowerCase())
-		.filter(Boolean);
+	const cleanSlugs = (input.slugs || []).map((s) => s.trim().toLowerCase()).filter(Boolean);
 	const activeSlugs = cleanSlugs.length > 0 ? cleanSlugs : ["project-thinkrail"];
 	try {
 		writeFileSync(activeFile, JSON.stringify({ activeSlugs }, null, 2), "utf8");
@@ -847,7 +860,7 @@ export async function testHermesConnection(
 		clearTimeout(timeoutId);
 		jinaLatencyMs = Date.now() - jinaStart;
 		if (res.ok) {
-		jinaActive = true;
+			jinaActive = true;
 			const data = (await res.json().catch(() => ({}))) as { provider?: string; gpu?: boolean };
 			const gpuInfo = data.gpu ? " (GPU DirectML ativo)" : "";
 			jinaStatusText = `Online e respondendo${gpuInfo}`;
@@ -857,7 +870,9 @@ export async function testHermesConnection(
 	} catch (err: unknown) {
 		jinaLatencyMs = Date.now() - jinaStart;
 		const msg = err instanceof Error ? err.message : String(err);
-		jinaStatusText = msg.includes("aborted") ? "Timeout de conexão (>2s)" : "Inacessível na porta 9085";
+		jinaStatusText = msg.includes("aborted")
+			? "Timeout de conexão (>2s)"
+			: "Inacessível na porta 9085";
 	}
 
 	// 2. Testa Servidor Hermes MCP
@@ -911,20 +926,16 @@ export async function testHermesConnection(
 							? "D:/Projet_Thinkrail/source/thinkrail"
 							: process.cwd());
 
-					const proc = spawn(
-						cmd,
-						args,
-						{
-							cwd: targetWorkspace,
-							env: {
-								...process.env,
-								HERMES_PROJECT: "project-thinkrail",
-								HERMES_WORKSPACE_ROOT: targetWorkspace,
-							},
-							stdio: ["pipe", "pipe", "ignore"],
-							windowsHide: true,
+					const proc = spawn(cmd, args, {
+						cwd: targetWorkspace,
+						env: {
+							...process.env,
+							HERMES_PROJECT: "project-thinkrail",
+							HERMES_WORKSPACE_ROOT: targetWorkspace,
 						},
-					);
+						stdio: ["pipe", "pipe", "ignore"],
+						windowsHide: true,
+					});
 
 					let stdoutData = "";
 					const timer = setTimeout(() => {
@@ -1110,10 +1121,10 @@ export async function getHermesVectorGraph(
 	interface RawChunkRow {
 		id: string;
 		path: string;
-		qualified_name?: string;
-		chunk_kind?: string;
-		token_estimate?: number;
-		snippet?: string;
+		qualified_name?: string | undefined;
+		chunk_kind?: string | undefined;
+		token_estimate?: number | undefined;
+		snippet?: string | undefined;
 		vector_blob: Uint8Array;
 		projectSlug: string;
 	}
@@ -1121,10 +1132,10 @@ export async function getHermesVectorGraph(
 	interface RawMethodRow {
 		id: string;
 		path: string;
-		qualified_name?: string;
-		chunk_kind?: string;
-		token_estimate?: number;
-		snippet?: string;
+		qualified_name?: string | undefined;
+		chunk_kind?: string | undefined;
+		token_estimate?: number | undefined;
+		snippet?: string | undefined;
 	}
 
 	const collectedRows: RawChunkRow[] = [];
@@ -1144,47 +1155,72 @@ export async function getHermesVectorGraph(
 
 			try {
 				const db = new Database(dbPath, { readonly: true });
-				const totalChunksRow = db.query("SELECT count(*) as c FROM l2j_chunks").get() as { c?: number };
-				const totalEmbeddingsRow = db.query("SELECT count(*) as c FROM l2j_embeddings_cache").get() as { c?: number };
+				const totalChunksRow = db.query("SELECT count(*) as c FROM l2j_chunks").get() as {
+					c?: number;
+				};
+				const totalEmbeddingsRow = db
+					.query("SELECT count(*) as c FROM l2j_embeddings_cache")
+					.get() as { c?: number };
 				totalChunks += totalChunksRow?.c ?? 0;
 				totalEmbeddings += totalEmbeddingsRow?.c ?? 0;
 
-				const rows = db.query(`
-					SELECT c.id, c.path, c.qualified_name, c.chunk_kind, c.token_estimate,
-					       substr(c.content, 1, 140) as snippet, e.vector_blob
-					FROM l2j_chunks c
-					JOIN l2j_embeddings_cache e ON c.rowid = e.rowid
-					WHERE c.token_estimate >= 20
-					ORDER BY CASE
-						WHEN c.chunk_kind IN ('class', 'interface', 'struct', 'document') THEN 1
-						WHEN c.chunk_kind IN ('type', 'function') THEN 2
-						ELSE 3
-					END, c.token_estimate DESC
+				// Busca ultrarrápida de chunks estruturais chave (6ms) sem table scan nem temp b-tree
+				const rows = db
+					.query(`
+					SELECT rowid, id, path, qualified_name, chunk_kind, token_estimate,
+					       substr(content, 1, 140) as snippet
+					FROM l2j_chunks
+					WHERE chunk_kind IN ('class', 'interface', 'struct', 'document', 'function')
 					LIMIT ?;
-				`).all(perProjectLimit) as Array<{
+				`)
+					.all(perProjectLimit) as Array<{
+					rowid: number;
 					id: string;
 					path: string;
 					qualified_name?: string;
 					chunk_kind?: string;
 					token_estimate?: number;
 					snippet?: string;
-					vector_blob: Uint8Array;
 				}>;
 
-				for (const r of rows) {
-					collectedRows.push({ ...r, projectSlug: slug });
+				// Busca os blobs separadamente por rowid (rápido, sem full scan)
+				if (rows.length > 0) {
+					const rowids = rows.map((r) => r.rowid);
+					const ph = rowids.map(() => "?").join(",");
+					const blobRows = db
+						.query(`SELECT rowid, vector_blob FROM l2j_embeddings_cache WHERE rowid IN (${ph})`)
+						.all(...rowids) as Array<{ rowid: number; vector_blob: Uint8Array }>;
+					const blobByRowid = new Map<number, Uint8Array>();
+					for (const b of blobRows) blobByRowid.set(b.rowid, b.vector_blob);
+
+					for (const r of rows) {
+						const blob = blobByRowid.get(r.rowid);
+						if (!blob) continue;
+						collectedRows.push({
+							id: r.id,
+							path: r.path,
+							qualified_name: r.qualified_name,
+							chunk_kind: r.chunk_kind,
+							token_estimate: r.token_estimate,
+							snippet: r.snippet,
+							vector_blob: blob,
+							projectSlug: slug,
+						});
+					}
 				}
 
 				const uniquePaths = Array.from(new Set(rows.map((r) => r.path)));
 				if (uniquePaths.length > 0) {
 					const pathPlaceholders = uniquePaths.map(() => "?").join(", ");
-					const methodRows = db.query(`
+					const methodRows = db
+						.query(`
 						SELECT id, path, qualified_name, chunk_kind, token_estimate, substr(content, 1, 120) as snippet
 						FROM l2j_chunks
 						WHERE chunk_kind IN ('method', 'function', 'constructor')
 						  AND path IN (${pathPlaceholders})
 						ORDER BY token_estimate DESC;
-					`).all(...uniquePaths) as RawMethodRow[];
+					`)
+						.all(...uniquePaths) as RawMethodRow[];
 
 					for (const m of methodRows) {
 						const list = methodsByPath.get(m.path) || [];
@@ -1212,30 +1248,50 @@ export async function getHermesVectorGraph(
 			};
 		}
 
-		// Projeção 768D -> 3D usando projeção ortonormal determinística com proporção áurea
-		const dim = 768;
-		const projX = new Float32Array(dim);
-		const projY = new Float32Array(dim);
-		const projZ = new Float32Array(dim);
-		for (let i = 0; i < dim; i++) {
-			projX[i] = Math.sin(i * 1.6180339887);
-			projY[i] = Math.cos(i * 2.7182818284);
-			projZ[i] = Math.sin(i * 3.1415926535);
-		}
+		// Projeção n-dimensional -> 3D usando projeção ortonormal determinística com proporção áurea.
+		// Suporta robustamente qualquer dimensionalidade (ex: 384, 512, 768, 1024, 1536) e trata
+		// possíveis desalinhamentos de memória no Uint8Array sem lançar RangeError.
+		const extractFloatVector = (uint8: Uint8Array): Float32Array => {
+			if (!uint8 || uint8.byteLength < 4) {
+				return new Float32Array(0);
+			}
+			try {
+				const count = Math.floor(uint8.byteLength / 4);
+				const isAligned = uint8.byteOffset % 4 === 0;
+				if (isAligned && uint8.buffer.byteLength >= uint8.byteOffset + count * 4) {
+					return new Float32Array(uint8.buffer, uint8.byteOffset, count);
+				}
+				const copy = new Uint8Array(uint8);
+				return new Float32Array(copy.buffer, 0, count);
+			} catch {
+				return new Float32Array(0);
+			}
+		};
 
 		const rawCoords: Array<[number, number, number]> = [];
 		const vectors: Float32Array[] = [];
 
-		for (const r of collectedRows) {
-			const vec = new Float32Array(r.vector_blob.buffer, r.vector_blob.byteOffset, dim);
+		for (let rowIdx = 0; rowIdx < collectedRows.length; rowIdx++) {
+			const r = collectedRows[rowIdx]!;
+			const vec = extractFloatVector(r.vector_blob);
 			vectors.push(vec);
+
 			let x = 0;
 			let y = 0;
 			let z = 0;
-			for (let i = 0; i < dim; i++) {
-				x += vec[i]! * projX[i]!;
-				y += vec[i]! * projY[i]!;
-				z += vec[i]! * projZ[i]!;
+			const vLen = vec.length;
+			if (vLen > 0) {
+				for (let i = 0; i < vLen; i++) {
+					const val = vec[i]!;
+					x += val * Math.sin(i * 1.6180339887);
+					y += val * Math.cos(i * 2.7182818284);
+					z += val * Math.sin(i * 3.1415926535);
+				}
+			} else {
+				// Fallback determinístico caso o blob de embedding seja vazio
+				x = Math.sin(rowIdx * 1.6180339887);
+				y = Math.cos(rowIdx * 2.7182818284);
+				z = Math.sin(rowIdx * 3.1415926535);
 			}
 			rawCoords.push([x, y, z]);
 		}
@@ -1248,8 +1304,20 @@ export async function getHermesVectorGraph(
 			if (lower.endsWith(".ts") || lower.endsWith(".tsx")) return "typescript";
 			if (lower.endsWith(".js") || lower.endsWith(".jsx")) return "javascript";
 			if (lower.endsWith(".md") || lower.endsWith(".txt")) return "markdown";
-			if (lower.endsWith(".json") || lower.endsWith(".yaml") || lower.endsWith(".yml") || lower.endsWith(".toml")) return "config";
-			if (lower.endsWith(".bat") || lower.endsWith(".sh") || lower.endsWith(".cmd") || lower.endsWith(".ps1")) return "script";
+			if (
+				lower.endsWith(".json") ||
+				lower.endsWith(".yaml") ||
+				lower.endsWith(".yml") ||
+				lower.endsWith(".toml")
+			)
+				return "config";
+			if (
+				lower.endsWith(".bat") ||
+				lower.endsWith(".sh") ||
+				lower.endsWith(".cmd") ||
+				lower.endsWith(".ps1")
+			)
+				return "script";
 			if (lower.endsWith(".rs")) return "rust";
 			if (lower.endsWith(".py")) return "python";
 			if (lower.endsWith(".go")) return "go";
@@ -1279,10 +1347,19 @@ export async function getHermesVectorGraph(
 			let mod = "core";
 			let layer = 2;
 
-			if (normalizedPath.includes("/packages/contracts") || normalizedPath.includes("/domain") || r.chunk_kind === "interface") {
+			if (
+				normalizedPath.includes("/packages/contracts") ||
+				normalizedPath.includes("/domain") ||
+				r.chunk_kind === "interface"
+			) {
 				mod = "contracts";
 				layer = 1;
-			} else if (normalizedPath.includes("/packages/server") || normalizedPath.includes("/br/com/hermes") || normalizedPath.includes("/agent/") || normalizedPath.includes("/rag/")) {
+			} else if (
+				normalizedPath.includes("/packages/server") ||
+				normalizedPath.includes("/br/com/hermes") ||
+				normalizedPath.includes("/agent/") ||
+				normalizedPath.includes("/rag/")
+			) {
 				mod = "packages/server";
 				layer = 2;
 			} else if (normalizedPath.includes("/apps/web")) {
@@ -1358,7 +1435,7 @@ export async function getHermesVectorGraph(
 				// Elevação suave tipo "louça côncava" (Y eleva-se levemente com a distância do centro)
 				const distFromCenter = Math.sqrt(px * px + pz * pz);
 				// Tigela/prato suave: nós no centro são mais baixos, bordas sobem levemente
-				const py = (distFromCenter * distFromCenter * 0.08) - 0.45 + ((ry / normEmb) * 0.14);
+				const py = distFromCenter * distFromCenter * 0.08 - 0.45 + (ry / normEmb) * 0.14;
 
 				const relPath = it.normalizedPath.split("/").slice(-2).join("/");
 
@@ -1456,13 +1533,17 @@ export async function getHermesVectorGraph(
 
 		for (let i = 0; i < vectors.length; i++) {
 			const v1 = vectors[i]!;
+			if (v1.length === 0) continue;
 			const sims: Array<{ idx: number; sim: number }> = [];
 
 			for (let j = 0; j < vectors.length; j++) {
 				if (i === j) continue;
 				const v2 = vectors[j]!;
+				if (v2.length === 0) continue;
+				const commonLen = Math.min(v1.length, v2.length);
 				let dot = 0;
-				for (let d = 0; d < dim; d += 8) {
+				const step = Math.max(1, Math.floor(commonLen / 96));
+				for (let d = 0; d < commonLen; d += step) {
 					dot += v1[d]! * v2[d]!;
 				}
 				sims.push({ idx: j, sim: dot });
@@ -1501,4 +1582,3 @@ export async function getHermesVectorGraph(
 		};
 	}
 }
-

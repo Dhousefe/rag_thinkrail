@@ -63,7 +63,9 @@ export function HermesProjectsView() {
 		try {
 			const [result, activeResult] = await Promise.all([
 				getTransport().request("hermes.listProjects", {}),
-				getTransport().request("hermes.getActiveProjects", {}).catch(() => ({ activeSlugs: ["project-thinkrail"] })),
+				getTransport()
+					.request("hermes.getActiveProjects", {})
+					.catch(() => ({ activeSlugs: ["project-thinkrail"] })),
 			]);
 			setHermesProjects(result.projects, result.hermesHome);
 			if (Array.isArray(activeResult.activeSlugs)) {
@@ -73,6 +75,8 @@ export function HermesProjectsView() {
 			const msg = err instanceof Error ? err.message : String(err);
 			setHermesError(msg);
 			toast.error(`Falha ao carregar projetos Hermes: ${msg}`);
+		} finally {
+			setHermesLoading(false);
 		}
 	}, [setHermesLoading, setHermesProjects, setHermesActiveProjectSlugs, setHermesError]);
 
@@ -135,7 +139,9 @@ export function HermesProjectsView() {
 			if (isCurrentlyActive) {
 				toast.success(`Projeto "${slug}" desativado. Agora ${nextSlugs.length} ativo(s) no RAG.`);
 			} else {
-				toast.success(`Projeto "${slug}" ativado! Agora ${nextSlugs.length} projetos ativos para busca cruzada.`);
+				toast.success(
+					`Projeto "${slug}" ativado! Agora ${nextSlugs.length} projetos ativos para busca cruzada.`,
+				);
 			}
 		} catch (err) {
 			const msg = err instanceof Error ? err.message : String(err);
@@ -213,15 +219,18 @@ export function HermesProjectsView() {
 		startHermesIndexing(project.slug, 100);
 
 		try {
-			void getTransport().request("hermes.reindexProject", {
-				slug: project.slug,
-				path: project.path,
-			}).then(() => {
-				void loadProjects();
-			}).catch((err) => {
-				const msg = err instanceof Error ? err.message : String(err);
-				toast.error(`Falha no processo de reindexação: ${msg}`);
-			});
+			void getTransport()
+				.request("hermes.reindexProject", {
+					slug: project.slug,
+					path: project.path,
+				})
+				.then(() => {
+					void loadProjects();
+				})
+				.catch((err) => {
+					const msg = err instanceof Error ? err.message : String(err);
+					toast.error(`Falha no processo de reindexação: ${msg}`);
+				});
 			toast.success(`Indexação iniciada para o projeto "${project.slug}".`);
 			// Dispara primeiro poll imediato
 			setTimeout(() => void pollIndexingProgress(), 150);
@@ -256,7 +265,7 @@ export function HermesProjectsView() {
 	}, [hermesManagement.projects, activeSlugs]);
 
 	return (
-		<div className="space-y-4 min-w-0 max-w-full overflow-hidden">
+		<div className="flex flex-col gap-12 min-w-0 max-w-full">
 			{/* Barra de Progresso Preditiva durante reindexação */}
 			<HermesIndexingBar progress={hermesManagement.indexingProgress} />
 
@@ -337,7 +346,8 @@ export function HermesProjectsView() {
 					<RiDatabase2Line className="size-16 text-primary shrink-0" />
 					<div className="flex flex-col">
 						<span className="tr-text-emphasis text-text-default">
-							RAG Multi-Projeto Ativo ({activeSlugs.length} selecionado{activeSlugs.length > 1 ? "s" : ""})
+							RAG Multi-Projeto Ativo ({activeSlugs.length} selecionado
+							{activeSlugs.length > 1 ? "s" : ""})
 						</span>
 						<span className="tr-text-metadata text-text-muted">
 							A busca semântica (code_search) pesquisa simultaneamente em: {activeSlugs.join(", ")}
@@ -381,7 +391,7 @@ export function HermesProjectsView() {
 							<div
 								key={project.slug}
 								className={cn(
-									"rounded-md border p-12 transition-all bg-container-elevated-bg space-y-8 min-w-0 max-w-full overflow-hidden",
+									"rounded-md border p-12 transition-all bg-container-elevated-bg flex flex-col gap-8 min-w-0 max-w-full",
 									isActive
 										? "border-primary ring-1 ring-primary"
 										: "border-border-default hover:border-border-muted",
@@ -431,7 +441,9 @@ export function HermesProjectsView() {
 								<div className="flex flex-wrap items-center justify-between rounded bg-container-workspace-bg px-8 py-4 border border-border-default gap-6 min-w-0">
 									<div className="flex items-center gap-6 min-w-0 flex-1">
 										<RiFolder2Line className="size-14 text-text-muted shrink-0" />
-										<span className="tr-code-text text-text-muted truncate min-w-0">{project.path}</span>
+										<span className="tr-code-text text-text-muted truncate min-w-0">
+											{project.path}
+										</span>
 									</div>
 									<Button
 										size="s"
@@ -455,7 +467,11 @@ export function HermesProjectsView() {
 											size="s"
 											variant={isActive ? "primary" : "outline"}
 											onClick={() => void handleToggleProjectActive(project.slug)}
-											tooltip={isActive ? "Clique para desativar este projeto do RAG" : "Ativar este projeto no RAG multi-projeto"}
+											tooltip={
+												isActive
+													? "Clique para desativar este projeto do RAG"
+													: "Ativar este projeto no RAG multi-projeto"
+											}
 											className="shrink-0"
 										>
 											<RiCheckLine className={cn("size-12 mr-4", !isActive && "opacity-40")} />
