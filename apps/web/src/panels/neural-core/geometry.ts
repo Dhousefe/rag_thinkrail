@@ -471,11 +471,17 @@ export function getPolygonKindForFile(
 	return "diamond";
 }
 
+export interface SearchingNodeAnimState {
+	nodeId: string;
+	animProgress: number; // 0.0 a 1.0 (2 segundos)
+}
+
 export function createVectorConstellationWireframe(
 	nodes: VectorNodeInput[],
 	edges: VectorEdgeInput[],
 	highlightedNodeIndex: number | null = null,
 	_activeSearchQuery?: string | null,
+	searchingAnim?: SearchingNodeAnimState | null,
 ): GeometryMeshData {
 	const vertexFloats: number[] = [];
 	const edgeIndices: number[] = [];
@@ -488,18 +494,37 @@ export function createVectorConstellationWireframe(
 		const [cx, cy, cz] = n.position;
 		const isHighlight = i === highlightedNodeIndex;
 		const isMatched = Boolean(n.isMatchedBySearch);
+		const isSearchingTarget = Boolean(searchingAnim && searchingAnim.nodeId === n.id);
 
 		// Tamanho base reduzido e harmonioso para visual limpo sem sobreposição
 		let s = 0.024;
-		if (isMatched) s *= 1.8;
-		else if (isHighlight) s *= 1.7; // Destaque nítido ao passar o mouse
+		if (isSearchingTarget && searchingAnim) {
+			// Animação de vida gradativa em 2 segundos (pulso orgânico, expansão e breathing)
+			const p = Math.max(0, Math.min(1, searchingAnim.animProgress));
+			const lifePulse = 1.0 + Math.sin(p * Math.PI * 4) * 0.45 * (1.0 - p * 0.35);
+			s *= 2.2 * lifePulse;
+		} else if (isMatched) {
+			s *= 1.8;
+		} else if (isHighlight) {
+			s *= 1.7; // Destaque nítido ao passar o mouse
+		}
 
 		const defaultCol: [number, number, number, number] = MODULE_COLORS.core ?? [0.9, 0.9, 1.0, 0.8];
-		const col: [number, number, number, number] = isMatched
-			? [1.0, 0.9, 0.2, 1.0] // Dourado brilhante quando pesquisado no RAG
-			: isHighlight
-				? [0.2, 1.0, 0.85, 1.0] // Ciano-água incandescente sob cursor
-				: (MODULE_COLORS[n.module] ?? defaultCol);
+		let col: [number, number, number, number];
+		if (isSearchingTarget && searchingAnim) {
+			// Transição de cor gradativa: do ciano vibrante ao magenta e ouro esmeralda vivo
+			const p = Math.max(0, Math.min(1, searchingAnim.animProgress));
+			const r = 0.1 + p * 0.9;
+			const g = 0.9 - Math.sin(p * Math.PI) * 0.4 + p * 0.3;
+			const b = 1.0 - p * 0.85;
+			col = [Math.min(1, r), Math.min(1, g), Math.min(1, b), 1.0];
+		} else if (isMatched) {
+			col = [1.0, 0.9, 0.2, 1.0]; // Dourado brilhante quando pesquisado no RAG
+		} else if (isHighlight) {
+			col = [0.2, 1.0, 0.85, 1.0]; // Ciano-água incandescente sob cursor
+		} else {
+			col = MODULE_COLORS[n.module] ?? defaultCol;
+		}
 		const [colR, colG, colB, colA] = col;
 
 		const polyKind = getPolygonKindForFile(n.fileExtension || n.relPath || n.path);

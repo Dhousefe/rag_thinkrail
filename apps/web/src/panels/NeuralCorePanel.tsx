@@ -1,12 +1,21 @@
 import type { HermesVectorNode } from "@thinkrail/contracts";
 import {
+	RiAddLine,
+	RiArrowDownSLine,
+	RiArrowRightLine,
+	RiArrowUpSLine,
 	RiChatQuoteLine,
 	RiCloseLine,
 	RiFileCodeLine,
 	RiFileCopyLine,
 	RiFocus3Line,
+	RiNodeTree,
+	RiPauseLine,
+	RiPlayLine,
+	RiRefreshLine,
 	RiRobot2Line,
 	RiSearchLine,
+	RiSubtractLine,
 } from "@remixicon/react";
 import { Button } from "@thinkrail/ui/button";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -18,6 +27,23 @@ import { OrbitCameraController } from "./neural-core/cameraController";
 import { NeuralCoreEngine } from "./neural-core/neuralEngine";
 import { useNeuralCoreState } from "./neural-core/useNeuralCoreState";
 
+function getModuleClasses(moduleName?: string): { border: string; text: string; dot: string } {
+	switch (moduleName) {
+		case "apps/web":
+			return { border: "border-feedback-info", text: "text-feedback-info", dot: "bg-feedback-info" };
+		case "packages/server":
+			return { border: "border-primary", text: "text-primary", dot: "bg-primary" };
+		case "contracts":
+			return { border: "border-feedback-warning", text: "text-feedback-warning", dot: "bg-feedback-warning" };
+		case "packages/ui":
+			return { border: "border-feedback-success", text: "text-feedback-success", dot: "bg-feedback-success" };
+		case "scripts":
+			return { border: "border-feedback-error", text: "text-feedback-error", dot: "bg-feedback-error" };
+		default:
+			return { border: "border-border-default", text: "text-text-muted", dot: "bg-text-muted" };
+	}
+}
+
 export function NeuralCorePanel() {
 	const canvasRef = useRef<HTMLCanvasElement | null>(null);
 	const engineRef = useRef<NeuralCoreEngine | null>(null);
@@ -25,12 +51,18 @@ export function NeuralCorePanel() {
 
 	const { state, pulseKey } = useNeuralCoreState();
 	const [manualQuery, setManualQuery] = useState("");
+	const [isSearchOpen, setIsSearchOpen] = useState(false);
+	const [isPaused, setIsPaused] = useState(false);
+	const [isBottomPanelCollapsed, setIsBottomPanelCollapsed] = useState(false);
 
 	// Estado da Projeção de Vetores RAG
 	const [vectorNodes, setVectorNodes] = useState<HermesVectorNode[]>([]);
+	const [vectorEdges, setVectorEdges] = useState<any[]>([]);
 	const [totalChunks, setTotalChunks] = useState(0);
 	const [inspectedNode, setInspectedNode] = useState<HermesVectorNode | null>(null);
 	const [selectedNode, setSelectedNode] = useState<HermesVectorNode | null>(null);
+	const [projectedLabels, setProjectedLabels] = useState<any[]>([]);
+	const [selectedModules, setSelectedModules] = useState<string[]>([]);
 
 	// Sincronização e Reatividade com Projetos Ativos do Hermes RAG
 	const activeProjectSlugs = useAppStore(
@@ -48,9 +80,10 @@ export function NeuralCorePanel() {
 			});
 			if (res && Array.isArray(res.nodes)) {
 				setVectorNodes(res.nodes);
+				setVectorEdges(res.edges || []);
 				setTotalChunks(res.totalChunks);
 				if (engineRef.current) {
-					engineRef.current.setVectorGraphData(res.nodes, res.edges);
+					engineRef.current.setVectorGraphData(res.nodes, res.edges || []);
 				}
 			}
 		} catch (err) {
@@ -75,15 +108,28 @@ export function NeuralCorePanel() {
 			engine.cameraOrbit.theta = camera.theta;
 			engine.cameraOrbit.phi = camera.phi;
 			engine.cameraOrbit.distance = camera.distance;
+			engine.cameraOrbit.target = [camera.target[0], camera.target[1], camera.target[2]];
 		});
 		cameraRef.current = camera;
 
-		// Vincula o loop a 60 FPS com o tween suave da câmera (fly-to)
+		// Sincroniza callback de pausa dinâmica
+		engine.onPauseChange = (paused) => {
+			setIsPaused(paused);
+		};
+
+		// Vincula o loop a 60 FPS com o tween suave da câmera (fly-to) e sincronização de labels
+		let labelTicker = 0;
 		engine.onBeforeRenderFrame = () => {
 			camera.updateTween();
 			engine.cameraOrbit.theta = camera.theta;
 			engine.cameraOrbit.phi = camera.phi;
 			engine.cameraOrbit.distance = camera.distance;
+			engine.cameraOrbit.target = [camera.target[0], camera.target[1], camera.target[2]];
+
+			labelTicker++;
+			if (labelTicker % 3 === 0) {
+				setProjectedLabels(engine.getProjectedNodeLabels(10));
+			}
 		};
 
 		engine.init().then(() => {
@@ -144,7 +190,7 @@ export function NeuralCorePanel() {
 		}).length;
 	}, [effectiveQuery, vectorNodes]);
 
-	// Foco Automático do Provider: centraliza a câmera 3D no símbolo inspecionado pela IA
+	// Foco Automático do Provider / MCP: centraliza a câmera 3D no símbolo inspecionado e dá vida ao polígono
 	useEffect(() => {
 		if (!effectiveQuery || vectorNodes.length === 0) return;
 		const q = effectiveQuery.toLowerCase();
@@ -154,8 +200,14 @@ export function NeuralCorePanel() {
 			const rel = (n.relPath || "").toLowerCase();
 			return p.includes(q) || qn.includes(q) || rel.includes(q);
 		});
-		if (matchedNode && cameraRef.current) {
-			cameraRef.current.focusPosition(matchedNode.position, 2.5);
+		if (matchedNode) {
+			if (engineRef.current) {
+				engineRef.current.triggerMcpSearchTarget(matchedNode.id);
+			}
+			setIsPaused(true);
+			if (cameraRef.current) {
+				cameraRef.current.focusPosition(matchedNode.position, 2.5);
+			}
 			setInspectedNode(matchedNode);
 		}
 	}, [effectiveQuery, vectorNodes]);
@@ -202,7 +254,88 @@ export function NeuralCorePanel() {
 		}
 	};
 
+	// Módulos disponíveis e contagens para a legenda Graphify
+	const availableModules = useMemo(() => {
+		const counts: Record<string, number> = {};
+		for (const n of vectorNodes) {
+			const m = n.module || "core";
+			counts[m] = (counts[m] || 0) + 1;
+		}
+		return Object.entries(counts).map(([name, count]) => ({
+			name,
+			count,
+			classes: getModuleClasses(name),
+		}));
+	}, [vectorNodes]);
+
+	// Aplica filtro de módulos no motor 3D
+	const handleToggleModule = (modName: string) => {
+		setSelectedModules((prev) => {
+			const next = prev.includes(modName)
+				? prev.filter((m) => m !== modName)
+				: [...prev, modName];
+			if (engineRef.current) {
+				engineRef.current.setVisibleModules(next);
+			}
+			return next;
+		});
+	};
+
+	const handleSelectAllModules = () => {
+		setSelectedModules([]);
+		if (engineRef.current) {
+			engineRef.current.setVisibleModules([]);
+		}
+	};
+
+	// Resultados da Busca com Autocomplete (estilo Graphify search-results)
+	const searchMatches = useMemo(() => {
+		if (!manualQuery.trim()) return [];
+		const q = manualQuery.toLowerCase().trim();
+		return vectorNodes
+			.filter((n) => {
+				const p = (n.path || "").toLowerCase();
+				const qn = (n.qualifiedName || "").toLowerCase();
+				const rel = (n.relPath || "").toLowerCase();
+				const hasMethod = (n.methods || []).some((m) =>
+					m.name.toLowerCase().includes(q),
+				);
+				return p.includes(q) || qn.includes(q) || rel.includes(q) || hasMethod;
+			})
+			.slice(0, 10);
+	}, [manualQuery, vectorNodes]);
+
+	// Ações de Câmera (Graphify navigation controls)
+	const handleZoomIn = () => {
+		cameraRef.current?.zoomIn();
+	};
+
+	const handleZoomOut = () => {
+		cameraRef.current?.zoomOut();
+	};
+
+	const handleResetView = () => {
+		cameraRef.current?.reset();
+		setSelectedNode(null);
+		setInspectedNode(null);
+		toast.info("Visão centralizada", "Câmera retornou à posição panorâmica inicial");
+	};
+
+	const handleTogglePause = () => {
+		setIsPaused((p) => {
+			const next = !p;
+			engineRef.current?.togglePause(next);
+			return next;
+		});
+	};
+
 	const handleFocusNode = (node: HermesVectorNode) => {
+		setSelectedNode(node);
+		setInspectedNode(node);
+		if (engineRef.current) {
+			engineRef.current.triggerMcpSearchTarget(node.id);
+		}
+		setIsPaused(true);
 		if (cameraRef.current) {
 			cameraRef.current.focusPosition(node.position, 2.2);
 		}
@@ -248,6 +381,23 @@ export function NeuralCorePanel() {
 	// Nó ativo para exibição no painel fixo inferior (hover tem prioridade momentânea sobre clique)
 	const activeNode = inspectedNode || selectedNode;
 
+	// Conexões Vizinhos 1-Hop (Graphify Connected Nodes)
+	const activeNeighbors = useMemo(() => {
+		if (!activeNode || vectorNodes.length === 0) return [];
+		const activeIdx = vectorNodes.findIndex((n) => n.id === activeNode.id);
+		if (activeIdx === -1) return [];
+
+		const neighborIndices = new Set<number>();
+		for (const edge of vectorEdges) {
+			if (edge.source === activeIdx) neighborIndices.add(edge.target);
+			else if (edge.target === activeIdx) neighborIndices.add(edge.source);
+		}
+
+		return Array.from(neighborIndices)
+			.map((idx) => vectorNodes[idx])
+			.filter(Boolean) as HermesVectorNode[];
+	}, [activeNode, vectorNodes, vectorEdges]);
+
 	return (
 		<div className="relative flex h-full w-full min-h-0 flex-col overflow-hidden bg-container-workspace-bg text-text-default">
 			{/* Canvas WebGPU / 3D Scene Desimpedido */}
@@ -258,15 +408,55 @@ export function NeuralCorePanel() {
 				className="absolute inset-0 h-full w-full cursor-grab active:cursor-grabbing"
 			/>
 
-			{/* Topo Limpo: Exibe APENAS quando houver busca RAG do Provider ou manual */}
-			{effectiveQuery && (
-				<div className="relative z-10 flex items-center justify-between p-16 pointer-events-none">
+			{/* Rótulos Inteligentes Projetados em 2D sobre o Canvas (Graphify style) */}
+			<div className="absolute inset-0 pointer-events-none overflow-hidden z-10">
+				{projectedLabels.map((item) => {
+					const modStyle = getModuleClasses(item.module);
+					return (
+						<div
+							key={item.id}
+							style={{
+								left: `${Math.round(item.x)}px`,
+								top: `${Math.round(item.y - 18)}px`,
+							}}
+							className={`absolute -translate-x-1/2 -translate-y-1/2 flex items-center gap-4 rounded border px-6 py-2 backdrop-blur-md transition-all select-none ${
+								item.isSearchingTarget
+									? "bg-container-elevated-bg border-feedback-warning shadow-xl scale-125 z-40 opacity-100 ring-2 ring-feedback-warning animate-pulse text-feedback-warning"
+									: item.isHovered
+										? "bg-container-elevated-bg border-primary shadow-lg scale-110 z-30 opacity-100 ring-1 ring-primary"
+										: item.isMatched
+											? "bg-container-elevated-bg border-feedback-warning shadow-md scale-105 z-20 opacity-95 text-feedback-warning"
+											: `bg-container-elevated-bg ${modStyle.border} shadow-sm opacity-85 z-10 text-text-default`
+							}`}
+						>
+							<span className={`size-6 rounded-full shrink-0 ${modStyle.dot}`} />
+							<span className="tr-code-text leading-none whitespace-nowrap">
+								{item.label}
+							</span>
+							{item.isSearchingTarget ? (
+								<span className="tr-code-text rounded bg-feedback-warning text-container-workspace-bg tr-text-emphasis px-4 py-2 leading-none">
+									⚡ ALVO MCP
+								</span>
+							) : item.methodsCount > 0 ? (
+								<span className="tr-text-metadata text-text-muted leading-none rounded bg-control-bg px-4 py-2">
+									{item.methodsCount}
+								</span>
+							) : null}
+						</div>
+					);
+				})}
+			</div>
+
+			{/* Barra Flutuante de Controles de Navegação (Graphify HUD) */}
+			<div className="relative z-20 flex items-center justify-between p-12 pointer-events-none">
+				{/* Busca RAG Ativa do Hermes */}
+				{effectiveQuery ? (
 					<div className="flex items-center gap-8 rounded-lg border border-border-default bg-container-elevated-bg px-12 py-6 shadow-md backdrop-blur-md animate-pulse pointer-events-auto">
 						<RiSearchLine className="size-14 text-feedback-warning" />
 						<span className="tr-text-emphasis text-feedback-warning uppercase">
 							{state.activeRagToolName || "RAG SCAN"}:
 						</span>
-						<span className="rounded bg-control-bg px-6 py-2 tr-code-text text-primary max-w-[280px] truncate">
+						<span className="rounded bg-control-bg px-6 py-2 tr-code-text text-primary max-w-[260px] truncate">
 							{effectiveQuery}
 						</span>
 						<span className="tr-text-metadata text-text-muted">
@@ -283,12 +473,209 @@ export function NeuralCorePanel() {
 							</button>
 						)}
 					</div>
-				</div>
-			)}
+				) : (
+					<div className="hidden sm:flex items-center gap-6 rounded-md border border-border-default bg-container-elevated-bg px-8 py-4 tr-text-metadata text-text-muted backdrop-blur-md">
+						<RiNodeTree className="size-12 text-primary" />
+						<span>{vectorNodes.length} nós indexados</span>
+						<span>·</span>
+						<span>{vectorEdges.length} conexões</span>
+					</div>
+				)}
 
-			{/* Painel Fixo Inferior: Compacto, com Scroll Interno e Ações do Provider */}
-			<div className="relative z-20 mt-auto p-16 pointer-events-none">
-				<div className="mx-auto max-w-[960px] pointer-events-auto rounded-lg border border-border-default bg-container-elevated-bg p-12 shadow-2xl backdrop-blur-md transition-all">
+				{/* Controles Rápidos de Câmera e Navegação (Graphify HUD) */}
+				<div className="flex items-center gap-4 rounded-lg border border-border-default bg-container-elevated-bg p-4 shadow-lg backdrop-blur-md pointer-events-auto ml-auto">
+					<button
+						type="button"
+						className="size-28 flex items-center justify-center rounded p-0 text-text-muted hover:text-text-default hover:bg-control-bg transition-colors"
+						onClick={handleZoomIn}
+						title="Zoom In (+)"
+						aria-label="Zoom In"
+					>
+						<RiAddLine className="size-14" />
+					</button>
+
+					<button
+						type="button"
+						className="size-28 flex items-center justify-center rounded p-0 text-text-muted hover:text-text-default hover:bg-control-bg transition-colors"
+						onClick={handleZoomOut}
+						title="Zoom Out (-)"
+						aria-label="Zoom Out"
+					>
+						<RiSubtractLine className="size-14" />
+					</button>
+
+					<button
+						type="button"
+						className="size-28 flex items-center justify-center rounded p-0 text-text-muted hover:text-text-default hover:bg-control-bg transition-colors"
+						onClick={handleResetView}
+						title="Centralizar Visão / Reset (Fit View)"
+						aria-label="Centralizar Visão"
+					>
+						<RiRefreshLine className="size-14" />
+					</button>
+
+					<div className="h-14 w-[1px] bg-border-default mx-2" />
+
+					<button
+						type="button"
+						className={`size-28 flex items-center justify-center rounded p-0 transition-colors ${
+							isPaused
+								? "bg-feedback-warning text-container-workspace-bg tr-text-emphasis"
+								: "text-text-muted hover:text-text-default hover:bg-control-bg"
+						}`}
+						onClick={handleTogglePause}
+						title={isPaused ? "Retomar Rotação Dinâmica" : "Pausar Rotação (Congelar Grafo)"}
+						aria-label="Pausar ou Retomar Rotação"
+					>
+						{isPaused ? <RiPlayLine className="size-14" /> : <RiPauseLine className="size-14" />}
+					</button>
+				</div>
+			</div>
+
+			{/* Painel Inferior de Informações (Alternável: Expandido / Recolhido) */}
+			<div className="relative z-20 mt-auto p-12 pointer-events-none">
+				{isBottomPanelCollapsed ? (
+					/* Barra Compacta Minimizada (Visual Zen 3D) */
+					<div className="mx-auto max-w-[1080px] pointer-events-auto rounded-lg border border-border-default bg-container-elevated-bg px-12 py-6 shadow-xl backdrop-blur-md transition-all flex items-center justify-between gap-8">
+						<div className="flex items-center gap-8 min-w-0">
+							<button
+								type="button"
+								onClick={() => setIsBottomPanelCollapsed(false)}
+								className="flex items-center gap-4 rounded bg-control-bg px-8 py-4 tr-text-ui text-text-default hover:text-primary transition-colors cursor-pointer"
+								title="Expandir Caixa de Informações"
+							>
+								<RiArrowUpSLine className="size-14 text-primary" />
+								<span>Mostrar Informações</span>
+							</button>
+
+							{activeNode && (
+								<div className="flex items-center gap-6 min-w-0 truncate">
+									<span className="size-6 rounded-full bg-primary shrink-0" />
+									<span className="tr-code-text text-primary truncate max-w-[280px]">
+										{activeNode.qualifiedName || activeNode.relPath}
+									</span>
+									<span className="tr-text-metadata text-text-muted truncate hidden sm:inline">
+										({activeNode.module})
+									</span>
+								</div>
+							)}
+						</div>
+
+						<div className="flex items-center gap-8 tr-text-metadata text-text-muted select-none shrink-0">
+							<span className="hidden sm:inline">[Botão Direito / Shift+Drag: Pan]</span>
+							<span className="hidden sm:inline">·</span>
+							<span>{totalChunks.toLocaleString()} chunks RAG</span>
+						</div>
+					</div>
+				) : (
+					/* Caixa de Informações Completa Expandida (Graphify Dashboard) */
+					<div className="mx-auto max-w-[1080px] pointer-events-auto rounded-lg border border-border-default bg-container-elevated-bg p-12 shadow-2xl backdrop-blur-md transition-all flex flex-col gap-8">
+						{/* Barra de Busca com Autocomplete e Filtro de Comunidades */}
+						<div className="flex flex-wrap items-center justify-between gap-8 border-b border-border-default pb-8">
+							{/* Input de Busca com Dropdown Inteligente */}
+							<div className="relative flex-1 min-w-[240px] max-w-[420px]">
+								<div className="flex items-center gap-6 rounded border border-border-default bg-container-workspace-bg px-8 py-4 focus-within:border-primary transition-colors">
+									<RiSearchLine className="size-14 text-text-muted shrink-0" />
+									<input
+										type="text"
+										value={manualQuery}
+										onChange={(e) => {
+											setManualQuery(e.target.value);
+											setIsSearchOpen(true);
+										}}
+										onFocus={() => setIsSearchOpen(true)}
+										placeholder="Buscar classe, arquivo ou método (Fly to)..."
+										className="bg-transparent tr-code-text text-text-default placeholder:text-text-muted outline-none w-full"
+									/>
+									{manualQuery && (
+										<button
+											type="button"
+											onClick={() => setManualQuery("")}
+											className="text-text-muted hover:text-text-default p-2"
+										>
+											<RiCloseLine className="size-12" />
+										</button>
+									)}
+								</div>
+
+								{/* Dropdown de Resultados da Busca (Graphify Search Results) */}
+								{isSearchOpen && searchMatches.length > 0 && (
+									<div className="absolute bottom-full left-0 right-0 mb-4 max-h-[220px] overflow-y-auto rounded-md border border-border-default bg-container-elevated-bg p-4 shadow-xl z-50 flex flex-col gap-2">
+										{searchMatches.map((n) => {
+											const modStyle = getModuleClasses(n.module);
+											return (
+												<div
+													key={n.id}
+													onClick={() => {
+														handleFocusNode(n);
+														setIsSearchOpen(false);
+													}}
+													className={`flex items-center justify-between rounded px-8 py-4 hover:bg-control-bg cursor-pointer transition-colors group border-l-2 ${modStyle.border}`}
+												>
+													<div className="flex items-center gap-6 min-w-0">
+														<span className="tr-code-text text-text-default group-hover:text-primary truncate">
+															{n.qualifiedName || n.relPath}
+														</span>
+														<span className="tr-text-metadata text-text-muted truncate hidden sm:inline">
+															{n.module}
+														</span>
+													</div>
+													<RiArrowRightLine className="size-12 text-text-muted group-hover:text-primary shrink-0" />
+												</div>
+											);
+										})}
+									</div>
+								)}
+							</div>
+
+							{/* Legenda de Módulos / Comunidades com Filtros Interativos e Botão Ocultar */}
+							<div className="flex items-center gap-6 overflow-x-auto no-scrollbar py-2">
+								<button
+									type="button"
+									onClick={handleSelectAllModules}
+									className={`rounded px-6 py-2 tr-text-ui transition-colors ${
+										selectedModules.length === 0
+											? "bg-primary text-text-on-primary"
+											: "bg-control-bg text-text-muted hover:text-text-default"
+									}`}
+								>
+									Todos ({vectorNodes.length})
+								</button>
+
+								{availableModules.map((m) => {
+									const isActive = selectedModules.includes(m.name);
+									return (
+										<button
+											key={m.name}
+											type="button"
+											onClick={() => handleToggleModule(m.name)}
+											className={`flex items-center gap-4 rounded border px-6 py-2 tr-code-text shrink-0 transition-colors ${
+												isActive
+													? "bg-container-workspace-bg border-primary text-text-default shadow-sm"
+													: "border-border-default text-text-muted hover:text-text-default"
+											}`}
+										>
+											<span className={`size-6 rounded-full shrink-0 ${m.classes.dot}`} />
+											<span>{m.name}</span>
+											<span className="tr-text-metadata text-text-muted">({m.count})</span>
+										</button>
+									);
+								})}
+
+								{/* Botão para Esconder a Caixa de Informações */}
+								<button
+									type="button"
+									onClick={() => setIsBottomPanelCollapsed(true)}
+									className="size-28 flex items-center justify-center rounded p-0 text-text-muted hover:text-text-default hover:bg-control-bg transition-colors ml-auto shrink-0"
+									title="Esconder Caixa de Informações (Visual Zen 3D)"
+									aria-label="Esconder Caixa de Informações"
+								>
+									<RiArrowDownSLine className="size-16" />
+								</button>
+							</div>
+						</div>
+
+					{/* Conteúdo do Nó em Foco / Selecionado */}
 					{activeNode ? (
 						<div className="flex flex-col gap-8">
 							{/* Linha Principal: Identificação do Nó e Botões de Ação */}
@@ -369,6 +756,32 @@ export function NeuralCorePanel() {
 								</div>
 							</div>
 
+							{/* Vizinhos Conectados 1-Hop (Graphify Connected Nodes) */}
+							{activeNeighbors.length > 0 && (
+								<div className="flex items-center gap-8 overflow-x-auto py-2 no-scrollbar border-t border-border-default pt-6">
+									<span className="tr-text-metadata text-text-muted shrink-0 select-none flex items-center gap-4">
+										<RiNodeTree className="size-12 text-primary" />
+										Vizinhos Conectados ({activeNeighbors.length}):
+									</span>
+									<div className="flex items-center gap-4">
+										{activeNeighbors.map((nb) => {
+											const nbStyle = getModuleClasses(nb.module);
+											return (
+												<button
+													key={nb.id}
+													type="button"
+													onClick={() => handleFocusNode(nb)}
+													className={`flex items-center gap-4 rounded border border-border-default bg-container-workspace-bg px-6 py-2 tr-code-text text-text-default hover:border-primary shrink-0 transition-colors border-l-2 ${nbStyle.border}`}
+													title={`Focar em ${nb.qualifiedName || nb.relPath}`}
+												>
+													<span>{nb.qualifiedName || nb.relPath}</span>
+												</button>
+											);
+										})}
+									</div>
+								</div>
+							)}
+
 							{/* Sub-Órbitas: Métodos e Funções Filhos da Classe com Scroll Horizontal */}
 							{activeNode.methods && activeNode.methods.length > 0 && (
 								<div className="flex items-center gap-8 overflow-x-auto py-2 no-scrollbar">
@@ -403,16 +816,19 @@ export function NeuralCorePanel() {
 						<div className="flex items-center justify-between tr-text-metadata text-text-muted select-none px-4">
 							<span className="flex items-center gap-6">
 								<RiFocus3Line className="size-12 text-primary" />
-								Passe o mouse ou clique em qualquer classe ou método para inspecionar e interagir
+								Passe o mouse ou clique em qualquer nó para inspecionar conexões e métodos
 							</span>
 							<div className="flex items-center gap-8">
-								<span>[Scroll: Zoom -/+]</span>
+								<span>[Botão Direito / Shift+Drag: Pan]</span>
+								<span>·</span>
+								<span>[Scroll: Zoom]</span>
 								<span>·</span>
 								<span>{totalChunks.toLocaleString()} chunks RAG</span>
 							</div>
 						</div>
 					)}
 				</div>
+				)}
 			</div>
 		</div>
 	);
