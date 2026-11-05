@@ -429,6 +429,56 @@ const MODULE_COLORS: Record<string, [number, number, number, number]> = {
 	core: [0.9, 0.9, 1.0, 0.8], // Prata
 };
 
+/** Resolve cor do módulo com suporte a particionamento multi-projeto (slug:mod) */
+export function resolveModuleColor(modName?: string): [number, number, number, number] {
+	if (!modName) return MODULE_COLORS.core ?? [0.9, 0.9, 1.0, 0.8];
+	if (MODULE_COLORS[modName]) return MODULE_COLORS[modName]!;
+
+	// Se for prefixado por projeto (ex: hermes-3-0:core ou cindy:packages/server)
+	if (modName.includes(":")) {
+		const parts = modName.split(":");
+		const subMod = parts.slice(1).join(":");
+		if (MODULE_COLORS[subMod]) {
+			return MODULE_COLORS[subMod]!;
+		}
+	}
+
+	// Hash determinístico para projetos externos
+	let hash = 0;
+	for (let i = 0; i < modName.length; i++) {
+		hash = (hash << 5) - hash + modName.charCodeAt(i);
+		hash |= 0;
+	}
+	const hue = Math.abs(hash % 360);
+	// Converte HSV para RGB básico para cor viva
+	const h = hue / 60;
+	const c = 0.85;
+	const x = c * (1 - Math.abs((h % 2) - 1));
+	let r = 0;
+	let g = 0;
+	let b = 0;
+	if (h < 1) {
+		r = c;
+		g = x;
+	} else if (h < 2) {
+		r = x;
+		g = c;
+	} else if (h < 3) {
+		g = c;
+		b = x;
+	} else if (h < 4) {
+		g = x;
+		b = c;
+	} else if (h < 5) {
+		r = x;
+		b = c;
+	} else {
+		r = c;
+		b = x;
+	}
+	return [r + 0.15, g + 0.15, b + 0.15, 0.88];
+}
+
 /** Detecta tipo de polígono conforme a extensão do arquivo */
 export function getPolygonKindForFile(
 	pathOrExt?: string,
@@ -509,7 +559,6 @@ export function createVectorConstellationWireframe(
 			s *= 1.7; // Destaque nítido ao passar o mouse
 		}
 
-		const defaultCol: [number, number, number, number] = MODULE_COLORS.core ?? [0.9, 0.9, 1.0, 0.8];
 		let col: [number, number, number, number];
 		if (isSearchingTarget && searchingAnim) {
 			// Transição de cor gradativa: do ciano vibrante ao magenta e ouro esmeralda vivo
@@ -523,7 +572,7 @@ export function createVectorConstellationWireframe(
 		} else if (isHighlight) {
 			col = [0.2, 1.0, 0.85, 1.0]; // Ciano-água incandescente sob cursor
 		} else {
-			col = MODULE_COLORS[n.module] ?? defaultCol;
+			col = resolveModuleColor(n.module);
 		}
 		const [colR, colG, colB, colA] = col;
 
@@ -680,7 +729,8 @@ export function createVectorConstellationWireframe(
 		}
 	}
 
-	// 2. Conexões de arestas k-NN entre os nós com linha direta
+	// 2. Conexões de arestas k-NN estilo Trilha de Circuito Impresso (PCB Traces Manhattan Routing)
+	// Roteadas em ângulos retos (90° / vias) com elevação de camada de cobre para NUNCA transfixar o corpo dos nós
 	for (const edge of edges) {
 		if (edge.source >= nodes.length || edge.target >= nodes.length) continue;
 		const n1 = nodes[edge.source];
@@ -690,16 +740,58 @@ export function createVectorConstellationWireframe(
 		const p1 = n1.position;
 		const p2 = n2.position;
 
-		const v1Idx = vOffset;
-		const v2Idx = vOffset + 1;
+		// Camada de elevação da trilha (PCB Copper Trace Layer)
+		const traceY = Math.max(p1[1], p2[1]) + 0.042;
+		const alpha = Math.min(0.75, Math.max(0.18, edge.similarity * 0.85));
 
-		// Cor da linha de similaridade com opacidade proporcional ao cosseno
-		const alpha = Math.min(0.65, Math.max(0.15, edge.similarity * 0.8));
-		vertexFloats.push(p1[0], p1[1], p1[2], 0.2, 0.7, 0.9, alpha);
-		vertexFloats.push(p2[0], p2[1], p2[2], 0.5, 0.3, 0.9, alpha);
-		vOffset += 2;
+		// Cores de trilha metálica condutora (Ouro/Cobre e Turquesa)
+		const isCrossProject = n1.module.includes(":") && n2.module.includes(":") && n1.module.split(":")[0] !== n2.module.split(":")[0];
+		const trColR = isCrossProject ? 1.0 : 0.15;
+		const trColG = isCrossProject ? 0.75 : 0.85;
+		const trColB = isCrossProject ? 0.2 : 0.95;
 
-		edgeIndices.push(v1Idx, v2Idx);
+		// Ponto intermediário ortogonal (Manhattan midpoint)
+		const midX = (p1[0] + p2[0]) * 0.5;
+
+		// Segmentos da trilha PCB:
+		// 1) Via de saída do chip: (p1[0], p1[1], p1[2]) -> (p1[0], traceY, p1[2])
+		// 2) Trilha horizontal X:  (p1[0], traceY, p1[2]) -> (midX, traceY, p1[2])
+		// 3) Trilha transversal Z: (midX, traceY, p1[2])  -> (midX, traceY, p2[2])
+		// 4) Trilha horizontal X:  (midX, traceY, p2[2])  -> (p2[0], traceY, p2[2])
+		// 5) Via de entrada no pad: (p2[0], traceY, p2[2]) -> (p2[0], p2[1], p2[2])
+		const tracePts: [number, number, number][] = [
+			[p1[0], p1[1], p1[2]],
+			[p1[0], traceY, p1[2]],
+			[midX, traceY, p1[2]],
+			[midX, traceY, p2[2]],
+			[p2[0], traceY, p2[2]],
+			[p2[0], p2[1], p2[2]],
+		];
+
+		const baseIdx = vOffset;
+		for (const [tx, ty, tz] of tracePts) {
+			vertexFloats.push(tx, ty, tz, trColR, trColG, trColB, alpha);
+			vOffset++;
+		}
+
+		// Adiciona os 5 segmentos interligados
+		edgeIndices.push(
+			baseIdx + 0, baseIdx + 1,
+			baseIdx + 1, baseIdx + 2,
+			baseIdx + 2, baseIdx + 3,
+			baseIdx + 3, baseIdx + 4,
+			baseIdx + 4, baseIdx + 5,
+		);
+
+		// Micro-via metálica (Pad circular de 4 pontos) no ponto de inflexão
+		const viaR = 0.016;
+		const viaBase = vOffset;
+		vertexFloats.push(midX + viaR, traceY, midX ? p1[2] : 0, 1.0, 0.85, 0.3, alpha * 0.9);
+		vertexFloats.push(midX - viaR, traceY, midX ? p1[2] : 0, 1.0, 0.85, 0.3, alpha * 0.9);
+		vertexFloats.push(midX, traceY, p1[2] + viaR, 1.0, 0.85, 0.3, alpha * 0.9);
+		vertexFloats.push(midX, traceY, p1[2] - viaR, 1.0, 0.85, 0.3, alpha * 0.9);
+		vOffset += 4;
+		edgeIndices.push(viaBase + 0, viaBase + 1, viaBase + 2, viaBase + 3);
 	}
 
 	return {

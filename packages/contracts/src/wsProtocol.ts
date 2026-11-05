@@ -106,6 +106,10 @@ import type {
 	HermesInstallSkillResult,
 	HermesManageSkillsInput,
 	HermesManageSkillsResult,
+	HermesReadSkillInput,
+	HermesReadSkillResult,
+	HermesRevealSkillFolderInput,
+	HermesRevealSkillFolderResult,
 } from "./hermes";
 import type {
 	ExtUiResponse,

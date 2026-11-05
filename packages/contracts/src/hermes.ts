@@ -128,6 +128,8 @@ export interface HermesVectorNode {
 	language?: string | undefined;
 	methods?: HermesAstChildSymbol[] | undefined;
 	orbitLayer?: number | undefined;
+	projectSlug?: string | undefined;
+	projectRoot?: string | undefined;
 }
 
 export interface HermesVectorEdge {

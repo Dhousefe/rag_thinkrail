@@ -94,6 +94,53 @@ export class OrbitCameraController {
 		);
 	}
 
+	public panBy(deltaX: number, deltaY: number) {
+		this.flyTarget = null;
+		const panFactor = Math.max(0.001, this.distance * 0.0022);
+
+		// Vetor Right da câmera no plano horizontal
+		const rightX = Math.cos(this.theta);
+		const rightZ = -Math.sin(this.theta);
+
+		// Vetor Up da câmera
+		const upX = -Math.sin(this.phi) * Math.sin(this.theta);
+		const upY = Math.cos(this.phi);
+		const upZ = -Math.sin(this.phi) * Math.cos(this.theta);
+
+		this.target[0] -= (rightX * deltaX - upX * deltaY) * panFactor;
+		this.target[1] -= (-upY * deltaY) * panFactor;
+		this.target[2] -= (rightZ * deltaX - upZ * deltaY) * panFactor;
+		this.onUpdate?.();
+	}
+
+	public panLeft(step = 120) {
+		this.panBy(step, 0);
+	}
+
+	public panRight(step = 120) {
+		this.panBy(-step, 0);
+	}
+
+	public panUp(step = 120) {
+		this.panBy(0, step);
+	}
+
+	public panDown(step = 120) {
+		this.panBy(0, -step);
+	}
+
+	public setPcbTopView() {
+		this.flyTarget = {
+			targetX: this.target[0],
+			targetY: 0,
+			targetZ: this.target[2],
+			theta: 0,
+			phi: 1.25, // Visão zenital de placa PCB
+			distance: Math.max(4.2, this.distance),
+		};
+		this.onUpdate?.();
+	}
+
 	public zoomIn() {
 		this.flyTarget = null;
 		this.distance = Math.max(1.2, this.distance * 0.8);

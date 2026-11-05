@@ -1,11 +1,17 @@
 import type { HermesVectorNode } from "@thinkrail/contracts";
 import {
 	RiAddLine,
+	RiArrowDownLine,
 	RiArrowDownSLine,
+	RiArrowLeftLine,
 	RiArrowRightLine,
+	RiArrowUpLine,
 	RiArrowUpSLine,
 	RiChatQuoteLine,
 	RiCloseLine,
+	RiCpuLine,
+	RiEyeLine,
+	RiEyeOffLine,
 	RiFileCodeLine,
 	RiFileCopyLine,
 	RiFocus3Line,
@@ -19,7 +25,7 @@ import {
 } from "@remixicon/react";
 import { Button } from "@thinkrail/ui/button";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { selectWorkspaceChatTab, toast, useAppStore } from "@/store";
+import { selectWorkspaceById, selectWorkspaceChatTab, toast, useAppStore } from "@/store";
 import { getTransport } from "@/transport";
 import { openChatInTab, startChatInTab } from "./openChat";
 import { openFileInTab } from "./openTabs";
@@ -54,6 +60,7 @@ export function NeuralCorePanel() {
 	const [isSearchOpen, setIsSearchOpen] = useState(false);
 	const [isPaused, setIsPaused] = useState(false);
 	const [isBottomPanelCollapsed, setIsBottomPanelCollapsed] = useState(false);
+	const [isBottomPanelCompletelyHidden, setIsBottomPanelCompletelyHidden] = useState(false);
 
 	// Estado da Projeção de Vetores RAG
 	const [vectorNodes, setVectorNodes] = useState<HermesVectorNode[]>([]);
@@ -213,11 +220,73 @@ export function NeuralCorePanel() {
 	}, [effectiveQuery, vectorNodes]);
 
 	// Ações Rápidas de Produtividade para o Provider e Desenvolvedor
-	const handleOpenFile = (node: HermesVectorNode) => {
-		const wsId = useAppStore.getState().activeWorkspaceId;
-		if (wsId && node.path) {
-			void openFileInTab(wsId, node.path, "keep");
+	const handleOpenFile = async (node: HermesVectorNode) => {
+		if (!node.path) return;
+		const store = useAppStore.getState();
+		const currentWsId = store.activeWorkspaceId;
+		const currentWs = currentWsId ? selectWorkspaceById(store, currentWsId) : null;
+
+		// 1. Normaliza caminhos
+		const normNodePath = node.path.replace(/\\/g, "/");
+		const normCurrentRoot = (currentWs?.worktreePath || "").replace(/\\/g, "/");
+
+		// Se o arquivo estiver dentro do workspace ativo atualmente
+		if (currentWs && normCurrentRoot && normNodePath.startsWith(normCurrentRoot)) {
+			await openFileInTab(currentWs.id, node.path, "keep");
 			toast.success("Arquivo aberto no editor", node.relPath);
+			return;
+		}
+
+		// 2. Busca entre todos os workspaces abertos no ThinkRail se algum corresponde à raiz do arquivo
+		let matchedWs: any = null;
+		for (const wsList of Object.values(store.workspaces)) {
+			for (const ws of wsList) {
+				const wsRoot = (ws.worktreePath || "").replace(/\\/g, "/");
+				if (wsRoot && normNodePath.startsWith(wsRoot)) {
+					matchedWs = ws;
+					break;
+				}
+			}
+			if (matchedWs) break;
+		}
+
+		if (matchedWs) {
+			store.activateWorkspaceFromRoute({ id: matchedWs.id, projectId: matchedWs.projectId });
+			await openFileInTab(matchedWs.id, node.path, "keep");
+			toast.success(`Chaveado para projeto [${node.projectSlug || matchedWs.projectId}]`, node.relPath);
+			return;
+		}
+
+		// 3. Se o projeto RAG não estiver aberto em nenhum workspace atual, abre o projeto via project.open
+		if (node.projectRoot) {
+			try {
+				const openRes = await getTransport().request("project.open", { path: node.projectRoot });
+				if (openRes && (openRes as any).project) {
+					const openedProject = (openRes as any).project;
+					const updatedStore = useAppStore.getState();
+					const projectWorkspaces = updatedStore.workspaces[openedProject.id] || [];
+					const targetWs = projectWorkspaces[0];
+					if (targetWs) {
+						updatedStore.activateWorkspaceFromRoute({ id: targetWs.id, projectId: targetWs.projectId });
+					await openFileInTab(targetWs.id, node.path, "keep");
+						toast.success(`Projeto [${node.projectSlug}] aberto no ThinkRail`, node.relPath);
+						return;
+					}
+				}
+			} catch (openErr) {
+				console.warn("[NeuralCorePanel] project.open falhou:", openErr);
+			}
+		}
+
+		// 4. Fallback seguro
+		if (currentWsId) {
+			try {
+				await openFileInTab(currentWsId, node.path, "keep");
+				toast.success("Arquivo aberto no editor", node.relPath);
+			} catch {
+				void navigator.clipboard.writeText(node.path);
+				toast.info(`Caminho copiado (${node.projectSlug || "externo"})`, node.path);
+			}
 		}
 	};
 
@@ -312,6 +381,27 @@ export function NeuralCorePanel() {
 
 	const handleZoomOut = () => {
 		cameraRef.current?.zoomOut();
+	};
+
+	const handlePanLeft = () => {
+		cameraRef.current?.panLeft();
+	};
+
+	const handlePanRight = () => {
+		cameraRef.current?.panRight();
+	};
+
+	const handlePanUp = () => {
+		cameraRef.current?.panUp();
+	};
+
+	const handlePanDown = () => {
+		cameraRef.current?.panDown();
+	};
+
+	const handlePcbTopView = () => {
+		cameraRef.current?.setPcbTopView();
+		toast.info("Visão Zenital PCB Ativada", "Plano de circuito impresso de nós");
 	};
 
 	const handleResetView = () => {
@@ -482,8 +572,62 @@ export function NeuralCorePanel() {
 					</div>
 				)}
 
-				{/* Controles Rápidos de Câmera e Navegação (Graphify HUD) */}
+				{/* Controles Rápidos de Câmera, Navegação e Modo PCB (Graphify HUD) */}
 				<div className="flex items-center gap-4 rounded-lg border border-border-default bg-container-elevated-bg p-4 shadow-lg backdrop-blur-md pointer-events-auto ml-auto">
+					{/* Navegação Direcional Pan */}
+					<button
+						type="button"
+						className="size-28 flex items-center justify-center rounded p-0 text-text-muted hover:text-text-default hover:bg-control-bg transition-colors"
+						onClick={handlePanLeft}
+						title="Navegar para a Esquerda (Pan Esquerda)"
+						aria-label="Pan Esquerda"
+					>
+						<RiArrowLeftLine className="size-14" />
+					</button>
+
+					<button
+						type="button"
+						className="size-28 flex items-center justify-center rounded p-0 text-text-muted hover:text-text-default hover:bg-control-bg transition-colors"
+						onClick={handlePanRight}
+						title="Navegar para a Direita (Pan Direita)"
+						aria-label="Pan Direita"
+					>
+						<RiArrowRightLine className="size-14" />
+					</button>
+
+					<button
+						type="button"
+						className="size-28 flex items-center justify-center rounded p-0 text-text-muted hover:text-text-default hover:bg-control-bg transition-colors"
+						onClick={handlePanUp}
+						title="Navegar para Cima (Pan Cima)"
+						aria-label="Pan Cima"
+					>
+						<RiArrowUpLine className="size-14" />
+					</button>
+
+					<button
+						type="button"
+						className="size-28 flex items-center justify-center rounded p-0 text-text-muted hover:text-text-default hover:bg-control-bg transition-colors"
+						onClick={handlePanDown}
+						title="Navegar para Baixo (Pan Baixo)"
+						aria-label="Pan Baixo"
+					>
+						<RiArrowDownLine className="size-14" />
+					</button>
+
+					<div className="h-14 w-[1px] bg-border-default mx-2" />
+
+					{/* Visão Zenital de Placa PCB / Litografia de Chip */}
+					<button
+						type="button"
+						className="size-28 flex items-center justify-center rounded p-0 text-text-muted hover:text-primary hover:bg-control-bg transition-colors"
+						onClick={handlePcbTopView}
+						title="Visão Zenital de Placa PCB (Plano de Circuito / Chip Lithography)"
+						aria-label="Visão Zenital PCB"
+					>
+						<RiCpuLine className="size-14" />
+					</button>
+
 					<button
 						type="button"
 						className="size-28 flex items-center justify-center rounded p-0 text-text-muted hover:text-text-default hover:bg-control-bg transition-colors"
@@ -529,10 +673,28 @@ export function NeuralCorePanel() {
 					>
 						{isPaused ? <RiPlayLine className="size-14" /> : <RiPauseLine className="size-14" />}
 					</button>
+
+					<div className="h-14 w-[1px] bg-border-default mx-2" />
+
+					{/* Alternar Ocultamento Completo da Caixa Inferior */}
+					<button
+						type="button"
+						className={`size-28 flex items-center justify-center rounded p-0 transition-colors ${
+							isBottomPanelCompletelyHidden
+								? "bg-primary text-text-on-primary shadow-sm"
+								: "text-text-muted hover:text-text-default hover:bg-control-bg"
+						}`}
+						onClick={() => setIsBottomPanelCompletelyHidden((h) => !h)}
+						title={isBottomPanelCompletelyHidden ? "Exibir Caixa de Informações Inferior" : "Esconder Completamente a Caixa Inferior (Modo Tela Cheia 3D)"}
+						aria-label="Esconder ou Exibir Caixa de Informações Inferior"
+					>
+						{isBottomPanelCompletelyHidden ? <RiEyeLine className="size-14" /> : <RiEyeOffLine className="size-14" />}
+					</button>
 				</div>
 			</div>
 
-			{/* Painel Inferior de Informações (Alternável: Expandido / Recolhido) */}
+			{/* Painel Inferior de Informações (Alternável: Expandido / Recolhido / Oculto) */}
+			{!isBottomPanelCompletelyHidden && (
 			<div className="relative z-20 mt-auto p-12 pointer-events-none">
 				{isBottomPanelCollapsed ? (
 					/* Barra Compacta Minimizada (Visual Zen 3D) */
@@ -565,6 +727,14 @@ export function NeuralCorePanel() {
 							<span className="hidden sm:inline">[Botão Direito / Shift+Drag: Pan]</span>
 							<span className="hidden sm:inline">·</span>
 							<span>{totalChunks.toLocaleString()} chunks RAG</span>
+							<button
+								type="button"
+								onClick={() => setIsBottomPanelCompletelyHidden(true)}
+								className="size-24 flex items-center justify-center rounded p-0 text-text-muted hover:text-text-default hover:bg-control-bg transition-colors"
+								title="Ocultar Completamente a Caixa de Informações"
+							>
+								<RiEyeOffLine className="size-12" />
+							</button>
 						</div>
 					</div>
 				) : (
@@ -663,15 +833,27 @@ export function NeuralCorePanel() {
 								})}
 
 								{/* Botão para Esconder a Caixa de Informações */}
-								<button
-									type="button"
-									onClick={() => setIsBottomPanelCollapsed(true)}
-									className="size-28 flex items-center justify-center rounded p-0 text-text-muted hover:text-text-default hover:bg-control-bg transition-colors ml-auto shrink-0"
-									title="Esconder Caixa de Informações (Visual Zen 3D)"
-									aria-label="Esconder Caixa de Informações"
-								>
-									<RiArrowDownSLine className="size-16" />
-								</button>
+								<div className="flex items-center gap-2 ml-auto shrink-0">
+									<button
+										type="button"
+										onClick={() => setIsBottomPanelCompletelyHidden(true)}
+										className="size-28 flex items-center justify-center rounded p-0 text-text-muted hover:text-text-default hover:bg-control-bg transition-colors"
+										title="Ocultar Completamente (Visual Tela Cheia 3D)"
+										aria-label="Ocultar Completamente Caixa de Informações"
+									>
+										<RiEyeOffLine className="size-14" />
+									</button>
+
+									<button
+										type="button"
+										onClick={() => setIsBottomPanelCollapsed(true)}
+										className="size-28 flex items-center justify-center rounded p-0 text-text-muted hover:text-text-default hover:bg-control-bg transition-colors"
+										title="Recolher Caixa de Informações"
+										aria-label="Recolher Caixa de Informações"
+									>
+										<RiArrowDownSLine className="size-16" />
+									</button>
+								</div>
 							</div>
 						</div>
 
@@ -830,6 +1012,7 @@ export function NeuralCorePanel() {
 				</div>
 				)}
 			</div>
+			)}
 		</div>
 	);
 }

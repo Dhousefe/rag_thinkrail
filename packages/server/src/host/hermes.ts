@@ -1244,6 +1244,7 @@ export async function getHermesVectorGraph(
 		snippet?: string | undefined;
 		vector_blob: Uint8Array;
 		projectSlug: string;
+		projectRoot: string;
 	}
 
 	interface RawMethodRow {
@@ -1257,6 +1258,7 @@ export async function getHermesVectorGraph(
 
 	const collectedRows: RawChunkRow[] = [];
 	const methodsByPath = new Map<string, RawMethodRow[]>();
+	const projectRoots = new Map<string, string>();
 	let totalChunks = 0;
 	let totalEmbeddings = 0;
 
@@ -1267,8 +1269,22 @@ export async function getHermesVectorGraph(
 		const { Database } = await import("bun:sqlite");
 
 		for (const slug of targetSlugs) {
-			const dbPath = join(hermesHome, "projects", slug, "hermes.db");
+			const projectDir = join(hermesHome, "projects", slug);
+			const dbPath = join(projectDir, "hermes.db");
 			if (!existsSync(dbPath)) continue;
+
+			let wsPath = "";
+			const workspaceFile = join(projectDir, "workspace.path");
+			if (existsSync(workspaceFile)) {
+				try {
+					wsPath = readFileSync(workspaceFile, "utf8").trim();
+				} catch {
+					wsPath = projectDir;
+				}
+			} else {
+				wsPath = projectDir;
+			}
+			projectRoots.set(slug, wsPath);
 
 			try {
 				const db = new Database(dbPath, { readonly: true });
@@ -1322,6 +1338,7 @@ export async function getHermesVectorGraph(
 							snippet: r.snippet,
 							vector_blob: blob,
 							projectSlug: slug,
+							projectRoot: wsPath || projectDir,
 						});
 					}
 				}
@@ -1455,9 +1472,11 @@ export async function getHermesVectorGraph(
 			orbitLayer: number;
 			pos: [number, number, number];
 			methods: Array<any>;
+			projectSlug: string;
+			projectRoot: string;
 		}> = [];
 
-		// Mapeia módulos semânticos
+		// Mapeia módulos semânticos e associa a cada item seu projeto e camada
 		const categorizedItems = collectedRows.map((r, i) => {
 			const normalizedPath = r.path.replace(/\\/g, "/");
 			const lang = detectLanguage(normalizedPath);
@@ -1493,108 +1512,132 @@ export async function getHermesVectorGraph(
 				layer = 3;
 			}
 
-			// Se multi-projeto, prefixa com slug do projeto
+			// Se multi-projeto, prefixa com slug do projeto para isolamento de cores e filtros
 			if (targetSlugs.length > 1) {
 				mod = `${r.projectSlug}:${mod}`;
 			}
 			moduleSet.add(mod);
 
-			return { r, index: i, mod, layer, lang, normalizedPath };
+			return { r, index: i, mod, layer, lang, normalizedPath, projectSlug: r.projectSlug, projectRoot: r.projectRoot };
 		});
 
-		// Agrupa itens por módulo para ordenação e layout harmonioso em "Louça" (Dish / Tray layout)
-		// Em vez de esferas concêntricas densas onde nós ficam na frente uns dos outros na mesma linha de visada,
-		// organizamos como peças de louça dispostas sobre uma bandeja convexa elíptica aberta (plano suave XZ com leve curvatura Y).
-		const itemsByModule = new Map<string, typeof categorizedItems>();
+		// Agrupa itens por projeto e depois por módulo para disposição em Ilhas PCB (Chip Dies isolados)
+		const itemsByProject = new Map<string, typeof categorizedItems>();
 		for (const it of categorizedItems) {
-			const list = itemsByModule.get(it.mod) || [];
-			list.push(it);
-			itemsByModule.set(it.mod, list);
+			const pList = itemsByProject.get(it.projectSlug) || [];
+			pList.push(it);
+			itemsByProject.set(it.projectSlug, pList);
 		}
 
-		const moduleNames = Array.from(itemsByModule.keys());
-		const totalModules = moduleNames.length;
+		const projectList = Array.from(itemsByProject.keys());
+		const totalProjects = projectList.length;
 
-		// Raio e proporções da bandeja (dish)
-		const dishBaseRadius = 2.4;
-		const dishSectorAngle = (Math.PI * 2) / Math.max(1, totalModules);
+		// Disposição dos Chip Dies no plano XZ estilo PCB (Litografia de Chip)
+		for (let pIdx = 0; pIdx < totalProjects; pIdx++) {
+			const projSlug = projectList[pIdx]!;
+			const projItems = itemsByProject.get(projSlug)!;
 
-		for (let mIdx = 0; mIdx < totalModules; mIdx++) {
-			const modName = moduleNames[mIdx]!;
-			const items = itemsByModule.get(modName)!;
-			const clusterAngle = mIdx * dishSectorAngle;
+			// Centro do Die do Projeto no plano da placa de circuito impresso
+			let dieCenterX = 0;
+			let dieCenterZ = 0;
+			if (totalProjects === 2) {
+				dieCenterX = (pIdx === 0 ? -3.4 : 3.4);
+				dieCenterZ = 0;
+			} else if (totalProjects > 2) {
+				const pAngle = (pIdx / totalProjects) * Math.PI * 2;
+				const pDist = 4.2 + (totalProjects - 2) * 0.8;
+				dieCenterX = Math.cos(pAngle) * pDist;
+				dieCenterZ = Math.sin(pAngle) * pDist;
+			}
 
-			// Centro do setor do módulo na bandeja
-			const clusterDist = dishBaseRadius * (0.65 + (mIdx % 2) * 0.25);
-			const clusterCenterX = Math.cos(clusterAngle) * clusterDist;
-			const clusterCenterZ = Math.sin(clusterAngle) * clusterDist;
+			// Agrupa itens deste projeto por módulo
+			const itemsByModule = new Map<string, typeof categorizedItems>();
+			for (const it of projItems) {
+				const list = itemsByModule.get(it.mod) || [];
+				list.push(it);
+				itemsByModule.set(it.mod, list);
+			}
 
-			const nItems = items.length;
-			const goldenRatio = 1.6180339887;
+			const moduleNames = Array.from(itemsByModule.keys());
+			const totalModules = moduleNames.length;
+			const baseDieRadius = Math.min(2.8, Math.max(1.8, Math.sqrt(projItems.length) * 0.38));
+			const sectorAngle = (Math.PI * 2) / Math.max(1, totalModules);
 
-			for (let itemIdx = 0; itemIdx < nItems; itemIdx++) {
-				const it = items[itemIdx]!;
-				const r = it.r;
+			for (let mIdx = 0; mIdx < totalModules; mIdx++) {
+				const modName = moduleNames[mIdx]!;
+				const items = itemsByModule.get(modName)!;
+				const clusterAngle = mIdx * sectorAngle;
 
-				// Distribuição tipo phyllotaxis (girassol/louça) dentro de cada setor do prato
-				// Garante que cada item tenha raio radial crescente e ângulo sem colisão frontal
-				const spiralRadius = 0.32 * Math.sqrt(itemIdx + 0.5);
-				const spiralAngle = clusterAngle + itemIdx * goldenRatio * Math.PI * 2;
+				// Barramento / Setor do Módulo dentro do Die do Projeto
+				const clusterDist = baseDieRadius * (0.68 + (mIdx % 2) * 0.22);
+				const clusterCenterX = dieCenterX + Math.cos(clusterAngle) * clusterDist;
+				const clusterCenterZ = dieCenterZ + Math.sin(clusterAngle) * clusterDist;
 
-				const [rx, ry, rz] = rawCoords[it.index]!;
-				const normEmb = Math.sqrt(rx * rx + ry * ry + rz * rz) || 1;
-				const semOffX = (rx / normEmb) * 0.12;
-				const semOffZ = (rz / normEmb) * 0.12;
+				const nItems = items.length;
+				const goldenRatio = 1.6180339887;
 
-				const px = clusterCenterX + Math.cos(spiralAngle) * spiralRadius + semOffX;
-				const pz = clusterCenterZ + Math.sin(spiralAngle) * spiralRadius + semOffZ;
+				for (let itemIdx = 0; itemIdx < nItems; itemIdx++) {
+					const it = items[itemIdx]!;
+					const r = it.r;
 
-				// Elevação suave tipo "louça côncava" (Y eleva-se levemente com a distância do centro)
-				const distFromCenter = Math.sqrt(px * px + pz * pz);
-				// Tigela/prato suave: nós no centro são mais baixos, bordas sobem levemente
-				const py = distFromCenter * distFromCenter * 0.08 - 0.45 + (ry / normEmb) * 0.14;
+					// Dispersão em plano PCB com passo amplo e folga anti-colisão
+					const spiralRadius = 0.42 * Math.sqrt(itemIdx + 0.6);
+					const spiralAngle = clusterAngle + itemIdx * goldenRatio * Math.PI * 2;
 
-				const relPath = it.normalizedPath.split("/").slice(-2).join("/");
+					const [rx, ry, rz] = rawCoords[it.index]!;
+					const normEmb = Math.sqrt(rx * rx + ry * ry + rz * rz) || 1;
+					const semOffX = (rx / normEmb) * 0.16;
+					const semOffZ = (rz / normEmb) * 0.16;
 
-				const rawMethods = methodsByPath.get(r.path) || [];
-				const childMethods = rawMethods.map((m, cmIdx) => {
-					const totalM = rawMethods.length;
-					const angle = (cmIdx / Math.max(1, totalM)) * Math.PI * 2;
-					const simpleName = (m.qualified_name || "").split(".").pop() || "fn";
-					return {
-						id: m.id,
-						name: simpleName,
-						kind: (m.chunk_kind as any) || "method",
-						signature: m.qualified_name || simpleName,
-						tokenEstimate: m.token_estimate || 0,
-						contentSnippet: (m.snippet || "").trim(),
-						orbitAngle: angle,
-						orbitRadius: 0.18 + (cmIdx % 2) * 0.04,
-					};
-				});
+					const px = clusterCenterX + Math.cos(spiralAngle) * spiralRadius + semOffX;
+					const pz = clusterCenterZ + Math.sin(spiralAngle) * spiralRadius + semOffZ;
 
-				preliminaryNodes.push({
-					id: r.id,
-					path: r.path,
-					relPath,
-					qualifiedName: r.qualified_name || relPath,
-					chunkKind: r.chunk_kind || "code",
-					module: it.mod,
-					language: it.lang,
-					tokenEstimate: r.token_estimate || 0,
-					contentSnippet: (r.snippet || "").trim(),
-					orbitLayer: it.layer,
-					pos: [px, py, pz],
-					methods: childMethods,
-				});
+					// Plano estrito estilo PCB (plano XZ, Y quase zero para não ocluir nem sumir polígonos na rotação)
+					// Camadas em micro-step de 0.035 (layer 1 contratos, layer 2 server, layer 3 web)
+					const py = (it.layer - 2) * 0.035 + (ry / normEmb) * 0.02;
+
+					const relPath = it.normalizedPath.split("/").slice(-2).join("/");
+
+					const rawMethods = methodsByPath.get(r.path) || [];
+					const childMethods = rawMethods.map((m, cmIdx) => {
+						const totalM = rawMethods.length;
+						const angle = (cmIdx / Math.max(1, totalM)) * Math.PI * 2;
+						const simpleName = (m.qualified_name || "").split(".").pop() || "fn";
+						return {
+							id: m.id,
+							name: simpleName,
+							kind: (m.chunk_kind as any) || "method",
+							signature: m.qualified_name || simpleName,
+							tokenEstimate: m.token_estimate || 0,
+							contentSnippet: (m.snippet || "").trim(),
+							orbitAngle: angle,
+							orbitRadius: 0.22 + (cmIdx % 2) * 0.05,
+						};
+					});
+
+					preliminaryNodes.push({
+						id: r.id,
+						path: r.path,
+						relPath,
+						qualifiedName: r.qualified_name || relPath,
+						chunkKind: r.chunk_kind || "code",
+						module: it.mod,
+						language: it.lang,
+						tokenEstimate: r.token_estimate || 0,
+						contentSnippet: (r.snippet || "").trim(),
+						orbitLayer: it.layer,
+						pos: [px, py, pz],
+						methods: childMethods,
+						projectSlug: it.projectSlug,
+						projectRoot: it.projectRoot,
+					});
+				}
 			}
 		}
 
-		// Relaxação anti-colisão em 2.5D com restrição de separação mínima no plano da louça
-		// Garante que nenhum polígono fique em cima ou logo atrás de outro
-		const minSafeDist2D = 0.46; // Distância mínima estrita no plano XZ
-		const minSafeDist3D = 0.42;
-		const relaxationIterations = 24;
+		// Relaxação anti-colisão em 2D rigorosa com folga de segurança ampla estilo PCB pad clearance
+		const minSafeDist2D = 0.56; // Folga estrita no plano XZ entre polígonos
+		const relaxationIterations = 28;
 
 		for (let iter = 0; iter < relaxationIterations; iter++) {
 			for (let i = 0; i < preliminaryNodes.length; i++) {
@@ -1616,15 +1659,6 @@ export async function getHermesVectorGraph(
 						n2.pos[0] += nx;
 						n2.pos[2] += nz;
 					}
-
-					const dy = n2.pos[1] - n1.pos[1];
-					const dist3D = Math.sqrt(dx * dx + dy * dy + dz * dz) || 0.0001;
-					if (dist3D < minSafeDist3D) {
-						const overlap3D = (minSafeDist3D - dist3D) * 0.35;
-						const ny = (dy / dist3D) * overlap3D;
-						n1.pos[1] -= ny;
-						n2.pos[1] += ny;
-					}
 				}
 			}
 		}
@@ -1642,6 +1676,8 @@ export async function getHermesVectorGraph(
 			orbitLayer: pn.orbitLayer,
 			position: pn.pos,
 			methods: pn.methods,
+			projectSlug: pn.projectSlug,
+			projectRoot: pn.projectRoot,
 		}));
 
 		// Grafo k-NN: similaridade de cosseno entre nós (conecta os 2 vizinhos mais próximos)
@@ -2072,7 +2108,7 @@ export async function installHermesSkill(
 		let isAutoScaffolded = false;
 
 		if (skillDirs.length > 0) {
-			targetDir = skillDirs[0];
+			targetDir = skillDirs[0] ?? tmpCloneDir;
 			const requestedSkill = input.skillName?.trim();
 			if (requestedSkill) {
 				const matched = skillDirs.find((d) => basename(d).toLowerCase().includes(requestedSkill.toLowerCase()));
@@ -2208,7 +2244,7 @@ export function manageHermesSkills(
 						try {
 							const md = readFileSync(join(agentSkillsDir, e.name, "SKILL.md"), "utf-8");
 							const m = md.match(/^name:\s*["']?([^"'\n]+)["']?/im);
-							return m && m[1].trim() === key;
+							return Boolean(m?.[1] && m[1].trim() === key);
 						} catch { return false; }
 					});
 				if (found) targetFolder = found.name;
@@ -2239,7 +2275,7 @@ export function manageHermesSkills(
 						try {
 							const md = readFileSync(join(disabledSkillsDir, e.name, "SKILL.md"), "utf-8");
 							const m = md.match(/^name:\s*["']?([^"'\n]+)["']?/im);
-							return m && m[1].trim() === key;
+							return Boolean(m?.[1] && m[1].trim() === key);
 						} catch { return false; }
 					});
 				if (found) targetFolder = found.name;
@@ -2270,7 +2306,7 @@ export function manageHermesSkills(
 						try {
 							const md = readFileSync(join(agentSkillsDir, e.name, "SKILL.md"), "utf-8");
 							const m = md.match(/^name:\s*["']?([^"'\n]+)["']?/im);
-							return m && m[1].trim() === key;
+							return Boolean(m?.[1] && m[1].trim() === key);
 						} catch { return false; }
 					});
 				if (found) activeTarget = found.name;
@@ -2283,7 +2319,7 @@ export function manageHermesSkills(
 						try {
 							const md = readFileSync(join(disabledSkillsDir, e.name, "SKILL.md"), "utf-8");
 							const m = md.match(/^name:\s*["']?([^"'\n]+)["']?/im);
-							return m && m[1].trim() === key;
+							return Boolean(m?.[1] && m[1].trim() === key);
 						} catch { return false; }
 					});
 				if (found) disabledTarget = found.name;
@@ -2305,7 +2341,7 @@ export function manageHermesSkills(
 }
 
 export function readHermesSkill(
-	input: { skillName: string; skillMdPath?: string },
+	input: { skillName: string; skillMdPath?: string | undefined },
 ): { success: boolean; message?: string; content?: string; skillName: string; skillMdPath: string } {
 	let targetPath = input.skillMdPath?.trim();
 	if (!targetPath || !existsSync(targetPath)) {
