@@ -393,7 +393,7 @@ export function HermesSkillsView() {
 																toast.info(`Caminho: ${skill.skillMdPath}`);
 															}
 														}}
-														className="inline-flex items-center gap-4 tr-text-metadata text-primary hover:underline transition-all cursor-pointer font-medium"
+														className="inline-flex items-center gap-4 tr-text-metadata text-primary hover:underline transition-all cursor-pointer"
 														title="Abrir arquivo SKILL.md no editor"
 													>
 														<RiFileTextLine className="size-13 shrink-0" />
