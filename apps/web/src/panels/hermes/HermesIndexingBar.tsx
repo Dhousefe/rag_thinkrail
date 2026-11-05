@@ -5,6 +5,7 @@ import {
 	RiSpeedUpLine,
 	RiTimeLine,
 } from "@remixicon/react";
+import { cn } from "@thinkrail/ui/utils";
 import type { HermesIndexingProgress } from "@/store";
 
 export function HermesIndexingBar({ progress }: { progress: HermesIndexingProgress }) {
@@ -17,7 +18,8 @@ export function HermesIndexingBar({ progress }: { progress: HermesIndexingProgre
 		return `${seconds}s`;
 	};
 
-	const isCompleted = progress.status === "completed" || (!progress.isIndexing && progress.percentage >= 100);
+	const isCompleted =
+		progress.status === "completed" || (!progress.isIndexing && progress.percentage >= 100);
 
 	const filesPerSec =
 		progress.elapsedMs > 0 && progress.processedFiles > 0
@@ -64,23 +66,25 @@ export function HermesIndexingBar({ progress }: { progress: HermesIndexingProgre
 					</div>
 
 					<div
-						className={`rounded px-6 py-2 tr-text-emphasis shrink-0 ${
+						className={cn(
+							"rounded-sm px-6 py-2 tr-text-emphasis shrink-0",
 							isCompleted
 								? "bg-feedback-success text-text-on-primary"
-								: "bg-control-bg text-primary"
-						}`}
+								: "bg-primary-subtle text-primary",
+						)}
 					>
 						{progress.percentage}%
 					</div>
 				</div>
 			</div>
 
-			{/* Barra de Progresso com Animação Fluida */}
+			{/* Barra de Progresso */}
 			<div className="relative h-8 w-full overflow-hidden rounded-full bg-border-default">
 				<div
-					className={`h-full transition-all duration-200 ease-out ${
-						isCompleted ? "bg-feedback-success" : "bg-primary"
-					}`}
+					className={cn(
+						"h-full transition-all duration-200 ease-out",
+						isCompleted ? "bg-feedback-success" : "bg-primary",
+					)}
 					style={{ width: `${Math.max(2, Math.min(100, progress.percentage))}%` }}
 				/>
 			</div>

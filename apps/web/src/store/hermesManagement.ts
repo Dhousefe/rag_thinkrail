@@ -8,7 +8,7 @@ export type HermesProject = HermesProjectInfo;
 export type { HermesIndexingProgress };
 
 
-export type HermesToolCategory = "rag" | "analysis" | "delegation" | "workflow" | "diagnostic";
+export type HermesToolCategory = "rag" | "analysis" | "delegation" | "workflow" | "skills" | "diagnostic";
 
 export interface HermesToolDefinition {
 	id: string;
@@ -97,6 +97,33 @@ export const DEFAULT_HERMES_TOOLS: HermesToolDefinition[] = [
 		name: "Resolução de Conflitos",
 		category: "workflow",
 		description: "Resolve conflitos de merge/rebase combinando a intenção de ambos os lados.",
+		readOnly: false,
+		enabled: true,
+	},
+	{
+		id: "mcp__hermes_rag__find_skills",
+		name: "Buscar Skills (Find Skills)",
+		category: "skills",
+		description:
+			"Busca skills e repositórios relevantes por estrelas e installs no GitHub e skills.sh.",
+		readOnly: true,
+		enabled: true,
+	},
+	{
+		id: "mcp__hermes_rag__install_skill",
+		name: "Instalar Skill",
+		category: "skills",
+		description:
+			"Instala uma Agent Skill no ThinkRail clonando repositório GitHub e copiando o SKILL.md para ~/.agents/skills/.",
+		readOnly: false,
+		enabled: true,
+	},
+	{
+		id: "mcp__hermes_rag__manage_skills",
+		name: "Gerenciar Skills",
+		category: "skills",
+		description:
+			"Gerencia skills no ThinkRail: listar com status (ativas/desativadas), ativar, desativar ou remover.",
 		readOnly: false,
 		enabled: true,
 	},

@@ -10,12 +10,14 @@ import {
 	toast,
 	useAppStore,
 } from "@/store";
+import { SegmentedControl } from "../SegmentedControl";
 
 const CATEGORY_LABELS: Record<HermesToolCategory, string> = {
 	rag: "RAG & Indexação",
 	analysis: "Análise & AST",
 	workflow: "Workflows & Tickets",
 	delegation: "Delegação & Background",
+	skills: "Skills & Ecossistema",
 	diagnostic: "Diagnóstico",
 };
 
@@ -106,7 +108,7 @@ export function HermesToolsView() {
 				</div>
 			</div>
 
-			{/* Barra de Filtro e Busca */}
+			{/* Barra de Filtro e Busca com SegmentedControl */}
 			<div className="flex flex-wrap items-center justify-between gap-12">
 				<div className="relative flex-1 min-w-[200px]">
 					<RiSearchLine className="absolute left-10 top-1/2 -translate-y-1/2 size-14 text-text-muted" />
@@ -115,38 +117,26 @@ export function HermesToolsView() {
 						value={searchQuery}
 						onChange={(e) => setSearchQuery(e.target.value)}
 						placeholder="Buscar ferramenta por nome, ID ou funcionalidade..."
-						className="w-full rounded-md border border-border-default bg-control-bg pl-24 pr-12 py-6 tr-text-metadata text-text-default outline-none focus:border-primary"
+						className="w-full h-32 rounded-sm border border-border-default bg-control-bg pl-24 pr-12 tr-text-metadata text-text-default outline-none focus:border-control-border-active"
 					/>
 				</div>
 
-				<div className="flex items-center gap-4 overflow-x-auto pb-4">
-					<button
-						type="button"
-						className={cn(
-							"rounded-full px-8 py-4 tr-text-metadata transition-colors",
-							filterCategory === "all"
-								? "bg-primary text-text-on-primary"
-								: "bg-control-bg text-text-muted hover:text-text-default",
-						)}
-						onClick={() => setFilterCategory("all")}
-					>
-						Todas ({toolsWithState.length})
-					</button>
-					{(Object.keys(CATEGORY_LABELS) as HermesToolCategory[]).map((cat) => (
-						<button
-							key={cat}
-							type="button"
-							className={cn(
-								"rounded-full px-8 py-4 tr-text-metadata transition-colors whitespace-nowrap",
-								filterCategory === cat
-									? "bg-primary text-text-on-primary"
-									: "bg-control-bg text-text-muted hover:text-text-default",
-							)}
-							onClick={() => setFilterCategory(cat)}
-						>
-							{CATEGORY_LABELS[cat]}
-						</button>
-					))}
+				<div className="shrink-0 overflow-x-auto">
+					<SegmentedControl
+						name="hermes-tool-category-filter"
+						label="Filtrar ferramentas por categoria"
+						options={[
+							{ id: "all", label: `Todas (${toolsWithState.length})` },
+							{ id: "rag", label: "RAG" },
+							{ id: "analysis", label: "Análise AST" },
+							{ id: "workflow", label: "Workflows" },
+							{ id: "delegation", label: "Delegação" },
+							{ id: "skills", label: "Skills" },
+							{ id: "diagnostic", label: "Diagnóstico" },
+						]}
+						value={filterCategory}
+						onSelect={setFilterCategory}
+					/>
 				</div>
 			</div>
 
@@ -156,27 +146,27 @@ export function HermesToolsView() {
 					<div
 						key={tool.id}
 						className={cn(
-							"flex items-start justify-between gap-16 rounded-lg border p-12 transition-colors",
+							"flex items-start justify-between gap-16 rounded-sm border p-12 transition-colors",
 							tool.enabled
-								? "border-border-default bg-control-bg hover:border-primary"
-								: "border-border-default bg-control-bg opacity-75",
+								? "border-border-default bg-control-bg hover:border-border-default"
+								: "border-border-default bg-control-bg opacity-60",
 						)}
 					>
 						<div className="flex flex-col gap-4 min-w-0 flex-1">
-							<div className="flex flex-wrap items-center gap-8">
+							<div className="flex flex-wrap items-center gap-6">
 								<span className="tr-text-emphasis text-text-default">{tool.name}</span>
-								<span className="rounded bg-control-bg-hovered px-6 py-2 tr-text-metadata text-text-muted">
+								<span className="rounded-sm bg-control-bg-hovered px-6 py-2 tr-code-text text-text-muted">
 									{tool.id}
 								</span>
-								<span className="rounded-full bg-feedback-info-subtle px-6 py-2 tr-text-metadata text-primary capitalize">
+								<span className="rounded-sm bg-feedback-info-subtle px-6 py-2 tr-text-metadata text-primary capitalize">
 									{CATEGORY_LABELS[tool.category]}
 								</span>
 								{tool.readOnly ? (
-									<span className="rounded-full bg-control-bg-hovered px-6 py-2 tr-text-metadata text-text-muted">
+									<span className="rounded-sm bg-control-bg-hovered px-6 py-2 tr-text-metadata text-text-muted">
 										Somente Leitura
 									</span>
 								) : (
-									<span className="rounded-full bg-feedback-warning-subtle px-6 py-2 tr-text-metadata text-feedback-warning">
+									<span className="rounded-sm bg-feedback-warning-subtle px-6 py-2 tr-text-metadata text-feedback-warning">
 										Modifica Estado
 									</span>
 								)}

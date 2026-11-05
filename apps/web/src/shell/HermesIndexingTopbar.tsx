@@ -20,7 +20,7 @@ export function useHermesIndexingSync() {
 				wasIndexingRef.current &&
 				(!progress.isIndexing || progress.status === "completed" || progress.percentage >= 100);
 
-			if (justFinished && progress.projectSlug) {
+			if (justFinished && progress.projectSlug && progress.status !== "idle") {
 				finishHermesIndexing(progress.projectSlug);
 				toast.success(
 					`Projeto [${progress.projectSlug}] indexado com sucesso no Hermes RAG (${progress.totalFiles} arquivos).`,
