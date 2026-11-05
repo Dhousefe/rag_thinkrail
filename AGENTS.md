@@ -155,3 +155,14 @@ only exemptions. `architecture.md` Decision #10 owns the rationale.
 - **Multi-Projeto Automático**: O RAG busca concorrentemente em todos os projetos ativos definidos em `~/.hermes/active_projects.json` com fusão recíproca (RRF).
 - **Sincronização Pós-Edição**: Mantenha o índice SQLite sempre atualizado após modificações de código via `bun run rag:reindex` ou `scripts/rag-reindex.bat`.
 
+## Validação Visual Obrigatória com IA Multimodal (Project-GIF Core)
+
+- **REGRA MANDATÓRIA ANTI-ESCURECIMENTO DE UI**: Qualquer modificação, criação ou refatoração de componentes visuais, telas, painéis, CSS/Tailwind ou mockups HTML NUNCA deve ser finalizada às cegas ou apenas com unit tests.
+- **Ciclo de Inspeção Visual Real**:
+  1. Renderizar/montar o componente ou mockup em `.thinkrail/context/mockups/<nome>.html` ou na UI ativa.
+  2. Disparar a gravação dinâmica de tela em GIF via `bun scripts/record-ui-gif.ts` (ou `--mockup <path>`). O motor quantiza a 128 cores com `Dither.NONE`, gerando arquivos compactos (< 500 KB) e nítidos a 15 FPS.
+  3. Chamar a ferramenta nativa `read(path_do_gif)`: o harness Pi anexa os quadros do GIF diretamente ao contexto da mensagem para o provider (IA multimodal).
+  4. O provider avalia os frames visuais (espaçamento, cores, hierarquia, quebras de linha e estados interativos) e atesta a qualidade antes da conclusão da tarefa.
+  5. Em todo TODO list envolvendo UI, o último passo obrigatoriamente inclui a montagem do ambiente de teste e o envio do GIF real ao provider.
+
+
