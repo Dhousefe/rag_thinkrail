@@ -136,7 +136,7 @@ export function HermesMcpPanel() {
 	return (
 		<div className="flex h-full min-h-0 w-full flex-col gap-16 overflow-y-auto overflow-x-hidden p-12 sm:p-16 max-w-full">
 			{/* Top Header & Server Status Card */}
-			<div className="flex flex-col gap-12 rounded-lg border border-border-default bg-control-bg p-12 sm:p-16 shadow-xs min-w-0 max-w-full overflow-hidden">
+			<div className="flex flex-col gap-12 rounded-lg border border-border-default bg-control-bg p-12 sm:p-16 shadow-xs min-w-0 max-w-full">
 				<div className="flex flex-wrap items-center justify-between gap-12 min-w-0">
 					<div className="flex items-center gap-8">
 						<div className="flex size-36 items-center justify-center rounded-md bg-feedback-info-subtle text-primary">
@@ -204,9 +204,19 @@ export function HermesMcpPanel() {
 								<RiServerLine className="size-16 text-primary" />
 								Diagnóstico de Conexão em Tempo Real
 							</span>
-							<span className="tr-text-metadata text-text-muted">
-								{formatTimestamp(connectionDiagnosis.timestamp)}
-							</span>
+							<div className="flex items-center gap-8">
+								<span className="tr-text-metadata text-text-muted">
+									{formatTimestamp(connectionDiagnosis.timestamp)}
+								</span>
+								<Button
+									size="s"
+									variant="ghost"
+									onClick={() => setConnectionDiagnosis(null)}
+									tooltip="Fechar diagnóstico"
+								>
+									<RiCloseLine className="size-14" />
+								</Button>
+							</div>
 						</div>
 
 						<div className="grid grid-cols-1 gap-8 sm:grid-cols-2">

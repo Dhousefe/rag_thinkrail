@@ -265,7 +265,7 @@ export function HermesProjectsView() {
 	}, [hermesManagement.projects, activeSlugs]);
 
 	return (
-		<div className="space-y-4 min-w-0 max-w-full overflow-hidden">
+		<div className="flex flex-col gap-12 min-w-0 max-w-full">
 			{/* Barra de Progresso Preditiva durante reindexação */}
 			<HermesIndexingBar progress={hermesManagement.indexingProgress} />
 
@@ -391,7 +391,7 @@ export function HermesProjectsView() {
 							<div
 								key={project.slug}
 								className={cn(
-									"rounded-md border p-12 transition-all bg-container-elevated-bg space-y-8 min-w-0 max-w-full overflow-hidden",
+									"rounded-md border p-12 transition-all bg-container-elevated-bg flex flex-col gap-8 min-w-0 max-w-full",
 									isActive
 										? "border-primary ring-1 ring-primary"
 										: "border-border-default hover:border-border-muted",
