@@ -8,6 +8,7 @@ import {
 	RiRecordCircleLine as CircleDot,
 	RiPauseCircleLine as CirclePause,
 	RiCloseLine as Close,
+	RiEyeLine as Eye,
 	RiFileTextLine as FileText,
 	RiLoaderLine as LoaderCircle,
 	RiQuestionnaireLine as MessageCircleQuestion,
@@ -151,11 +152,13 @@ function GroupBlock({
 	glance,
 	onOpenChanges,
 	onRemove,
+	onVisualTest,
 }: {
 	group: TodoGroupItem;
 	glance: PlanGlance;
 	onOpenChanges?: ((target: ChangeTarget) => void) | undefined;
 	onRemove?: ((id: string) => Promise<void>) | undefined;
+	onVisualTest?: ((id: string) => Promise<void>) | undefined;
 }) {
 	const t = useT();
 	const status = group.status;
@@ -208,6 +211,7 @@ function GroupBlock({
 						glance={glance}
 						onOpenChanges={onOpenChanges}
 						onRemove={onRemove}
+						onVisualTest={onVisualTest}
 					/>
 				))}
 			</ul>
@@ -220,11 +224,13 @@ function LooseList({
 	glance,
 	onOpenChanges,
 	onRemove,
+	onVisualTest,
 }: {
 	items: TodoItem[];
 	glance: PlanGlance;
 	onOpenChanges?: ((target: ChangeTarget) => void) | undefined;
 	onRemove?: ((id: string) => Promise<void>) | undefined;
+	onVisualTest?: ((id: string) => Promise<void>) | undefined;
 }) {
 	if (items.length === 0) return null;
 	return (
@@ -236,6 +242,7 @@ function LooseList({
 					glance={glance}
 					onOpenChanges={onOpenChanges}
 					onRemove={onRemove}
+					onVisualTest={onVisualTest}
 				/>
 			))}
 		</ul>
@@ -247,17 +254,19 @@ export function TodoRows({
 	glance = "working",
 	onOpenChanges,
 	onRemove,
+	onVisualTest,
 }: {
 	plan: TodoPlan;
 	glance?: PlanGlance;
 	onOpenChanges?: ((target: ChangeTarget) => void) | undefined;
 	onRemove?: ((id: string) => Promise<void>) | undefined;
+	onVisualTest?: ((id: string) => Promise<void>) | undefined;
 }) {
 	const t = useT();
 	const s = planSections(plan);
 	const hasTodo = s.pendingGroups.length > 0 || s.pendingLoose.length > 0;
 	const hasDone = s.doneGroups.length > 0 || s.doneLoose.length > 0;
-	const rowProps = { glance, onOpenChanges, onRemove };
+	const rowProps = { glance, onOpenChanges, onRemove, onVisualTest };
 	return (
 		<>
 			{s.activeGroups.map((group) => (
@@ -282,10 +291,12 @@ function DoneGroup({
 	group,
 	glance,
 	onOpenChanges,
+	onVisualTest,
 }: {
 	group: TodoGroupItem;
 	glance: PlanGlance;
 	onOpenChanges?: ((target: ChangeTarget) => void) | undefined;
+	onVisualTest?: ((id: string) => Promise<void>) | undefined;
 }) {
 	const t = useT();
 	const [expanded, setExpanded] = useState(false);
@@ -309,7 +320,13 @@ function DoneGroup({
 			{expanded ? (
 				<ul className="ml-12 flex flex-col border-border-default border-l pl-8">
 					{group.todos.map((todo) => (
-						<TodoRow key={todo.id} todo={todo} glance={glance} onOpenChanges={onOpenChanges} />
+						<TodoRow
+							key={todo.id}
+						todo={todo}
+							glance={glance}
+							onOpenChanges={onOpenChanges}
+							onVisualTest={onVisualTest}
+						/>
 					))}
 				</ul>
 			) : null}
@@ -374,11 +391,13 @@ function TodoRow({
 	glance,
 	onOpenChanges,
 	onRemove,
+	onVisualTest,
 }: {
 	todo: TodoItem;
 	glance: PlanGlance;
 	onOpenChanges?: ((target: ChangeTarget) => void) | undefined;
 	onRemove?: ((id: string) => Promise<void>) | undefined;
+	onVisualTest?: ((id: string) => Promise<void>) | undefined;
 }) {
 	const t = useT();
 	const changeSet = onOpenChanges ? itemChangeSet(todo) : null;
@@ -436,6 +455,19 @@ function TodoRow({
 				>
 					<UserRound className="size-14" />
 				</span>
+			) : null}
+			{todo.status === "done" && onVisualTest ? (
+				<IconButton
+					icon={Eye}
+					size="s"
+					data-testid="todo-visual-test"
+					label={t("plan.item.visualTest")}
+					tooltip={t("plan.item.visualTestTitle")}
+					onClick={() => {
+						void onVisualTest(todo.id);
+					}}
+					className="shrink-0 opacity-0 group-hover:opacity-100 focus:opacity-100"
+				/>
 			) : null}
 			{onRemove && todo.status !== "done" && !reviewing ? (
 				<IconButton

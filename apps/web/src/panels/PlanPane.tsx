@@ -16,6 +16,7 @@ import {
 	RiChat1Line as MessageSquare,
 	RiMore2Line as MoreVertical,
 	RiAddLine as Plus,
+	RiEyeLine as Eye,
 } from "@remixicon/react";
 import type { ReviewComment, TodoGroupItem, TodoItem } from "@thinkrail/contracts";
 import { useT } from "@thinkrail/locales/react";
@@ -295,7 +296,33 @@ function ItemBlock({
 	);
 	const collapsible = hasDetails;
 	const [expanded, setExpanded] = useState(false);
+	const [isTriggeringVisualTest, setIsTriggeringVisualTest] = useState(false);
 	const consumedFocusTick = useRef(0);
+
+	const handleTriggerVisualTest = async () => {
+		if (isTriggeringVisualTest) return;
+		setIsTriggeringVisualTest(true);
+		try {
+			await getTransport().request("todo.visualTest", {
+				workspaceId,
+				sessionId,
+				id: item.id,
+			});
+			useAppStore.getState().pushToast({
+				variant: "info",
+				title: t("plan.item.visualTest"),
+				message: t("plan.item.visualTestStarted", { title: item.title }),
+			});
+		} catch (err) {
+			useAppStore.getState().pushToast({
+				variant: "error",
+				title: t("plan.item.visualTest"),
+				message: errorText(err),
+			});
+		} finally {
+			setIsTriggeringVisualTest(false);
+		}
+	};
 	useEffect(() => {
 		if (!focusRequest || focusRequest.id !== item.id || !collapsible) return;
 		if (consumedFocusTick.current === focusRequest.tick) return;
@@ -403,6 +430,24 @@ function ItemBlock({
 								<CircleCheck className="size-14" />
 								{t("plan.item.checked")}
 							</span>
+						) : null}
+						{item.status === "done" ? (
+							<Button
+								variant="outline"
+								size="m"
+								data-testid="plan-item-visual-test"
+								disabled={isTriggeringVisualTest}
+								tooltip={t("plan.item.visualTestTitle")}
+								onClick={() => void handleTriggerVisualTest()}
+								className="shrink-0 flex items-center gap-4 opacity-100 focus-visible:opacity-100 [@media(hover:hover)]:opacity-0 [@media(hover:hover)]:group-hover:opacity-100"
+							>
+								{isTriggeringVisualTest ? (
+									<Loader2 className="size-14 animate-spin" />
+								) : (
+									<Eye className="size-14" />
+								)}
+								<span>{t("plan.item.visualTest")}</span>
+							</Button>
 						) : null}
 					</div>
 					{collapsible && (item.summary || item.verification || set) ? (
