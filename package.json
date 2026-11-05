@@ -70,6 +70,7 @@
 		"smoke:desktop:installer": "bun packages/artifact-tests/installerSmoke.ts",
 		"smoke:subagents": "bun scripts/smoke-pure-pi-subagents.ts",
 		"smoke:logins": "bun scripts/smoke-provider-logins.ts",
+		"record:ui": "bun scripts/record-ui-gif.ts",
 		"typecheck": "turbo run typecheck typecheck:root",
 		"typecheck:root": "tsc -p tsconfig.json && tsc -p e2e/tsconfig.json",
 		"test": "bun test ./scripts/ && turbo run test --continue",

@@ -116,6 +116,7 @@ export interface ChatTodos {
 	openChanges: (target: { sha: string } | { path: string }) => void;
 	startReview: (id: string) => Promise<void>;
 	reviewAll: () => Promise<{ total: number; alreadyRunning?: boolean }>;
+	runVisualTest: (id: string) => Promise<void>;
 }
 
 export function useChatTodos(workspaceId: string, sessionId: string): ChatTodos {
@@ -339,6 +340,10 @@ export function useChatTodos(workspaceId: string, sessionId: string): ChatTodos 
 		return { total, ...(alreadyRunning ? { alreadyRunning } : {}) };
 	};
 
+	const runVisualTest = async (id: string) => {
+		await getTransport().request("todo.visualTest", { workspaceId, sessionId, id });
+	};
+
 	return {
 		data,
 		failed,
@@ -348,6 +353,7 @@ export function useChatTodos(workspaceId: string, sessionId: string): ChatTodos 
 		openChanges,
 		startReview,
 		reviewAll,
+		runVisualTest,
 	};
 }
 

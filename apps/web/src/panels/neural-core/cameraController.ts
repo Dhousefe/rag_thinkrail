@@ -1,14 +1,23 @@
 export class OrbitCameraController {
 	private canvas: HTMLCanvasElement;
 	private isDragging = false;
+	private dragMode: "orbit" | "pan" = "orbit";
 	private lastMouseX = 0;
 	private lastMouseY = 0;
 
 	public theta = 0.5;
 	public phi = 0.35;
 	public distance = 5.6;
+	public target: [number, number, number] = [0, 0, 0];
 
-	private flyTarget: { theta: number; phi: number; distance: number } | null = null;
+	private flyTarget: {
+		targetX: number;
+		targetY: number;
+		targetZ: number;
+		theta: number;
+		phi: number;
+		distance: number;
+	} | null = null;
 	private onUpdate?: (() => void) | undefined;
 
 	constructor(canvas: HTMLCanvasElement, onUpdate?: (() => void) | undefined) {
@@ -18,11 +27,22 @@ export class OrbitCameraController {
 	}
 
 	private attachEvents() {
+		this.canvas.addEventListener("contextmenu", (e) => {
+			e.preventDefault(); // Previne menu de contexto para habilitar Pan com botão direito
+		});
+
 		this.canvas.addEventListener("mousedown", (e) => {
 			this.flyTarget = null; // Interrompe fly-to caso o usuário comece a mover manualmente
 			this.isDragging = true;
 			this.lastMouseX = e.clientX;
 			this.lastMouseY = e.clientY;
+
+			// Botão direito, botão do meio ou Shift+Clique ativa modo Pan (arraste lateral do grafo)
+			if (e.button === 2 || e.button === 1 || e.shiftKey) {
+				this.dragMode = "pan";
+			} else {
+				this.dragMode = "orbit";
+			}
 		});
 
 		window.addEventListener("mousemove", (e) => {
@@ -32,8 +52,27 @@ export class OrbitCameraController {
 			this.lastMouseX = e.clientX;
 			this.lastMouseY = e.clientY;
 
-			this.theta -= dx * 0.008;
-			this.phi = Math.max(-1.4, Math.min(1.4, this.phi + dy * 0.008));
+			if (this.dragMode === "pan") {
+				// Pan 3D: translada o target ao longo dos vetores de câmera (Right e Up)
+				const panFactor = Math.max(0.001, this.distance * 0.0016);
+
+				// Vetor Right da câmera
+				const rightX = Math.cos(this.theta);
+				const rightZ = -Math.sin(this.theta);
+
+				// Vetor Up da câmera
+				const upX = -Math.sin(this.phi) * Math.sin(this.theta);
+				const upY = Math.cos(this.phi);
+				const upZ = -Math.sin(this.phi) * Math.cos(this.theta);
+
+				this.target[0] -= (rightX * dx - upX * dy) * panFactor;
+				this.target[1] -= (-upY * dy) * panFactor;
+				this.target[2] -= (rightZ * dx - upZ * dy) * panFactor;
+			} else {
+				// Rotação Orbital
+				this.theta -= dx * 0.008;
+				this.phi = Math.max(-1.4, Math.min(1.4, this.phi + dy * 0.008));
+			}
 			this.onUpdate?.();
 		});
 
@@ -55,12 +94,29 @@ export class OrbitCameraController {
 		);
 	}
 
+	public zoomIn() {
+		this.flyTarget = null;
+		this.distance = Math.max(1.2, this.distance * 0.8);
+		this.onUpdate?.();
+	}
+
+	public zoomOut() {
+		this.flyTarget = null;
+		this.distance = Math.min(22.0, this.distance * 1.25);
+		this.onUpdate?.();
+	}
+
 	public focusPosition(pos: [number, number, number], targetDist = 2.4) {
 		const [x, y, z] = pos;
-		const len = Math.sqrt(x * x + y * y + z * z) || 1;
-		const targetTheta = Math.atan2(x, z);
-		const targetPhi = Math.asin(Math.max(-0.95, Math.min(0.95, y / len)));
-		this.flyTarget = { theta: targetTheta, phi: targetPhi, distance: targetDist };
+		// Centraliza o target no nó desejado e interpola suavemente a câmera
+		this.flyTarget = {
+			targetX: x,
+			targetY: y,
+			targetZ: z,
+			theta: this.theta,
+			phi: this.phi,
+			distance: targetDist,
+		};
 	}
 
 	public updateTween() {
@@ -68,11 +124,25 @@ export class OrbitCameraController {
 		const diffT = this.flyTarget.theta - this.theta;
 		const diffP = this.flyTarget.phi - this.phi;
 		const diffD = this.flyTarget.distance - this.distance;
+		const diffTx = this.flyTarget.targetX - this.target[0];
+		const diffTy = this.flyTarget.targetY - this.target[1];
+		const diffTz = this.flyTarget.targetZ - this.target[2];
 
-		if (Math.abs(diffT) < 0.005 && Math.abs(diffP) < 0.005 && Math.abs(diffD) < 0.01) {
+		const isClose =
+			Math.abs(diffT) < 0.005 &&
+			Math.abs(diffP) < 0.005 &&
+			Math.abs(diffD) < 0.01 &&
+			Math.abs(diffTx) < 0.005 &&
+			Math.abs(diffTy) < 0.005 &&
+			Math.abs(diffTz) < 0.005;
+
+		if (isClose) {
 			this.theta = this.flyTarget.theta;
 			this.phi = this.flyTarget.phi;
 			this.distance = this.flyTarget.distance;
+			this.target[0] = this.flyTarget.targetX;
+			this.target[1] = this.flyTarget.targetY;
+			this.target[2] = this.flyTarget.targetZ;
 			this.flyTarget = null;
 			this.onUpdate?.();
 			return;
@@ -81,6 +151,9 @@ export class OrbitCameraController {
 		this.theta += diffT * 0.15;
 		this.phi += diffP * 0.15;
 		this.distance += diffD * 0.15;
+		this.target[0] += diffTx * 0.15;
+		this.target[1] += diffTy * 0.15;
+		this.target[2] += diffTz * 0.15;
 		this.onUpdate?.();
 	}
 
@@ -89,6 +162,7 @@ export class OrbitCameraController {
 		this.theta = 0.5;
 		this.phi = 0.35;
 		this.distance = 5.6;
+		this.target = [0, 0, 0];
 		this.onUpdate?.();
 	}
 }

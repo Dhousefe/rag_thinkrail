@@ -83,7 +83,18 @@ export class NeuralCoreEngine {
 	};
 
 	// Câmera
-	public cameraOrbit = { theta: 0.45, phi: 0.35, distance: 4.8 };
+	public cameraOrbit: {
+		theta: number;
+		phi: number;
+		distance: number;
+		target: [number, number, number];
+	} = { theta: 0.45, phi: 0.35, distance: 4.8, target: [0, 0, 0] };
+	public isPaused = false;
+	public searchingNodeId: string | null = null;
+	public searchAnimStartTime = 0;
+	public readonly searchAnimDurationMs = 2000;
+	public onPauseChange?: ((isPaused: boolean) => void) | undefined;
+	public visibleModules: Set<string> = new Set();
 	public onFrameMetrics?: ((fps: number, elementsCount: number) => void) | undefined;
 	public onBeforeRenderFrame?: (() => void) | undefined;
 	private frameCounter = 0;
@@ -130,6 +141,30 @@ export class NeuralCoreEngine {
 		this.showGimbalRings = show !== undefined ? show : !this.showGimbalRings;
 	}
 
+	public togglePause(paused?: boolean) {
+		this.isPaused = paused !== undefined ? paused : !this.isPaused;
+		this.onPauseChange?.(this.isPaused);
+	}
+
+	/**
+	 * Aciona o alvo procurado pelo MCP/ThinkRail, pausando a órbita
+	 * e disparando animação de vida gradativa de 2 segundos no polígono.
+	 */
+	public triggerMcpSearchTarget(nodeId: string | null) {
+		this.searchingNodeId = nodeId;
+		this.searchAnimStartTime = performance.now();
+		if (nodeId) {
+			this.isPaused = true;
+			this.onPauseChange?.(true);
+		}
+		this.rebuildVectorMesh();
+	}
+
+	public setVisibleModules(modules: string[]) {
+		this.visibleModules = new Set(modules);
+		this.rebuildVectorMesh();
+	}
+
 	public setVectorGraphData(nodes: VectorNodeInput[], edges: VectorEdgeInput[]) {
 		this.vectorNodes = nodes;
 		this.vectorEdges = edges;
@@ -171,11 +206,25 @@ export class NeuralCoreEngine {
 			this.vectorMesh = null;
 			return;
 		}
+		const filteredNodes = this.visibleModules.size > 0
+			? this.vectorNodes.filter((n) => this.visibleModules.has(n.module))
+			: this.vectorNodes;
+
+		const now = performance.now();
+		const elapsed = now - this.searchAnimStartTime;
+		const searchingAnim = this.searchingNodeId
+			? {
+					nodeId: this.searchingNodeId,
+					animProgress: Math.min(1.0, elapsed / this.searchAnimDurationMs),
+			  }
+			: null;
+
 		this.vectorMesh = createVectorConstellationWireframe(
-			this.vectorNodes,
+			filteredNodes,
 			this.vectorEdges,
 			this.highlightedNodeIndex,
 			this.activeSearchQuery,
+			searchingAnim,
 		);
 		if (this.device) {
 			this.uploadVectorMesh();
@@ -373,7 +422,12 @@ export class NeuralCoreEngine {
 			const targetSpeed = isMotionActive ? (1.0 + this.telemetry.intensity * 2.5) : 0.0;
 			this.currentMotionSpeed += (targetSpeed - this.currentMotionSpeed) * Math.min(1.0, dt * 5.0);
 
-			if (this.currentMotionSpeed > 0.001) {
+			// Se houver polígono sendo buscado no MCP, anima gradativamente frame a frame por 2 segundos
+			if (this.searchingNodeId && (now - this.searchAnimStartTime <= this.searchAnimDurationMs)) {
+				this.rebuildVectorMesh();
+			}
+
+			if (!this.isPaused && this.currentMotionSpeed > 0.001) {
 				this.angleRotation += dt * 0.8 * this.currentMotionSpeed;
 				this.angleRingPitch += dt * 0.6 * this.currentMotionSpeed;
 				this.angleRingRoll -= dt * 0.45 * this.currentMotionSpeed;
@@ -495,16 +549,23 @@ export class NeuralCoreEngine {
 	}
 
 	private calculateViewProjMatrix(aspect: number): Float32Array {
-		const { theta, phi, distance } = this.cameraOrbit;
-		const eyeX = distance * Math.cos(phi) * Math.sin(theta);
-		const eyeY = distance * Math.sin(phi);
-		const eyeZ = distance * Math.cos(phi) * Math.cos(theta);
+		const { theta, phi, distance, target } = this.cameraOrbit;
+		const tx0 = target ? target[0] : 0;
+		const ty0 = target ? target[1] : 0;
+		const tz0 = target ? target[2] : 0;
 
-		// Vetor Z (forward/depth da câmera)
-		const zLen = Math.sqrt(eyeX * eyeX + eyeY * eyeY + eyeZ * eyeZ) || 1;
-		const z0 = eyeX / zLen;
-		const z1 = eyeY / zLen;
-		const z2 = eyeZ / zLen;
+		const eyeX = tx0 + distance * Math.cos(phi) * Math.sin(theta);
+		const eyeY = ty0 + distance * Math.sin(phi);
+		const eyeZ = tz0 + distance * Math.cos(phi) * Math.cos(theta);
+
+		// Vetor Z (forward/depth da câmera olhando para o target)
+		const dirX = eyeX - tx0;
+		const dirY = eyeY - ty0;
+		const dirZ = eyeZ - tz0;
+		const zLen = Math.sqrt(dirX * dirX + dirY * dirY + dirZ * dirZ) || 1;
+		const z0 = dirX / zLen;
+		const z1 = dirY / zLen;
+		const z2 = dirZ / zLen;
 
 		// Vetor X = cross([0,1,0], Z)
 		const x0_raw = z2;
@@ -594,12 +655,20 @@ export class NeuralCoreEngine {
 		const sinPhi = Math.sin(this.cameraOrbit.phi);
 
 		const baseDist = Math.max(1.0, this.cameraOrbit.distance);
+		const [tx0, ty0, tz0] = this.cameraOrbit.target || [0, 0, 0];
 
 		// Candidatos dentro da tolerância do ponteiro
 		const candidates: Array<{ index: number; distance2D: number; depth: number }> = [];
 
 		for (let i = 0; i < this.vectorNodes.length; i++) {
-			const [vx, vy, vz] = this.vectorNodes[i]!.position;
+			const node = this.vectorNodes[i]!;
+			if (this.visibleModules.size > 0 && !this.visibleModules.has(node.module)) {
+				continue;
+			}
+			const [vx0, vy0, vz0] = node.position;
+			const vx = vx0 - tx0;
+			const vy = vy0 - ty0;
+			const vz = vz0 - tz0;
 
 			// Projeção da rotação orbital da câmera
 			const rx = vx * cosO - vz * sinO;
@@ -641,6 +710,105 @@ export class NeuralCoreEngine {
 		});
 
 		return candidates[0]?.index ?? null;
+	}
+
+	/**
+	 * Calcula coordenadas 2D na tela para nós estratégicos exibirem labels inteligentes (Graphify style).
+	 */
+	public getProjectedNodeLabels(maxLabels = 14): Array<{
+		index: number;
+		id: string;
+		label: string;
+		module: string;
+		x: number;
+		y: number;
+		isHovered: boolean;
+		isMatched: boolean;
+		isSearchingTarget: boolean;
+		methodsCount: number;
+	}> {
+		if (!this.showVectorConstellation || this.vectorNodes.length === 0) return [];
+
+		const w = this.canvas.clientWidth || this.canvas.width;
+		const h = this.canvas.clientHeight || this.canvas.height;
+		const cx = w / 2;
+		const cy = h / 2;
+		const scale = Math.min(w, h) * 0.22;
+
+		const cosO = Math.cos(this.cameraOrbit.theta);
+		const sinO = Math.sin(this.cameraOrbit.theta);
+		const cosPhi = Math.cos(this.cameraOrbit.phi);
+		const sinPhi = Math.sin(this.cameraOrbit.phi);
+		const baseDist = Math.max(1.0, this.cameraOrbit.distance);
+		const [tx0, ty0, tz0] = this.cameraOrbit.target || [0, 0, 0];
+
+		const results: Array<{
+			index: number;
+			id: string;
+			label: string;
+			module: string;
+			x: number;
+			y: number;
+			depth: number;
+			isHovered: boolean;
+			isMatched: boolean;
+			isSearchingTarget: boolean;
+			methodsCount: number;
+			importanceScore: number;
+		}> = [];
+
+		for (let i = 0; i < this.vectorNodes.length; i++) {
+			const node = this.vectorNodes[i]!;
+			if (this.visibleModules.size > 0 && !this.visibleModules.has(node.module)) {
+				continue;
+			}
+			const [vx0, vy0, vz0] = node.position;
+			const vx = vx0 - tx0;
+			const vy = vy0 - ty0;
+			const vz = vz0 - tz0;
+
+			const rx = vx * cosO - vz * sinO;
+			const rz = vx * sinO + vz * cosO;
+			const ry = vy * cosPhi - rz * sinPhi;
+			const depth = Math.max(0.2, baseDist + (vy * sinPhi + rz * cosPhi) * 0.45);
+
+			const px = cx + (rx / depth) * scale * 5.6;
+			const py = cy - (ry / depth) * scale * 5.6;
+
+			// Descarta nós fora da tela visível
+			if (px < 40 || px > w - 40 || py < 40 || py > h - 40) continue;
+
+			const isHovered = i === this.highlightedNodeIndex;
+			const isMatched = Boolean(node.isMatchedBySearch);
+			const isSearchingTarget = this.searchingNodeId === node.id;
+			const methodsCount = node.methods?.length || 0;
+
+			let score = methodsCount;
+			if (isSearchingTarget) score += 2000;
+			if (isHovered) score += 1000;
+			if (isMatched) score += 500;
+
+			const nameParts = (node.relPath || node.id).split(/[\/\\]/);
+			const cleanLabel = nameParts[nameParts.length - 1] || node.id;
+
+			results.push({
+				index: i,
+				id: node.id,
+				label: cleanLabel,
+				module: node.module,
+				x: px,
+				y: py,
+				depth,
+				isHovered,
+				isMatched,
+				isSearchingTarget,
+				methodsCount,
+				importanceScore: score,
+			});
+		}
+
+		results.sort((a, b) => b.importanceScore - a.importanceScore);
+		return results.slice(0, maxLabels);
 	}
 
 	private renderGeometricCanvas2D() {

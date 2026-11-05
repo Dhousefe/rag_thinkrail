@@ -15,6 +15,7 @@ import { basename, dirname, join, resolve } from "node:path";
 import type {
 	Ack,
 	HermesActiveProjectStatus,
+	HermesCheckFreshnessResult,
 	HermesConnectionStatus,
 	HermesCreateProjectInput,
 	HermesDeleteProjectInput,
@@ -24,6 +25,7 @@ import type {
 	HermesGetVectorGraphInput,
 	HermesIndexingProgress,
 	HermesListProjectsResult,
+	HermesProjectFreshnessItem,
 	HermesProjectInfo,
 	HermesReindexProjectInput,
 	HermesReindexResult,
@@ -32,6 +34,14 @@ import type {
 	HermesVectorEdge,
 	HermesVectorGraphSample,
 	HermesVectorNode,
+	HermesFindSkillsInput,
+	HermesFindSkillsResult,
+	HermesInstallSkillInput,
+	HermesInstallSkillResult,
+	HermesManageSkillsInput,
+	HermesManageSkillsResult,
+	HermesSkillRepoResult,
+	HermesInstalledSkill,
 } from "@thinkrail/contracts";
 import { logger } from "../log";
 
@@ -593,6 +603,16 @@ export async function reindexHermesProject(
 						currentFile: undefined,
 						status: "completed",
 					};
+					// Transiciona para idle após 4 segundos para evitar loop infinito de polling
+					setTimeout(() => {
+						if (activeIndexingProgress.status === "completed") {
+							activeIndexingProgress = {
+								...activeIndexingProgress,
+								status: "idle",
+								isIndexing: false,
+							};
+						}
+					}, 4000);
 				} else {
 					log.warn(`Reindexação Hermes para [${input.slug}] finalizada com código ${code}`);
 					activeIndexingProgress = {
@@ -601,6 +621,15 @@ export async function reindexHermesProject(
 						status: "error",
 						error: `Processo finalizado com código ${code}`,
 					};
+					setTimeout(() => {
+						if (activeIndexingProgress.status === "error") {
+							activeIndexingProgress = {
+								...activeIndexingProgress,
+								status: "idle",
+								isIndexing: false,
+							};
+						}
+					}, 6000);
 				}
 			});
 
@@ -830,10 +859,98 @@ export function setActiveHermesProjects(
 	return { activeSlugs };
 }
 
+let isAutoStartingJina = false;
+
+export async function ensureJinaEmbeddingsServer(): Promise<boolean> {
+	const embeddingsUrl = process.env.EMBEDDINGS_URL || "http://127.0.0.1:9085/api/embeddings";
+	let jinaBaseUrl = "http://127.0.0.1:9085";
+	try {
+		const u = new URL(embeddingsUrl);
+		jinaBaseUrl = `${u.protocol}//${u.host}`;
+	} catch {
+		jinaBaseUrl = "http://127.0.0.1:9085";
+	}
+
+	// 1. Checa se já está respondendo
+	try {
+		const controller = new AbortController();
+		const timeoutId = setTimeout(() => controller.abort(), 1200);
+		const res = await fetch(`${jinaBaseUrl}/health`, {
+			method: "GET",
+			signal: controller.signal,
+		});
+		clearTimeout(timeoutId);
+		if (res.ok) return true;
+	} catch {}
+
+	if (isAutoStartingJina) return false;
+	isAutoStartingJina = true;
+
+	try {
+		// Procura start_embeddings.bat em locais conhecidos do Hermes
+		const candidates = [
+			"D:\\Projeto_Germes\\hermes-3.0\\start_embeddings.bat",
+			"D:\\Projeto_Germes\\hermes-2.0\\start_embeddings.bat",
+		];
+		let batPath = "";
+		for (const cand of candidates) {
+			if (existsSync(cand)) {
+				batPath = cand;
+				break;
+			}
+		}
+
+		if (batPath) {
+			const hermesDir = dirname(batPath);
+			log.info(`[Auto-Start] Disparando Jina Embeddings via ${batPath}...`);
+			if (process.platform === "win32") {
+				spawn("cmd.exe", ["/c", "start", "/min", batPath], {
+					cwd: hermesDir,
+					detached: true,
+					stdio: "ignore",
+				});
+			} else {
+				spawn(batPath, [], {
+					cwd: hermesDir,
+					detached: true,
+					stdio: "ignore",
+				});
+			}
+
+			// Aguarda até 3 segundos para que o servidor suba
+			for (let i = 0; i < 6; i++) {
+				await new Promise((r) => setTimeout(r, 500));
+				try {
+					const controller = new AbortController();
+					const timeoutId = setTimeout(() => controller.abort(), 1000);
+					const res = await fetch(`${jinaBaseUrl}/health`, {
+						method: "GET",
+						signal: controller.signal,
+					});
+					clearTimeout(timeoutId);
+					if (res.ok) {
+						log.info("[Auto-Start] Servidor Jina Embeddings iniciado com sucesso!");
+						return true;
+					}
+				} catch {}
+			}
+		}
+	} catch (err) {
+		log.error(`[Auto-Start] Falha ao disparar Jina Embeddings: ${err}`);
+	} finally {
+		isAutoStartingJina = false;
+	}
+
+	return false;
+}
+
 export async function testHermesConnection(
 	_input?: HermesTestConnectionInput,
 ): Promise<HermesConnectionStatus> {
 	const timestamp = Date.now();
+
+	// Auto-inicializa Jina Embeddings em background se estiver offline
+	await ensureJinaEmbeddingsServer().catch(() => false);
 
 	// 1. Testa Servidor Jina Embeddings
 	const embeddingsUrl = process.env.EMBEDDINGS_URL || "http://127.0.0.1:9085/api/embeddings";
@@ -1580,5 +1697,610 @@ export async function getHermesVectorGraph(
 			totalEmbeddings: 0,
 			modules: [],
 		};
+	}
+}
+
+/**
+ * Verifica se os arquivos do workspace de projetos ativos sofreram modificações
+ * mais recentes que a data de indexação do banco SQLite (hermes.db) ou hash/mtime.
+ */
+export async function checkHermesProjectsFreshness(
+	_input?: { workspaceId?: string | undefined },
+): Promise<HermesCheckFreshnessResult> {
+	const timestamp = Date.now();
+	const { activeSlugs } = getActiveHermesProjects();
+	const hermesHome = resolveHermesHome();
+	const results: HermesProjectFreshnessItem[] = [];
+
+	for (const slug of activeSlugs) {
+		const projectDir = join(hermesHome, "projects", slug);
+		const dbPath = join(projectDir, "hermes.db");
+		let workspacePath = "";
+		const wsFile = join(projectDir, "workspace.path");
+		if (existsSync(wsFile)) {
+			try {
+				workspacePath = readFileSync(wsFile, "utf8").trim();
+			} catch {}
+		}
+
+		if (!workspacePath && slug === "project-thinkrail") {
+			workspacePath = existsSync("D:/Projet_Thinkrail/source/thinkrail")
+				? "D:/Projet_Thinkrail/source/thinkrail"
+				: process.cwd();
+		} else if (!workspacePath && slug === "cindy") {
+			workspacePath = "D:/Cindy/cindy";
+		} else if (!workspacePath && slug.includes("hermes")) {
+			workspacePath = "D:/Projeto_Germes/hermes-3.0";
+		}
+
+		let lastIndexedMs = 0;
+		if (existsSync(dbPath)) {
+			try {
+				const st = statSync(dbPath);
+				lastIndexedMs = st.mtimeMs;
+			} catch {}
+		}
+
+		let isStale = false;
+		let changedFilesCount = 0;
+		const changedFilesSample: string[] = [];
+		let lastFileModifiedMs = 0;
+
+		// Verifica arquivos recentes se o diretório do workspace existe
+		if (workspacePath && existsSync(workspacePath)) {
+			try {
+				const scanExtensions = new Set([
+					".ts",
+					".tsx",
+					".js",
+					".jsx",
+					".kt",
+					".java",
+					".py",
+					".json",
+					".md",
+					".css",
+				]);
+				const ignoreDirs = new Set([
+					"node_modules",
+					".git",
+					"dist",
+					".turbo",
+					".next",
+					".cache",
+					".thinkrail",
+					".hermes",
+					"venv",
+					".venv",
+					"jina-env",
+					"build",
+					"out",
+				]);
+
+				const stack = [workspacePath];
+				let filesChecked = 0;
+
+				while (stack.length > 0 && filesChecked < 800) {
+					const currentDir = stack.pop()!;
+					let entries: string[] = [];
+					try {
+						entries = readdirSync(currentDir);
+					} catch {
+						continue;
+					}
+
+					for (const entry of entries) {
+						if (entry.startsWith(".") && entry !== ".thinkrail") continue;
+						const full = join(currentDir, entry);
+						let st;
+						try {
+							st = statSync(full);
+						} catch {
+							continue;
+						}
+
+						if (st.isDirectory()) {
+							if (!ignoreDirs.has(entry) && !entry.includes(".venv") && !entry.includes("env")) {
+								stack.push(full);
+							}
+						} else if (st.isFile()) {
+							const dotIdx = entry.lastIndexOf(".");
+							const ext = dotIdx !== -1 ? entry.slice(dotIdx).toLowerCase() : "";
+							if (scanExtensions.has(ext)) {
+								filesChecked++;
+								if (st.mtimeMs > lastFileModifiedMs) {
+									lastFileModifiedMs = st.mtimeMs;
+								}
+								// Se o arquivo foi modificado após a última gravação do hermes.db
+								// com margem de segurança de 15 segundos
+								if (lastIndexedMs > 0 && st.mtimeMs > lastIndexedMs + 15000) {
+									isStale = true;
+									changedFilesCount++;
+									if (changedFilesSample.length < 5) {
+										changedFilesSample.push(entry);
+									}
+								}
+							}
+						}
+					}
+				}
+			} catch (scanErr) {
+				log.warn(`Erro ao verificar frescor do projeto ${slug}: ${scanErr}`);
+			}
+		}
+
+		// Comando sugerido de reindexação
+		let suggestedCommand = `bun scripts/rag-reindex.bat`;
+		if (slug === "cindy") {
+			suggestedCommand = `scripts\\rag-cindy-reindex.bat`;
+		} else if (slug.includes("hermes")) {
+			suggestedCommand = `cd D:\\Projeto_Germes\\hermes-3.0 && indexar.bat`;
+		}
+
+		results.push({
+			slug,
+			name: slug,
+			path: workspacePath,
+			isStale,
+			changedFilesCount,
+			changedFilesSample,
+			lastIndexedMs: lastIndexedMs || undefined,
+			lastFileModifiedMs: lastFileModifiedMs || undefined,
+			suggestedCommand,
+		});
+	}
+
+	const anyStale = results.some((r) => r.isStale);
+
+	return {
+		timestamp,
+		projects: results,
+		anyStale,
+	};
+}
+
+// ---------------------------------------------------------------------------
+// Gestão e Busca de Skills via Hermes (GitHub + skills.sh)
+// ---------------------------------------------------------------------------
+
+const agentSkillsDir = join(homedir(), ".agents", "skills");
+const disabledSkillsDir = join(homedir(), ".agents", "disabled_skills");
+
+export async function findHermesSkills(
+	input: HermesFindSkillsInput,
+): Promise<HermesFindSkillsResult> {
+	const query = input.query.trim();
+	const limit = input.limit ?? 10;
+	const minStars = input.minStars ?? 50;
+
+	const results: HermesSkillRepoResult[] = [];
+
+	// 1. skills.sh API
+	try {
+		const encQuery = encodeURIComponent(query);
+		const res = await fetch(`https://skills.sh/api/v1/skills/search?q=${encQuery}&limit=${limit}`, {
+			headers: { Accept: "application/json", "User-Agent": "thinkrail-hermes/3.0" },
+			signal: AbortSignal.timeout(10000),
+		});
+		if (res.ok) {
+			const data: any = await res.json();
+			const items = Array.isArray(data) ? data : data?.skills || data?.results || [];
+			for (const item of items) {
+				if (item.isDuplicate === true || item.isDuplicate === "true") continue;
+				const name = item.name || item.slug;
+				if (!name) continue;
+				const installs = Number(item.installs) || 0;
+				results.push({
+					fullName: item.source || name,
+					description: item.description || name,
+					stars: Math.floor(installs / 10),
+					url: `https://skills.sh/${item.id || item.slug || ""}`,
+					topics: [],
+					source: "skills.sh",
+					installCmd: item.installUrl ? `npx skills add ${item.installUrl}` : "",
+					installs,
+				});
+			}
+		}
+	} catch (err) {
+		log.warn(`Erro na busca do skills.sh: ${err}`);
+	}
+
+	// 2. GitHub Search API
+	try {
+		const encQuery = encodeURIComponent(`${query} stars:>${minStars}`);
+		const headers: Record<string, string> = {
+			Accept: "application/vnd.github.v3+json",
+			"User-Agent": "thinkrail-hermes/3.0",
+		};
+		const ghToken = process.env.GITHUB_TOKEN;
+		if (ghToken) headers.Authorization = `token ${ghToken}`;
+
+		const res = await fetch(`https://api.github.com/search/repositories?q=${encQuery}&sort=stars&order=desc&per_page=${limit}`, {
+			headers,
+			signal: AbortSignal.timeout(12000),
+		});
+		if (res.ok) {
+			const data: any = await res.json();
+			const items = data.items || [];
+			for (const item of items) {
+				results.push({
+					fullName: item.full_name,
+					description: item.description || "",
+					stars: item.stargazers_count || 0,
+					url: item.html_url,
+					topics: Array.isArray(item.topics) ? item.topics.slice(0, 8) : [],
+					source: "github",
+					installCmd: `git clone ${item.html_url}`,
+					installs: 0,
+				});
+			}
+		}
+	} catch (err) {
+		log.warn(`Erro na busca do GitHub: ${err}`);
+	}
+
+	// Deduplicação e ordenação por estrelas
+	const seen = new Set<string>();
+	const deduped: HermesSkillRepoResult[] = [];
+	for (const r of results) {
+		const key = r.fullName.toLowerCase();
+		if (!seen.has(key) && r.stars >= minStars) {
+			seen.add(key);
+			deduped.push(r);
+		}
+	}
+	deduped.sort((a, b) => b.stars - a.stars);
+
+	return {
+		query,
+		results: deduped.slice(0, limit),
+	};
+}
+
+function findSkillDirsRecursively(dir: string, depth = 0, maxDepth = 4): string[] {
+	if (depth > maxDepth || !existsSync(dir)) return [];
+	const results: string[] = [];
+	try {
+		const entries = readdirSync(dir, { withFileTypes: true });
+		const hasSkillMd = entries.some((e) => e.isFile() && e.name.toLowerCase() === "skill.md");
+		if (hasSkillMd) {
+			results.push(dir);
+		}
+		for (const e of entries) {
+			if (e.isDirectory() && !e.name.startsWith(".")) {
+				results.push(...findSkillDirsRecursively(join(dir, e.name), depth + 1, maxDepth));
+			}
+		}
+	} catch {}
+	return results;
+}
+
+function generateAutoSkillMd(cloneDir: string, skillName: string, repoUrl: string): string {
+	let description = `Integration and tooling for ${skillName} cloned from ${repoUrl}`;
+	let readmeContent = "";
+
+	try {
+		const files = readdirSync(cloneDir);
+		const readmeName = files.find((f) => /^readme(\.(md|markdown|txt))?$/i.test(f));
+		if (readmeName) {
+			readmeContent = readFileSync(join(cloneDir, readmeName), "utf8").trim();
+			const firstLines = readmeContent
+				.split("\n")
+				.map((l) => l.trim())
+				.filter((l) => l.length > 0 && !l.startsWith("#") && !l.startsWith("[") && !l.startsWith("!"))
+				.slice(0, 3)
+				.join(" ");
+			if (firstLines) {
+				description = firstLines.slice(0, 200).replace(/"/g, "'");
+			}
+		}
+	} catch {}
+
+	let detectedStack = "Generic CLI / Script repository";
+	let usageHint = "Examine repo files or run main script via bash/python.";
+
+	try {
+		const files = readdirSync(cloneDir);
+		if (files.includes("pyproject.toml") || files.includes("requirements.txt") || files.includes("setup.py")) {
+			detectedStack = "Python";
+			usageHint = "Use Python/pip/uv to execute package tools, scripts or import the module.";
+		} else if (files.includes("package.json")) {
+			detectedStack = "Node.js / Bun / TypeScript";
+			usageHint = "Use bun/npm to run scripts, CLI commands or import modules.";
+		} else if (files.includes("Cargo.toml")) {
+			detectedStack = "Rust";
+			usageHint = "Compile or run using cargo run/build.";
+		}
+	} catch {}
+
+	const excerpt = readmeContent ? readmeContent.slice(0, 1500) : "No README provided.";
+
+	return [
+		"---",
+		`name: ${skillName}`,
+		`description: ${description}`,
+		"---",
+		"",
+		`# ${skillName}`,
+		"",
+		`Automated Skill scaffolded by ThinkRail/Hermes from [${repoUrl}](${repoUrl}).`,
+		"",
+		"## Environment & Stack",
+		`- **Type**: ${detectedStack}`,
+		`- **Repository URL**: ${repoUrl}`,
+		`- **Local Path**: Resolved via skill folder`,
+		"",
+		"## How to Use this Skill",
+		usageHint,
+		"",
+		"Whenever interacting with this tool:",
+		"1. Inspect the source repository files in this skill directory using bash/read tools.",
+		"2. Run scripts or CLI commands directly in the skill folder when needed.",
+		"",
+		"## Repository Overview (README Excerpt)",
+		"```markdown",
+		excerpt,
+		"```",
+		"",
+	].join("\n");
+}
+
+export async function installHermesSkill(
+	input: HermesInstallSkillInput,
+): Promise<HermesInstallSkillResult> {
+	const cleanUrl = input.repoUrl.trim().replace(/\/+$/, "");
+	if (!cleanUrl) {
+		return { success: false, message: "URL do repositório inválida." };
+	}
+
+	const rawName = cleanUrl.split("/").pop()?.replace(/\.git$/, "") || `skill_${Date.now()}`;
+	const safeRepoName = rawName.toLowerCase().replace(/[^a-z0-9_-]/g, "-");
+	const tmpCloneDir = join(homedir(), `.thinkrail_skill_tmp_${safeRepoName}_${Date.now()}`);
+
+	try {
+		const cloneProc = Bun.spawnSync(["git", "clone", "--depth", "1", cleanUrl, tmpCloneDir], {
+			timeout: 60000,
+		});
+		if (!cloneProc.success) {
+			const errText = cloneProc.stderr.toString("utf-8");
+			return { success: false, message: `Erro ao clonar repositório: ${errText}` };
+		}
+
+		const skillDirs = findSkillDirsRecursively(tmpCloneDir);
+		let targetDir = tmpCloneDir;
+		let isAutoScaffolded = false;
+
+		if (skillDirs.length > 0) {
+			targetDir = skillDirs[0];
+			const requestedSkill = input.skillName?.trim();
+			if (requestedSkill) {
+				const matched = skillDirs.find((d) => basename(d).toLowerCase().includes(requestedSkill.toLowerCase()));
+				if (matched) targetDir = matched;
+			}
+		} else {
+			// Auto-scaffolding: cria SKILL.md diretamente no repositório clonado
+			isAutoScaffolded = true;
+			const effectiveName = (input.skillName?.trim() || safeRepoName).toLowerCase().replace(/[^a-z0-9_-]/g, "-");
+			const scaffoldedContent = generateAutoSkillMd(tmpCloneDir, effectiveName, cleanUrl);
+			writeFileSync(join(tmpCloneDir, "SKILL.md"), scaffoldedContent, "utf8");
+		}
+
+		const requestedSkill = input.skillName?.trim();
+		const finalSkillName = (requestedSkill || (isAutoScaffolded ? safeRepoName : basename(targetDir)))
+			.toLowerCase()
+			.replace(/[^a-z0-9_-]/g, "-");
+
+		if (!existsSync(agentSkillsDir)) {
+			mkdirSync(agentSkillsDir, { recursive: true });
+		}
+		const destPath = join(agentSkillsDir, finalSkillName);
+
+		if (existsSync(destPath)) {
+			rmSync(tmpCloneDir, { recursive: true, force: true });
+			return {
+				success: false,
+				message: `A skill '${finalSkillName}' já está instalada em ${destPath}.`,
+			};
+		}
+
+		const { cpSync } = await import("node:fs");
+		cpSync(targetDir, destPath, { recursive: true });
+		rmSync(tmpCloneDir, { recursive: true, force: true });
+
+		let message = `Skill '${finalSkillName}' instalada com sucesso em ~/.agents/skills/${finalSkillName}`;
+		if (isAutoScaffolded) {
+			message += "\n✨ SKILL.md inteligente foi gerado automaticamente com documentação, stack detectada e instruções operacionais!";
+		}
+
+		return {
+			success: true,
+			message,
+			skillName: finalSkillName,
+			destPath,
+		};
+	} catch (err: any) {
+		if (existsSync(tmpCloneDir)) {
+			rmSync(tmpCloneDir, { recursive: true, force: true });
+		}
+		return {
+			success: false,
+			message: `Falha ao instalar skill: ${err?.message || err}`,
+		};
+	}
+}
+
+export function manageHermesSkills(
+	input: HermesManageSkillsInput,
+): HermesManageSkillsResult {
+	if (!existsSync(agentSkillsDir)) {
+		mkdirSync(agentSkillsDir, { recursive: true });
+	}
+	if (!existsSync(disabledSkillsDir)) {
+		mkdirSync(disabledSkillsDir, { recursive: true });
+	}
+
+	switch (input.action) {
+		case "list": {
+			const activeEntries: HermesInstalledSkill[] = readdirSync(agentSkillsDir, { withFileTypes: true })
+				.filter((e) => e.isDirectory() && existsSync(join(agentSkillsDir, e.name, "SKILL.md")))
+				.map((e) => {
+					let description = "";
+					let declaredName = e.name;
+					const skillMdPath = join(agentSkillsDir, e.name, "SKILL.md");
+					try {
+						const skillMd = readFileSync(skillMdPath, "utf-8");
+						const nameMatch = skillMd.match(/^name:\s*["']?([^"'\n]+)["']?/im);
+						if (nameMatch && nameMatch[1]) declaredName = nameMatch[1].trim();
+						const descMatch = skillMd.match(/^description:\s*["']?([^"'\n]+)["']?/im);
+						if (descMatch && descMatch[1]) description = descMatch[1].trim();
+					} catch {}
+					return {
+						name: declaredName,
+						folderName: e.name,
+						active: true,
+						path: join(agentSkillsDir, e.name),
+						skillMdPath,
+						description,
+					};
+				});
+
+			const disabledEntries: HermesInstalledSkill[] = readdirSync(disabledSkillsDir, { withFileTypes: true })
+				.filter((e) => e.isDirectory() && existsSync(join(disabledSkillsDir, e.name, "SKILL.md")))
+				.map((e) => {
+					let description = "";
+					let declaredName = e.name;
+					const skillMdPath = join(disabledSkillsDir, e.name, "SKILL.md");
+					try {
+						const skillMd = readFileSync(skillMdPath, "utf-8");
+						const nameMatch = skillMd.match(/^name:\s*["']?([^"'\n]+)["']?/im);
+						if (nameMatch && nameMatch[1]) declaredName = nameMatch[1].trim();
+						const descMatch = skillMd.match(/^description:\s*["']?([^"'\n]+)["']?/im);
+						if (descMatch && descMatch[1]) description = descMatch[1].trim();
+					} catch {}
+					return {
+						name: declaredName,
+						folderName: e.name,
+						active: false,
+						path: join(disabledSkillsDir, e.name),
+						skillMdPath,
+						description,
+					};
+				});
+
+			const all = [...activeEntries, ...disabledEntries].sort((a, b) => a.name.localeCompare(b.name));
+			return {
+				success: true,
+				message: `${all.length} skills encontradas (${activeEntries.length} ativas).`,
+				skills: all,
+			};
+		}
+
+		case "disable": {
+			if (!input.skillName) return { success: false, message: "Nome da skill obrigatório.", skills: [] };
+			const key = input.skillName;
+			// Procura pelo nome da pasta direto ou pelo nome declarado
+			let targetFolder = key;
+			if (!existsSync(join(agentSkillsDir, targetFolder))) {
+				const found = readdirSync(agentSkillsDir, { withFileTypes: true })
+					.filter((e) => e.isDirectory())
+					.find((e) => {
+						try {
+							const md = readFileSync(join(agentSkillsDir, e.name, "SKILL.md"), "utf-8");
+							const m = md.match(/^name:\s*["']?([^"'\n]+)["']?/im);
+							return m && m[1].trim() === key;
+						} catch { return false; }
+					});
+				if (found) targetFolder = found.name;
+			}
+			const curPath = join(agentSkillsDir, targetFolder);
+			if (!existsSync(curPath)) {
+				return { success: false, message: `Skill '${input.skillName}' não encontrada em skills ativas.`, skills: [] };
+			}
+			const dest = join(disabledSkillsDir, targetFolder);
+			if (existsSync(dest)) rmSync(dest, { recursive: true, force: true });
+			const { renameSync } = require("node:fs");
+			renameSync(curPath, dest);
+			return {
+				success: true,
+				message: `Skill '${input.skillName}' desativada com sucesso.`,
+				skills: [],
+			};
+		}
+
+		case "enable": {
+			if (!input.skillName) return { success: false, message: "Nome da skill obrigatório.", skills: [] };
+			const key = input.skillName;
+			let targetFolder = key;
+			if (!existsSync(join(disabledSkillsDir, targetFolder))) {
+				const found = readdirSync(disabledSkillsDir, { withFileTypes: true })
+					.filter((e) => e.isDirectory())
+					.find((e) => {
+						try {
+							const md = readFileSync(join(disabledSkillsDir, e.name, "SKILL.md"), "utf-8");
+							const m = md.match(/^name:\s*["']?([^"'\n]+)["']?/im);
+							return m && m[1].trim() === key;
+						} catch { return false; }
+					});
+				if (found) targetFolder = found.name;
+			}
+			const curPath = join(disabledSkillsDir, targetFolder);
+			if (!existsSync(curPath)) {
+				return { success: false, message: `Skill '${input.skillName}' não encontrada em skills desativadas.`, skills: [] };
+			}
+			const dest = join(agentSkillsDir, targetFolder);
+			if (existsSync(dest)) rmSync(dest, { recursive: true, force: true });
+			const { renameSync } = require("node:fs");
+			renameSync(curPath, dest);
+			return {
+				success: true,
+				message: `Skill '${input.skillName}' ativada com sucesso.`,
+				skills: [],
+			};
+		}
+
+		case "remove": {
+			if (!input.skillName) return { success: false, message: "Nome da skill obrigatório.", skills: [] };
+			const key = input.skillName;
+			let activeTarget = key;
+			if (!existsSync(join(agentSkillsDir, activeTarget))) {
+				const found = readdirSync(agentSkillsDir, { withFileTypes: true })
+					.filter((e) => e.isDirectory())
+					.find((e) => {
+						try {
+							const md = readFileSync(join(agentSkillsDir, e.name, "SKILL.md"), "utf-8");
+							const m = md.match(/^name:\s*["']?([^"'\n]+)["']?/im);
+							return m && m[1].trim() === key;
+						} catch { return false; }
+					});
+				if (found) activeTarget = found.name;
+			}
+			let disabledTarget = key;
+			if (!existsSync(join(disabledSkillsDir, disabledTarget))) {
+				const found = readdirSync(disabledSkillsDir, { withFileTypes: true })
+					.filter((e) => e.isDirectory())
+					.find((e) => {
+						try {
+							const md = readFileSync(join(disabledSkillsDir, e.name, "SKILL.md"), "utf-8");
+							const m = md.match(/^name:\s*["']?([^"'\n]+)["']?/im);
+							return m && m[1].trim() === key;
+						} catch { return false; }
+					});
+				if (found) disabledTarget = found.name;
+			}
+			const activePath = join(agentSkillsDir, activeTarget);
+			const disabledPath = join(disabledSkillsDir, disabledTarget);
+			if (existsSync(activePath)) {
+				rmSync(activePath, { recursive: true, force: true });
+				return { success: true, message: `Skill '${input.skillName}' removida.`, skills: [] };
+			} else if (existsSync(disabledPath)) {
+				rmSync(disabledPath, { recursive: true, force: true });
+				return { success: true, message: `Skill '${input.skillName}' removida.`, skills: [] };
+			}
+			return { success: false, message: `Skill '${input.skillName}' não encontrada para remoção.`, skills: [] };
+		}
+
+		default:
+			return { success: false, message: `Ação desconhecida: ${input.action}`, skills: [] };
 	}
 }

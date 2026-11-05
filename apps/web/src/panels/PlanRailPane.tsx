@@ -57,6 +57,7 @@ export default function PlanRailPane({
 						glance={glance}
 						onOpenChanges={plan.openChanges}
 						onRemove={plan.remove}
+						onVisualTest={plan.runVisualTest}
 					/>
 				)}
 			</div>

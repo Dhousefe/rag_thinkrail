@@ -99,6 +99,13 @@ import type {
 	HermesSetActiveProjectsInput,
 	HermesTestConnectionInput,
 	HermesVectorGraphSample,
+	HermesCheckFreshnessResult,
+	HermesFindSkillsInput,
+	HermesFindSkillsResult,
+	HermesInstallSkillInput,
+	HermesInstallSkillResult,
+	HermesManageSkillsInput,
+	HermesManageSkillsResult,
 } from "./hermes";
 import type {
 	ExtUiResponse,
@@ -304,6 +311,7 @@ export const WS_METHODS = {
 	todoRequestFix: "todo.requestFix",
 	todoStartReview: "todo.startReview",
 	todoReviewAll: "todo.reviewAll",
+	todoVisualTest: "todo.visualTest",
 	todoGenerateSummary: "todo.generateSummary",
 	gitStatus: "git.status",
 	gitDiffFile: "git.diffFile",
@@ -436,6 +444,10 @@ export const WS_METHODS = {
 	hermesSetActiveProjects: "hermes.setActiveProjects",
 	hermesGetIndexingProgress: "hermes.getIndexingProgress",
 	hermesGetVectorGraph: "hermes.getVectorGraph",
+	hermesCheckProjectFreshness: "hermes.checkProjectFreshness",
+	hermesFindSkills: "hermes.findSkills",
+	hermesInstallSkill: "hermes.installSkill",
+	hermesManageSkills: "hermes.manageSkills",
 } as const;
 
 export const WS_CHANNELS = {
@@ -909,6 +921,10 @@ export interface WsMethodMap {
 		params: { workspaceId: string; sessionId: string };
 		result: { ok: true; total: number; alreadyRunning?: true };
 	};
+	"todo.visualTest": {
+		params: { workspaceId: string; sessionId: string; id: string };
+		result: { ok: true };
+	};
 	"todo.generateSummary": {
 		params: { workspaceId: string; sessionId: string };
 		result: { summary: string | null };
@@ -1277,6 +1293,22 @@ export interface WsMethodMap {
 	};
 	"hermes.getIndexingProgress": { params: Record<string, never>; result: HermesIndexingProgress };
 	"hermes.getVectorGraph": { params: HermesGetVectorGraphInput; result: HermesVectorGraphSample };
+	"hermes.checkProjectFreshness": {
+		params: { workspaceId?: string | undefined };
+		result: HermesCheckFreshnessResult;
+	};
+	"hermes.findSkills": {
+		params: HermesFindSkillsInput;
+		result: HermesFindSkillsResult;
+	};
+	"hermes.installSkill": {
+		params: HermesInstallSkillInput;
+		result: HermesInstallSkillResult;
+	};
+	"hermes.manageSkills": {
+		params: HermesManageSkillsInput;
+		result: HermesManageSkillsResult;
+	};
 }
 
 /** Payload of the `mcp.status` channel: one per-session snapshot per publish. */

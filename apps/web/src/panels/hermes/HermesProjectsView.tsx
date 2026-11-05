@@ -11,7 +11,11 @@ import {
 	RiRefreshLine,
 	RiSearchLine,
 } from "@remixicon/react";
-import type { HermesProjectInfo } from "@thinkrail/contracts";
+import type {
+	HermesCheckFreshnessResult,
+	HermesProjectFreshnessItem,
+	HermesProjectInfo,
+} from "@thinkrail/contracts";
 import { Button } from "@thinkrail/ui/button";
 import {
 	Dialog,
@@ -22,8 +26,8 @@ import {
 	DialogTitle,
 } from "@thinkrail/ui/dialog";
 import { cn } from "@thinkrail/ui/utils";
-import { useCallback, useEffect, useMemo, useState } from "react";
-import { toast, useAppStore } from "@/store";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { selectWorkspaceChatTab, toast, useAppStore } from "@/store";
 import { getTransport } from "@/transport";
 import { HermesIndexingBar } from "./HermesIndexingBar";
 
@@ -38,7 +42,9 @@ export function HermesProjectsView() {
 	const finishHermesIndexing = useAppStore((s) => s.finishHermesIndexing);
 
 	const [searchQuery, setSearchQuery] = useState("");
-	const [filterStatus, setFilterStatus] = useState<"all" | "withDb" | "active">("all");
+	const [filterStatus, setFilterStatus] = useState<"all" | "active" | "withDb" | "missingDb">(
+		"all",
+	);
 
 	// Modals
 	const [createModalOpen, setCreateModalOpen] = useState(false);
@@ -56,6 +62,54 @@ export function HermesProjectsView() {
 	const [infoProject, setInfoProject] = useState<HermesProjectInfo | null>(null);
 
 	const [copiedSlug, setCopiedSlug] = useState<string | null>(null);
+	const [freshness, setFreshness] = useState<HermesCheckFreshnessResult | null>(null);
+	const notifiedStaleProjects = useRef<Set<string>>(new Set());
+
+	// Verificação de frescor de arquivos / SHA a cada 50 segundos
+	const checkFreshness = useCallback(async () => {
+		try {
+			const res = await getTransport().request("hermes.checkProjectFreshness", {});
+			setFreshness(res);
+
+			// Se houver projetos ativos desatualizados, avisa o provider e usuário
+			if (res.anyStale && res.projects) {
+				const staleProjects = res.projects.filter((p: HermesProjectFreshnessItem) => p.isStale);
+				for (const p of staleProjects) {
+					if (!notifiedStaleProjects.current.has(p.slug)) {
+						notifiedStaleProjects.current.add(p.slug);
+						toast.warning(
+							`O projeto "${p.name}" possui arquivos modificados. RAG desatualizado! Execute: ${p.suggestedCommand}`,
+						);
+
+						// Se houver sessão ativa no chat, envia aviso e comando ao provider
+						const store = useAppStore.getState();
+						const wsId = store.activeWorkspaceId;
+						const chatTab = wsId ? selectWorkspaceChatTab(store, wsId) : null;
+						if (chatTab) {
+							const promptText = `[ALERTA DE RAG DESATUALIZADO]: O projeto Hermes "${p.name}" (${p.slug}) possui ${p.changedFilesCount} arquivo(s) modificado(s) após a última indexação.\n` +
+								`Para garantir que as buscas semânticas tragam código quente, execute a reindexação com:\n` +
+								`\`${p.suggestedCommand}\``;
+
+							void getTransport()
+								.request("session.prompt", {
+									sessionId: chatTab.sessionId,
+									text: promptText,
+								})
+								.catch(() => {});
+						}
+					}
+				}
+			}
+		} catch {}
+	}, []);
+
+	useEffect(() => {
+		void checkFreshness();
+		const interval = setInterval(() => {
+			void checkFreshness();
+		}, 50000);
+		return () => clearInterval(interval);
+	}, [checkFreshness]);
 
 	// Carregamento de projetos via transporte WebSocket
 	const loadProjects = useCallback(async () => {
@@ -88,7 +142,7 @@ export function HermesProjectsView() {
 				setHermesIndexingProgress(progress);
 				if (
 					progress.status === "completed" ||
-					(!progress.isIndexing && progress.percentage >= 100)
+					(!progress.isIndexing && progress.percentage >= 100 && progress.status !== "idle")
 				) {
 					if (progress.projectSlug) {
 						finishHermesIndexing(progress.projectSlug);
@@ -240,9 +294,9 @@ export function HermesProjectsView() {
 		}
 	};
 
-	// Filtros de busca e status
+	// Filtros e ordenação prioritária: Ativos primeiro, depois Com DB, depois Sem DB, alfabético
 	const filteredProjects = useMemo(() => {
-		return hermesManagement.projects.filter((p) => {
+		const filtered = hermesManagement.projects.filter((p) => {
 			const matchesQuery =
 				!searchQuery.trim() ||
 				p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -251,8 +305,19 @@ export function HermesProjectsView() {
 
 			if (!matchesQuery) return false;
 			if (filterStatus === "withDb") return p.hasDb;
+			if (filterStatus === "missingDb") return !p.hasDb;
 			if (filterStatus === "active") return activeSlugs.includes(p.slug);
 			return true;
+		});
+
+		return filtered.sort((a, b) => {
+			const aActive = activeSlugs.includes(a.slug);
+			const bActive = activeSlugs.includes(b.slug);
+			if (aActive !== bActive) return aActive ? -1 : 1;
+
+			if (a.hasDb !== b.hasDb) return a.hasDb ? -1 : 1;
+
+			return a.name.localeCompare(b.name);
 		});
 	}, [hermesManagement.projects, searchQuery, filterStatus, activeSlugs]);
 
@@ -260,8 +325,9 @@ export function HermesProjectsView() {
 	const stats = useMemo(() => {
 		const total = hermesManagement.projects.length;
 		const withDb = hermesManagement.projects.filter((p) => p.hasDb).length;
+		const missingDb = total - withDb;
 		const active = activeSlugs.length;
-		return { total, withDb, active };
+		return { total, withDb, missingDb, active };
 	}, [hermesManagement.projects, activeSlugs]);
 
 	return (
@@ -298,27 +364,40 @@ export function HermesProjectsView() {
 			</div>
 
 			{/* Barra de Métricas Rápidas */}
-			<div className="grid grid-cols-1 gap-8 sm:grid-cols-3 min-w-0 max-w-full">
+			<div className="grid grid-cols-2 gap-8 sm:grid-cols-4 min-w-0 max-w-full">
 				<button
 					type="button"
 					onClick={() => setFilterStatus("all")}
 					className={cn(
-						"flex flex-col items-center justify-center p-2 rounded-md border text-center transition-colors cursor-pointer",
+						"flex flex-col items-center justify-center p-8 rounded-md border text-center transition-colors cursor-pointer",
 						filterStatus === "all"
-							? "border-primary bg-container-elevated-bg"
+							? "border-primary bg-container-elevated-bg shadow-xs"
 							: "border-border-default bg-container-workspace-bg hover:bg-container-elevated-bg",
 					)}
 				>
 					<span className="tr-text-emphasis text-text-default">{stats.total}</span>
-					<span className="tr-text-metadata text-text-muted">Total de Projetos</span>
+					<span className="tr-text-metadata text-text-muted">Todos os Projetos</span>
+				</button>
+				<button
+					type="button"
+					onClick={() => setFilterStatus("active")}
+					className={cn(
+						"flex flex-col items-center justify-center p-8 rounded-md border text-center transition-colors cursor-pointer",
+						filterStatus === "active"
+							? "border-primary bg-container-elevated-bg shadow-xs"
+							: "border-border-default bg-container-workspace-bg hover:bg-container-elevated-bg",
+					)}
+				>
+					<span className="tr-text-emphasis text-primary">{stats.active}</span>
+					<span className="tr-text-metadata text-text-muted">Ativos no RAG</span>
 				</button>
 				<button
 					type="button"
 					onClick={() => setFilterStatus("withDb")}
 					className={cn(
-						"flex flex-col items-center justify-center p-2 rounded-md border text-center transition-colors cursor-pointer",
+						"flex flex-col items-center justify-center p-8 rounded-md border text-center transition-colors cursor-pointer",
 						filterStatus === "withDb"
-							? "border-primary bg-container-elevated-bg"
+							? "border-primary bg-container-elevated-bg shadow-xs"
 							: "border-border-default bg-container-workspace-bg hover:bg-container-elevated-bg",
 					)}
 				>
@@ -327,54 +406,71 @@ export function HermesProjectsView() {
 				</button>
 				<button
 					type="button"
-					onClick={() => setFilterStatus("active")}
+					onClick={() => setFilterStatus("missingDb")}
 					className={cn(
-						"flex flex-col items-center justify-center p-2 rounded-md border text-center transition-colors cursor-pointer",
-						filterStatus === "active"
-							? "border-primary bg-container-elevated-bg"
+						"flex flex-col items-center justify-center p-8 rounded-md border text-center transition-colors cursor-pointer",
+						filterStatus === "missingDb"
+							? "border-primary bg-container-elevated-bg shadow-xs"
 							: "border-border-default bg-container-workspace-bg hover:bg-container-elevated-bg",
 					)}
 				>
-					<span className="tr-text-emphasis text-primary">{stats.active}</span>
-					<span className="tr-text-metadata text-text-muted">Ativos no RAG</span>
+					<span className="tr-text-emphasis text-feedback-warning">{stats.missingDb}</span>
+					<span className="tr-text-metadata text-text-muted">Sem Banco (Pendente)</span>
 				</button>
 			</div>
 
 			{/* Banner de RAG Multi-Projeto */}
-			<div className="flex items-center justify-between rounded-md border border-border-default bg-feedback-info-subtle p-4 gap-2">
-				<div className="flex items-center gap-2 min-w-0 flex-1">
+			<div className="flex items-center justify-between rounded-md border border-border-default bg-feedback-info-subtle p-8 gap-8">
+				<div className="flex items-center gap-8 min-w-0 flex-1">
 					<RiDatabase2Line className="size-16 text-primary shrink-0" />
-					<div className="flex flex-col">
+					<div className="flex flex-col min-w-0">
 						<span className="tr-text-emphasis text-text-default">
 							RAG Multi-Projeto Ativo ({activeSlugs.length} selecionado
 							{activeSlugs.length > 1 ? "s" : ""})
 						</span>
-						<span className="tr-text-metadata text-text-muted">
-							A busca semântica (code_search) pesquisa simultaneamente em: {activeSlugs.join(", ")}
+						<span className="tr-text-metadata text-text-muted truncate">
+							A busca semântica pesquisa simultaneamente em: {activeSlugs.join(", ")}
 						</span>
 					</div>
 				</div>
 			</div>
 
-			{/* Barra de Busca */}
-			<div className="relative">
-				<RiSearchLine className="absolute left-4 top-1/2 -translate-y-1/2 size-14 text-text-muted" />
-				<input
-					type="text"
-					placeholder="Buscar projetos por nome, slug ou diretório..."
-					value={searchQuery}
-					onChange={(e) => setSearchQuery(e.target.value)}
-					className="w-full rounded-md border border-border-default bg-container-workspace-bg pl-12 pr-4 py-2 tr-text-ui text-text-default placeholder:text-text-muted focus:outline-none focus:border-primary"
-				/>
+			{/* Barra de Busca e Indicador de Contagem */}
+			<div className="flex flex-col gap-6">
+				<div className="relative">
+					<RiSearchLine className="absolute left-10 top-1/2 -translate-y-1/2 size-14 text-text-muted" />
+					<input
+						type="text"
+						placeholder="Buscar projetos por nome, slug ou diretório..."
+						value={searchQuery}
+						onChange={(e) => setSearchQuery(e.target.value)}
+						className="w-full rounded-md border border-border-default bg-container-workspace-bg pl-24 pr-8 py-6 tr-text-ui text-text-default placeholder:text-text-muted focus:outline-none focus:border-primary"
+					/>
+				</div>
+				<div className="flex items-center justify-between tr-text-metadata text-text-muted px-2">
+					<span>
+						Exibindo <strong>{filteredProjects.length}</strong> de <strong>{stats.total}</strong>{" "}
+						projetos disponíveis no Hermes
+					</span>
+					{filterStatus !== "all" && (
+						<button
+							type="button"
+							onClick={() => setFilterStatus("all")}
+							className="text-primary hover:underline cursor-pointer"
+						>
+							Ver todos ({stats.total})
+						</button>
+					)}
+				</div>
 			</div>
 
 			{/* Lista de Projetos */}
-			<div className="space-y-4">
+			<div className="flex flex-col gap-8">
 				{filteredProjects.length === 0 ? (
-					<div className="flex flex-col items-center justify-center rounded-md border border-border-default bg-container-elevated-bg p-8 text-center">
-						<RiFolder2Line className="size-24 text-text-muted mb-2" />
+					<div className="flex flex-col items-center justify-center rounded-md border border-border-default bg-container-elevated-bg p-12 text-center gap-4">
+						<RiFolder2Line className="size-24 text-text-muted" />
 						<p className="tr-text-emphasis text-text-default">Nenhum projeto encontrado</p>
-						<p className="tr-text-metadata text-text-muted mt-2">
+						<p className="tr-text-metadata text-text-muted">
 							{searchQuery
 								? "Nenhum resultado corresponde aos termos da pesquisa."
 								: "Nenhum projeto cadastrado em ~/.hermes/projects."}
@@ -387,49 +483,63 @@ export function HermesProjectsView() {
 							hermesManagement.indexingProgress.isIndexing &&
 							hermesManagement.indexingProgress.projectSlug === project.slug;
 
+						const freshnessItem = freshness?.projects.find((p) => p.slug === project.slug);
+						const isStale = Boolean(freshnessItem?.isStale);
+
 						return (
 							<div
 								key={project.slug}
 								className={cn(
-									"rounded-md border p-12 transition-all bg-container-elevated-bg flex flex-col gap-8 min-w-0 max-w-full",
-									isActive
-										? "border-primary ring-1 ring-primary"
-										: "border-border-default hover:border-border-muted",
+									"rounded-md border p-12 transition-all flex flex-col gap-8 min-w-0 max-w-full",
+									isStale
+										? "border-feedback-error bg-container-workspace-bg ring-1 ring-feedback-error shadow-xs animate-pulse-subtle"
+										: isActive
+											? "border-primary ring-1 ring-primary bg-container-elevated-bg shadow-xs"
+											: "border-border-default hover:border-border-muted bg-container-workspace-bg",
 								)}
 							>
 								{/* Cabeçalho do Card */}
 								<div className="flex flex-wrap items-start justify-between gap-8 min-w-0">
-									<div className="space-y-4 min-w-0 flex-1">
+									<div className="flex flex-col gap-4 min-w-0 flex-1">
 										<div className="flex items-center gap-6 flex-wrap min-w-0">
 											<span className="tr-text-emphasis text-text-default truncate">
 												{project.name}
 											</span>
-											<span className="rounded px-2 py-0 tr-text-metadata border border-border-default bg-container-workspace-bg text-text-muted">
+											<span className="rounded px-6 py-2 tr-text-metadata border border-border-default bg-container-workspace-bg text-text-muted">
 												{project.slug}
 											</span>
-											{isActive && (
-												<span className="rounded px-2 py-0 tr-text-metadata bg-primary text-text-default">
+											{isStale ? (
+												<span className="rounded px-6 py-2 tr-text-metadata bg-feedback-error text-text-default flex items-center gap-4">
+													<RiAlertLine className="size-12" />
+													Código Desatualizado ({freshnessItem?.changedFilesCount} alterado{freshnessItem?.changedFilesCount === 1 ? "" : "s"})
+												</span>
+											) : isActive ? (
+												<span className="rounded px-6 py-2 tr-text-metadata bg-primary text-text-default">
 													✓ Ativo no RAG
+												</span>
+											) : (
+												<span className="rounded px-6 py-2 tr-text-metadata border border-border-muted text-text-muted bg-container-elevated-bg">
+													Disponível
 												</span>
 											)}
 										</div>
 									</div>
 
 									{/* Badges de Status do DB e Sessão */}
-									<div className="flex flex-wrap items-center gap-4 shrink-0">
+									<div className="flex flex-wrap items-center gap-6 shrink-0">
 										{project.hasDb ? (
-											<span className="flex items-center gap-2 rounded px-2 py-0 tr-text-metadata border border-feedback-success text-feedback-success bg-container-workspace-bg">
+											<span className="flex items-center gap-4 rounded px-6 py-2 tr-text-metadata border border-feedback-success text-feedback-success bg-container-workspace-bg">
 												<RiDatabase2Line className="size-12" />
 												{project.dbSizeFormatted ?? "DB ok"}
 											</span>
 										) : (
-											<span className="flex items-center gap-2 rounded px-2 py-0 tr-text-metadata border border-feedback-warning text-feedback-warning bg-container-workspace-bg">
+											<span className="flex items-center gap-4 rounded px-6 py-2 tr-text-metadata border border-feedback-warning text-feedback-warning bg-container-workspace-bg">
 												<RiAlertLine className="size-12" />
-												Sem DB
+												Pendente de Indexação
 											</span>
 										)}
 										{project.hasActiveSession && (
-											<span className="flex items-center gap-2 rounded px-2 py-0 tr-text-metadata border border-primary text-primary bg-container-workspace-bg">
+											<span className="flex items-center gap-4 rounded px-6 py-2 tr-text-metadata border border-primary text-primary bg-container-workspace-bg">
 												<RiCheckLine className="size-12" />
 												Sessão Ativa
 											</span>
@@ -495,7 +605,7 @@ export function HermesProjectsView() {
 									<div className="flex flex-wrap items-center gap-6 shrink-0">
 										<Button
 											size="s"
-											variant="outline"
+											variant={isStale ? "destructive" : "outline"}
 											onClick={() => void handleStartReindex(project)}
 											disabled={hermesManagement.indexingProgress.isIndexing}
 											className="shrink-0"
@@ -505,7 +615,7 @@ export function HermesProjectsView() {
 											) : (
 												<RiPlayCircleLine className="size-12" />
 											)}
-											{isIndexing ? "Indexando..." : "Reindexar"}
+											{isIndexing ? "Indexando..." : isStale ? "Reindexar Agora" : "Reindexar"}
 										</Button>
 										<Button
 											size="s"
