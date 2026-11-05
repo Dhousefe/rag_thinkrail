@@ -263,6 +263,8 @@ import {
 	findHermesSkills,
 	installHermesSkill,
 	manageHermesSkills,
+	readHermesSkill,
+	revealHermesSkillFolder,
 } from "./hermes";
 import { buildHistoryScope } from "./historyScope";
 import { provisionInitialTerminal } from "./initialTerminal";
@@ -1288,6 +1290,8 @@ const handlers: WsHandlers = {
 	"hermes.findSkills": (params) => findHermesSkills(params),
 	"hermes.installSkill": (params) => installHermesSkill(params),
 	"hermes.manageSkills": (params) => manageHermesSkills(params),
+	"hermes.readSkill": (params) => readHermesSkill(params),
+	"hermes.revealSkillFolder": (params) => revealHermesSkillFolder(params),
 	"session.resources": (params) => {
 		const p = resourceParams(params, ["workspaceId", "sessionId"]);
 		return getSessionResources(p.workspaceId, p.sessionId, resourceCwd(p.workspaceId));

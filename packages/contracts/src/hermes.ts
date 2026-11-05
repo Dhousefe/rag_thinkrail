@@ -240,3 +240,25 @@ export interface HermesManageSkillsResult {
 	message: string;
 	skills: HermesInstalledSkill[];
 }
+
+export interface HermesReadSkillInput {
+	skillName: string;
+	skillMdPath?: string | undefined;
+}
+
+export interface HermesReadSkillResult {
+	success: boolean;
+	message?: string | undefined;
+	content?: string | undefined;
+	skillName?: string | undefined;
+	skillMdPath?: string | undefined;
+}
+
+export interface HermesRevealSkillFolderInput {
+	path: string;
+}
+
+export interface HermesRevealSkillFolderResult {
+	success: boolean;
+	message: string;
+}

@@ -448,6 +448,8 @@ export const WS_METHODS = {
 	hermesFindSkills: "hermes.findSkills",
 	hermesInstallSkill: "hermes.installSkill",
 	hermesManageSkills: "hermes.manageSkills",
+	hermesReadSkill: "hermes.readSkill",
+	hermesRevealSkillFolder: "hermes.revealSkillFolder",
 } as const;
 
 export const WS_CHANNELS = {
@@ -1308,6 +1310,14 @@ export interface WsMethodMap {
 	"hermes.manageSkills": {
 		params: HermesManageSkillsInput;
 		result: HermesManageSkillsResult;
+	};
+	"hermes.readSkill": {
+		params: HermesReadSkillInput;
+		result: HermesReadSkillResult;
+	};
+	"hermes.revealSkillFolder": {
+		params: HermesRevealSkillFolderInput;
+		result: HermesRevealSkillFolderResult;
 	};
 }
 

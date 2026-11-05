@@ -2299,8 +2299,61 @@ export function manageHermesSkills(
 			}
 			return { success: false, message: `Skill '${input.skillName}' não encontrada para remoção.`, skills: [] };
 		}
-
 		default:
 			return { success: false, message: `Ação desconhecida: ${input.action}`, skills: [] };
 	}
 }
+
+export function readHermesSkill(
+	input: { skillName: string; skillMdPath?: string },
+): { success: boolean; message?: string; content?: string; skillName: string; skillMdPath: string } {
+	let targetPath = input.skillMdPath?.trim();
+	if (!targetPath || !existsSync(targetPath)) {
+		const activePath = join(agentSkillsDir, input.skillName, "SKILL.md");
+		const disabledPath = join(disabledSkillsDir, input.skillName, "SKILL.md");
+		if (existsSync(activePath)) targetPath = activePath;
+		else if (existsSync(disabledPath)) targetPath = disabledPath;
+	}
+
+	if (!targetPath || !existsSync(targetPath)) {
+		return {
+			success: false,
+			message: `Arquivo SKILL.md não encontrado para a skill '${input.skillName}'.`,
+			skillName: input.skillName,
+			skillMdPath: targetPath || "",
+		};
+	}
+
+	try {
+		const content = readFileSync(targetPath, "utf-8");
+		return {
+			success: true,
+			content,
+			skillName: input.skillName,
+			skillMdPath: targetPath,
+		};
+	} catch (err: any) {
+		return {
+			success: false,
+			message: `Erro ao ler SKILL.md: ${err?.message || err}`,
+			skillName: input.skillName,
+			skillMdPath: targetPath,
+		};
+	}
+}
+
+export function revealHermesSkillFolder(input: { path: string }): { success: boolean; message: string } {
+	const folder = input.path?.trim();
+	if (!folder || !existsSync(folder)) {
+		return { success: false, message: `Pasta não encontrada no disco: ${folder}` };
+	}
+
+	try {
+		const { revealInFileManager } = require("../editors");
+		revealInFileManager(folder);
+		return { success: true, message: `Pasta aberta no gerenciador de arquivos: ${folder}` };
+	} catch (err: any) {
+		return { success: false, message: `Falha ao abrir pasta no gerenciador de arquivos: ${err?.message || err}` };
+	}
+}
+
