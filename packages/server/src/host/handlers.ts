@@ -259,6 +259,10 @@ import {
 	reindexHermesProject,
 	setActiveHermesProjects,
 	testHermesConnection,
+	checkHermesProjectsFreshness,
+	findHermesSkills,
+	installHermesSkill,
+	manageHermesSkills,
 } from "./hermes";
 import { buildHistoryScope } from "./historyScope";
 import { provisionInitialTerminal } from "./initialTerminal";
@@ -903,6 +907,38 @@ const handlers: WsHandlers = {
 			return { ok: true, total: 0, alreadyRunning: true };
 		return { ok: true, total: started.length };
 	},
+	"todo.visualTest": async (p, ctx) => {
+		const ws = getWorkspace(p.workspaceId);
+		if (!(await ensureSessionAttached(p.sessionId, p.workspaceId, ws.worktreePath))) {
+			throw new Error("This plan's chat is no longer on disk — can't run visual test.");
+		}
+		const plan = await listTodos({ workspaceId: p.workspaceId, sessionId: p.sessionId });
+		const allTodos = [
+			...plan.todos,
+			...plan.groups.flatMap((g) => g.todos),
+			...(plan.adoptedCommits ?? []),
+		];
+		const item = allTodos.find((t) => t.id === p.id);
+		if (!item) {
+			throw new Error(`Item ${p.id} não encontrado no plano.`);
+		}
+
+		const promptText = [
+			`[Solicitação de Teste Visual via Project-GIF]`,
+			`Execute a verificação visual dinâmica para o item implementado: **${item.title}**.`,
+			``,
+			`1. Escreva ou atualize um mockup HTML autônomo e fiel à implementação sob \`.thinkrail/context/mockups/visual_${p.id}.html\`.`,
+			`2. Grave a animação e o comportamento visual executando:`,
+			`   \`bun run record:ui --mockup .thinkrail/context/mockups/visual_${p.id}.html --output .thinkrail/context/visual-reviews/visual_${p.id}.gif --duration 2.5 --fps 15\``,
+			`3. Execute imediatamente a ferramenta \`read(\".thinkrail/context/visual-reviews/visual_${p.id}.gif\")\` para que o provider inspecione os frames reais.`,
+			`4. Avalie o resultado visual (espaçamento, cores, tipografia, contraste e possíveis quebras ou discrepâncias) e ajuste o código se necessário.`,
+		].join("\n");
+
+		await sendUserMessage("prompt", p.sessionId, promptText, ctx.clientKey, () =>
+			promptSession(p.sessionId, promptText),
+		);
+		return { ok: true as const };
+	},
 	"todo.generateSummary": (params) => generateTodoSummary(params),
 	"todo.requestFix": async (p) => {
 		const capture = additionalCapture();
@@ -1248,6 +1284,10 @@ const handlers: WsHandlers = {
 	"hermes.setActiveProjects": (params) => setActiveHermesProjects(params),
 	"hermes.getIndexingProgress": () => getHermesIndexingProgress(),
 	"hermes.getVectorGraph": (params) => getHermesVectorGraph(params),
+	"hermes.checkProjectFreshness": (params) => checkHermesProjectsFreshness(params),
+	"hermes.findSkills": (params) => findHermesSkills(params),
+	"hermes.installSkill": (params) => installHermesSkill(params),
+	"hermes.manageSkills": (params) => manageHermesSkills(params),
 	"session.resources": (params) => {
 		const p = resourceParams(params, ["workspaceId", "sessionId"]);
 		return getSessionResources(p.workspaceId, p.sessionId, resourceCwd(p.workspaceId));
