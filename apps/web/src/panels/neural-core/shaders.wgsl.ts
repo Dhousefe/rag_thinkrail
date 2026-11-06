@@ -16,36 +16,31 @@ struct VertexInput {
 struct VertexOutput {
     @builtin(position) position: vec4<f32>,
     @location(0) color: vec4<f32>,
-    @location(1) depth: f32,
 };
 
 @vertex
 fn vs_line(input: VertexInput) -> VertexOutput {
     var output: VertexOutput;
 
-    // Aplica deformação sutil de respiração matemática nos vértices
-    var pos = input.position;
-    let dist = length(pos);
-    let wave = sin(dist * 3.0 - camera.glowParams.z * 4.0) * camera.glowParams.x * 0.08;
-    pos += normalize(pos + vec3<f32>(0.001)) * wave;
-
-    let worldPos = camera.modelMatrix * vec4<f32>(pos, 1.0);
+    // Posicionamento espacial geométrico estável e exato (sem distorções de onda oscilatórias)
+    let worldPos = vec4<f32>(input.position, 1.0);
     output.position = camera.viewProjMatrix * worldPos;
 
-    // Mistura cor do vértice com colorTint reativo
-    var finalColor = mix(input.color, camera.colorTint, 0.45);
-    // Intensificação em pulso
-    finalColor = vec4<f32>(finalColor.rgb * (1.0 + camera.glowParams.y * 1.5), finalColor.a);
+    // Preservação pura e vívida das cores semânticas de cada módulo e tipo de nó
+    // (verde=UI, ciano=Web, azul=Server, amarelo=Contracts, vermelho=Scripts)
+    var col = input.color;
 
-    output.color = finalColor;
-    output.depth = output.position.z / output.position.w;
+    // Se houver pulso ativo de busca ou telemetria, aplica boost luminoso no brilho sem alterar o matiz
+    let pulseBoost = camera.glowParams.x * 0.45;
+    let brightRgb = col.rgb * (1.0 + pulseBoost);
+    output.color = vec4<f32>(brightRgb, col.a);
+
     return output;
 }
 
 @fragment
 fn fs_line(input: VertexOutput) -> @location(0) vec4<f32> {
-    // Brilho de laser vetorial com atenuação por profundidade
-    let depthFade = smoothstep(1.0, 0.1, input.depth);
-    return vec4<f32>(input.color.rgb, input.color.a * depthFade);
+    // Renderização limpa de linhas e polígonos sem oclusão por depthFade agressivo
+    return input.color;
 }
 `;

@@ -1,5 +1,6 @@
 import {
 	RiCheckLine,
+	RiCloseLine,
 	RiCompass3Line,
 	RiDeleteBinLine,
 	RiDownload2Line,
@@ -7,6 +8,7 @@ import {
 	RiFileTextLine,
 	RiFolderCheckLine,
 	RiFolderLine,
+	RiFolderOpenLine,
 	RiRefreshLine,
 	RiSearchLine,
 	RiStarLine,
@@ -14,20 +16,26 @@ import {
 import type {
 	HermesFindSkillsResult,
 	HermesInstalledSkill,
+	HermesReadSkillResult,
 	HermesSkillRepoResult,
 } from "@thinkrail/contracts";
 import { Button } from "@thinkrail/ui/button";
+import {
+	Dialog,
+	DialogContent,
+	DialogDescription,
+	DialogFooter,
+	DialogHeader,
+	DialogTitle,
+} from "@thinkrail/ui/dialog";
 import { Switch } from "@thinkrail/ui/switch";
 import { cn } from "@thinkrail/ui/utils";
 import { useEffect, useState } from "react";
-import { selectActiveWorkspace, toast, useAppStore } from "@/store";
+import { toast } from "@/store";
 import { getTransport } from "@/transport";
-import { openFileInTab } from "../openTabs";
 import { SegmentedControl } from "../SegmentedControl";
 
 export function HermesSkillsView() {
-	const activeWorkspace = useAppStore(selectActiveWorkspace);
-	const workspaceId = activeWorkspace?.id ?? null;
 	const [subTab, setSubTab] = useState<"find" | "installed">("find");
 	const [searchQuery, setSearchQuery] = useState("");
 	const [minStars, setMinStars] = useState<number>(50);
@@ -37,6 +45,13 @@ export function HermesSkillsView() {
 	const [isLoadingInstalled, setIsLoadingInstalled] = useState(false);
 	const [installingRepo, setInstallingRepo] = useState<string | null>(null);
 	const [actioningSkill, setActioningSkill] = useState<string | null>(null);
+
+	// Estado para visualização do arquivo SKILL.md
+	const [skillViewerOpen, setSkillViewerOpen] = useState(false);
+	const [viewerSkillName, setViewerSkillName] = useState("");
+	const [viewerSkillPath, setViewerSkillPath] = useState("");
+	const [viewerContent, setViewerContent] = useState("");
+	const [isLoadingContent, setIsLoadingContent] = useState(false);
 
 	const loadInstalledSkills = async (quiet = false) => {
 		try {
@@ -126,6 +141,46 @@ export function HermesSkillsView() {
 			toast.error(`Erro ao atualizar skill: ${err instanceof Error ? err.message : String(err)}`);
 		} finally {
 			setActioningSkill(null);
+		}
+	};
+
+	const handleViewSkillMd = async (skill: HermesInstalledSkill) => {
+		try {
+			setIsLoadingContent(true);
+			setViewerSkillName(skill.name);
+			setViewerSkillPath(skill.skillMdPath || skill.path);
+			setSkillViewerOpen(true);
+			const res: HermesReadSkillResult = await getTransport().request("hermes.readSkill", {
+				skillName: skill.name,
+				skillMdPath: skill.skillMdPath,
+			});
+			if (res.success && res.content) {
+				setViewerContent(res.content);
+			} else {
+				setViewerContent(res.message || "Não foi possível carregar o conteúdo do SKILL.md");
+				toast.error(res.message || "Falha ao ler SKILL.md");
+			}
+		} catch (err) {
+			const msg = err instanceof Error ? err.message : String(err);
+			setViewerContent(`Erro ao ler arquivo: ${msg}`);
+			toast.error(`Erro ao abrir SKILL.md: ${msg}`);
+		} finally {
+			setIsLoadingContent(false);
+		}
+	};
+
+	const handleRevealFolder = async (folderPath: string) => {
+		try {
+			const res = await getTransport().request("hermes.revealSkillFolder", {
+				path: folderPath,
+			});
+			if (res.success) {
+				toast.success("Pasta aberta no explorador de arquivos.");
+			} else {
+				toast.error(res.message || "Falha ao abrir pasta no disco.");
+			}
+		} catch (err) {
+			toast.error(`Erro ao abrir pasta: ${err instanceof Error ? err.message : String(err)}`);
 		}
 	};
 
@@ -383,23 +438,24 @@ export function HermesSkillsView() {
 												<span className="tr-text-metadata text-text-muted truncate max-w-sm">
 													{skill.path}
 												</span>
-												{skill.skillMdPath && (
-													<button
-														type="button"
-														onClick={() => {
-															if (workspaceId && skill.skillMdPath) {
-																void openFileInTab(workspaceId, skill.skillMdPath, "keep");
-															} else {
-																toast.info(`Caminho: ${skill.skillMdPath}`);
-															}
-														}}
-														className="inline-flex items-center gap-4 tr-text-metadata text-primary hover:underline transition-all cursor-pointer font-medium"
-														title="Abrir arquivo SKILL.md no editor"
-													>
-														<RiFileTextLine className="size-13 shrink-0" />
-														<span>Ver SKILL.md</span>
-													</button>
-												)}
+												<button
+													type="button"
+													onClick={() => handleViewSkillMd(skill)}
+													className="inline-flex items-center gap-4 tr-text-metadata text-primary hover:underline transition-all cursor-pointer"
+													title="Visualizar arquivo SKILL.md"
+												>
+													<RiFileTextLine className="size-13 shrink-0" />
+													<span>Ver SKILL.md</span>
+												</button>
+												<button
+													type="button"
+													onClick={() => handleRevealFolder(skill.path)}
+													className="inline-flex items-center gap-4 tr-text-metadata text-text-default hover:text-primary transition-all cursor-pointer"
+													title="Abrir pasta da skill no Explorer do Windows"
+												>
+													<RiFolderOpenLine className="size-13 shrink-0 text-text-muted" />
+													<span>Abrir Pasta</span>
+												</button>
 											</div>
 										</div>
 
@@ -428,6 +484,49 @@ export function HermesSkillsView() {
 					)}
 				</div>
 			)}
+
+			{/* Modal de Leitura do SKILL.md */}
+			<Dialog open={skillViewerOpen} onOpenChange={setSkillViewerOpen}>
+				<DialogContent className="max-w-3xl max-h-[85vh] flex flex-col">
+					<DialogHeader>
+						<div className="flex items-center gap-8">
+							<RiFileTextLine className="size-20 text-primary" />
+							<DialogTitle>SKILL.md — {viewerSkillName}</DialogTitle>
+						</div>
+						<DialogDescription className="truncate">
+							{viewerSkillPath}
+						</DialogDescription>
+					</DialogHeader>
+
+					<div className="my-12 flex-1 overflow-auto rounded border border-border-default bg-container-workspace-bg p-16 tr-code-text text-text-default select-text leading-relaxed whitespace-pre-wrap max-h-[55vh]">
+						{isLoadingContent ? (
+							<div className="flex items-center justify-center p-24 text-text-muted">
+								Carregando conteúdo do arquivo...
+							</div>
+						) : (
+							viewerContent
+						)}
+					</div>
+
+					<DialogFooter className="flex items-center justify-between gap-12">
+						<Button
+							variant="outline"
+							size="s"
+							onClick={() => handleRevealFolder(viewerSkillPath.replace(/[\/\\]SKILL\.md$/i, ""))}
+						>
+							<RiFolderOpenLine className="size-14" />
+							<span>Abrir Pasta no Explorer</span>
+						</Button>
+						<Button
+							size="s"
+							onClick={() => setSkillViewerOpen(false)}
+						>
+							<RiCloseLine className="size-14" />
+							<span>Fechar</span>
+						</Button>
+					</DialogFooter>
+				</DialogContent>
+			</Dialog>
 		</div>
 	);
 }

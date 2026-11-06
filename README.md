@@ -4,9 +4,9 @@
 [![GitHub stars](https://img.shields.io/github/stars/JetBrains/thinkrail?style=social)](https://star-history.com/#JetBrains/thinkrail&Date)
 [![Discord](https://img.shields.io/badge/Discord-Entrar%20no%20chat-5865F2?logo=discord&logoColor=white)](https://thinkrail.ai/discord)
 
-O ThinkRail é a IDE agêntica que evolui a cada uso — aprendendo a arquitetura do seu projeto hoje por meio de especificações vivas (living specs) e construindo suas próprias ferramentas amanhã.
+O **ThinkRail** é a IDE agêntica de nova geração que evolui a cada uso — aprendendo a arquitetura do seu projeto através de especificações vivas (*living specs*), inspecionando código e interfaces visualmente com IA multimodal e sintetizando suas próprias ferramentas de forma autônoma.
 
-Construímos uma interface rica em torno do agente de codificação [`pi`](https://www.npmjs.com/package/@earendil-works/pi-coding-agent), isolamos tarefas em workspaces independentes e fornecemos ao agente um conhecimento duradouro do projeto por meio de especificações vivas e skills reutilizáveis. O ThinkRail também possui suporte total a extensões e servidores de contexto MCP para criar as ferramentas necessárias de acordo com o seu fluxo real de desenvolvimento.
+Construído sobre o motor do agente [`pi`](https://www.npmjs.com/package/@earendil-works/pi-coding-agent) rodando em processo, o ThinkRail isola cada fluxo em *worktrees* Git independentes, conecta-se a bases de código gigantescas via **Hermes Code RAG Multi-Projeto** e dispõe de um ecossistema completo de **Agent Skills com Auto-Scaffolding em 1-clique**.
 
 **Website:** [thinkrail.ai](https://thinkrail.ai/) · **Blog:** [thinkrail.ai/blog](https://thinkrail.ai/blog/) ·
 **Discord:** [thinkrail.ai/discord](https://thinkrail.ai/discord)
@@ -28,194 +28,141 @@ Construímos uma interface rica em torno do agente de codificação [`pi`](https
 
 ---
 
-## O Que Você Obtém
+## ⚡ Os Superpoderes do ThinkRail
 
-- **Workspaces Isolados.** Abra qualquer repositório git como projeto e derive workspaces como `git worktree`s independentes, cada um com sua própria branch e diretório de trabalho. Agentes trabalham em paralelo sem interferir no seu checkout principal; mescle a branch pronta e descarte o restante. Workspaces inativos ou concluídos são arquivados automaticamente na gaveta (shelf) do projeto e voltam ao foco no instante em que você interagir com eles. A barra superior exibe o status da branch ativa contra a `origin` e seu Pull Request, com publicação, push e abertura de PR a um clique de distância.
-- **Uma IDE Real em Torno do Agente.** Workbench divisível com abas baseadas no editor Monaco, árvore de arquivos com indicadores visuais de alterações git, visualização de Changed files, terminais integrados e renderizadores de documentos. Deixe comentários de revisão ancorados em linhas de código ou diffs e envie-os ao chat como contexto estruturado, ou abra o worktree na sua IDE preferida.
-- **Chats que Transmitem Pensamento em Tempo Real.** Múltiplas sessões concorrentes do `pi` por workspace, cada uma com seu próprio modelo, tokens e custos em tempo real. Interrompa e redirecione raciocínios em andamento, enfileire mensagens de acompanhamento (follow-ups), delegue trabalho para subagentes e acompanhe um plano de tarefas compartilhado (TODO Plan) onde cada etapa concluída pode ser comitada individualmente.
-- **Localizador e Paleta de Comandos Unificada.** `⌘K` (ou toque duplo no Shift) abre a paleta que localiza chats, workspaces e projetos em todos os repositórios abertos, executa comandos da aplicação com seus atalhos e navega diretamente para as configurações.
-- **Especificações como Fonte da Verdade (Specs).** Um grafo conectado de arquivos `SPEC.md` vive ao lado do código. O agente lê, busca e atualiza esse grafo através de ferramentas dedicadas `spec_*`, garantindo que a intenção técnica e as decisões de arquitetura sobrevivam ao encerramento da sessão.
-- **Skills e Workflows.** Suporte nativo a Agent Skills portáteis, acompanhado de workflows integrados para inicialização de projeto, brainstorming de design e envio de pull requests via seu próprio CLI `gh`.
-- **Ferramentas Visuais e Interativas.** Pesquisa web aprofundada, perguntas interativas de múltipla escolha que o agente faz no chat em vez de adivinhar preferências, e renderização inline de diagramas Mermaid, comparações de opções lado a lado e mockups visuais antes/depois.
-- **Servidores MCP (Model Context Protocol).** Conecte qualquer servidor MCP configurado no seu `mcp.json` do `pi`. O ThinkRail solicita aprovação no chat antes de chamadas que possam alterar dados, mantém servidores definidos pelo repositório bloqueados até sua revisão, autentica servidores OAuth diretamente pelas Configurações e exibe o status de cada servidor ao lado dos recursos da sessão.
-- **Hermes Code RAG Nativo & MCP.** Mecanismo de alta performance para indexação incremental e busca de código híbrida (AST + FTS5 + Embeddings Vetoriais) alimentado pelo binário nativo `apps/cli/dist/germes.exe` e SQLite (`hermes.db`). Conta com invalidação cirúrgica por hash SHA-256 e data de modificação (`mtime_ms`), pulando arquivos inalterados em apenas **4 milissegundos** e mantendo o banco sincronizado após cada commit via hook automático.
-- **Seus Provedores e Credenciais.** Conecte o [JetBrains AI](https://www.jetbrains.com/ai/) ou qualquer provedor suportado pelo `pi` (OpenAI, Anthropic, Opus 4.8 Opus 4.8, Ollama, OpenRouter, etc.). O ThinkRail não exige criação de contas proprietárias.
-- **Servidores Locais e Gateways Personalizados.** Em Configurações → Provedores → **Servidores personalizados**, conecte gateways internos ou servidores locais (LiteLLM, vLLM, Ollama, LM Studio, llama.cpp). O botão **Buscar modelos** mapeia automaticamente o catálogo servido.
-- **Aplicativo Desktop ou Navegador.** Disponível como aplicativo desktop nativo ou via CLI `thinkrail` executável em qualquer navegador moderno. O estado local reside de forma segura sob `~/.thinkrail`.
-- **Totalmente Localizável.** Configurações de idioma com suporte a Português, Inglês, Espanhol, Russo, Chinês Simplificado e Japonês.
-- **Temas e Tipografia Flexíveis.** Temas escuro, claro, minimalista e alto contraste, com suporte a customização de fontes de código (JetBrains Mono, Geist) e espaçamentos.
+### 1. Workspaces Totalmente Isolados com Git Worktrees
+Abra qualquer repositório Git como projeto e derive múltiplos workspaces simultâneos como `git worktree`s independentes. Cada workspace possui sua própria branch, histórico e diretório físico. Os agentes realizam refatorações e testes massivos em paralelo sem interferir no seu checkout principal; mescle a branch validada e descarte o restante com um único clique. Workspaces inativos são preservados na gaveta (*shelf*) e restaurados instantaneamente sob demanda.
+
+### 2. Hub de Skills & Auto-Scaffolding em 1-Clique (Hermes Skills Engine)
+O ThinkRail transforma qualquer repositório aberto do GitHub em uma ferramenta utilizável pelo agente:
+- **Busca Global Comunitária (`find_skills`):** Localize instantaneamente skills e repositórios populares por estrelas e relevância direto pelo chat ou pela aba lateral.
+- **Auto-Scaffolding Inteligente:** Repositórios sem formato de skill pré-existente são inspecionados automaticamente: o ThinkRail lê a documentação, detecta a stack tecnológica (Python, Node/Bun/TypeScript, Rust ou CLI genérica) e **sintetiza um `SKILL.md` operacional completo na hora**, pronto para uso pelo agente.
+- **Interface Transparente:** Visualize o nome da pasta física da skill e abra o arquivo `SKILL.md` no editor do Monaco com um clique.
+
+### 3. Validação Visual Obrigatória com IA Multimodal (Project-GIF Core)
+Diga adeus a telas desenvolvidas às cegas:
+- **Motor Headless Integrado:** Grava animações em GIF de alta performance (< 500 KB, 15 FPS, quantização em 128 cores com `Dither.NONE`) de componentes web, páginas ativas e mockups em `.thinkrail/context/mockups/`.
+- **Inspeção Multimodal pelo Agente:** O agente inspeciona os quadros do GIF via `read()`, avaliando espaçamento, contraste, hierarquia visual e comportamento responsivo antes de finalizar qualquer entrega de UI.
+
+### 4. Hermes Code RAG Nativo & Multi-Projeto
+Mecanismo de alta performance para indexação incremental e busca de código híbrida (**AST + FTS5 + Embeddings Vetoriais**):
+- **Alimentado por SQLite e Binário Nativo:** Execução em milissegundos com busca concorrente e fusão de ranqueamento recíproco (**RRF**) em múltiplos projetos ativos simultaneamente (`~/.hermes/projects`).
+- **Invalidação Cirúrgica:** Ignora arquivos inalterados por hash SHA-256 e `mtime_ms` em apenas **4 milissegundos**, sincronizando bancos através de git hooks pós-commit.
+- **Barra de Progresso em Tempo Real:** Acompanhe a varredura e o status de indexação diretamente na barra superior do workbench.
+
+### 5. Neural Core & Grafo Vetorial Tridimensional (3D)
+Um visualizador de contexto arquitetural em **WebGL 3D**:
+- Navegue pelas conexões semânticas do repositório, dependências de módulos e clusters conceituais através de uma câmera orbital interativa.
+- Identifique a densidade de código, gargalos estruturais e proximidade semântica entre classes e métodos em tempo real.
+
+### 6. Plan Rail & Governança de Tarefas com Commits Granulares
+- **TODO Integrado:** O agente mantém um plano visível no painel lateral com etapas acionáveis (`pending`, `in_progress`, `done`).
+- **Commits Semânticos Passo a Passo:** Cada tarefa concluída no plano é commitada individualmente com mensagens no padrão do seu repositório.
+- **Promoção Atômica de Notas:** Transforme ideias e anotações soltas em tarefas estruturadas sem perda de contexto.
+
+### 7. Especificações como Fonte da Verdade (Living Specs)
+O ThinkRail utiliza um grafo conectado de arquivos `SPEC.md` que residem junto com o código. As ferramentas dedicadas `spec_*` garantem que decisões arquiteturais, limites de módulos e contratos técnicos sejam respeitados e sobrevivam ao encerramento da conversa.
+
+### 8. Flexibilidade Total de Provedores e Modelos
+- Suporte a [JetBrains AI](https://www.jetbrains.com/ai/), OpenAI, Anthropic, Opus 4.8 Opus 4.8, Ollama, OpenRouter e servidores locais personalizados (LiteLLM, vLLM, LM Studio, llama.cpp).
+- Descoberta automática de modelos servidos localmente com mapeamento de capacidades em tempo de execução.
 
 ---
 
-## Arquitetura de Integração: ThinkRail + Hermes Code RAG MCP
-
-O fluxo de dados entre a interface do ThinkRail, o agente de IA, o binário nativo de alta performance `germes.exe` e o banco de dados vetorial opera conforme o diagrama abaixo:
+## 🏗️ Arquitetura do Sistema: ThinkRail + Hermes Code RAG MCP
 
 ```mermaid
 flowchart TB
     subgraph ThinkRail_IDE [ThinkRail IDE e Host]
-        UI[Interface do Usuario / Workbench]
-        Agent[Pi Coding Agent Runtime]
-        Sidebar[Aba Lateral MCP / Resources]
-        PostCommit[Git Hook: post-commit]
+        UI[Interface do Usuário / Workbench Monaco]
+        Agent[Pi Coding Agent Runtime - In-Process]
+        NeuralCore[Neural Core 3D - WebGL Graph]
+        PlanRail[Plan Rail - TODO & Commits Granulares]
+        SkillsPanel[Painel de Skills com Auto-Scaffolding]
     end
 
-    subgraph Scripts_CLI [Utilitarios CLI Locais]
-        ReindexBat["scripts/rag-reindex.bat"]
-        ReindexTs["scripts/rag-reindex.ts"]
-        PruneTs["scripts/rag-prune.ts"]
-        StatusTs["scripts/rag-status.ts"]
+    subgraph Testing_Engine [Project-GIF Core]
+        GifRecorder[Gravador Headless de Telas e Mockups]
+        MultimodalEval[Inspeção Multimodal de Frames com read]
     end
 
-    subgraph MCP_Server [Hermes MCP Server - Nativo]
+    subgraph Hermes_MCP [Hermes MCP Server & CLI]
         GermesExe["apps/cli/dist/germes.exe mcp"]
-        IndexCodeTool["Tool: hermes_index_code"]
-        SearchTool["Tool: code_search"]
-        CoverageTool["Tool: hermes_rag_coverage_map"]
+        CodeSearch[Busca Híbrida: AST + FTS5 + RRF]
+        SkillInstaller[Auto-Scaffolding & Git Clone Shallow]
+        VectorGraph[Grafo de Vetores e Chunks]
     end
 
-    subgraph Fast_Engine [Motor de Invalidacao Incremental]
-        Scanner[Varredura de Arquivos]
-        CheckDiff{"mtime_ms ou sha256 mudou?"}
-        Skip["Pular Arquivo Inalterado (4ms)"]
-        Chunker["AST Chunking e Deletar Chunks Antigos"]
-    end
-
-    subgraph Storage [Armazenamento Local SQLite]
-        DB[("~/.hermes/projects/project-thinkrail/hermes.db")]
-        L2jFiles[Tabela: l2j_files]
-        L2jFTS[Indice Full-Text: l2j_chunk_fts]
-        L2jVec[Indice Vetorial: l2j_chunk_vec]
-    end
-
-    subgraph Embedding_Server [Servidor Local de Embeddings]
-        JinaEmbeddings["ONNX Runtime DML (GPU RX 580) - http://127.0.0.1:9085"]
+    subgraph Storage [Armazenamento Local ~/.hermes & ~/.agents]
+        DB[("Bancos SQLite hermes.db Multi-Projeto")]
+        SkillsDir["~/.agents/skills/ (SKILL.md, códigos e scripts)"]
     end
 
     UI --> Agent
-    Sidebar -->|Controla e Consulta| GermesExe
-    Agent -->|Chama ferramentas| GermesExe
-    PostCommit -.->|Disparo automatico| ReindexBat
+    UI --> NeuralCore
+    UI --> PlanRail
+    UI --> SkillsPanel
 
-    ReindexBat --> PruneTs
-    ReindexBat --> ReindexTs
-    PruneTs -->|Purga registros orfaos| DB
-    ReindexTs --> Scanner
+    Agent --> Hermes_MCP
+    SkillsPanel --> SkillInstaller
+    SkillInstaller --> SkillsDir
+    NeuralCore --> VectorGraph
 
-    GermesExe --> IndexCodeTool
-    GermesExe --> SearchTool
-    GermesExe --> CoverageTool
-    IndexCodeTool --> Scanner
+    Agent --> GifRecorder
+    GifRecorder --> MultimodalEval
+    MultimodalEval --> Agent
 
-    Scanner --> CheckDiff
-    CheckDiff -->|Nao| Skip
-    CheckDiff -->|Sim| Chunker
-    Chunker -->|Calcula Vetores| JinaEmbeddings
-    Chunker -->|Atualiza Chunks e Arquivo| DB
-
-    DB --- L2jFiles
-    DB --- L2jFTS
-    DB --- L2jVec
-
-    SearchTool -->|Busca Hibrida FTS + Vetor + RRF| DB
+    Hermes_MCP --> DB
 ```
 
 ---
 
-## Comandos do Hermes RAG
+## 🛠️ Comandos & Scripts de Produtividade
 
-O repositório fornece scripts nativos de alta velocidade com caminhos relativos ao projeto para manter o Code RAG perfeitamente sincronizado:
+O repositório fornece utilitários nativos para gerenciar o ecossistema local:
 
+### Hermes Code RAG
 ```bash
-bun run rag:reindex   # Reindexa cirurgicamente apenas arquivos alterados ou novos
-bun run rag:status    # Exibe metricas de arquivos, chunks, simbolos e cobertura do banco
-bun run rag:prune     # Purga registros orfaos de arquivos deletados ou movidos do repositorio
+bun run rag:reindex   # Reindexa cirurgicamente arquivos novos ou alterados
+bun run rag:status    # Exibe métricas de arquivos, chunks, símbolos e cobertura
+bun run rag:prune     # Purga registros órfãos de arquivos deletados ou movidos
 ```
 
-Também é possível invocar o script batch diretamente apontando para diretórios específicos:
-```cmd
-scripts\rag-reindex.bat apps packages
+### Validação Visual com Gravação de GIF
+```bash
+bun scripts/record-ui-gif.ts --mockup .thinkrail/context/mockups/minha-tela.html
+# Gera um GIF leve e quantizado em 128 cores para validação multimodal da IA
 ```
 
 ---
 
-## Instalação
+## 🚀 Instalação & Uso
 
-O ThinkRail é distribuído como instalador desktop nativo e como binário CLI autônomo. Ambos são publicados com hashes `SHA256SUMS` na [página de lançamentos](https://github.com/JetBrains/thinkrail/releases).
+O ThinkRail está disponível como instalador de desktop nativo e como binário executável CLI/Web.
 
 ### Versão Desktop
+Faça o download do pacote da sua plataforma na [página de lançamentos](https://github.com/JetBrains/thinkrail/releases):
+- **Windows (x64):** Execute o instalador `thinkrail-setup.exe` ou o binário autônomo `thinkrail-v5.exe`.
+- **macOS 14+ (Apple Silicon ou Intel):** Abra o arquivo DMG correspondente.
+- **Linux (x64 / arm64):** Pacotes AppImage ou binários autônomos.
 
-Faça o download do pacote correspondente à sua plataforma:
-
-- **macOS 14+ (Apple Silicon ou Intel)** — abra o arquivo DMG para sua arquitetura:
-  `thinkrail-desktop-darwin-arm64.dmg` ou `thinkrail-desktop-darwin-x64.dmg`.
-- **Windows x64** — extraia o arquivo ZIP de instalação e execute o instalador.
-- **Linux x64 / ARM64** — extraia o tarball e execute `installer` (requer Ubuntu 24.04+ com glibc 2.38+, GTK 3, WebKitGTK 4.1, Ayatana AppIndicator 3 e librsvg 2):
-
-  ```bash
-  sudo apt install libgtk-3-0 libwebkit2gtk-4.1-0 libayatana-appindicator3-1 librsvg2-2
-  ```
-
-### Linha de Comando (CLI)
-
-O instalador baixa o binário correto, valida a soma de verificação SHA-256 e registra o `thinkrail` no seu PATH.
-
-**macOS / Linux** (e Git Bash no Windows):
-
+### Modo Web / CLI Local
+Para executar diretamente do terminal em qualquer navegador:
 ```bash
-curl -fsSL https://raw.githubusercontent.com/JetBrains/thinkrail/main/install.sh | bash
-```
-
-**Windows** (PowerShell ou Prompt de Comando):
-
-```powershell
-powershell -c "irm https://raw.githubusercontent.com/JetBrains/thinkrail/main/install.ps1 | iex"
-```
-
-Em seguida, execute `thinkrail` passando opcionalmente um diretório para abrir:
-
-```bash
-thinkrail ~/meu-projeto
-```
-
----
-
-## Estrutura Interna (Under the Hood)
-
-O ThinkRail é um host enxuto que executa o `pi` in-process e o conecta a uma interface web reativa. O `pi` gerencia modelos, skills, compactação de contexto e custos; o ThinkRail gerencia workspaces, Monaco editor, extensões e o transporte:
-
-1. **Engine Host** — `packages/server` (+ `packages/shared`): Servidor HTTP+WS em `Bun.serve` com sessões `pi` em processo.
-2. **The Wire** — `packages/contracts`: Protocolo fortemente tipado e versionado entre o servidor e a UI.
-3. **UI Client** — `apps/web`: Desenvolvido em React 19, Zustand e Tailwind v4.
-
----
-
-## Desenvolvimento do ThinkRail
-
-Requisitos: **Bun** 1.4.4, **Node.js** ≥ 22.19 e credenciais de provedor para execução de agentes.
-
-```bash
-git clone https://github.com/JetBrains/thinkrail.git
-cd thinkrail
+# Clone e instale as dependências
 bun install
-bun run dev                          # Inicia o host e o cliente web simultaneamente
-```
 
-```bash
-bun run --filter @thinkrail/cli dev  # Launcher do navegador
-bun run build:binary                 # Compila o artefato CLI autônomo
-bun run desktop:dev                  # Empacota e executa o app Electrobun Desktop
-bun run desktop:build                # Empacota o app desktop sem abrir
+# Inicie o servidor e abra no navegador
+bun run dev
 ```
-
-Consulte [`CONTRIBUTING.md`](CONTRIBUTING.md) para diretrizes de contribuição, execução de suítes de testes E2E e formatação.
 
 ---
 
-## Comunidade
+## 🌐 Localização & Personalização
+- **Idiomas Nativos:** Português (PT-BR), Inglês, Espanhol, Russo, Chinês Simplificado e Japonês.
+- **Tipografia & Temas:** Temas Escuro, Claro, Alto Contraste e Minimalista, com fontes de programação customizáveis (JetBrains Mono, Geist).
 
-Participe do nosso servidor no [Discord](https://thinkrail.ai/discord) para tirar dúvidas, compartilhar experiências e conversar com a equipe. Problemas e sugestões de melhorias podem ser enviados nas [GitHub Issues](https://github.com/JetBrains/thinkrail/issues).
+---
 
-## Licença
-
+## 📜 Licença
 Distribuído sob a licença [Apache 2.0](LICENSE).

@@ -94,8 +94,8 @@ export async function runIncrementalReindex(options: ReindexOptions = {}) {
 
 	const db = new Database(dbPath);
 	db.run("PRAGMA journal_mode = WAL;");
-	db.run("PRAGMA busy_timeout = 30000;");
-	db.run("PRAGMA foreign_keys = ON;");
+	db.run("PRAGMA busy_timeout = 60000;");
+	db.run("PRAGMA foreign_keys = OFF;");
 
 	// Garante schema inicial caso seja um banco novo
 	db.run(`
@@ -161,19 +161,10 @@ export async function runIncrementalReindex(options: ReindexOptions = {}) {
 		);
 	`);
 
-	const checkUnchangedStmt = db.prepare(`
-		SELECT 1 FROM l2j_files f
-		JOIN l2j_chunks c ON c.file_id = f.id
-		WHERE f.project_name = ? AND f.path = ? AND f.sha256 = ? AND f.mtime_ms = ? 
-		LIMIT 1;
-	`);
-
 	const deleteFtsStmt = db.prepare("DELETE FROM l2j_chunk_fts WHERE file_id = ?;");
 	const deleteChunksStmt = db.prepare("DELETE FROM l2j_chunks WHERE file_id = ?;");
+	const deleteSymbolsStmt = db.prepare("DELETE FROM l2j_symbols WHERE file_id = ?;");
 	const deleteFileStmt = db.prepare("DELETE FROM l2j_files WHERE id = ?;");
-	const getFileIdStmt = db.prepare(
-		"SELECT id FROM l2j_files WHERE project_name = ? AND path = ? LIMIT 1;",
-	);
 
 	const insertFileStmt = db.prepare(`
 		INSERT OR REPLACE INTO l2j_files(id, project_name, path, sha256, mtime_ms, indexed_at)
@@ -189,6 +180,21 @@ export async function runIncrementalReindex(options: ReindexOptions = {}) {
 		INSERT INTO l2j_chunk_fts(chunk_id, project_name, file_id, path, qualified_name, signature, content, keywords)
 		VALUES (?, ?, ?, ?, ?, ?, ?, ?);
 	`);
+
+	// Pré-carrega todos os arquivos indexados do projeto em memória para eliminar I/O concorrente de leitura
+	const existingFilesQuery = db.query(
+		"SELECT id, path, sha256, mtime_ms FROM l2j_files WHERE project_name = ?;",
+	);
+	const existingRows = existingFilesQuery.all(projectSlug) as Array<{
+		id: string;
+		path: string;
+		sha256: string;
+		mtime_ms: number;
+	}>;
+	const existingFilesMap = new Map<string, { id: string; sha256: string; mtime_ms: number }>();
+	for (const row of existingRows) {
+		existingFilesMap.set(row.path, row);
+	}
 
 	// Coleta todos os arquivos de todos os alvos primeiro para saber a contagem total exata
 	const allFiles: string[] = [];
@@ -230,26 +236,28 @@ export async function runIncrementalReindex(options: ReindexOptions = {}) {
 		const content = readFileSync(filePath);
 		const hash = sha256(content);
 
-		const isUnchanged = Boolean(
-			checkUnchangedStmt.get(projectSlug, filePath, hash, mtime),
-		);
-
-		if (isUnchanged) {
+		const existingEntry = existingFilesMap.get(filePath);
+		if (existingEntry && existingEntry.sha256 === hash && existingEntry.mtime_ms === mtime) {
 			skipped++;
 			continue;
 		}
 
+		const fileId = existingEntry ? existingEntry.id : sha256(`${projectSlug}|${filePath}`);
+
 		const indexFileTx = db.transaction(() => {
-			const existingRow = getFileIdStmt.get(projectSlug, filePath) as
-				| { id: string }
-				| undefined;
-			if (existingRow) {
-				deleteFtsStmt.run(existingRow.id);
-				deleteChunksStmt.run(existingRow.id);
-				deleteFileStmt.run(existingRow.id);
+			if (existingEntry) {
+				try {
+					deleteFtsStmt.run(existingEntry.id);
+				} catch {}
+				try {
+					deleteChunksStmt.run(existingEntry.id);
+				} catch {}
+				try {
+					deleteSymbolsStmt.run(existingEntry.id);
+				} catch {}
+				deleteFileStmt.run(existingEntry.id);
 			}
 
-			const fileId = sha256(`${projectSlug}|${filePath}`);
 			const now = Date.now();
 			insertFileStmt.run(fileId, projectSlug, filePath, hash, mtime, now);
 
@@ -334,6 +342,9 @@ export async function runIncrementalReindex(options: ReindexOptions = {}) {
 	console.log(`        Novos chunks gerados: ${chunksTotal}`);
 	console.log("============================================================\n");
 
+	try {
+		db.run("PRAGMA wal_checkpoint(PASSIVE);");
+	} catch {}
 	db.close();
 }
 

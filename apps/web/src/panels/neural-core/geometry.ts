@@ -1,4 +1,4 @@
-export type GeometryShapeType = "tesseract" | "icosahedron" | "merkaba" | "torus" | "dodecahedron";
+import type { HermesEdgeKind } from "@thinkrail/contracts";
 
 export interface GeometryMeshData {
 	// Array intercalado: [x, y, z, r, g, b, a, ...]
@@ -408,15 +408,20 @@ export interface VectorNodeInput {
 	relPath?: string | undefined;
 	fileExtension?: string | undefined;
 	language?: string | undefined;
+	qualifiedName?: string | undefined;
+	imports?: string[] | undefined;
 	position: [number, number, number];
 	isMatchedBySearch?: boolean | undefined;
 	methods?: VectorMethodNode[] | undefined;
 }
 
+export type GeometryShapeType = "tesseract" | "icosahedron" | "merkaba" | "torus" | "dodecahedron";
+
 export interface VectorEdgeInput {
 	source: number;
 	target: number;
 	similarity: number;
+	kind?: HermesEdgeKind | undefined;
 }
 
 const MODULE_COLORS: Record<string, [number, number, number, number]> = {
@@ -428,6 +433,56 @@ const MODULE_COLORS: Record<string, [number, number, number, number]> = {
 	extensions: [0.4, 0.6, 1.0, 0.85], // Safira
 	core: [0.9, 0.9, 1.0, 0.8], // Prata
 };
+
+/** Resolve cor do módulo com suporte a particionamento multi-projeto (slug:mod) */
+export function resolveModuleColor(modName?: string): [number, number, number, number] {
+	if (!modName) return MODULE_COLORS.core ?? [0.9, 0.9, 1.0, 0.8];
+	if (MODULE_COLORS[modName]) return MODULE_COLORS[modName]!;
+
+	// Se for prefixado por projeto (ex: hermes-3-0:core ou cindy:packages/server)
+	if (modName.includes(":")) {
+		const parts = modName.split(":");
+		const subMod = parts.slice(1).join(":");
+		if (MODULE_COLORS[subMod]) {
+			return MODULE_COLORS[subMod]!;
+		}
+	}
+
+	// Hash determinístico para projetos externos
+	let hash = 0;
+	for (let i = 0; i < modName.length; i++) {
+		hash = (hash << 5) - hash + modName.charCodeAt(i);
+		hash |= 0;
+	}
+	const hue = Math.abs(hash % 360);
+	// Converte HSV para RGB básico para cor viva
+	const h = hue / 60;
+	const c = 0.85;
+	const x = c * (1 - Math.abs((h % 2) - 1));
+	let r = 0;
+	let g = 0;
+	let b = 0;
+	if (h < 1) {
+		r = c;
+		g = x;
+	} else if (h < 2) {
+		r = x;
+		g = c;
+	} else if (h < 3) {
+		g = c;
+		b = x;
+	} else if (h < 4) {
+		g = x;
+		b = c;
+	} else if (h < 5) {
+		r = x;
+		b = c;
+	} else {
+		r = c;
+		b = x;
+	}
+	return [r + 0.15, g + 0.15, b + 0.15, 0.88];
+}
 
 /** Detecta tipo de polígono conforme a extensão do arquivo */
 export function getPolygonKindForFile(
@@ -476,29 +531,158 @@ export interface SearchingNodeAnimState {
 	animProgress: number; // 0.0 a 1.0 (2 segundos)
 }
 
+export interface VectorRelationInfo {
+	directNeighbors: Set<number>;
+	callNeighbors: Set<number>;
+	typeNeighbors: Set<number>;
+	importNeighbors: Set<number>;
+}
+
+export function computeNodeRelations(
+	selectedIndex: number | null,
+	nodes: VectorNodeInput[],
+	edges: VectorEdgeInput[],
+): VectorRelationInfo {
+	const directNeighbors = new Set<number>();
+	const callNeighbors = new Set<number>();
+	const typeNeighbors = new Set<number>();
+	const importNeighbors = new Set<number>();
+
+	if (selectedIndex === null || selectedIndex < 0 || selectedIndex >= nodes.length) {
+		return { directNeighbors, callNeighbors, typeNeighbors, importNeighbors };
+	}
+
+	const selectedNode = nodes[selectedIndex];
+	if (!selectedNode) {
+		return { directNeighbors, callNeighbors, typeNeighbors, importNeighbors };
+	}
+
+	const selectedNormRel = (selectedNode.relPath || selectedNode.path || "").toLowerCase();
+	const selectedBaseName =
+		selectedNormRel
+			.split("/")
+			.pop()
+			?.replace(/\.[^.]+$/, "") || "";
+	const selectedQName = (selectedNode.qualifiedName || selectedBaseName).toLowerCase();
+
+	// 1. Mapeamento via arestas k-NN / dependências existentes
+	for (const edge of edges) {
+		let otherIdx: number | null = null;
+		if (edge.source === selectedIndex) {
+			otherIdx = edge.target;
+		} else if (edge.target === selectedIndex) {
+			otherIdx = edge.source;
+		}
+		if (otherIdx !== null && otherIdx >= 0 && otherIdx < nodes.length) {
+			directNeighbors.add(otherIdx);
+			if (edge.kind === "calls") {
+				callNeighbors.add(otherIdx);
+			} else if (
+				edge.kind === "extends" ||
+				edge.kind === "implements" ||
+				edge.kind === "type_ref"
+			) {
+				typeNeighbors.add(otherIdx);
+			} else if (edge.kind === "imports") {
+				importNeighbors.add(otherIdx);
+			}
+		}
+	}
+
+	// 2. Mapeamento Semântico no Código / AST: relações por imports, callers e types de métodos
+	for (let i = 0; i < nodes.length; i++) {
+		if (i === selectedIndex) continue;
+		const other = nodes[i];
+		if (!other) continue;
+
+		const otherNormRel = (other.relPath || other.path || "").toLowerCase();
+		const otherBaseName =
+			otherNormRel
+				.split("/")
+				.pop()
+				?.replace(/\.[^.]+$/, "") || "";
+		const otherQName = (other.qualifiedName || otherBaseName).toLowerCase();
+
+		// Relação de import no arquivo
+		const isImported =
+			(selectedNode.imports || []).some((imp) => {
+				const impLower = imp.toLowerCase();
+				return impLower.includes(otherBaseName) || impLower.includes(otherQName);
+			}) ||
+			(other.imports || []).some((imp) => {
+				const impLower = imp.toLowerCase();
+				return impLower.includes(selectedBaseName) || impLower.includes(selectedQName);
+			});
+
+		if (isImported) {
+			directNeighbors.add(i);
+			importNeighbors.add(i);
+		}
+
+		// Relação de chamadas entre métodos e assinaturas
+		const isMethodLinked = (selectedNode.methods || []).some((m) => {
+			const mName = m.name.toLowerCase();
+			const mSig = (m.signature || "").toLowerCase();
+			return (
+				mSig.includes(otherBaseName) ||
+				(other.methods || []).some((om) => {
+					const omName = om.name.toLowerCase();
+					return mSig.includes(omName) || (om.signature || "").toLowerCase().includes(mName);
+				})
+			);
+		});
+
+		if (isMethodLinked) {
+			directNeighbors.add(i);
+			callNeighbors.add(i);
+		}
+	}
+
+	return { directNeighbors, callNeighbors, typeNeighbors, importNeighbors };
+}
+
 export function createVectorConstellationWireframe(
 	nodes: VectorNodeInput[],
 	edges: VectorEdgeInput[],
 	highlightedNodeIndex: number | null = null,
 	_activeSearchQuery?: string | null,
 	searchingAnim?: SearchingNodeAnimState | null,
+	selectedNodeIndex: number | null = null,
 ): GeometryMeshData {
 	const vertexFloats: number[] = [];
 	const edgeIndices: number[] = [];
 	let vOffset = 0;
+
+	// Calcula relações e dependências caso haja polígono selecionado
+	const relations = computeNodeRelations(selectedNodeIndex, nodes, edges);
+	const hasActiveSelection =
+		selectedNodeIndex !== null && selectedNodeIndex >= 0 && selectedNodeIndex < nodes.length;
 
 	// 1. Gera nós com poliedros específicos por tipo de arquivo
 	for (let i = 0; i < nodes.length; i++) {
 		const n = nodes[i];
 		if (!n) continue;
 		const [cx, cy, cz] = n.position;
+		const isSelected = hasActiveSelection && i === selectedNodeIndex;
+		const isRelated = hasActiveSelection && relations.directNeighbors.has(i);
+		const isUnrelated = hasActiveSelection && !isSelected && !isRelated;
+
 		const isHighlight = i === highlightedNodeIndex;
 		const isMatched = Boolean(n.isMatchedBySearch);
 		const isSearchingTarget = Boolean(searchingAnim && searchingAnim.nodeId === n.id);
 
 		// Tamanho base reduzido e harmonioso para visual limpo sem sobreposição
 		let s = 0.024;
-		if (isSearchingTarget && searchingAnim) {
+		if (isSelected) {
+			// Polígono Selecionado: aumento nítido (2.4x)
+			s *= 2.4;
+		} else if (isRelated) {
+			// Polígonos de Classes Relacionadas: destaque reforçado
+			s *= 1.7;
+		} else if (isUnrelated) {
+			// Polígonos sem relação direta: encolhimento e esmaecimento
+			s *= 0.45;
+		} else if (isSearchingTarget && searchingAnim) {
 			// Animação de vida gradativa em 2 segundos (pulso orgânico, expansão e breathing)
 			const p = Math.max(0, Math.min(1, searchingAnim.animProgress));
 			const lifePulse = 1.0 + Math.sin(p * Math.PI * 4) * 0.45 * (1.0 - p * 0.35);
@@ -509,9 +693,26 @@ export function createVectorConstellationWireframe(
 			s *= 1.7; // Destaque nítido ao passar o mouse
 		}
 
-		const defaultCol: [number, number, number, number] = MODULE_COLORS.core ?? [0.9, 0.9, 1.0, 0.8];
 		let col: [number, number, number, number];
-		if (isSearchingTarget && searchingAnim) {
+		if (isSelected) {
+			// Nó selecionado: Ouro elétrico vibrante com 100% de opacidade
+			col = [1.0, 0.9, 0.1, 1.0];
+		} else if (isRelated) {
+			// Classes relacionadas: cores distintas conforme tipo de relação
+			if (relations.callNeighbors.has(i)) {
+				col = [0.1, 1.0, 0.65, 0.95]; // Verde esmeralda para Callers/Callees de métodos
+			} else if (relations.importNeighbors.has(i)) {
+				col = [0.2, 0.85, 1.0, 0.95]; // Ciano vívido para Imports / Dependências estruturais
+			} else if (relations.typeNeighbors.has(i)) {
+				col = [1.0, 0.5, 0.9, 0.95]; // Magenta / Violeta para Tipos / Interfaces
+			} else {
+				col = [0.4, 0.9, 1.0, 0.9]; // Azul safira para conexões k-NN próximas
+			}
+		} else if (isUnrelated) {
+			// Outros polígonos não relacionados: Esmaecer severamente (fade out)
+			const baseMod = resolveModuleColor(n.module);
+			col = [baseMod[0] * 0.4, baseMod[1] * 0.4, baseMod[2] * 0.4, 0.08];
+		} else if (isSearchingTarget && searchingAnim) {
 			// Transição de cor gradativa: do ciano vibrante ao magenta e ouro esmeralda vivo
 			const p = Math.max(0, Math.min(1, searchingAnim.animProgress));
 			const r = 0.1 + p * 0.9;
@@ -523,7 +724,7 @@ export function createVectorConstellationWireframe(
 		} else if (isHighlight) {
 			col = [0.2, 1.0, 0.85, 1.0]; // Ciano-água incandescente sob cursor
 		} else {
-			col = MODULE_COLORS[n.module] ?? defaultCol;
+			col = resolveModuleColor(n.module);
 		}
 		const [colR, colG, colB, colA] = col;
 
@@ -680,26 +881,146 @@ export function createVectorConstellationWireframe(
 		}
 	}
 
-	// 2. Conexões de arestas k-NN entre os nós com linha direta
+	// 2. Conexões de arestas k-NN estilo Trilha de Circuito Impresso (PCB Traces Manhattan Routing)
+	// Roteadas em ângulos retos (90° / vias) com elevação de camada de cobre para NUNCA transfixar o corpo dos nós
 	for (const edge of edges) {
 		if (edge.source >= nodes.length || edge.target >= nodes.length) continue;
 		const n1 = nodes[edge.source];
 		const n2 = nodes[edge.target];
 		if (!n1 || !n2) continue;
 
+		const isConnectedToSelected =
+			hasActiveSelection &&
+			(edge.source === selectedNodeIndex || edge.target === selectedNodeIndex);
+		const isEdgeUnrelated = hasActiveSelection && !isConnectedToSelected;
+
 		const p1 = n1.position;
 		const p2 = n2.position;
 
-		const v1Idx = vOffset;
-		const v2Idx = vOffset + 1;
+		// Camada de elevação da trilha (PCB Copper Trace Layer)
+		const traceY = Math.max(p1[1], p2[1]) + 0.042;
+		let alpha = Math.min(0.75, Math.max(0.18, edge.similarity * 0.85));
 
-		// Cor da linha de similaridade com opacidade proporcional ao cosseno
-		const alpha = Math.min(0.65, Math.max(0.15, edge.similarity * 0.8));
-		vertexFloats.push(p1[0], p1[1], p1[2], 0.2, 0.7, 0.9, alpha);
-		vertexFloats.push(p2[0], p2[1], p2[2], 0.5, 0.3, 0.9, alpha);
-		vOffset += 2;
+		// Cores de trilha metálica condutora (Ouro/Cobre e Turquesa)
+		const isCrossProject =
+			n1.module.includes(":") &&
+			n2.module.includes(":") &&
+			n1.module.split(":")[0] !== n2.module.split(":")[0];
+		let trColR = isCrossProject ? 1.0 : 0.15;
+		let trColG = isCrossProject ? 0.75 : 0.85;
+		let trColB = isCrossProject ? 0.2 : 0.95;
 
-		edgeIndices.push(v1Idx, v2Idx);
+		if (isConnectedToSelected) {
+			const otherIdx = edge.source === selectedNodeIndex ? edge.target : edge.source;
+			if (relations.callNeighbors.has(otherIdx)) {
+				// Chamada de método / Caller
+				trColR = 0.1;
+				trColG = 1.0;
+				trColB = 0.65;
+				alpha = 0.95;
+			} else if (relations.importNeighbors.has(otherIdx)) {
+				// Importação de dependência
+				trColR = 0.2;
+				trColG = 0.85;
+				trColB = 1.0;
+				alpha = 0.95;
+			} else if (relations.typeNeighbors.has(otherIdx)) {
+				// Tipo / Interface
+				trColR = 1.0;
+				trColG = 0.45;
+				trColB = 0.9;
+				alpha = 0.95;
+			} else {
+				// k-NN relevante
+				trColR = 1.0;
+				trColG = 0.85;
+				trColB = 0.2;
+				alpha = 0.9;
+			}
+		} else if (isEdgeUnrelated) {
+			// Esmaecer arestas que não conectam ao nó selecionado
+			alpha = 0.03;
+			trColR *= 0.3;
+			trColG *= 0.3;
+			trColB *= 0.3;
+		}
+
+		// Ponto intermediário ortogonal (Manhattan midpoint)
+		const midX = (p1[0] + p2[0]) * 0.5;
+
+		// Segmentos da trilha PCB:
+		// 1) Via de saída do chip: (p1[0], p1[1], p1[2]) -> (p1[0], traceY, p1[2])
+		// 2) Trilha horizontal X:  (p1[0], traceY, p1[2]) -> (midX, traceY, p1[2])
+		// 3) Trilha transversal Z: (midX, traceY, p1[2])  -> (midX, traceY, p2[2])
+		// 4) Trilha horizontal X:  (midX, traceY, p2[2])  -> (p2[0], traceY, p2[2])
+		// 5) Via de entrada no pad: (p2[0], traceY, p2[2]) -> (p2[0], p2[1], p2[2])
+		const tracePts: [number, number, number][] = [
+			[p1[0], p1[1], p1[2]],
+			[p1[0], traceY, p1[2]],
+			[midX, traceY, p1[2]],
+			[midX, traceY, p2[2]],
+			[p2[0], traceY, p2[2]],
+			[p2[0], p2[1], p2[2]],
+		];
+
+		const baseIdx = vOffset;
+		for (const [tx, ty, tz] of tracePts) {
+			vertexFloats.push(tx, ty, tz, trColR, trColG, trColB, alpha);
+			vOffset++;
+		}
+
+		// Adiciona os 5 segmentos interligados
+		edgeIndices.push(
+			baseIdx + 0,
+			baseIdx + 1,
+			baseIdx + 1,
+			baseIdx + 2,
+			baseIdx + 2,
+			baseIdx + 3,
+			baseIdx + 3,
+			baseIdx + 4,
+			baseIdx + 4,
+			baseIdx + 5,
+		);
+
+		// Micro-via metálica (Pad circular de 4 pontos) no ponto de inflexão
+		const viaR = 0.016;
+		const viaBase = vOffset;
+		vertexFloats.push(midX + viaR, traceY, midX ? p1[2] : 0, 1.0, 0.85, 0.3, alpha * 0.9);
+		vertexFloats.push(midX - viaR, traceY, midX ? p1[2] : 0, 1.0, 0.85, 0.3, alpha * 0.9);
+		vertexFloats.push(midX, traceY, p1[2] + viaR, 1.0, 0.85, 0.3, alpha * 0.9);
+		vertexFloats.push(midX, traceY, p1[2] - viaR, 1.0, 0.85, 0.3, alpha * 0.9);
+		vOffset += 4;
+		edgeIndices.push(viaBase + 0, viaBase + 1, viaBase + 2, viaBase + 3);
+	}
+
+	// 3. Feixes de Ligação Direta e Luminosa para Vizinhos AST da Classe Selecionada
+	if (hasActiveSelection && selectedNodeIndex !== null) {
+		const selNode = nodes[selectedNodeIndex];
+		if (selNode) {
+			const [sx, sy, sz] = selNode.position;
+			for (const neighborIdx of relations.directNeighbors) {
+				const neighbor = nodes[neighborIdx];
+				if (!neighbor) continue;
+				const [nx, ny, nz] = neighbor.position;
+
+				let rCol: [number, number, number] = [0.4, 0.9, 1.0];
+				if (relations.callNeighbors.has(neighborIdx)) {
+					rCol = [0.1, 1.0, 0.65]; // Verde para chamadas de métodos
+				} else if (relations.importNeighbors.has(neighborIdx)) {
+					rCol = [0.2, 0.85, 1.0]; // Ciano para imports de dependências
+				} else if (relations.typeNeighbors.has(neighborIdx)) {
+					rCol = [1.0, 0.45, 0.9]; // Magenta para tipos e interfaces
+				}
+
+				// Linha direta com brilho
+				const lineStart = vOffset;
+				vertexFloats.push(sx, sy, sz, rCol[0], rCol[1], rCol[2], 0.85);
+				vertexFloats.push(nx, ny, nz, rCol[0], rCol[1], rCol[2], 0.95);
+				vOffset += 2;
+				edgeIndices.push(lineStart, lineStart + 1);
+			}
+		}
 	}
 
 	return {

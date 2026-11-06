@@ -255,6 +255,8 @@ import {
 	getActiveHermesProjects,
 	getHermesIndexingProgress,
 	getHermesVectorGraph,
+	searchHermesGraphNodes,
+	getHermesNodeChunks,
 	listHermesProjects,
 	reindexHermesProject,
 	setActiveHermesProjects,
@@ -263,6 +265,8 @@ import {
 	findHermesSkills,
 	installHermesSkill,
 	manageHermesSkills,
+	readHermesSkill,
+	revealHermesSkillFolder,
 } from "./hermes";
 import { buildHistoryScope } from "./historyScope";
 import { provisionInitialTerminal } from "./initialTerminal";
@@ -1284,10 +1288,14 @@ const handlers: WsHandlers = {
 	"hermes.setActiveProjects": (params) => setActiveHermesProjects(params),
 	"hermes.getIndexingProgress": () => getHermesIndexingProgress(),
 	"hermes.getVectorGraph": (params) => getHermesVectorGraph(params),
+	"hermes.searchGraphNodes": (params) => searchHermesGraphNodes(params),
+	"hermes.getNodeChunks": (params) => getHermesNodeChunks(params),
 	"hermes.checkProjectFreshness": (params) => checkHermesProjectsFreshness(params),
 	"hermes.findSkills": (params) => findHermesSkills(params),
 	"hermes.installSkill": (params) => installHermesSkill(params),
 	"hermes.manageSkills": (params) => manageHermesSkills(params),
+	"hermes.readSkill": (params) => readHermesSkill(params),
+	"hermes.revealSkillFolder": (params) => revealHermesSkillFolder(params),
 	"session.resources": (params) => {
 		const p = resourceParams(params, ["workspaceId", "sessionId"]);
 		return getSessionResources(p.workspaceId, p.sessionId, resourceCwd(p.workspaceId));

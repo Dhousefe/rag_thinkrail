@@ -1,4 +1,5 @@
 import {
+	computeNodeRelations,
 	createDodecahedronWireframe,
 	createGimbalRingsWireframe,
 	createIcosahedronWireframe,
@@ -28,10 +29,11 @@ export class NeuralCoreEngine {
 	private context: GPUCanvasContext | null = null;
 	private renderPipeline: GPURenderPipeline | null = null;
 
-	// Forma primária selecionada e geometria
+	// Forma primária e geometria central decorativa removidas para visualização clara do grafo RAG
 	public activeShape: GeometryShapeType = "tesseract";
 	public showVectorConstellation = true;
-	public showGimbalRings = true;
+	public showGimbalRings = false;
+	public showCentralPolygon = false;
 
 	private primaryMesh: GeometryMeshData;
 	private gimbalMesh: GeometryMeshData;
@@ -69,6 +71,7 @@ export class NeuralCoreEngine {
 	public vectorNodes: VectorNodeInput[] = [];
 	public vectorEdges: VectorEdgeInput[] = [];
 	public highlightedNodeIndex: number | null = null;
+	public selectedNodeIndex: number | null = null;
 	public isRagActive = false;
 	public activeSearchQuery: string | null = null;
 	private currentMotionSpeed = 0.0;
@@ -201,6 +204,13 @@ export class NeuralCoreEngine {
 		}
 	}
 
+	public setSelectedNode(index: number | null) {
+		if (this.selectedNodeIndex !== index) {
+			this.selectedNodeIndex = index;
+			this.rebuildVectorMesh();
+		}
+	}
+
 	private rebuildVectorMesh() {
 		if (this.vectorNodes.length === 0) {
 			this.vectorMesh = null;
@@ -225,6 +235,7 @@ export class NeuralCoreEngine {
 			this.highlightedNodeIndex,
 			this.activeSearchQuery,
 			searchingAnim,
+			this.selectedNodeIndex,
 		);
 		if (this.device) {
 			this.uploadVectorMesh();
@@ -516,14 +527,14 @@ export class NeuralCoreEngine {
 		renderPass.setPipeline(this.renderPipeline);
 		renderPass.setBindGroup(0, this.renderBindGroup!);
 
-		// 1. Desenha a Forma Primária Ativa
-		if (this.primaryVBuffer && this.primaryIBuffer) {
+		// 1. Desenha a Forma Primária Central (apenas se explicitamente habilitada)
+		if (this.showCentralPolygon && this.primaryVBuffer && this.primaryIBuffer) {
 			renderPass.setVertexBuffer(0, this.primaryVBuffer);
 			renderPass.setIndexBuffer(this.primaryIBuffer, "uint16");
 			renderPass.drawIndexed(this.primaryMesh.count);
 		}
 
-		// 2. Desenha os Anéis Cardânicos
+		// 2. Desenha os Anéis Cardânicos (apenas se habilitado)
 		if (this.showGimbalRings && this.gimbalVBuffer && this.gimbalIBuffer) {
 			renderPass.setVertexBuffer(0, this.gimbalVBuffer);
 			renderPass.setIndexBuffer(this.gimbalIBuffer, "uint16");
@@ -558,59 +569,75 @@ export class NeuralCoreEngine {
 		const eyeY = ty0 + distance * Math.sin(phi);
 		const eyeZ = tz0 + distance * Math.cos(phi) * Math.cos(theta);
 
-		// Vetor Z (forward/depth da câmera olhando para o target)
+		// Vetor Z (forward/depth da câmera apontando para trás da direção de visão - Right Handed)
 		const dirX = eyeX - tx0;
 		const dirY = eyeY - ty0;
 		const dirZ = eyeZ - tz0;
-		const zLen = Math.sqrt(dirX * dirX + dirY * dirY + dirZ * dirZ) || 1;
+		const zLen = Math.hypot(dirX, dirY, dirZ) || 1;
 		const z0 = dirX / zLen;
 		const z1 = dirY / zLen;
 		const z2 = dirZ / zLen;
 
-		// Vetor X = cross([0,1,0], Z)
-		const x0_raw = z2;
-		const x2_raw = -z0;
-		const xLen = Math.sqrt(x0_raw * x0_raw + x2_raw * x2_raw) || 1;
+		// Vetor Up de referência com proteção contra singularidade de Gimbal Lock em vista zenital (|phi| -> pi/2)
+		let upX = 0;
+		let upY = 1;
+		let upZ = 0;
+		if (Math.abs(z0) < 0.0001 && Math.abs(z2) < 0.0001) {
+			// Se a câmera estiver alinhada verticalmente com o eixo Y, usa o vetor Z como up secundário
+			upX = 0;
+			upY = 0;
+			upZ = z1 > 0 ? -1 : 1;
+		}
+
+		// Vetor X = normalize(cross(up, Z))
+		const x0_raw = upY * z2 - upZ * z1;
+		const x1_raw = upZ * z0 - upX * z2;
+		const x2_raw = upX * z1 - upY * z0;
+		const xLen = Math.hypot(x0_raw, x1_raw, x2_raw) || 1;
 		const x0 = x0_raw / xLen;
-		const x1 = 0;
+		const x1 = x1_raw / xLen;
 		const x2 = x2_raw / xLen;
 
-		// Vetor Y = cross(Z, X)
+		// Vetor Y = cross(Z, X) (sempre ortogonal e normalizado)
 		const y0 = z1 * x2 - z2 * x1;
 		const y1 = z2 * x0 - z0 * x2;
 		const y2 = z0 * x1 - z1 * x0;
 
-		// Componentes de translação da visão
+		// Componentes de translação da visão V: -dot(axis, eye)
 		const tx = -(x0 * eyeX + x1 * eyeY + x2 * eyeZ);
 		const ty = -(y0 * eyeX + y1 * eyeY + y2 * eyeZ);
 		const tz = -(z0 * eyeX + z1 * eyeY + z2 * eyeZ);
 
-		// Projeção perspectiva WebGPU (NDC z in [0, 1])
+		// Projeção perspectiva WebGPU (NDC z in [0, 1]) com frustum amplo e estável
 		const fov = Math.PI / 4;
-		const near = 0.1;
-		const far = 100.0;
+		const near = 0.05;
+		const far = 2000.0;
 		const f = 1.0 / Math.tan(fov / 2);
 		const rangeInv = 1.0 / (near - far);
+
+		// Termos exatos da linha 2 da matriz de projeção P (sem distorção de -z0)
+		const p22 = far * rangeInv;
+		const p23 = near * far * rangeInv;
 
 		const out = new Float32Array(16);
 		out[0] = (f / aspect) * x0;
 		out[1] = f * y0;
-		out[2] = far * rangeInv * z0 - z0;
+		out[2] = p22 * z0;
 		out[3] = -z0;
 
 		out[4] = (f / aspect) * x1;
 		out[5] = f * y1;
-		out[6] = far * rangeInv * z1 - z1;
+		out[6] = p22 * z1;
 		out[7] = -z1;
 
 		out[8] = (f / aspect) * x2;
 		out[9] = f * y2;
-		out[10] = far * rangeInv * z2 - z2;
+		out[10] = p22 * z2;
 		out[11] = -z2;
 
 		out[12] = (f / aspect) * tx;
 		out[13] = f * ty;
-		out[14] = far * rangeInv * tz + near * far * rangeInv;
+		out[14] = p22 * tz + p23;
 		out[15] = -tz;
 
 		return out;
@@ -757,6 +784,14 @@ export class NeuralCoreEngine {
 			importanceScore: number;
 		}> = [];
 
+		const hasActiveSelection =
+			this.selectedNodeIndex !== null &&
+			this.selectedNodeIndex >= 0 &&
+			this.selectedNodeIndex < this.vectorNodes.length;
+		const relations = hasActiveSelection
+			? computeNodeRelations(this.selectedNodeIndex, this.vectorNodes, this.vectorEdges)
+			: null;
+
 		for (let i = 0; i < this.vectorNodes.length; i++) {
 			const node = this.vectorNodes[i]!;
 			if (this.visibleModules.size > 0 && !this.visibleModules.has(node.module)) {
@@ -778,12 +813,21 @@ export class NeuralCoreEngine {
 			// Descarta nós fora da tela visível
 			if (px < 40 || px > w - 40 || py < 40 || py > h - 40) continue;
 
+			const isSelected = hasActiveSelection && i === this.selectedNodeIndex;
+			const isRelated = Boolean(relations?.directNeighbors.has(i));
+			const isUnrelated = hasActiveSelection && !isSelected && !isRelated;
+
+			// Se houver seleção ativa, suprime rótulos de nós não-relacionados para clareza visual máxima
+			if (isUnrelated) continue;
+
 			const isHovered = i === this.highlightedNodeIndex;
 			const isMatched = Boolean(node.isMatchedBySearch);
 			const isSearchingTarget = this.searchingNodeId === node.id;
 			const methodsCount = node.methods?.length || 0;
 
 			let score = methodsCount;
+			if (isSelected) score += 5000;
+			if (isRelated) score += 2500;
 			if (isSearchingTarget) score += 2000;
 			if (isHovered) score += 1000;
 			if (isMatched) score += 500;
@@ -829,47 +873,54 @@ export class NeuralCoreEngine {
 		const baseDist = Math.max(1.0, this.cameraOrbit.distance);
 		const zoomFactor = 5.6 / baseDist;
 
-		// 1. Projeção da Forma Primária no Canvas2D
-		const m = this.generatePrimaryMesh(this.activeShape, this.angleRotation);
-		ctx.lineWidth = 1.5;
-		ctx.strokeStyle = this.telemetry.activity === "thinking" ? "magenta" : "cyan";
+		// 1. Projeção da Forma Primária no Canvas2D (apenas se habilitada)
+		if (this.showCentralPolygon) {
+			const m = this.generatePrimaryMesh(this.activeShape, this.angleRotation);
+			ctx.lineWidth = 1.5;
+			ctx.strokeStyle = this.telemetry.activity === "thinking" ? "magenta" : "cyan";
+
+			const cosO = Math.cos(this.cameraOrbit.theta);
+			const sinO = Math.sin(this.cameraOrbit.theta);
+			const cosPhi = Math.cos(this.cameraOrbit.phi);
+			const sinPhi = Math.sin(this.cameraOrbit.phi);
+
+			const vertexCount = m.vertices.length / 7;
+			const projectedPts: Array<[number, number]> = [];
+			for (let i = 0; i < vertexCount; i++) {
+				const off = i * 7;
+				const x = m.vertices[off + 0]!;
+				const y = m.vertices[off + 1]!;
+				const z = m.vertices[off + 2]!;
+
+				const rx = x * cosO - z * sinO;
+				const rz = x * sinO + z * cosO;
+				const ry = y * cosPhi - rz * sinPhi;
+				const d = Math.max(0.2, baseDist + (y * sinPhi + rz * cosPhi) * 0.45);
+
+				projectedPts.push([
+					cx + (rx / d) * scale * 5.6,
+					cy - (ry / d) * scale * 5.6,
+				]);
+			}
+
+			ctx.beginPath();
+			for (let i = 0; i < m.indices.length; i += 2) {
+				const p1 = projectedPts[m.indices[i]!]!;
+				const p2 = projectedPts[m.indices[i + 1]!]!;
+				if (p1 && p2) {
+					ctx.moveTo(p1[0], p1[1]);
+					ctx.lineTo(p2[0], p2[1]);
+				}
+			}
+			ctx.stroke();
+		}
 
 		const cosO = Math.cos(this.cameraOrbit.theta);
 		const sinO = Math.sin(this.cameraOrbit.theta);
 		const cosPhi = Math.cos(this.cameraOrbit.phi);
 		const sinPhi = Math.sin(this.cameraOrbit.phi);
 
-		const vertexCount = m.vertices.length / 7;
-		const projectedPts: Array<[number, number]> = [];
-		for (let i = 0; i < vertexCount; i++) {
-			const off = i * 7;
-			const x = m.vertices[off + 0]!;
-			const y = m.vertices[off + 1]!;
-			const z = m.vertices[off + 2]!;
-
-			const rx = x * cosO - z * sinO;
-			const rz = x * sinO + z * cosO;
-			const ry = y * cosPhi - rz * sinPhi;
-			const d = Math.max(0.2, baseDist + (y * sinPhi + rz * cosPhi) * 0.45);
-
-			projectedPts.push([
-				cx + (rx / d) * scale * 5.6,
-				cy - (ry / d) * scale * 5.6,
-			]);
-		}
-
-		ctx.beginPath();
-		for (let i = 0; i < m.indices.length; i += 2) {
-			const p1 = projectedPts[m.indices[i]!]!;
-			const p2 = projectedPts[m.indices[i + 1]!]!;
-			if (p1 && p2) {
-				ctx.moveTo(p1[0], p1[1]);
-				ctx.lineTo(p2[0], p2[1]);
-			}
-		}
-		ctx.stroke();
-
-		// 2. Anéis Cardânicos
+		// 2. Anéis Cardânicos (apenas se habilitado)
 		if (this.showGimbalRings) {
 			ctx.lineWidth = 1.0;
 			ctx.strokeStyle = "cyan";
@@ -885,9 +936,12 @@ export class NeuralCoreEngine {
 
 		// 3. Nós da Constelação Vetorial (Canvas2D)
 		if (this.showVectorConstellation && this.vectorNodes.length > 0) {
+			const [tx0, ty0, tz0] = this.cameraOrbit.target || [0, 0, 0];
 			for (let i = 0; i < this.vectorNodes.length; i++) {
 				const node = this.vectorNodes[i]!;
-				const [vx, vy, vz] = node.position;
+				const vx = node.position[0] - tx0;
+				const vy = node.position[1] - ty0;
+				const vz = node.position[2] - tz0;
 				const rx = vx * cosO - vz * sinO;
 				const rz = vx * sinO + vz * cosO;
 				const ry = vy * cosPhi - rz * sinPhi;
