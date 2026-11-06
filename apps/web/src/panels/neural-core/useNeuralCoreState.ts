@@ -44,6 +44,32 @@ export function useNeuralCoreState() {
 			}
 		}
 
+		let activeChatTool: "read" | "edit" | "write" | undefined;
+		let activeChatFilePath: string | undefined;
+		let activeChatPivotClass: string | undefined;
+
+		// Extrai ferramentas de código do chat (read, edit, write) e identifica o arquivo/classe pivô
+		if (activeToolName) {
+			const toolLower = activeToolName.toLowerCase().trim();
+			if (toolLower === "read" || toolLower.endsWith(":read")) {
+				activeChatTool = "read";
+			} else if (toolLower === "edit" || toolLower.endsWith(":edit")) {
+				activeChatTool = "edit";
+			} else if (toolLower === "write" || toolLower.endsWith(":write")) {
+				activeChatTool = "write";
+			}
+
+			if (activeChatTool && toolArgs && typeof toolArgs === "object") {
+				const rawPath = (toolArgs.path || toolArgs.file || toolArgs.target_path) as string | undefined;
+				if (rawPath && typeof rawPath === "string") {
+					activeChatFilePath = rawPath.replace(/\\/g, "/");
+					// Extrai nome base sem extensão para referência de classe pivô
+					const fileName = activeChatFilePath.split("/").pop() || "";
+					activeChatPivotClass = fileName.replace(/\.[^.]+$/, "");
+				}
+			}
+		}
+
 		// Extrai query/símbolo se for ferramenta RAG do Hermes ou Cindy
 		if (activeToolName) {
 			const lower = activeToolName.toLowerCase();
@@ -77,6 +103,9 @@ export function useNeuralCoreState() {
 			activeRagQuery,
 			activeRagToolName,
 			isRagSearching,
+			activeChatTool,
+			activeChatFilePath,
+			activeChatPivotClass,
 			shockwavePulse: 0,
 			electricArcsCount: isRagSearching ? 24 : activity === "tool_exec" ? 16 : 0,
 		};

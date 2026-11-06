@@ -48,18 +48,23 @@ export function NeuralCoreNodeOverview({
 			{activeNode.methods && activeNode.methods.length > 0 && (
 				<div className="flex items-center gap-8 overflow-x-auto py-2 no-scrollbar shrink-0">
 					<span className="tr-text-metadata text-text-muted shrink-0 select-none">
-						Sub-Órbitas ({activeNode.methods.length}):
+						Métodos & Funções ({activeNode.methods.length}):
 					</span>
 					<div className="flex items-center gap-4">
 						{activeNode.methods.map((m) => (
 							<button
 								type="button"
 								key={m.id || m.name}
-								className="rounded bg-container-workspace-bg border border-border-default px-6 py-2 tr-code-text text-text-default hover:border-primary cursor-pointer shrink-0 transition-colors"
-								title={m.signature || m.name}
+								className="flex items-center gap-2 rounded bg-container-workspace-bg border border-border-default px-6 py-2 tr-code-text text-text-default hover:border-primary cursor-pointer shrink-0 transition-colors"
+								title={`${m.signature || m.name} (~${m.tokenEstimate || 0} tokens)`}
 								onClick={() => onSelectMethodQuery(m.name)}
 							>
-								• {m.name}()
+								<span className="text-primary tr-text-emphasis">{m.name}()</span>
+								{(m.tokenEstimate ?? 0) > 0 && (
+									<span className="tr-text-metadata text-text-muted">
+										~{m.tokenEstimate}t
+									</span>
+								)}
 							</button>
 						))}
 					</div>

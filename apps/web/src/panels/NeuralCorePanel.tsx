@@ -1,4 +1,3 @@
-import type { HermesChunkItem, HermesVectorNode } from "@thinkrail/contracts";
 import {
 	RiAddLine,
 	RiArrowDownLine,
@@ -8,28 +7,36 @@ import {
 	RiArrowUpLine,
 	RiArrowUpSLine,
 	RiChatQuoteLine,
+	RiCheckDoubleLine,
 	RiCloseLine,
 	RiCpuLine,
 	RiDatabase2Line,
+	RiDownloadCloud2Line,
+	RiEditLine,
 	RiEyeLine,
 	RiEyeOffLine,
 	RiFileCodeLine,
 	RiFileCopyLine,
 	RiFocus3Line,
+	RiLoader4Line,
 	RiNodeTree,
 	RiPauseLine,
 	RiPlayLine,
 	RiRefreshLine,
 	RiRobot2Line,
 	RiSearchLine,
+	RiStackLine,
 	RiSubtractLine,
 } from "@remixicon/react";
+import type {
+	HermesChunkItem,
+	HermesClassStatsResult,
+	HermesVectorNode,
+} from "@thinkrail/contracts";
 import { Button } from "@thinkrail/ui/button";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { selectWorkspaceById, selectWorkspaceChatTab, toast, useAppStore } from "@/store";
 import { getTransport } from "@/transport";
-import { openChatInTab, startChatInTab } from "./openChat";
-import { openFileInTab } from "./openTabs";
 import { OrbitCameraController } from "./neural-core/cameraController";
 import {
 	NeuralCoreChunksView,
@@ -37,7 +44,10 @@ import {
 	NeuralCoreSearchBox,
 } from "./neural-core/components";
 import { NeuralCoreEngine } from "./neural-core/neuralEngine";
+import { resolvePivotNode } from "./neural-core/resolvePivotNode";
 import { useNeuralCoreState } from "./neural-core/useNeuralCoreState";
+import { openChatInTab, startChatInTab } from "./openChat";
+import { openFileInTab } from "./openTabs";
 
 function getModuleClasses(moduleName?: string): { border: string; text: string; dot: string } {
 	switch (moduleName) {
@@ -84,6 +94,7 @@ export function NeuralCorePanel() {
 	const [isBottomPanelCompletelyHidden, setIsBottomPanelCompletelyHidden] = useState(false);
 	const [remoteSearchMatches, setRemoteSearchMatches] = useState<HermesVectorNode[]>([]);
 	const [isSearchingRemote, setIsSearchingRemote] = useState(false);
+	const [activeChatPivotNode, setActiveChatPivotNode] = useState<HermesVectorNode | null>(null);
 
 	// Chunks Registrados para a Classe e Busca
 	const [nodeChunks, setNodeChunks] = useState<HermesChunkItem[]>([]);
@@ -100,33 +111,134 @@ export function NeuralCorePanel() {
 	const [projectedLabels, setProjectedLabels] = useState<any[]>([]);
 	const [selectedModules, setSelectedModules] = useState<string[]>([]);
 
+	// Estatísticas de Classes e Arquivos dos Projetos Ativos
+	const [classStats, setClassStats] = useState<HermesClassStatsResult | null>(null);
+	const [isLoadingStats, setIsLoadingStats] = useState(false);
+
+	// Batch Loader (Carregador em Lote Progressivo)
+	const [batchOffset, setBatchOffset] = useState(0);
+	const [hasMoreBatches, setHasMoreBatches] = useState(false);
+	const [totalAvailableNodes, setTotalAvailableNodes] = useState(0);
+	const [totalClassesCount, setTotalClassesCount] = useState(0);
+	const [totalFilesCount, setTotalFilesCount] = useState(0);
+	const [isLoadingBatch, setIsLoadingBatch] = useState(false);
+	const [isAutoStreaming, setIsAutoStreaming] = useState(false);
+	const autoStreamingRef = useRef(false);
+
 	// Sincronização e Reatividade com Projetos Ativos do Hermes RAG
 	const activeProjectSlugs = useAppStore((s) => s.hermesManagement.activeProjectSlugs);
 	const activeProjectSlug = useAppStore((s) => s.hermesManagement.activeProjectSlug);
 
-	// Carregamento dos vetores do banco SQLite hermes.db
-	const loadVectorGraph = useCallback(async () => {
+	// Consulta de estatísticas detalhadas de classes e arquivos
+	const loadClassStats = useCallback(async () => {
+		setIsLoadingStats(true);
 		try {
-			const res = await getTransport().request("hermes.getVectorGraph", {
-				limit: 140,
-			});
-			if (res && Array.isArray(res.nodes)) {
-				setVectorNodes(res.nodes);
-				setVectorEdges(res.edges || []);
-				setTotalChunks(res.totalChunks);
-				if (engineRef.current) {
-					engineRef.current.setVectorGraphData(res.nodes, res.edges || []);
-				}
+			const stats = await getTransport().request("hermes.getClassStats", {});
+			setClassStats(stats);
+			if (stats?.totals) {
+				setTotalClassesCount(stats.totals.totalClasses);
+				setTotalFilesCount(stats.totals.totalFiles);
 			}
 		} catch (err) {
-			console.warn("[NeuralCorePanel] Erro ao carregar grafo vetorial:", err);
+			console.warn("[NeuralCorePanel] Erro ao carregar estatísticas de classes:", err);
+		} finally {
+			setIsLoadingStats(false);
 		}
 	}, []);
 
-	// Recarrega automaticamente a representação gráfica quando projetos RAG do Hermes forem ativados/desativados
+	// Carregamento dos vetores do banco SQLite hermes.db com suporte a lote (Batch Loader)
+	const loadVectorGraph = useCallback(
+		async (reset = true) => {
+			try {
+				setIsLoadingBatch(true);
+				const currentOffset = reset ? 0 : batchOffset;
+				const res = await getTransport().request("hermes.getVectorGraph", {
+					limit: 180,
+					offset: currentOffset,
+					batchSize: 180,
+					includeAllClasses: true,
+				});
+				if (res && Array.isArray(res.nodes)) {
+					if (reset) {
+						setVectorNodes(res.nodes);
+						setVectorEdges(res.edges || []);
+						setBatchOffset(res.nodes.length);
+						if (engineRef.current) {
+							engineRef.current.setVectorGraphData(res.nodes, res.edges || []);
+						}
+					} else {
+						setVectorNodes((prev) => {
+							const existing = new Set(prev.map((n) => n.id || n.path));
+							const fresh = res.nodes.filter((n) => !existing.has(n.id || n.path));
+							return [...prev, ...fresh];
+						});
+						setVectorEdges((prev) => [...prev, ...(res.edges || [])]);
+						setBatchOffset((prev) => prev + res.nodes.length);
+						if (engineRef.current) {
+							engineRef.current.appendVectorGraphData(res.nodes, res.edges || []);
+						}
+					}
+					setTotalChunks(res.totalChunks);
+					setHasMoreBatches(Boolean(res.hasMore));
+					setTotalAvailableNodes(res.totalAvailableNodes || res.totalChunks);
+					if (res.totalClasses) setTotalClassesCount(res.totalClasses);
+					if (res.totalFiles) setTotalFilesCount(res.totalFiles);
+				}
+			} catch (err) {
+				console.warn("[NeuralCorePanel] Erro ao carregar grafo vetorial:", err);
+			} finally {
+				setIsLoadingBatch(false);
+			}
+		},
+		[batchOffset],
+	);
+
+	// Carrega o próximo lote de classes
+	const handleLoadNextBatch = useCallback(async () => {
+		if (isLoadingBatch || !hasMoreBatches) return;
+		await loadVectorGraph(false);
+	}, [isLoadingBatch, hasMoreBatches, loadVectorGraph]);
+
+	// Streaming automático em lote até 100% ou cancelamento manual
+	const handleToggleAutoStreaming = useCallback(() => {
+		if (isAutoStreaming) {
+			autoStreamingRef.current = false;
+			setIsAutoStreaming(false);
+			toast.info("Streaming de lotes pausado", `${vectorNodes.length} classes carregadas`);
+		} else {
+			autoStreamingRef.current = true;
+			setIsAutoStreaming(true);
+			toast.info("Carregando todas as classes", "Streaming progressivo em lote iniciado...");
+		}
+	}, [isAutoStreaming, vectorNodes.length]);
+
+	// Loop do streaming contínuo em lotes com pausa controlada
 	useEffect(() => {
-		void loadVectorGraph();
-	}, [activeProjectSlugs, activeProjectSlug, loadVectorGraph]);
+		if (!isAutoStreaming) return;
+		if (!hasMoreBatches) {
+			setIsAutoStreaming(false);
+			autoStreamingRef.current = false;
+			toast.success("Todas as classes carregadas", `${vectorNodes.length} nós na cena 3D`);
+			return;
+		}
+
+		let isCancelled = false;
+		const timer = setTimeout(async () => {
+			if (!autoStreamingRef.current || isCancelled) return;
+			await handleLoadNextBatch();
+		}, 450);
+
+		return () => {
+			isCancelled = true;
+			clearTimeout(timer);
+		};
+	}, [isAutoStreaming, hasMoreBatches, handleLoadNextBatch, vectorNodes.length]);
+
+	// Recarrega automaticamente a representação gráfica e stats quando projetos RAG forem ativados/desativados
+	useEffect(() => {
+		void loadClassStats();
+		void loadVectorGraph(true);
+	}, [activeProjectSlugs, activeProjectSlug, loadClassStats, loadVectorGraph]);
 
 	// Inicialização do Motor WebGPU Geométrico
 	useEffect(() => {
@@ -258,6 +370,39 @@ export function NeuralCorePanel() {
 			setInspectedNode(matchedNode);
 		}
 	}, [effectiveQuery, vectorNodes, isPaused]);
+
+	// Foco em Tempo Real nas ferramentas Read e Edit do Chat:
+	// Identifica a classe/arquivo pivô manipulado pelo chat e centraliza a câmera
+	// estritamente apenas quando a rotação dinâmica estiver ativada (!isPaused).
+	useEffect(() => {
+		if (!state.activeChatTool || !state.activeChatFilePath || vectorNodes.length === 0) return;
+
+		const pivot = resolvePivotNode(
+			state.activeChatFilePath,
+			vectorNodes,
+			state.activeChatPivotClass,
+		);
+
+		if (pivot) {
+			setActiveChatPivotNode(pivot);
+
+			if (engineRef.current) {
+				engineRef.current.triggerMcpSearchTarget(pivot.id);
+			}
+
+			// Aciona o movimento de foco suave e centraliza a câmera APENAS quando a rotação dinâmica estiver ATIVADA
+			if (!isPaused && cameraRef.current) {
+				cameraRef.current.focusPosition(pivot.position, 2.3);
+				setInspectedNode(pivot);
+			}
+		}
+	}, [
+		state.activeChatTool,
+		state.activeChatFilePath,
+		state.activeChatPivotClass,
+		vectorNodes,
+		isPaused,
+	]);
 
 	// Ações Rápidas de Produtividade para o Provider e Desenvolvedor
 	const handleOpenFile = async (node: HermesVectorNode) => {
@@ -441,7 +586,7 @@ export function NeuralCorePanel() {
 				const [nodeRes, chunkRes] = await Promise.all([
 					getTransport().request("hermes.searchGraphNodes", {
 						query: q,
-						limit: 20,
+						limit: 24,
 					}),
 					getTransport().request("hermes.getNodeChunks", {
 						path: q,
@@ -451,9 +596,27 @@ export function NeuralCorePanel() {
 				if (nodeRes && Array.isArray(nodeRes.nodes)) {
 					setRemoteSearchMatches(nodeRes.nodes);
 				}
-				if (chunkRes && Array.isArray(chunkRes.chunks)) {
-					setSearchChunks(chunkRes.chunks);
+				// Mescla os chunks diretos com os chunks encontrados pela busca do hermes
+				const combinedChunks: HermesChunkItem[] = [];
+				const seenChunkIds = new Set<string>();
+
+				if (nodeRes && Array.isArray((nodeRes as any).chunks)) {
+					for (const c of (nodeRes as any).chunks) {
+						if (!seenChunkIds.has(c.id)) {
+							seenChunkIds.add(c.id);
+							combinedChunks.push(c);
+						}
+					}
 				}
+				if (chunkRes && Array.isArray(chunkRes.chunks)) {
+					for (const c of chunkRes.chunks) {
+						if (!seenChunkIds.has(c.id)) {
+							seenChunkIds.add(c.id);
+							combinedChunks.push(c);
+						}
+					}
+				}
+				setSearchChunks(combinedChunks);
 			} catch (err) {
 				console.warn("[NeuralCorePanel] Erro na busca remota de nós e chunks:", err);
 			} finally {
@@ -707,8 +870,53 @@ export function NeuralCorePanel() {
 
 			{/* Barra Flutuante de Controles de Navegação (Graphify HUD) */}
 			<div className="relative z-20 flex items-center justify-between p-12 pointer-events-none">
-				{/* Busca RAG Ativa do Hermes */}
-				{effectiveQuery ? (
+				{/* Ferramenta Ativa do Chat (Read / Edit) com Foco na Classe Pivô */}
+				{state.activeChatTool ? (
+					<div
+						className={`flex items-center gap-8 rounded-lg border bg-container-elevated-bg px-12 py-6 shadow-md backdrop-blur-md pointer-events-auto transition-colors ${
+							state.activeChatTool === "edit" ? "border-feedback-warning" : "border-primary"
+						}`}
+					>
+						{state.activeChatTool === "edit" ? (
+							<RiEditLine className="size-14 text-feedback-warning animate-pulse" />
+						) : (
+							<RiFileCodeLine className="size-14 text-primary animate-pulse" />
+						)}
+						<span
+							className={`tr-text-emphasis uppercase ${
+								state.activeChatTool === "edit" ? "text-feedback-warning" : "text-primary"
+							}`}
+						>
+							CHAT {state.activeChatTool}:
+						</span>
+						<span
+							className="rounded bg-control-bg px-6 py-2 tr-code-text text-text-default max-w-[260px] truncate cursor-pointer hover:text-primary transition-colors"
+							onClick={() => {
+								if (activeChatPivotNode && cameraRef.current) {
+									cameraRef.current.focusPosition(activeChatPivotNode.position, 2.3);
+									setInspectedNode(activeChatPivotNode);
+								}
+							}}
+							title={`Classe/Arquivo pivô: ${activeChatPivotNode?.qualifiedName || state.activeChatPivotClass || state.activeChatFilePath}`}
+						>
+							{activeChatPivotNode?.qualifiedName ||
+								state.activeChatPivotClass ||
+								state.activeChatFilePath}
+						</span>
+						<span
+							className={`tr-text-metadata px-4 py-2 rounded bg-control-bg ${
+								!isPaused ? "text-feedback-success" : "text-text-muted"
+							}`}
+							title={
+								!isPaused
+									? "Foco dinâmico e centralização 3D ativados"
+									: "Rotação congelada — foco da câmera mantido"
+							}
+						>
+							{!isPaused ? "FOCO DINÂMICO ATIVO" : "ROTAÇÃO CONGELADA"}
+						</span>
+					</div>
+				) : effectiveQuery ? (
 					<div className="flex items-center gap-8 rounded-lg border border-border-default bg-container-elevated-bg px-12 py-6 shadow-md backdrop-blur-md animate-pulse pointer-events-auto">
 						<RiSearchLine className="size-14 text-feedback-warning" />
 						<span className="tr-text-emphasis text-feedback-warning uppercase">
@@ -732,11 +940,113 @@ export function NeuralCorePanel() {
 						)}
 					</div>
 				) : (
-					<div className="hidden sm:flex items-center gap-6 rounded-md border border-border-default bg-container-elevated-bg px-8 py-4 tr-text-metadata text-text-muted backdrop-blur-md">
-						<RiNodeTree className="size-12 text-primary" />
-						<span>{vectorNodes.length} nós indexados</span>
-						<span>·</span>
-						<span>{vectorEdges.length} conexões</span>
+					<div className="flex flex-wrap items-center gap-6 rounded-lg border border-border-default bg-container-elevated-bg px-8 py-4 tr-text-metadata text-text-muted backdrop-blur-md shadow-md pointer-events-auto">
+						{/* Indicador de Classes e Arquivos por Projeto Ativo */}
+						<div
+							className="flex items-center gap-4 cursor-help"
+							title={
+								classStats?.projects
+									? classStats.projects
+											.map(
+												(p) =>
+													`[${p.name}]: ${p.totalClasses} classes, ${p.totalInterfaces} interfaces, ${p.totalFiles} arquivos`,
+											)
+											.join("\n")
+									: "Projetos ativos indexados no Hermes RAG"
+							}
+						>
+							<RiNodeTree
+								className={`size-14 text-primary ${isLoadingStats ? "animate-spin" : ""}`}
+							/>
+							<span className="tr-text-emphasis text-text-default">
+								{vectorNodes.length}
+								{totalClassesCount > 0 && ` / ${totalClassesCount}`} classes
+							</span>
+							{totalClassesCount > 0 && (
+								<span className="rounded bg-control-bg px-4 py-2 text-primary tr-text-emphasis">
+									{Math.min(
+										100,
+										Math.round((vectorNodes.length / Math.max(1, totalClassesCount)) * 100),
+									)}
+									%
+								</span>
+							)}
+						</div>
+
+						<span className="text-border-default">·</span>
+
+						{/* Contagem de Arquivos Únicos */}
+						<div className="flex items-center gap-4 hidden md:flex">
+							<RiFileCodeLine className="size-12 text-feedback-info" />
+							<span>
+								{totalFilesCount > 0
+									? `${totalFilesCount} arquivos`
+									: `${vectorNodes.length} arquivos`}
+							</span>
+						</div>
+
+						<span className="text-border-default hidden md:inline">·</span>
+
+						{/* Arestas de Conexão e Nós Estruturais */}
+						<span
+							className="hidden sm:inline"
+							title={
+								totalAvailableNodes > 0
+									? `${vectorEdges.length} conexões · ${totalAvailableNodes.toLocaleString()} nós estruturais elegíveis`
+									: `${vectorEdges.length} conexões`
+							}
+						>
+							{vectorEdges.length} conexões
+						</span>
+
+						{/* Controles do Batch Loader (Carregamento em Lote) */}
+						{hasMoreBatches ? (
+							<div className="flex items-center gap-4 ml-2 pl-2 border-l border-border-default">
+								<button
+									type="button"
+									disabled={isLoadingBatch || isAutoStreaming}
+									onClick={handleLoadNextBatch}
+									className="flex items-center gap-4 rounded bg-control-bg px-6 py-2 text-text-default hover:bg-control-bg hover:text-primary transition-colors disabled:opacity-50"
+									title="Carregar mais 180 classes no plano 3D"
+								>
+									{isLoadingBatch && !isAutoStreaming ? (
+										<RiLoader4Line className="size-12 animate-spin text-primary" />
+									) : (
+										<RiStackLine className="size-12 text-primary" />
+									)}
+									<span className="tr-text-emphasis">+180</span>
+								</button>
+
+								<button
+									type="button"
+									onClick={handleToggleAutoStreaming}
+									className={`flex items-center gap-4 rounded px-6 py-2 transition-colors ${
+										isAutoStreaming
+											? "bg-primary text-text-on-primary animate-pulse"
+											: "bg-control-bg text-primary hover:bg-control-bg"
+									}`}
+									title={
+										isAutoStreaming
+											? "Pausar carregamento automático"
+											: "Carregar todas as classes e arquivos disponíveis"
+									}
+								>
+									{isAutoStreaming ? (
+										<RiPauseLine className="size-12" />
+									) : (
+										<RiDownloadCloud2Line className="size-12" />
+									)}
+									<span className="tr-text-emphasis">
+										{isAutoStreaming ? "Pausar Lotes" : "Todas as Classes"}
+									</span>
+								</button>
+							</div>
+						) : (
+							<div className="flex items-center gap-4 ml-2 pl-2 border-l border-border-default text-feedback-success">
+								<RiCheckDoubleLine className="size-12" />
+								<span className="tr-text-emphasis">100% Carregado</span>
+							</div>
+						)}
 					</div>
 				)}
 

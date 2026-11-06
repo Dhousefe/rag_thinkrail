@@ -118,17 +118,36 @@ export function NeuralCoreSearchBox({
 												onSelectNode(n);
 												setIsSearchOpen(false);
 											}}
-											className={`flex items-center justify-between rounded px-8 py-4 hover:bg-control-bg cursor-pointer transition-colors group border-l-2 text-left w-full ${modStyle.border}`}
+											className={`flex items-center justify-between rounded px-8 py-6 hover:bg-control-bg cursor-pointer transition-colors group border-l-2 text-left w-full ${modStyle.border}`}
 										>
-											<div className="flex items-center gap-6 min-w-0">
-												<span className="tr-code-text text-text-default group-hover:text-primary truncate">
-													{n.qualifiedName || n.relPath}
-												</span>
-												<span className="tr-text-metadata text-text-muted truncate hidden sm:inline">
-													{n.module}
-												</span>
+											<div className="flex flex-col min-w-0 flex-1 pr-6">
+												<div className="flex items-center gap-4">
+													<span className="tr-code-text text-text-default group-hover:text-primary tr-text-emphasis truncate">
+														{n.qualifiedName || n.relPath}
+													</span>
+													{n.chunkKind && (
+														<span className="rounded bg-control-bg px-4 py-2 tr-text-metadata text-text-muted uppercase shrink-0">
+															{n.chunkKind}
+														</span>
+													)}
+												</div>
+												<div className="flex items-center gap-4 tr-text-metadata text-text-muted truncate mt-2">
+													<span>{n.relPath}</span>
+													{n.projectSlug && (
+														<>
+															<span>·</span>
+															<span className="text-primary truncate">[{n.projectSlug}]</span>
+														</>
+													)}
+													{n.methods && n.methods.length > 0 && (
+														<>
+															<span>·</span>
+															<span>{n.methods.length} métodos</span>
+														</>
+													)}
+												</div>
 											</div>
-											<RiArrowRightLine className="size-12 text-text-muted group-hover:text-primary shrink-0" />
+											<RiArrowRightLine className="size-14 text-text-muted group-hover:text-primary shrink-0" />
 										</button>
 									);
 								})
@@ -166,7 +185,7 @@ export function NeuralCoreSearchBox({
 										<span>·</span>
 										<span>~{chunk.tokenEstimate || 0} tokens</span>
 									</div>
-								</div>
+								</button>
 							))
 						) : (
 							<span className="tr-text-metadata text-text-muted p-8 text-center">

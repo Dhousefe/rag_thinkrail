@@ -84,36 +84,38 @@ import type {
 } from "./domain";
 import { isDelegationRunDetails } from "./domain";
 import type {
+	HermesCheckFreshnessResult,
+	HermesClassStatsResult,
 	HermesConnectionStatus,
 	HermesCreateProjectInput,
 	HermesDeleteProjectInput,
 	HermesEnsureProjectForPathInput,
 	HermesEnsureProjectForPathResult,
+	HermesFindSkillsInput,
+	HermesFindSkillsResult,
 	HermesGetActiveProjectsResult,
+	HermesGetClassStatsInput,
+	HermesGetNodeChunksInput,
+	HermesGetNodeChunksResult,
 	HermesGetVectorGraphInput,
 	HermesIndexingProgress,
+	HermesInstallSkillInput,
+	HermesInstallSkillResult,
 	HermesListProjectsResult,
+	HermesManageSkillsInput,
+	HermesManageSkillsResult,
 	HermesProjectInfo,
+	HermesReadSkillInput,
+	HermesReadSkillResult,
 	HermesReindexProjectInput,
 	HermesReindexResult,
+	HermesRevealSkillFolderInput,
+	HermesRevealSkillFolderResult,
+	HermesSearchGraphNodesInput,
+	HermesSearchGraphNodesResult,
 	HermesSetActiveProjectsInput,
 	HermesTestConnectionInput,
 	HermesVectorGraphSample,
-	HermesSearchGraphNodesInput,
-	HermesSearchGraphNodesResult,
-	HermesGetNodeChunksInput,
-	HermesGetNodeChunksResult,
-	HermesCheckFreshnessResult,
-	HermesFindSkillsInput,
-	HermesFindSkillsResult,
-	HermesInstallSkillInput,
-	HermesInstallSkillResult,
-	HermesManageSkillsInput,
-	HermesManageSkillsResult,
-	HermesReadSkillInput,
-	HermesReadSkillResult,
-	HermesRevealSkillFolderInput,
-	HermesRevealSkillFolderResult,
 } from "./hermes";
 import type {
 	ExtUiResponse,
@@ -451,6 +453,7 @@ export const WS_METHODS = {
 	hermesGetActiveProjects: "hermes.getActiveProjects",
 	hermesSetActiveProjects: "hermes.setActiveProjects",
 	hermesGetIndexingProgress: "hermes.getIndexingProgress",
+	hermesGetClassStats: "hermes.getClassStats",
 	hermesGetVectorGraph: "hermes.getVectorGraph",
 	hermesSearchGraphNodes: "hermes.searchGraphNodes",
 	hermesGetNodeChunks: "hermes.getNodeChunks",
@@ -1304,6 +1307,7 @@ export interface WsMethodMap {
 		result: HermesGetActiveProjectsResult;
 	};
 	"hermes.getIndexingProgress": { params: Record<string, never>; result: HermesIndexingProgress };
+	"hermes.getClassStats": { params: HermesGetClassStatsInput; result: HermesClassStatsResult };
 	"hermes.getVectorGraph": { params: HermesGetVectorGraphInput; result: HermesVectorGraphSample };
 	"hermes.searchGraphNodes": {
 		params: HermesSearchGraphNodesInput;

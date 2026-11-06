@@ -249,24 +249,25 @@ import { ackSend } from "./ackSend";
 import { sessionProviderAnalytics, trackChatStarted } from "./authAnalytics";
 import { nudgeBaseRefWorkspaces } from "./fsNudge";
 import {
+	checkHermesProjectsFreshness,
 	createHermesProject,
 	deleteHermesProject,
 	ensureHermesProjectForPath,
-	getActiveHermesProjects,
-	getHermesIndexingProgress,
-	getHermesVectorGraph,
-	searchHermesGraphNodes,
-	getHermesNodeChunks,
-	listHermesProjects,
-	reindexHermesProject,
-	setActiveHermesProjects,
-	testHermesConnection,
-	checkHermesProjectsFreshness,
 	findHermesSkills,
+	getActiveHermesProjects,
+	getHermesClassStats,
+	getHermesIndexingProgress,
+	getHermesNodeChunks,
+	getHermesVectorGraph,
 	installHermesSkill,
+	listHermesProjects,
 	manageHermesSkills,
 	readHermesSkill,
+	reindexHermesProject,
 	revealHermesSkillFolder,
+	searchHermesGraphNodes,
+	setActiveHermesProjects,
+	testHermesConnection,
 } from "./hermes";
 import { buildHistoryScope } from "./historyScope";
 import { provisionInitialTerminal } from "./initialTerminal";
@@ -934,7 +935,7 @@ const handlers: WsHandlers = {
 			`1. Escreva ou atualize um mockup HTML autônomo e fiel à implementação sob \`.thinkrail/context/mockups/visual_${p.id}.html\`.`,
 			`2. Grave a animação e o comportamento visual executando:`,
 			`   \`bun run record:ui --mockup .thinkrail/context/mockups/visual_${p.id}.html --output .thinkrail/context/visual-reviews/visual_${p.id}.gif --duration 2.5 --fps 15\``,
-			`3. Execute imediatamente a ferramenta \`read(\".thinkrail/context/visual-reviews/visual_${p.id}.gif\")\` para que o provider inspecione os frames reais.`,
+			`3. Execute imediatamente a ferramenta \`read(".thinkrail/context/visual-reviews/visual_${p.id}.gif")\` para que o provider inspecione os frames reais.`,
 			`4. Avalie o resultado visual (espaçamento, cores, tipografia, contraste e possíveis quebras ou discrepâncias) e ajuste o código se necessário.`,
 		].join("\n");
 
@@ -1135,7 +1136,9 @@ const handlers: WsHandlers = {
 				name: parentProject.name,
 				autoIndex: true,
 			}).catch((err) => {
-				log.warn(`Auto-registro Hermes na criação da sessão ignorado para ${parentProject.path}: ${err}`);
+				log.warn(
+					`Auto-registro Hermes na criação da sessão ignorado para ${parentProject.path}: ${err}`,
+				);
 			});
 		}
 		const defaults = await resolveNewChatModel(p);
@@ -1287,6 +1290,7 @@ const handlers: WsHandlers = {
 	"hermes.getActiveProjects": () => getActiveHermesProjects(),
 	"hermes.setActiveProjects": (params) => setActiveHermesProjects(params),
 	"hermes.getIndexingProgress": () => getHermesIndexingProgress(),
+	"hermes.getClassStats": (params) => getHermesClassStats(params),
 	"hermes.getVectorGraph": (params) => getHermesVectorGraph(params),
 	"hermes.searchGraphNodes": (params) => searchHermesGraphNodes(params),
 	"hermes.getNodeChunks": (params) => getHermesNodeChunks(params),
