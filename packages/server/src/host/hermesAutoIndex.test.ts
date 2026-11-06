@@ -8,6 +8,7 @@ import {
 	ensureHermesDatabaseSchema,
 	ensureHermesEnvironment,
 	ensureHermesProjectForPath,
+	getHermesClassStats,
 	getHermesVectorGraph,
 	listHermesProjects,
 } from "./hermes";
@@ -198,5 +199,104 @@ describe("Hermes RAG Auto-Index e Portabilidade", () => {
 		expect(result.nodes[0]?.chunkKind).toBe("class");
 		expect(result.nodes[0]?.position).toBeDefined();
 		expect(result.nodes[0]?.position.length).toBe(3);
+	});
+
+	it("UC-08: getHermesClassStats conta classes, interfaces, arquivos e estruturas com precisão", async () => {
+		const projDir = join(testHermesHome, "sample-stats-app");
+		mkdirSync(projDir, { recursive: true });
+
+		const reg = await ensureHermesProjectForPath({
+			path: projDir,
+			name: "Stats App",
+			autoIndex: false,
+		});
+
+		const dbPath = join(testHermesHome, "projects", reg.slug, "hermes.db");
+		const db = new Database(dbPath);
+
+		db.run(`
+			INSERT INTO l2j_chunks (id, file_id, project_name, path, qualified_name, chunk_kind, content, created_at) VALUES
+			('c1', 'f1', '${reg.slug}', 'src/Service.ts', 'Service', 'class', 'class Service {}', 1000),
+			('c2', 'f2', '${reg.slug}', 'src/Controller.ts', 'Controller', 'class_skeleton', 'class Controller skeleton', 1000),
+			('c3', 'f3', '${reg.slug}', 'src/Model.ts', 'IModel', 'interface', 'interface IModel {}', 1000),
+			('c4', 'f4', '${reg.slug}', 'src/Component.tsx', 'MyComponent', 'component', 'export const MyComponent = () => <div />', 1000),
+			('c5', 'f5', '${reg.slug}', 'src/Helper.ts', 'Helper', 'function', 'export function helper() {}', 1000),
+			('c6', 'f6', '${reg.slug}', 'src/Type.ts', 'Config', 'type', 'export type Config = { api: string }', 1000),
+			('c7', 'f7', '${reg.slug}', 'src/Struct.kt', 'Data', 'struct', 'struct Data(val x: Int)', 1000);
+		`);
+		db.close();
+
+		const stats = await getHermesClassStats({ projectSlug: reg.slug });
+		expect(stats.projects.length).toBe(1);
+
+		const projStats = stats.projects[0];
+		expect(projStats?.slug).toBe(reg.slug);
+		expect(projStats?.hasDb).toBe(true);
+
+		// 1 'class' + 1 'class_skeleton' + 1 'struct' = 3 totalClasses
+		expect(projStats?.totalClasses).toBe(3);
+		// 1 'interface'
+		expect(projStats?.totalInterfaces).toBe(1);
+		// 1 'component'
+		expect(projStats?.totalComponents).toBe(1);
+		// 1 'type'
+		expect(projStats?.totalTypes).toBe(1);
+		// 1 'function'
+		expect(projStats?.totalFunctions).toBe(1);
+		// 7 arquivos distintos
+		expect(projStats?.totalFiles).toBe(7);
+		// 7 chunks totais
+		expect(projStats?.totalChunks).toBe(7);
+
+		expect(stats.totals.totalClasses).toBe(3);
+		expect(stats.totals.totalFiles).toBe(7);
+	});
+
+	it("UC-09: getHermesVectorGraph suporta paginação em lote (batch) e class_skeleton", async () => {
+		const projDir = join(testHermesHome, "sample-batch-app");
+		mkdirSync(projDir, { recursive: true });
+
+		const reg = await ensureHermesProjectForPath({
+			path: projDir,
+			name: "Batch App",
+			autoIndex: false,
+		});
+
+		const dbPath = join(testHermesHome, "projects", reg.slug, "hermes.db");
+		const db = new Database(dbPath);
+
+		// Insere 5 chunks de class_skeleton
+		for (let i = 1; i <= 5; i++) {
+			db.run(`
+				INSERT INTO l2j_chunks (id, file_id, project_name, path, qualified_name, chunk_kind, content, created_at)
+				VALUES ('cs${i}', 'f${i}', '${reg.slug}', 'src/Module${i}.ts', 'Module${i}', 'class_skeleton', 'class Module${i} skeleton', 1000)
+			`);
+		}
+		db.close();
+
+		// Lote 1: offset 0, batchSize 3 -> deve retornar 3 nós
+		const batch1 = await getHermesVectorGraph({
+			projectSlug: reg.slug,
+			offset: 0,
+			batchSize: 3,
+			includeAllClasses: true,
+		});
+		expect(batch1.nodes.length).toBe(3);
+		expect(batch1.hasMore).toBe(true);
+		expect(batch1.totalAvailableNodes).toBe(5);
+		expect(batch1.totalClasses).toBe(5); // class_skeleton conta como classe
+		expect(batch1.nodes[0]?.chunkKind).toBe("class_skeleton");
+
+		// Lote 2: offset 3, batchSize 3 -> deve retornar os 2 restantes
+		const batch2 = await getHermesVectorGraph({
+			projectSlug: reg.slug,
+			offset: 3,
+			batchSize: 3,
+			includeAllClasses: true,
+		});
+		expect(batch2.nodes.length).toBe(2);
+		expect(batch2.hasMore).toBe(false);
+		expect(batch2.offset).toBe(3);
+		expect(batch2.limit).toBe(3);
 	});
 });

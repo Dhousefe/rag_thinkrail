@@ -132,7 +132,14 @@ export interface HermesVectorNode {
 	projectRoot?: string | undefined;
 }
 
-export type HermesEdgeKind = "imports" | "calls" | "extends" | "implements" | "type_ref" | "knn" | "module";
+export type HermesEdgeKind =
+	| "imports"
+	| "calls"
+	| "extends"
+	| "implements"
+	| "type_ref"
+	| "knn"
+	| "module";
 
 export interface HermesVectorEdge {
 	source: number;
@@ -148,6 +155,49 @@ export interface HermesVectorGraphSample {
 	totalChunks: number;
 	totalEmbeddings: number;
 	modules: string[];
+	offset?: number | undefined;
+	limit?: number | undefined;
+	hasMore?: boolean | undefined;
+	totalAvailableNodes?: number | undefined;
+	totalClasses?: number | undefined;
+	totalFiles?: number | undefined;
+	projectStats?: HermesProjectClassStats[] | undefined;
+}
+
+export interface HermesProjectClassStats {
+	slug: string;
+	name: string;
+	path: string;
+	hasDb: boolean;
+	totalClasses: number;
+	totalInterfaces: number;
+	totalComponents: number;
+	totalTypes: number;
+	totalFunctions: number;
+	totalFiles: number;
+	totalChunks: number;
+	totalEmbeddings: number;
+	availableClassesSample?: string[];
+}
+
+export interface HermesClassStatsResult {
+	timestamp: number;
+	activeSlugs: string[];
+	projects: HermesProjectClassStats[];
+	totals: {
+		totalClasses: number;
+		totalInterfaces: number;
+		totalComponents: number;
+		totalTypes: number;
+		totalFunctions: number;
+		totalFiles: number;
+		totalChunks: number;
+		totalEmbeddings: number;
+	};
+}
+
+export interface HermesGetClassStatsInput {
+	projectSlug?: string | undefined;
 }
 
 export interface HermesProjectFreshnessItem {
@@ -171,6 +221,9 @@ export interface HermesCheckFreshnessResult {
 export interface HermesGetVectorGraphInput {
 	projectSlug?: string | undefined;
 	limit?: number | undefined;
+	offset?: number | undefined;
+	batchSize?: number | undefined;
+	includeAllClasses?: boolean | undefined;
 }
 
 export interface HermesChunkItem {

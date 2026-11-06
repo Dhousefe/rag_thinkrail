@@ -3,8 +3,8 @@ import type { HermesEdgeKind } from "@thinkrail/contracts";
 export interface GeometryMeshData {
 	// Array intercalado: [x, y, z, r, g, b, a, ...]
 	vertices: Float32Array;
-	// Índices para LINES (arestas wireframe)
-	indices: Uint16Array;
+	// Índices para LINES (arestas wireframe), suportando até Uint32Array para dezenas de milhares de nós
+	indices: Uint16Array | Uint32Array;
 	count: number;
 }
 
@@ -1025,7 +1025,7 @@ export function createVectorConstellationWireframe(
 
 	return {
 		vertices: new Float32Array(vertexFloats),
-		indices: new Uint16Array(edgeIndices),
+		indices: new Uint32Array(edgeIndices),
 		count: edgeIndices.length,
 	};
 }

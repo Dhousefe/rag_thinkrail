@@ -50,10 +50,13 @@ Mecanismo de alta performance para indexação incremental e busca de código h�
 - **Invalidação Cirúrgica:** Ignora arquivos inalterados por hash SHA-256 e `mtime_ms` em apenas **4 milissegundos**, sincronizando bancos através de git hooks pós-commit.
 - **Barra de Progresso em Tempo Real:** Acompanhe a varredura e o status de indexação diretamente na barra superior do workbench.
 
-### 5. Neural Core & Grafo Vetorial Tridimensional (3D)
-Um visualizador de contexto arquitetural em **WebGL 3D**:
-- Navegue pelas conexões semânticas do repositório, dependências de módulos e clusters conceituais através de uma câmera orbital interativa.
-- Identifique a densidade de código, gargalos estruturais e proximidade semântica entre classes e métodos em tempo real.
+### 5. Neural Core 3D & Arquitetura PCB com Chip Dies
+Um visualizador de contexto arquitetural acelerado por **WebGL / WebGPU 3D**:
+- **Layout PCB Micro-Estratificado:** Posiciona módulos em plano de circuito impresso com folga anti-colisão (0.56) e conexões ortogonais/Manhattan (90° e 45°) simulando trilhas e vias reais sem transfixar nós adjacentes.
+- **Isolamento de Chip Dies Multi-Projeto:** Projetos indexados no Hermes RAG são dispostos em ilhas (dies) independentes com offsets espaciais próprios no plano XZ.
+- **Destaque Poligonal & Conexões Temáticas:** Destaque visual volumétrico das relações entre símbolos, classes e métodos com coloração adaptada ao tema ativo.
+- **Visualizador de Chunks & Busca Integrada:** Modal com visualização cirúrgica de chunks de código, contagem de tokens, overview do nó e busca rápida com filtros.
+- **HUD Interativo & Navegação Zenital:** Botões de pan direcional, alternância de perspectiva orbital para visão zenital (topo da PCB) e toggle para ocultação da barra de detalhes.
 
 ### 6. Plan Rail & Governança de Tarefas com Commits Granulares
 - **TODO Integrado:** O agente mantém um plano visível no painel lateral com etapas acionáveis (`pending`, `in_progress`, `done`).
@@ -128,6 +131,11 @@ bun run rag:status    # Exibe métricas de arquivos, chunks, símbolos e cobertu
 bun run rag:prune     # Purga registros órfãos de arquivos deletados ou movidos
 ```
 
+### Geração do Binário Standalone (V10)
+```bash
+bun run build:binary  # Compila a UI web e empacota o binário single-file (apps/cli/dist/thinkrail.exe)
+```
+
 ### Validação Visual com Gravação de GIF
 ```bash
 bun scripts/record-ui-gif.ts --mockup .thinkrail/context/mockups/minha-tela.html
@@ -138,12 +146,12 @@ bun scripts/record-ui-gif.ts --mockup .thinkrail/context/mockups/minha-tela.html
 
 ## 🚀 Instalação & Uso
 
-O ThinkRail está disponível como instalador de desktop nativo e como binário executável CLI/Web.
+O ThinkRail está disponível como instalador de desktop nativo e como binário executável CLI/Web (V10).
 
-### Versão Desktop
+### Versão Desktop & Binários Autônomos
 Faça o download do pacote da sua plataforma na [página de lançamentos](https://github.com/JetBrains/thinkrail/releases):
-- **Windows (x64):** Execute o instalador `thinkrail-setup.exe` ou o binário autônomo `thinkrail-v5.exe`.
-- **macOS 14+ (Apple Silicon ou Intel):** Abra o arquivo DMG correspondente.
+- **Windows (x64):** Execute o instalador `thinkrail-setup.exe` ou o binário autônomo V10 (`thinkrail.exe` / `thinkrail-v10.exe`).
+- **macOS 14+ (Apple Silicon ou Intel):** Abra o arquivo DMG correspondente ou execute o binário nativo.
 - **Linux (x64 / arm64):** Pacotes AppImage ou binários autônomos.
 
 ### Modo Web / CLI Local

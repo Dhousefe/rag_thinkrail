@@ -174,6 +174,31 @@ export class NeuralCoreEngine {
 		this.rebuildVectorMesh();
 	}
 
+	/**
+	 * Adiciona progressivamente novos nós e arestas sem resetar a cena
+	 * para suporte ao carregador em lote (Batch Loader).
+	 */
+	public appendVectorGraphData(newNodes: VectorNodeInput[], newEdges: VectorEdgeInput[]) {
+		if (!newNodes || newNodes.length === 0) return;
+		const existingIds = new Set(this.vectorNodes.map((n) => n.id || n.path));
+		const uniqueAdditions: VectorNodeInput[] = [];
+		for (const node of newNodes) {
+			const key = node.id || node.path;
+			if (!existingIds.has(key)) {
+				existingIds.add(key);
+				uniqueAdditions.push(node);
+			}
+		}
+		if (uniqueAdditions.length > 0) {
+			this.vectorNodes = [...this.vectorNodes, ...uniqueAdditions];
+			// Merge das arestas novas
+			if (newEdges && newEdges.length > 0) {
+				this.vectorEdges = [...this.vectorEdges, ...newEdges];
+			}
+			this.rebuildVectorMesh();
+		}
+	}
+
 	public setRagSearch(query: string | null) {
 		this.activeSearchQuery = query && query.trim().length > 0 ? query.trim() : null;
 		this.isRagActive = Boolean(this.activeSearchQuery);
@@ -188,10 +213,11 @@ export class NeuralCoreEngine {
 				const p = (n.path || "").toLowerCase();
 				const qn = (n.relPath || "").toLowerCase();
 				const id = (n.id || "").toLowerCase();
-				const hasMatchingMethod = (n.methods || []).some((m) =>
-					m.name.toLowerCase().includes(q) || (m.signature || "").toLowerCase().includes(q)
+				const hasMatchingMethod = (n.methods || []).some(
+					(m) => m.name.toLowerCase().includes(q) || (m.signature || "").toLowerCase().includes(q),
 				);
-				n.isMatchedBySearch = p.includes(q) || qn.includes(q) || id.includes(q) || hasMatchingMethod;
+				n.isMatchedBySearch =
+					p.includes(q) || qn.includes(q) || id.includes(q) || hasMatchingMethod;
 			}
 		}
 		this.rebuildVectorMesh();
@@ -216,9 +242,10 @@ export class NeuralCoreEngine {
 			this.vectorMesh = null;
 			return;
 		}
-		const filteredNodes = this.visibleModules.size > 0
-			? this.vectorNodes.filter((n) => this.visibleModules.has(n.module))
-			: this.vectorNodes;
+		const filteredNodes =
+			this.visibleModules.size > 0
+				? this.vectorNodes.filter((n) => this.visibleModules.has(n.module))
+				: this.vectorNodes;
 
 		const now = performance.now();
 		const elapsed = now - this.searchAnimStartTime;
@@ -226,7 +253,7 @@ export class NeuralCoreEngine {
 			? {
 					nodeId: this.searchingNodeId,
 					animProgress: Math.min(1.0, elapsed / this.searchAnimDurationMs),
-			  }
+				}
 			: null;
 
 		this.vectorMesh = createVectorConstellationWireframe(
@@ -268,7 +295,7 @@ export class NeuralCoreEngine {
 		if (!this.vectorVBuffer || this.vectorVBuffer.size < this.vectorMesh.vertices.byteLength) {
 			this.vectorVBuffer?.destroy();
 			this.vectorVBuffer = this.device.createBuffer({
-				size: Math.max(131072, this.vectorMesh.vertices.byteLength),
+				size: Math.max(262144, this.vectorMesh.vertices.byteLength * 2),
 				usage: GPU_BUFFER_USAGE.VERTEX | GPU_BUFFER_USAGE.COPY_DST,
 			});
 		}
@@ -277,7 +304,7 @@ export class NeuralCoreEngine {
 		if (!this.vectorIBuffer || this.vectorIBuffer.size < this.vectorMesh.indices.byteLength) {
 			this.vectorIBuffer?.destroy();
 			this.vectorIBuffer = this.device.createBuffer({
-				size: Math.max(65536, this.vectorMesh.indices.byteLength),
+				size: Math.max(131072, this.vectorMesh.indices.byteLength * 2),
 				usage: GPU_BUFFER_USAGE.INDEX | GPU_BUFFER_USAGE.COPY_DST,
 			});
 		}
@@ -302,7 +329,10 @@ export class NeuralCoreEngine {
 					return true;
 				}
 			} catch (err) {
-				console.warn("[NeuralCoreEngine] WebGPU indisponível, usando fallback geométrico Canvas2D:", err);
+				console.warn(
+					"[NeuralCoreEngine] WebGPU indisponível, usando fallback geométrico Canvas2D:",
+					err,
+				);
 			}
 		}
 
@@ -430,11 +460,11 @@ export class NeuralCoreEngine {
 				this.telemetry.activity === "tool_exec" ||
 				this.telemetry.activity === "thinking";
 
-			const targetSpeed = isMotionActive ? (1.0 + this.telemetry.intensity * 2.5) : 0.0;
+			const targetSpeed = isMotionActive ? 1.0 + this.telemetry.intensity * 2.5 : 0.0;
 			this.currentMotionSpeed += (targetSpeed - this.currentMotionSpeed) * Math.min(1.0, dt * 5.0);
 
 			// Se houver polígono sendo buscado no MCP, anima gradativamente frame a frame por 2 segundos
-			if (this.searchingNodeId && (now - this.searchAnimStartTime <= this.searchAnimDurationMs)) {
+			if (this.searchingNodeId && now - this.searchAnimStartTime <= this.searchAnimDurationMs) {
 				this.rebuildVectorMesh();
 			}
 
@@ -496,12 +526,15 @@ export class NeuralCoreEngine {
 		uniformData.set(viewProj, 0);
 		uniformData.set(model, 16);
 		uniformData.set(tint, 32);
-		uniformData.set([
-			this.telemetry.shockwavePulse,
-			this.telemetry.intensity,
-			time,
-			this.telemetry.activity === "thinking" ? 1.0 : 0.0,
-		], 36);
+		uniformData.set(
+			[
+				this.telemetry.shockwavePulse,
+				this.telemetry.intensity,
+				time,
+				this.telemetry.activity === "thinking" ? 1.0 : 0.0,
+			],
+			36,
+		);
 
 		this.device.queue.writeBuffer(this.cameraBuffer!, 0, uniformData as any);
 
@@ -541,10 +574,15 @@ export class NeuralCoreEngine {
 			renderPass.drawIndexed(this.gimbalMesh.count);
 		}
 
-		// 3. Desenha a Constelação de Vetores RAG
-		if (this.showVectorConstellation && this.vectorMesh && this.vectorVBuffer && this.vectorIBuffer) {
+		// 3. Desenha a Constelação de Vetores RAG (índices de 32 bits para suportar dezenas de milhares de nós)
+		if (
+			this.showVectorConstellation &&
+			this.vectorMesh &&
+			this.vectorVBuffer &&
+			this.vectorIBuffer
+		) {
 			renderPass.setVertexBuffer(0, this.vectorVBuffer);
-			renderPass.setIndexBuffer(this.vectorIBuffer, "uint16");
+			renderPass.setIndexBuffer(this.vectorIBuffer, "uint32");
 			renderPass.drawIndexed(this.vectorMesh.count);
 		}
 
@@ -667,7 +705,11 @@ export class NeuralCoreEngine {
 	 * seleciona sempre o polígono mais próximo dos olhos do observador (menor depth), eliminando qualquer
 	 * oclusão ou confusão entre polígonos adjacentes.
 	 */
-	public findNodeUnderScreenCoord(screenX: number, screenY: number, tolerancePx = 24): number | null {
+	public findNodeUnderScreenCoord(
+		screenX: number,
+		screenY: number,
+		tolerancePx = 24,
+	): number | null {
 		if (!this.showVectorConstellation || this.vectorNodes.length === 0) return null;
 
 		const w = this.canvas.clientWidth || this.canvas.width;
@@ -832,7 +874,7 @@ export class NeuralCoreEngine {
 			if (isHovered) score += 1000;
 			if (isMatched) score += 500;
 
-			const nameParts = (node.relPath || node.id).split(/[\/\\]/);
+			const nameParts = (node.relPath || node.id).split(/[/\\]/);
 			const cleanLabel = nameParts[nameParts.length - 1] || node.id;
 
 			results.push({
@@ -897,10 +939,7 @@ export class NeuralCoreEngine {
 				const ry = y * cosPhi - rz * sinPhi;
 				const d = Math.max(0.2, baseDist + (y * sinPhi + rz * cosPhi) * 0.45);
 
-				projectedPts.push([
-					cx + (rx / d) * scale * 5.6,
-					cy - (ry / d) * scale * 5.6,
-				]);
+				projectedPts.push([cx + (rx / d) * scale * 5.6, cy - (ry / d) * scale * 5.6]);
 			}
 
 			ctx.beginPath();
@@ -925,12 +964,28 @@ export class NeuralCoreEngine {
 			ctx.lineWidth = 1.0;
 			ctx.strokeStyle = "cyan";
 			ctx.beginPath();
-			ctx.ellipse(cx, cy, scale * 1.5 * zoomFactor, scale * 0.5 * zoomFactor, this.angleRingPitch, 0, Math.PI * 2);
+			ctx.ellipse(
+				cx,
+				cy,
+				scale * 1.5 * zoomFactor,
+				scale * 0.5 * zoomFactor,
+				this.angleRingPitch,
+				0,
+				Math.PI * 2,
+			);
 			ctx.stroke();
 
 			ctx.strokeStyle = "magenta";
 			ctx.beginPath();
-			ctx.ellipse(cx, cy, scale * 1.8 * zoomFactor, scale * 0.6 * zoomFactor, this.angleRingRoll, 0, Math.PI * 2);
+			ctx.ellipse(
+				cx,
+				cy,
+				scale * 1.8 * zoomFactor,
+				scale * 0.6 * zoomFactor,
+				this.angleRingRoll,
+				0,
+				Math.PI * 2,
+			);
 			ctx.stroke();
 		}
 

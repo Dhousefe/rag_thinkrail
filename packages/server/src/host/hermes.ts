@@ -16,34 +16,37 @@ import type {
 	Ack,
 	HermesActiveProjectStatus,
 	HermesCheckFreshnessResult,
+	HermesClassStatsResult,
 	HermesConnectionStatus,
 	HermesCreateProjectInput,
 	HermesDeleteProjectInput,
 	HermesEnsureProjectForPathInput,
 	HermesEnsureProjectForPathResult,
+	HermesFindSkillsInput,
+	HermesFindSkillsResult,
 	HermesGetActiveProjectsResult,
+	HermesGetClassStatsInput,
 	HermesGetVectorGraphInput,
 	HermesIndexingProgress,
+	HermesInstalledSkill,
+	HermesInstallSkillInput,
+	HermesInstallSkillResult,
 	HermesListProjectsResult,
+	HermesManageSkillsInput,
+	HermesManageSkillsResult,
+	HermesProjectClassStats,
 	HermesProjectFreshnessItem,
 	HermesProjectInfo,
 	HermesReindexProjectInput,
 	HermesReindexResult,
+	HermesSearchGraphNodesInput,
+	HermesSearchGraphNodesResult,
 	HermesSetActiveProjectsInput,
+	HermesSkillRepoResult,
 	HermesTestConnectionInput,
 	HermesVectorEdge,
 	HermesVectorGraphSample,
 	HermesVectorNode,
-	HermesSearchGraphNodesInput,
-	HermesSearchGraphNodesResult,
-	HermesFindSkillsInput,
-	HermesFindSkillsResult,
-	HermesInstallSkillInput,
-	HermesInstallSkillResult,
-	HermesManageSkillsInput,
-	HermesManageSkillsResult,
-	HermesSkillRepoResult,
-	HermesInstalledSkill,
 } from "@thinkrail/contracts";
 import { logger } from "../log";
 
@@ -399,6 +402,16 @@ export function ensureHermesDatabaseSchema(dbPath: string, projectName: string):
 				embedding_model TEXT,
 				embedding_dim INTEGER,
 				created_at INTEGER NOT NULL
+			);
+		`);
+		db.run(`
+			CREATE TABLE IF NOT EXISTS l2j_embeddings_cache (
+				rowid INTEGER PRIMARY KEY,
+				cache_key TEXT,
+				model TEXT,
+				dim INTEGER,
+				vector_blob BLOB,
+				created_at INTEGER
 			);
 		`);
 		db.run(`
@@ -1219,10 +1232,178 @@ export async function testHermesConnection(
 }
 
 /**
+ * Retorna estatísticas detalhadas de classes, arquivos, componentes e estruturas
+ * para todos os projetos ativos do Hermes RAG.
+ */
+export async function getHermesClassStats(
+	params: HermesGetClassStatsInput = {},
+): Promise<HermesClassStatsResult> {
+	const hermesHome = resolveHermesHome();
+	const active = await getActiveHermesProjects();
+	const targetSlugs = params.projectSlug
+		? [params.projectSlug]
+		: active.activeSlugs.length > 0
+			? active.activeSlugs
+			: ["project-thinkrail"];
+
+	const projectsStats: HermesProjectClassStats[] = [];
+	const totals = {
+		totalClasses: 0,
+		totalInterfaces: 0,
+		totalComponents: 0,
+		totalTypes: 0,
+		totalFunctions: 0,
+		totalFiles: 0,
+		totalChunks: 0,
+		totalEmbeddings: 0,
+	};
+
+	try {
+		const { Database } = await import("bun:sqlite");
+
+		for (const slug of targetSlugs) {
+			const projectDir = join(hermesHome, "projects", slug);
+			const dbPath = join(projectDir, "hermes.db");
+			const hasDb = existsSync(dbPath);
+			let wsPath = "";
+			const workspaceFile = join(projectDir, "workspace.path");
+			if (existsSync(workspaceFile)) {
+				try {
+					wsPath = readFileSync(workspaceFile, "utf8").trim();
+				} catch {
+					wsPath = projectDir;
+				}
+			} else {
+				wsPath = projectDir;
+			}
+
+			const name = slug.replace(/[-_]/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+
+			if (!hasDb) {
+				projectsStats.push({
+					slug,
+					name,
+					path: wsPath || projectDir,
+					hasDb: false,
+					totalClasses: 0,
+					totalInterfaces: 0,
+					totalComponents: 0,
+					totalTypes: 0,
+					totalFunctions: 0,
+					totalFiles: 0,
+					totalChunks: 0,
+					totalEmbeddings: 0,
+					availableClassesSample: [],
+				});
+				continue;
+			}
+
+			try {
+				const db = new Database(dbPath, { readonly: true });
+
+				const classesRow = db
+					.query(
+						`SELECT count(*) as c FROM l2j_chunks WHERE chunk_kind IN ('class', 'class_skeleton', 'class_overview', 'impl_skeleton', 'struct')`,
+					)
+					.get() as { c?: number };
+				const totalClasses = classesRow?.c ?? 0;
+
+				const interfacesRow = db
+					.query(`SELECT count(*) as c FROM l2j_chunks WHERE chunk_kind IN ('interface')`)
+					.get() as { c?: number };
+				const totalInterfaces = interfacesRow?.c ?? 0;
+
+				const componentsRow = db
+					.query(
+						`SELECT count(*) as c FROM l2j_chunks WHERE chunk_kind IN ('component', 'html_component')`,
+					)
+					.get() as { c?: number };
+				const totalComponents = componentsRow?.c ?? 0;
+
+				const typesRow = db
+					.query(`SELECT count(*) as c FROM l2j_chunks WHERE chunk_kind IN ('type', 'enum')`)
+					.get() as { c?: number };
+				const totalTypes = typesRow?.c ?? 0;
+
+				const functionsRow = db
+					.query(
+						`SELECT count(*) as c FROM l2j_chunks WHERE chunk_kind IN ('function', 'method', 'constructor')`,
+					)
+					.get() as { c?: number };
+				const totalFunctions = functionsRow?.c ?? 0;
+
+				const filesRow = db.query(`SELECT count(DISTINCT path) as c FROM l2j_chunks`).get() as {
+					c?: number;
+				};
+				const totalFiles = filesRow?.c ?? 0;
+
+				const chunksRow = db.query(`SELECT count(*) as c FROM l2j_chunks`).get() as {
+					c?: number;
+				};
+				const totalChunks = chunksRow?.c ?? 0;
+
+				let totalEmbeddings = 0;
+				try {
+					const embeddingsRow = db
+						.query(`SELECT count(*) as c FROM l2j_embeddings_cache`)
+						.get() as { c?: number };
+					totalEmbeddings = embeddingsRow?.c ?? 0;
+				} catch {}
+
+				const sampleRows = db
+					.query(
+						`SELECT qualified_name FROM l2j_chunks WHERE chunk_kind IN ('class', 'class_skeleton', 'component', 'interface') AND qualified_name IS NOT NULL AND length(qualified_name) > 0 LIMIT 12`,
+					)
+					.all() as Array<{ qualified_name: string }>;
+				const availableClassesSample = sampleRows.map((r) => r.qualified_name);
+
+				db.close();
+
+				projectsStats.push({
+					slug,
+					name,
+					path: wsPath || projectDir,
+					hasDb: true,
+					totalClasses,
+					totalInterfaces,
+					totalComponents,
+					totalTypes,
+					totalFunctions,
+					totalFiles,
+					totalChunks,
+					totalEmbeddings,
+					availableClassesSample,
+				});
+
+				totals.totalClasses += totalClasses;
+				totals.totalInterfaces += totalInterfaces;
+				totals.totalComponents += totalComponents;
+				totals.totalTypes += totalTypes;
+				totals.totalFunctions += totalFunctions;
+				totals.totalFiles += totalFiles;
+				totals.totalChunks += totalChunks;
+				totals.totalEmbeddings += totalEmbeddings;
+			} catch (err) {
+				log.warn(`Erro ao calcular class stats para [${slug}]: ${err}`);
+			}
+		}
+	} catch (err) {
+		log.warn(`Erro geral em getHermesClassStats: ${err}`);
+	}
+
+	return {
+		timestamp: Date.now(),
+		activeSlugs: targetSlugs,
+		projects: projectsStats,
+		totals,
+	};
+}
+
+/**
  * Retorna amostra representativa de nós e arestas semânticas do banco vetorial
  * dos projetos ativos para visualização geométrica 3D no Neural Core.
- * Organiza os polígonos em disposição semântica tipo 'louça' (bandeja/prato aberto sem oclusão),
- * garantindo espaçamento anti-colisão e visibilidade desimpedida de cada nó.
+ * Suporta paginação progressiva em lotes (batch loader) e inclusão completa
+ * de classes e arquivos sem oclusão.
  */
 export async function getHermesVectorGraph(
 	params: HermesGetVectorGraphInput,
@@ -1263,9 +1444,20 @@ export async function getHermesVectorGraph(
 	const projectRoots = new Map<string, string>();
 	let totalChunks = 0;
 	let totalEmbeddings = 0;
+	let totalAvailableNodes = 0;
+	let totalClassesCount = 0;
+	let totalFilesCount = 0;
 
-	const targetLimit = Math.min(180, Math.max(24, params.limit || 100));
-	const perProjectLimit = Math.max(12, Math.floor(targetLimit / targetSlugs.length));
+	const offset = Math.max(0, params.offset || 0);
+	const requestedLimit = params.batchSize ?? params.limit;
+	const targetLimit =
+		requestedLimit !== undefined
+			? Math.max(1, Math.min(4000, requestedLimit))
+			: params.includeAllClasses
+				? 1000
+				: 160;
+	const perProjectLimit = Math.max(1, Math.floor(targetLimit / targetSlugs.length));
+	const perProjectOffset = Math.floor(offset / targetSlugs.length);
 
 	try {
 		const { Database } = await import("bun:sqlite");
@@ -1293,32 +1485,62 @@ export async function getHermesVectorGraph(
 				const totalChunksRow = db.query("SELECT count(*) as c FROM l2j_chunks").get() as {
 					c?: number;
 				};
-				const totalEmbeddingsRow = db
-					.query("SELECT count(*) as c FROM l2j_embeddings_cache")
-					.get() as { c?: number };
+				let totalEmbeddingsRow: { c?: number } | undefined;
+				try {
+					totalEmbeddingsRow = db.query("SELECT count(*) as c FROM l2j_embeddings_cache").get() as {
+						c?: number;
+					};
+				} catch {}
 				totalChunks += totalChunksRow?.c ?? 0;
 				totalEmbeddings += totalEmbeddingsRow?.c ?? 0;
 
-				// Busca ultrarrápida de chunks estruturais chave (6ms) sem table scan nem temp b-tree
-				// Prioriza 'component', 'class', 'interface', 'struct' e arquivos .tsx/.ts ricos
+				const totalClassesRow = db
+					.query(
+						`SELECT count(*) as c FROM l2j_chunks WHERE chunk_kind IN ('class', 'class_skeleton', 'class_overview', 'component', 'html_component', 'interface', 'struct', 'impl_skeleton')`,
+					)
+					.get() as { c?: number };
+				totalClassesCount += totalClassesRow?.c ?? 0;
+
+				const totalFilesRow = db
+					.query(`SELECT count(DISTINCT path) as c FROM l2j_chunks`)
+					.get() as { c?: number };
+				totalFilesCount += totalFilesRow?.c ?? 0;
+
+				const eligibleCountRow = db
+					.query(`
+					SELECT count(*) as c
+					FROM l2j_chunks
+					WHERE chunk_kind IN ('class', 'class_skeleton', 'class_overview', 'component', 'html_component', 'interface', 'struct', 'impl_skeleton', 'document', 'function', 'type')
+					   OR (chunk_kind = 'block' AND (path LIKE '%.tsx' OR path LIKE '%.ts'))
+				`)
+					.get() as { c?: number };
+				totalAvailableNodes += eligibleCountRow?.c ?? 0;
+
+				// Busca chunks estruturais chave garantindo prioridade absoluta para classes, interfaces e componentes
 				const rows = db
 					.query(`
 					SELECT rowid, id, path, qualified_name, chunk_kind, token_estimate,
 					       substr(content, 1, 140) as snippet
 					FROM l2j_chunks
-					WHERE chunk_kind IN ('component', 'class', 'interface', 'struct', 'document', 'function', 'type')
+					WHERE chunk_kind IN ('class', 'class_skeleton', 'class_overview', 'component', 'html_component', 'interface', 'struct', 'impl_skeleton', 'document', 'function', 'type')
 					   OR (chunk_kind = 'block' AND (path LIKE '%.tsx' OR path LIKE '%.ts'))
 					ORDER BY 
 						CASE 
-							WHEN chunk_kind = 'component' THEN 1
-							WHEN chunk_kind = 'class' THEN 2
+							WHEN chunk_kind = 'class' THEN 1
+							WHEN chunk_kind = 'class_skeleton' THEN 1
+							WHEN chunk_kind = 'component' THEN 2
+							WHEN chunk_kind = 'html_component' THEN 2
 							WHEN chunk_kind = 'interface' THEN 3
-							ELSE 4
+							WHEN chunk_kind = 'struct' THEN 4
+							WHEN chunk_kind = 'impl_skeleton' THEN 4
+							WHEN chunk_kind = 'function' THEN 5
+							WHEN chunk_kind = 'type' THEN 6
+							ELSE 7
 						END,
 						token_estimate DESC
-					LIMIT ?;
+					LIMIT ? OFFSET ?;
 				`)
-					.all(perProjectLimit) as Array<{
+					.all(perProjectLimit, perProjectOffset) as Array<{
 					rowid: number;
 					id: string;
 					path: string;
@@ -1332,15 +1554,16 @@ export async function getHermesVectorGraph(
 				if (rows.length > 0) {
 					const rowids = rows.map((r) => r.rowid);
 					const ph = rowids.map(() => "?").join(",");
-					const blobRows = db
-						.query(`SELECT rowid, vector_blob FROM l2j_embeddings_cache WHERE rowid IN (${ph})`)
-						.all(...rowids) as Array<{ rowid: number; vector_blob: Uint8Array }>;
 					const blobByRowid = new Map<number, Uint8Array>();
-					for (const b of blobRows) blobByRowid.set(b.rowid, b.vector_blob);
+					try {
+						const blobRows = db
+							.query(`SELECT rowid, vector_blob FROM l2j_embeddings_cache WHERE rowid IN (${ph})`)
+							.all(...rowids) as Array<{ rowid: number; vector_blob: Uint8Array }>;
+						for (const b of blobRows) blobByRowid.set(b.rowid, b.vector_blob);
+					} catch {}
 
 					for (const r of rows) {
-						const blob = blobByRowid.get(r.rowid);
-						if (!blob) continue;
+						const blob = blobByRowid.get(r.rowid) || new Uint8Array(0);
 						collectedRows.push({
 							id: r.id,
 							path: r.path,
@@ -1355,7 +1578,7 @@ export async function getHermesVectorGraph(
 					}
 				}
 
-				const uniquePaths = Array.from(new Set(rows.map((r) => r.path)));
+				const uniquePaths = Array.from(new Set(rows.map((r) => r.path))).slice(0, 120);
 				if (uniquePaths.length > 0) {
 					const pathPlaceholders = uniquePaths.map(() => "?").join(", ");
 					const methodRows = db
@@ -1530,7 +1753,16 @@ export async function getHermesVectorGraph(
 			}
 			moduleSet.add(mod);
 
-			return { r, index: i, mod, layer, lang, normalizedPath, projectSlug: r.projectSlug, projectRoot: r.projectRoot };
+			return {
+				r,
+				index: i,
+				mod,
+				layer,
+				lang,
+				normalizedPath,
+				projectSlug: r.projectSlug,
+				projectRoot: r.projectRoot,
+			};
 		});
 
 		// Agrupa itens por projeto e depois por módulo para disposição em Ilhas PCB (Chip Dies isolados)
@@ -1553,7 +1785,7 @@ export async function getHermesVectorGraph(
 			let dieCenterX = 0;
 			let dieCenterZ = 0;
 			if (totalProjects === 2) {
-				dieCenterX = (pIdx === 0 ? -3.4 : 3.4);
+				dieCenterX = pIdx === 0 ? -3.4 : 3.4;
 				dieCenterZ = 0;
 			} else if (totalProjects > 2) {
 				const pAngle = (pIdx / totalProjects) * Math.PI * 2;
@@ -1647,9 +1879,10 @@ export async function getHermesVectorGraph(
 			}
 		}
 
-		// Relaxação anti-colisão em 2D rigorosa com folga de segurança ampla estilo PCB pad clearance
+		// Relaxação anti-colisão em 2D rigorosa com folga de segurança adaptativa para grandes volumes
 		const minSafeDist2D = 0.56; // Folga estrita no plano XZ entre polígonos
-		const relaxationIterations = 28;
+		const relaxationIterations =
+			preliminaryNodes.length > 500 ? 6 : preliminaryNodes.length > 250 ? 12 : 24;
 
 		for (let iter = 0; iter < relaxationIterations; iter++) {
 			for (let i = 0; i < preliminaryNodes.length; i++) {
@@ -1701,7 +1934,11 @@ export async function getHermesVectorGraph(
 		const nodeNameToIdx = new Map<string, number>();
 		for (let idx = 0; idx < nodes.length; idx++) {
 			const n = nodes[idx]!;
-			const baseName = n.relPath.split("/").pop()?.replace(/\.[^.]+$/, "") || "";
+			const baseName =
+				n.relPath
+					.split("/")
+					.pop()
+					?.replace(/\.[^.]+$/, "") || "";
 			if (baseName && baseName.length >= 3) {
 				nodeNameToIdx.set(baseName.toLowerCase(), idx);
 			}
@@ -1721,8 +1958,11 @@ export async function getHermesVectorGraph(
 				if (targetIdx === i) continue;
 
 				const isImport = codeSnippet.includes("import") && codeSnippet.includes(targetName);
-				const isExtends = codeSnippet.includes("extends " + targetName) || codeSnippet.includes("implements " + targetName);
-				const isCall = codeSnippet.includes(targetName + "(") || codeSnippet.includes(targetName + ".");
+				const isExtends =
+					codeSnippet.includes("extends " + targetName) ||
+					codeSnippet.includes("implements " + targetName);
+				const isCall =
+					codeSnippet.includes(targetName + "(") || codeSnippet.includes(targetName + ".");
 
 				if (isImport || isExtends || isCall) {
 					const key = i < targetIdx ? i + "-" + targetIdx : targetIdx + "-" + i;
@@ -1758,21 +1998,23 @@ export async function getHermesVectorGraph(
 				sims.push({ idx: j, sim: dot });
 			}
 
-		sims.sort((a, b) => b.sim - a.sim);
-		for (let k = 0; k < kNeighbors && k < sims.length; k++) {
-			const neighbor = sims[k]!;
-			const key = i < neighbor.idx ? i + "-" + neighbor.idx : neighbor.idx + "-" + i;
-			if (!existingEdgeKeys.has(key)) {
-				existingEdgeKeys.add(key);
-				edges.push({
-					source: i,
-					target: neighbor.idx,
-					similarity: neighbor.sim,
-					kind: "knn",
-				});
+			sims.sort((a, b) => b.sim - a.sim);
+			for (let k = 0; k < kNeighbors && k < sims.length; k++) {
+				const neighbor = sims[k]!;
+				const key = i < neighbor.idx ? i + "-" + neighbor.idx : neighbor.idx + "-" + i;
+				if (!existingEdgeKeys.has(key)) {
+					existingEdgeKeys.add(key);
+					edges.push({
+						source: i,
+						target: neighbor.idx,
+						similarity: neighbor.sim,
+						kind: "knn",
+					});
+				}
 			}
 		}
-		}
+
+		const hasMore = offset + collectedRows.length < totalAvailableNodes;
 
 		return {
 			projectSlug: primarySlug,
@@ -1781,6 +2023,12 @@ export async function getHermesVectorGraph(
 			totalChunks,
 			totalEmbeddings,
 			modules: Array.from(moduleSet),
+			offset,
+			limit: targetLimit,
+			hasMore,
+			totalAvailableNodes,
+			totalClasses: totalClassesCount,
+			totalFiles: totalFilesCount,
 		};
 	} catch (err) {
 		log.warn("getHermesVectorGraph.failed", { error: String(err), projectSlug: primarySlug });
@@ -1791,6 +2039,12 @@ export async function getHermesVectorGraph(
 			totalChunks: 0,
 			totalEmbeddings: 0,
 			modules: [],
+			offset: 0,
+			limit: params.limit || 160,
+			hasMore: false,
+			totalAvailableNodes: 0,
+			totalClasses: 0,
+			totalFiles: 0,
 		};
 	}
 }
@@ -1840,7 +2094,8 @@ export async function searchHermesGraphNodes(
 			try {
 				const db = new Database(dbPath, { readonly: true });
 
-				// Busca tanto em l2j_chunks quanto em l2j_symbols
+				// Busca inteligente por caminho, nome qualificado, tipo de chunk ou conteúdo
+				const lowerQuery = query.toLowerCase();
 				const rows = db
 					.query(`
 					SELECT rowid, id, path, qualified_name, chunk_kind, token_estimate,
@@ -1848,16 +2103,27 @@ export async function searchHermesGraphNodes(
 					FROM l2j_chunks
 					WHERE path LIKE ?
 					   OR qualified_name LIKE ?
+					   OR chunk_kind = ?
 					   OR content LIKE ?
 					ORDER BY 
 						CASE 
-							WHEN path LIKE ? THEN 1
+							WHEN chunk_kind = ? THEN 1
 							WHEN qualified_name LIKE ? THEN 2
-							ELSE 3
+							WHEN path LIKE ? THEN 3
+							ELSE 4
 						END
 					LIMIT ?;
 				`)
-					.all(searchPattern, searchPattern, searchPattern, `%${query}%`, `%${query}%`, limit) as Array<{
+					.all(
+						searchPattern,
+						searchPattern,
+						lowerQuery,
+						searchPattern,
+						lowerQuery,
+						searchPattern,
+						searchPattern,
+						limit,
+					) as Array<{
 					rowid: number;
 					id: string;
 					path: string;
@@ -2036,7 +2302,14 @@ export async function getHermesNodeChunks(
 						ORDER BY COALESCE(start_line, 0) ASC, rowid ASC
 						LIMIT ?;
 					`)
-						.all(targetPath, `%${suffix}%`, `%${targetPath}%`, `%${targetPath}%`, `%${targetPath}%`, limit) as any[];
+						.all(
+							targetPath,
+							`%${suffix}%`,
+							`%${targetPath}%`,
+							`%${targetPath}%`,
+							`%${targetPath}%`,
+							limit,
+						) as any[];
 				} else if (targetNodeId) {
 					// Busca os chunks do mesmo arquivo a partir do id do chunk de referência
 					const refRow = db
@@ -2099,9 +2372,9 @@ export async function getHermesNodeChunks(
 	}
 }
 
-export async function checkHermesProjectsFreshness(
-	_input?: { workspaceId?: string | undefined },
-): Promise<HermesCheckFreshnessResult> {
+export async function checkHermesProjectsFreshness(_input?: {
+	workspaceId?: string | undefined;
+}): Promise<HermesCheckFreshnessResult> {
 	const timestamp = Date.now();
 	const { activeSlugs } = getActiveHermesProjects();
 	const hermesHome = resolveHermesHome();
@@ -2311,10 +2584,13 @@ export async function findHermesSkills(
 		const ghToken = process.env.GITHUB_TOKEN;
 		if (ghToken) headers.Authorization = `token ${ghToken}`;
 
-		const res = await fetch(`https://api.github.com/search/repositories?q=${encQuery}&sort=stars&order=desc&per_page=${limit}`, {
-			headers,
-			signal: AbortSignal.timeout(12000),
-		});
+		const res = await fetch(
+			`https://api.github.com/search/repositories?q=${encQuery}&sort=stars&order=desc&per_page=${limit}`,
+			{
+				headers,
+				signal: AbortSignal.timeout(12000),
+			},
+		);
 		if (res.ok) {
 			const data: any = await res.json();
 			const items = data.items || [];
@@ -2383,7 +2659,9 @@ function generateAutoSkillMd(cloneDir: string, skillName: string, repoUrl: strin
 			const firstLines = readmeContent
 				.split("\n")
 				.map((l) => l.trim())
-				.filter((l) => l.length > 0 && !l.startsWith("#") && !l.startsWith("[") && !l.startsWith("!"))
+				.filter(
+					(l) => l.length > 0 && !l.startsWith("#") && !l.startsWith("[") && !l.startsWith("!"),
+				)
 				.slice(0, 3)
 				.join(" ");
 			if (firstLines) {
@@ -2397,7 +2675,11 @@ function generateAutoSkillMd(cloneDir: string, skillName: string, repoUrl: strin
 
 	try {
 		const files = readdirSync(cloneDir);
-		if (files.includes("pyproject.toml") || files.includes("requirements.txt") || files.includes("setup.py")) {
+		if (
+			files.includes("pyproject.toml") ||
+			files.includes("requirements.txt") ||
+			files.includes("setup.py")
+		) {
 			detectedStack = "Python";
 			usageHint = "Use Python/pip/uv to execute package tools, scripts or import the module.";
 		} else if (files.includes("package.json")) {
@@ -2449,7 +2731,11 @@ export async function installHermesSkill(
 		return { success: false, message: "URL do repositório inválida." };
 	}
 
-	const rawName = cleanUrl.split("/").pop()?.replace(/\.git$/, "") || `skill_${Date.now()}`;
+	const rawName =
+		cleanUrl
+			.split("/")
+			.pop()
+			?.replace(/\.git$/, "") || `skill_${Date.now()}`;
 	const safeRepoName = rawName.toLowerCase().replace(/[^a-z0-9_-]/g, "-");
 	const tmpCloneDir = join(homedir(), `.thinkrail_skill_tmp_${safeRepoName}_${Date.now()}`);
 
@@ -2470,19 +2756,25 @@ export async function installHermesSkill(
 			targetDir = skillDirs[0] ?? tmpCloneDir;
 			const requestedSkill = input.skillName?.trim();
 			if (requestedSkill) {
-				const matched = skillDirs.find((d) => basename(d).toLowerCase().includes(requestedSkill.toLowerCase()));
+				const matched = skillDirs.find((d) =>
+					basename(d).toLowerCase().includes(requestedSkill.toLowerCase()),
+				);
 				if (matched) targetDir = matched;
 			}
 		} else {
 			// Auto-scaffolding: cria SKILL.md diretamente no repositório clonado
 			isAutoScaffolded = true;
-			const effectiveName = (input.skillName?.trim() || safeRepoName).toLowerCase().replace(/[^a-z0-9_-]/g, "-");
+			const effectiveName = (input.skillName?.trim() || safeRepoName)
+				.toLowerCase()
+				.replace(/[^a-z0-9_-]/g, "-");
 			const scaffoldedContent = generateAutoSkillMd(tmpCloneDir, effectiveName, cleanUrl);
 			writeFileSync(join(tmpCloneDir, "SKILL.md"), scaffoldedContent, "utf8");
 		}
 
 		const requestedSkill = input.skillName?.trim();
-		const finalSkillName = (requestedSkill || (isAutoScaffolded ? safeRepoName : basename(targetDir)))
+		const finalSkillName = (
+			requestedSkill || (isAutoScaffolded ? safeRepoName : basename(targetDir))
+		)
 			.toLowerCase()
 			.replace(/[^a-z0-9_-]/g, "-");
 
@@ -2505,7 +2797,8 @@ export async function installHermesSkill(
 
 		let message = `Skill '${finalSkillName}' instalada com sucesso em ~/.agents/skills/${finalSkillName}`;
 		if (isAutoScaffolded) {
-			message += "\n✨ SKILL.md inteligente foi gerado automaticamente com documentação, stack detectada e instruções operacionais!";
+			message +=
+				"\n✨ SKILL.md inteligente foi gerado automaticamente com documentação, stack detectada e instruções operacionais!";
 		}
 
 		return {
@@ -2525,9 +2818,7 @@ export async function installHermesSkill(
 	}
 }
 
-export function manageHermesSkills(
-	input: HermesManageSkillsInput,
-): HermesManageSkillsResult {
+export function manageHermesSkills(input: HermesManageSkillsInput): HermesManageSkillsResult {
 	if (!existsSync(agentSkillsDir)) {
 		mkdirSync(agentSkillsDir, { recursive: true });
 	}
@@ -2537,7 +2828,9 @@ export function manageHermesSkills(
 
 	switch (input.action) {
 		case "list": {
-			const activeEntries: HermesInstalledSkill[] = readdirSync(agentSkillsDir, { withFileTypes: true })
+			const activeEntries: HermesInstalledSkill[] = readdirSync(agentSkillsDir, {
+				withFileTypes: true,
+			})
 				.filter((e) => e.isDirectory() && existsSync(join(agentSkillsDir, e.name, "SKILL.md")))
 				.map((e) => {
 					let description = "";
@@ -2560,7 +2853,9 @@ export function manageHermesSkills(
 					};
 				});
 
-			const disabledEntries: HermesInstalledSkill[] = readdirSync(disabledSkillsDir, { withFileTypes: true })
+			const disabledEntries: HermesInstalledSkill[] = readdirSync(disabledSkillsDir, {
+				withFileTypes: true,
+			})
 				.filter((e) => e.isDirectory() && existsSync(join(disabledSkillsDir, e.name, "SKILL.md")))
 				.map((e) => {
 					let description = "";
@@ -2583,7 +2878,9 @@ export function manageHermesSkills(
 					};
 				});
 
-			const all = [...activeEntries, ...disabledEntries].sort((a, b) => a.name.localeCompare(b.name));
+			const all = [...activeEntries, ...disabledEntries].sort((a, b) =>
+				a.name.localeCompare(b.name),
+			);
 			return {
 				success: true,
 				message: `${all.length} skills encontradas (${activeEntries.length} ativas).`,
@@ -2592,7 +2889,8 @@ export function manageHermesSkills(
 		}
 
 		case "disable": {
-			if (!input.skillName) return { success: false, message: "Nome da skill obrigatório.", skills: [] };
+			if (!input.skillName)
+				return { success: false, message: "Nome da skill obrigatório.", skills: [] };
 			const key = input.skillName;
 			// Procura pelo nome da pasta direto ou pelo nome declarado
 			let targetFolder = key;
@@ -2604,13 +2902,19 @@ export function manageHermesSkills(
 							const md = readFileSync(join(agentSkillsDir, e.name, "SKILL.md"), "utf-8");
 							const m = md.match(/^name:\s*["']?([^"'\n]+)["']?/im);
 							return Boolean(m?.[1] && m[1].trim() === key);
-						} catch { return false; }
+						} catch {
+							return false;
+						}
 					});
 				if (found) targetFolder = found.name;
 			}
 			const curPath = join(agentSkillsDir, targetFolder);
 			if (!existsSync(curPath)) {
-				return { success: false, message: `Skill '${input.skillName}' não encontrada em skills ativas.`, skills: [] };
+				return {
+					success: false,
+					message: `Skill '${input.skillName}' não encontrada em skills ativas.`,
+					skills: [],
+				};
 			}
 			const dest = join(disabledSkillsDir, targetFolder);
 			if (existsSync(dest)) rmSync(dest, { recursive: true, force: true });
@@ -2624,7 +2928,8 @@ export function manageHermesSkills(
 		}
 
 		case "enable": {
-			if (!input.skillName) return { success: false, message: "Nome da skill obrigatório.", skills: [] };
+			if (!input.skillName)
+				return { success: false, message: "Nome da skill obrigatório.", skills: [] };
 			const key = input.skillName;
 			let targetFolder = key;
 			if (!existsSync(join(disabledSkillsDir, targetFolder))) {
@@ -2635,13 +2940,19 @@ export function manageHermesSkills(
 							const md = readFileSync(join(disabledSkillsDir, e.name, "SKILL.md"), "utf-8");
 							const m = md.match(/^name:\s*["']?([^"'\n]+)["']?/im);
 							return Boolean(m?.[1] && m[1].trim() === key);
-						} catch { return false; }
+						} catch {
+							return false;
+						}
 					});
 				if (found) targetFolder = found.name;
 			}
 			const curPath = join(disabledSkillsDir, targetFolder);
 			if (!existsSync(curPath)) {
-				return { success: false, message: `Skill '${input.skillName}' não encontrada em skills desativadas.`, skills: [] };
+				return {
+					success: false,
+					message: `Skill '${input.skillName}' não encontrada em skills desativadas.`,
+					skills: [],
+				};
 			}
 			const dest = join(agentSkillsDir, targetFolder);
 			if (existsSync(dest)) rmSync(dest, { recursive: true, force: true });
@@ -2655,7 +2966,8 @@ export function manageHermesSkills(
 		}
 
 		case "remove": {
-			if (!input.skillName) return { success: false, message: "Nome da skill obrigatório.", skills: [] };
+			if (!input.skillName)
+				return { success: false, message: "Nome da skill obrigatório.", skills: [] };
 			const key = input.skillName;
 			let activeTarget = key;
 			if (!existsSync(join(agentSkillsDir, activeTarget))) {
@@ -2666,7 +2978,9 @@ export function manageHermesSkills(
 							const md = readFileSync(join(agentSkillsDir, e.name, "SKILL.md"), "utf-8");
 							const m = md.match(/^name:\s*["']?([^"'\n]+)["']?/im);
 							return Boolean(m?.[1] && m[1].trim() === key);
-						} catch { return false; }
+						} catch {
+							return false;
+						}
 					});
 				if (found) activeTarget = found.name;
 			}
@@ -2679,7 +2993,9 @@ export function manageHermesSkills(
 							const md = readFileSync(join(disabledSkillsDir, e.name, "SKILL.md"), "utf-8");
 							const m = md.match(/^name:\s*["']?([^"'\n]+)["']?/im);
 							return Boolean(m?.[1] && m[1].trim() === key);
-						} catch { return false; }
+						} catch {
+							return false;
+						}
 					});
 				if (found) disabledTarget = found.name;
 			}
@@ -2692,16 +3008,24 @@ export function manageHermesSkills(
 				rmSync(disabledPath, { recursive: true, force: true });
 				return { success: true, message: `Skill '${input.skillName}' removida.`, skills: [] };
 			}
-			return { success: false, message: `Skill '${input.skillName}' não encontrada para remoção.`, skills: [] };
+			return {
+				success: false,
+				message: `Skill '${input.skillName}' não encontrada para remoção.`,
+				skills: [],
+			};
 		}
 		default:
 			return { success: false, message: `Ação desconhecida: ${input.action}`, skills: [] };
 	}
 }
 
-export function readHermesSkill(
-	input: { skillName: string; skillMdPath?: string | undefined },
-): { success: boolean; message?: string; content?: string; skillName: string; skillMdPath: string } {
+export function readHermesSkill(input: { skillName: string; skillMdPath?: string | undefined }): {
+	success: boolean;
+	message?: string;
+	content?: string;
+	skillName: string;
+	skillMdPath: string;
+} {
 	let targetPath = input.skillMdPath?.trim();
 	if (!targetPath || !existsSync(targetPath)) {
 		const activePath = join(agentSkillsDir, input.skillName, "SKILL.md");
@@ -2737,7 +3061,10 @@ export function readHermesSkill(
 	}
 }
 
-export function revealHermesSkillFolder(input: { path: string }): { success: boolean; message: string } {
+export function revealHermesSkillFolder(input: { path: string }): {
+	success: boolean;
+	message: string;
+} {
 	const folder = input.path?.trim();
 	if (!folder || !existsSync(folder)) {
 		return { success: false, message: `Pasta não encontrada no disco: ${folder}` };
@@ -2748,7 +3075,9 @@ export function revealHermesSkillFolder(input: { path: string }): { success: boo
 		revealInFileManager(folder);
 		return { success: true, message: `Pasta aberta no gerenciador de arquivos: ${folder}` };
 	} catch (err: any) {
-		return { success: false, message: `Falha ao abrir pasta no gerenciador de arquivos: ${err?.message || err}` };
+		return {
+			success: false,
+			message: `Falha ao abrir pasta no gerenciador de arquivos: ${err?.message || err}`,
+		};
 	}
 }
-
