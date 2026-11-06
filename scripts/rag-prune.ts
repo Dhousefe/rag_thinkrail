@@ -30,7 +30,9 @@ if (!existsSync(DB_PATH)) {
 }
 
 const db = new Database(DB_PATH);
-db.run("PRAGMA foreign_keys = ON;");
+db.run("PRAGMA journal_mode = WAL;");
+db.run("PRAGMA busy_timeout = 30000;");
+db.run("PRAGMA foreign_keys = OFF;");
 
 // Buscar todos os arquivos indexados do projeto
 const filesQuery = db.query(
@@ -67,25 +69,29 @@ if (deletedFiles.length > 10) {
 	console.log(`    ... e mais ${deletedFiles.length - 10} arquivo(s)`);
 }
 
-console.log("\n[i] Limpando registros órfãos (FTS5 + Chunks + Symbols)...");
+console.log("\n[i] Limpando registros órfãos em lote (FTS5 + Chunks + Symbols + Files)...");
 
-const deleteFtsStmt = db.prepare(
-	"DELETE FROM l2j_chunk_fts WHERE file_id = ?;",
-);
-const deleteFileStmt = db.prepare("DELETE FROM l2j_files WHERE id = ?;");
+const BATCH_SIZE = 100;
+for (let i = 0; i < deletedFiles.length; i += BATCH_SIZE) {
+	const batch = deletedFiles.slice(i, i + BATCH_SIZE);
+	const placeholders = batch.map(() => "?").join(",");
+	const fileIds = batch.map((f) => f.id);
 
-const transaction = db.transaction((files: typeof deletedFiles) => {
-	for (const f of files) {
+	const pruneBatchTx = db.transaction(() => {
 		try {
-			deleteFtsStmt.run(f.id);
-		} catch (e) {
-			console.warn(`[!] Aviso ao limpar FTS para ${f.id}:`, e);
-		}
-		deleteFileStmt.run(f.id);
-	}
-});
+			db.run(`DELETE FROM l2j_chunk_fts WHERE file_id IN (${placeholders});`, fileIds);
+		} catch {}
+		try {
+			db.run(`DELETE FROM l2j_chunks WHERE file_id IN (${placeholders});`, fileIds);
+		} catch {}
+		try {
+			db.run(`DELETE FROM l2j_symbols WHERE file_id IN (${placeholders});`, fileIds);
+		} catch {}
+		db.run(`DELETE FROM l2j_files WHERE id IN (${placeholders});`, fileIds);
+	});
 
-transaction(deletedFiles);
+	pruneBatchTx();
+}
 
 console.log(
 	`[V] Concluído com sucesso! ${deletedFiles.length} arquivo(s) órfão(s) purgados do RAG.`,

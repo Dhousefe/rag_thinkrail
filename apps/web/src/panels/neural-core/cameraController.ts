@@ -5,9 +5,9 @@ export class OrbitCameraController {
 	private lastMouseX = 0;
 	private lastMouseY = 0;
 
-	public theta = 0.5;
-	public phi = 0.35;
-	public distance = 5.6;
+	public theta = 0.6;
+	public phi = 0.45;
+	public distance = 5.2;
 	public target: [number, number, number] = [0, 0, 0];
 
 	private flyTarget: {
@@ -69,9 +69,9 @@ export class OrbitCameraController {
 				this.target[1] -= (-upY * dy) * panFactor;
 				this.target[2] -= (rightZ * dx - upZ * dy) * panFactor;
 			} else {
-				// Rotação Orbital
+				// Rotação Orbital com limites suaves que não causam singularidade
 				this.theta -= dx * 0.008;
-				this.phi = Math.max(-1.4, Math.min(1.4, this.phi + dy * 0.008));
+				this.phi = Math.max(-1.50, Math.min(1.50, this.phi + dy * 0.008));
 			}
 			this.onUpdate?.();
 		});
@@ -85,9 +85,9 @@ export class OrbitCameraController {
 			(e) => {
 				e.preventDefault();
 				this.flyTarget = null;
-				// Zoom responsivo de 1.2 (close-up detalhado) até 22.0 (visão macro panorâmica)
-				const zoomStep = (e.deltaY > 0 ? 1 : -1) * Math.max(0.2, this.distance * 0.08);
-				this.distance = Math.max(1.2, Math.min(22.0, this.distance + zoomStep));
+				// Zoom responsivo e progressivo: amplo alcance [0.3 a 60.0]
+				const zoomStep = (e.deltaY > 0 ? 1 : -1) * Math.max(0.08, this.distance * 0.09);
+				this.distance = Math.max(0.3, Math.min(60.0, this.distance + zoomStep));
 				this.onUpdate?.();
 			},
 			{ passive: false },
@@ -143,25 +143,25 @@ export class OrbitCameraController {
 
 	public zoomIn() {
 		this.flyTarget = null;
-		this.distance = Math.max(1.2, this.distance * 0.8);
+		this.distance = Math.max(0.3, this.distance * 0.78);
 		this.onUpdate?.();
 	}
 
 	public zoomOut() {
 		this.flyTarget = null;
-		this.distance = Math.min(22.0, this.distance * 1.25);
+		this.distance = Math.min(60.0, this.distance * 1.25);
 		this.onUpdate?.();
 	}
 
-	public focusPosition(pos: [number, number, number], targetDist = 2.4) {
+	public focusPosition(pos: [number, number, number], targetDist = 2.0) {
 		const [x, y, z] = pos;
-		// Centraliza o target no nó desejado e interpola suavemente a câmera
+		// Centraliza o target no nó desejado com ângulo de visão ideal para polígonos e métodos
 		this.flyTarget = {
 			targetX: x,
 			targetY: y,
 			targetZ: z,
 			theta: this.theta,
-			phi: this.phi,
+			phi: Math.max(0.25, Math.min(0.65, this.phi)),
 			distance: targetDist,
 		};
 	}
@@ -195,21 +195,72 @@ export class OrbitCameraController {
 			return;
 		}
 
-		this.theta += diffT * 0.15;
-		this.phi += diffP * 0.15;
-		this.distance += diffD * 0.15;
-		this.target[0] += diffTx * 0.15;
-		this.target[1] += diffTy * 0.15;
-		this.target[2] += diffTz * 0.15;
+		this.theta += diffT * 0.2;
+		this.phi += diffP * 0.2;
+		this.distance += diffD * 0.2;
+		this.target[0] += diffTx * 0.2;
+		this.target[1] += diffTy * 0.2;
+		this.target[2] += diffTz * 0.2;
 		this.onUpdate?.();
 	}
 
 	public reset() {
-		this.flyTarget = null;
-		this.theta = 0.5;
-		this.phi = 0.35;
-		this.distance = 5.6;
-		this.target = [0, 0, 0];
+		this.flyTarget = {
+			targetX: 0,
+			targetY: 0,
+			targetZ: 0,
+			theta: 0.6,
+			phi: 0.45,
+			distance: 5.2,
+		};
+		this.onUpdate?.();
+	}
+
+	/**
+	 * Enquadra perfeitamente todos os nós informados dentro do campo de visão da câmera,
+	 * calculando o centro do bounding box e a distância de enquadramento ideal.
+	 */
+	public fitBounds(positions: Array<[number, number, number]>, margin = 1.6) {
+		if (!positions || positions.length === 0) {
+			this.reset();
+			return;
+		}
+
+		let minX = Infinity, maxX = -Infinity;
+		let minY = Infinity, maxY = -Infinity;
+		let minZ = Infinity, maxZ = -Infinity;
+
+		for (const [x, y, z] of positions) {
+			if (x < minX) minX = x;
+			if (x > maxX) maxX = x;
+			if (y < minY) minY = y;
+			if (y > maxY) maxY = y;
+			if (z < minZ) minZ = z;
+			if (z > maxZ) maxZ = z;
+		}
+
+		const centerX = (minX + maxX) / 2;
+		const centerY = (minY + maxY) / 2;
+		const centerZ = (minZ + maxZ) / 2;
+
+		// Calcula o raio máximo a partir do centro
+		let maxRadius = 0.5;
+		for (const [x, y, z] of positions) {
+			const r = Math.hypot(x - centerX, y - centerY, z - centerZ);
+			if (r > maxRadius) maxRadius = r;
+		}
+
+		// Com FOV de 45 deg (~0.785 rad), distância = raio / tan(FOV / 2) * margem
+		const fitDist = Math.max(2.8, Math.min(50.0, maxRadius * 2.4 * margin));
+
+		this.flyTarget = {
+			targetX: centerX,
+			targetY: centerY,
+			targetZ: centerZ,
+			theta: this.theta,
+			phi: Math.max(0.35, Math.min(0.65, this.phi)),
+			distance: fitDist,
+		};
 		this.onUpdate?.();
 	}
 }

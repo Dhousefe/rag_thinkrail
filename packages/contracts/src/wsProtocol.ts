@@ -99,6 +99,10 @@ import type {
 	HermesSetActiveProjectsInput,
 	HermesTestConnectionInput,
 	HermesVectorGraphSample,
+	HermesSearchGraphNodesInput,
+	HermesSearchGraphNodesResult,
+	HermesGetNodeChunksInput,
+	HermesGetNodeChunksResult,
 	HermesCheckFreshnessResult,
 	HermesFindSkillsInput,
 	HermesFindSkillsResult,
@@ -448,6 +452,8 @@ export const WS_METHODS = {
 	hermesSetActiveProjects: "hermes.setActiveProjects",
 	hermesGetIndexingProgress: "hermes.getIndexingProgress",
 	hermesGetVectorGraph: "hermes.getVectorGraph",
+	hermesSearchGraphNodes: "hermes.searchGraphNodes",
+	hermesGetNodeChunks: "hermes.getNodeChunks",
 	hermesCheckProjectFreshness: "hermes.checkProjectFreshness",
 	hermesFindSkills: "hermes.findSkills",
 	hermesInstallSkill: "hermes.installSkill",
@@ -1299,6 +1305,14 @@ export interface WsMethodMap {
 	};
 	"hermes.getIndexingProgress": { params: Record<string, never>; result: HermesIndexingProgress };
 	"hermes.getVectorGraph": { params: HermesGetVectorGraphInput; result: HermesVectorGraphSample };
+	"hermes.searchGraphNodes": {
+		params: HermesSearchGraphNodesInput;
+		result: HermesSearchGraphNodesResult;
+	};
+	"hermes.getNodeChunks": {
+		params: HermesGetNodeChunksInput;
+		result: HermesGetNodeChunksResult;
+	};
 	"hermes.checkProjectFreshness": {
 		params: { workspaceId?: string | undefined };
 		result: HermesCheckFreshnessResult;

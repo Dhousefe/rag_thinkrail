@@ -132,10 +132,13 @@ export interface HermesVectorNode {
 	projectRoot?: string | undefined;
 }
 
+export type HermesEdgeKind = "imports" | "calls" | "extends" | "implements" | "type_ref" | "knn" | "module";
+
 export interface HermesVectorEdge {
 	source: number;
 	target: number;
 	similarity: number;
+	kind?: HermesEdgeKind | undefined;
 }
 
 export interface HermesVectorGraphSample {
@@ -168,6 +171,48 @@ export interface HermesCheckFreshnessResult {
 export interface HermesGetVectorGraphInput {
 	projectSlug?: string | undefined;
 	limit?: number | undefined;
+}
+
+export interface HermesChunkItem {
+	id: string;
+	path: string;
+	relPath?: string | undefined;
+	chunkKind: string;
+	qualifiedName?: string | undefined;
+	signature?: string | undefined;
+	content: string;
+	startLine?: number | undefined;
+	endLine?: number | undefined;
+	tokenEstimate?: number | undefined;
+	projectSlug?: string | undefined;
+}
+
+export interface HermesGetNodeChunksInput {
+	nodeId?: string | undefined;
+	path?: string | undefined;
+	projectSlug?: string | undefined;
+	limit?: number | undefined;
+}
+
+export interface HermesGetNodeChunksResult {
+	nodeId?: string | undefined;
+	path: string;
+	chunks: HermesChunkItem[];
+	totalChunks: number;
+}
+
+export interface HermesSearchGraphNodesInput {
+	query: string;
+	projectSlug?: string | undefined;
+	limit?: number | undefined;
+}
+
+export interface HermesSearchGraphNodesResult {
+	query: string;
+	nodes: HermesVectorNode[];
+	edges: HermesVectorEdge[];
+	chunks?: HermesChunkItem[] | undefined;
+	totalMatches: number;
 }
 
 export interface HermesIndexingProgress {

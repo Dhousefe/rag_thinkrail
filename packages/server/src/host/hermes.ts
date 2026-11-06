@@ -34,6 +34,8 @@ import type {
 	HermesVectorEdge,
 	HermesVectorGraphSample,
 	HermesVectorNode,
+	HermesSearchGraphNodesInput,
+	HermesSearchGraphNodesResult,
 	HermesFindSkillsInput,
 	HermesFindSkillsResult,
 	HermesInstallSkillInput,
@@ -1298,12 +1300,22 @@ export async function getHermesVectorGraph(
 				totalEmbeddings += totalEmbeddingsRow?.c ?? 0;
 
 				// Busca ultrarrápida de chunks estruturais chave (6ms) sem table scan nem temp b-tree
+				// Prioriza 'component', 'class', 'interface', 'struct' e arquivos .tsx/.ts ricos
 				const rows = db
 					.query(`
 					SELECT rowid, id, path, qualified_name, chunk_kind, token_estimate,
 					       substr(content, 1, 140) as snippet
 					FROM l2j_chunks
-					WHERE chunk_kind IN ('class', 'interface', 'struct', 'document', 'function')
+					WHERE chunk_kind IN ('component', 'class', 'interface', 'struct', 'document', 'function', 'type')
+					   OR (chunk_kind = 'block' AND (path LIKE '%.tsx' OR path LIKE '%.ts'))
+					ORDER BY 
+						CASE 
+							WHEN chunk_kind = 'component' THEN 1
+							WHEN chunk_kind = 'class' THEN 2
+							WHEN chunk_kind = 'interface' THEN 3
+							ELSE 4
+						END,
+						token_estimate DESC
 					LIMIT ?;
 				`)
 					.all(perProjectLimit) as Array<{
@@ -1680,10 +1692,54 @@ export async function getHermesVectorGraph(
 			projectRoot: pn.projectRoot,
 		}));
 
-		// Grafo k-NN: similaridade de cosseno entre nós (conecta os 2 vizinhos mais próximos)
+		// Grafo k-NN e Relacionamentos Reais de Código (Imports, Calls, Extends)
 		const edges: HermesVectorEdge[] = [];
+		const existingEdgeKeys = new Set<string>();
 		const kNeighbors = 2;
 
+		// 1. Mapeamento de imports e dependências de código reais entre nós da cena
+		const nodeNameToIdx = new Map<string, number>();
+		for (let idx = 0; idx < nodes.length; idx++) {
+			const n = nodes[idx]!;
+			const baseName = n.relPath.split("/").pop()?.replace(/\.[^.]+$/, "") || "";
+			if (baseName && baseName.length >= 3) {
+				nodeNameToIdx.set(baseName.toLowerCase(), idx);
+			}
+			if (n.qualifiedName) {
+				const simpleQ = n.qualifiedName.split(".").pop() || "";
+				if (simpleQ && simpleQ.length >= 3) {
+					nodeNameToIdx.set(simpleQ.toLowerCase(), idx);
+				}
+			}
+		}
+
+		for (let i = 0; i < nodes.length; i++) {
+			const n1 = nodes[i]!;
+			const codeSnippet = (n1.contentSnippet || "").toLowerCase();
+
+			for (const [targetName, targetIdx] of nodeNameToIdx.entries()) {
+				if (targetIdx === i) continue;
+
+				const isImport = codeSnippet.includes("import") && codeSnippet.includes(targetName);
+				const isExtends = codeSnippet.includes("extends " + targetName) || codeSnippet.includes("implements " + targetName);
+				const isCall = codeSnippet.includes(targetName + "(") || codeSnippet.includes(targetName + ".");
+
+				if (isImport || isExtends || isCall) {
+					const key = i < targetIdx ? i + "-" + targetIdx : targetIdx + "-" + i;
+					if (!existingEdgeKeys.has(key)) {
+						existingEdgeKeys.add(key);
+						edges.push({
+							source: i,
+							target: targetIdx,
+							similarity: isExtends ? 0.95 : isCall ? 0.88 : 0.82,
+							kind: isExtends ? "extends" : isCall ? "calls" : "imports",
+						});
+					}
+				}
+			}
+		}
+
+		// 2. Grafo k-NN vetorial para preenchimento de proximidade semântica residual
 		for (let i = 0; i < vectors.length; i++) {
 			const v1 = vectors[i]!;
 			if (v1.length === 0) continue;
@@ -1702,17 +1758,20 @@ export async function getHermesVectorGraph(
 				sims.push({ idx: j, sim: dot });
 			}
 
-			sims.sort((a, b) => b.sim - a.sim);
-			for (let k = 0; k < kNeighbors && k < sims.length; k++) {
-				const neighbor = sims[k]!;
-				if (neighbor.idx > i) {
-					edges.push({
-						source: i,
-						target: neighbor.idx,
-						similarity: neighbor.sim,
-					});
-				}
+		sims.sort((a, b) => b.sim - a.sim);
+		for (let k = 0; k < kNeighbors && k < sims.length; k++) {
+			const neighbor = sims[k]!;
+			const key = i < neighbor.idx ? i + "-" + neighbor.idx : neighbor.idx + "-" + i;
+			if (!existingEdgeKeys.has(key)) {
+				existingEdgeKeys.add(key);
+				edges.push({
+					source: i,
+					target: neighbor.idx,
+					similarity: neighbor.sim,
+					kind: "knn",
+				});
 			}
+		}
 		}
 
 		return {
@@ -1737,9 +1796,309 @@ export async function getHermesVectorGraph(
 }
 
 /**
+ * Busca dinâmica profunda no banco SQLite do Hermes RAG por símbolos, classes,
+ * arquivos e funções para exibição instantânea e foco de câmera no Neural Core.
+ */
+export async function searchHermesGraphNodes(
+	params: HermesSearchGraphNodesInput,
+): Promise<HermesSearchGraphNodesResult> {
+	const query = (params.query || "").trim();
+	if (!query) {
+		return { query: "", nodes: [], edges: [], totalMatches: 0 };
+	}
+
+	const hermesHome = resolveHermesHome();
+	const targetSlugs = params.projectSlug
+		? [params.projectSlug]
+		: getActiveHermesProjects().activeSlugs;
+	const limit = Math.min(60, Math.max(5, params.limit || 20));
+
+	const foundNodes: HermesVectorNode[] = [];
+	const foundChunks: import("@thinkrail/contracts").HermesChunkItem[] = [];
+	const searchPattern = `%${query}%`;
+
+	try {
+		const { Database } = await import("bun:sqlite");
+
+		for (const slug of targetSlugs) {
+			const projectDir = join(hermesHome, "projects", slug);
+			const dbPath = join(projectDir, "hermes.db");
+			if (!existsSync(dbPath)) continue;
+
+			let wsPath = "";
+			const workspaceFile = join(projectDir, "workspace.path");
+			if (existsSync(workspaceFile)) {
+				try {
+					wsPath = readFileSync(workspaceFile, "utf8").trim();
+				} catch {
+					wsPath = projectDir;
+				}
+			} else {
+				wsPath = projectDir;
+			}
+
+			try {
+				const db = new Database(dbPath, { readonly: true });
+
+				// Busca tanto em l2j_chunks quanto em l2j_symbols
+				const rows = db
+					.query(`
+					SELECT rowid, id, path, qualified_name, chunk_kind, token_estimate,
+					       substr(content, 1, 240) as snippet
+					FROM l2j_chunks
+					WHERE path LIKE ?
+					   OR qualified_name LIKE ?
+					   OR content LIKE ?
+					ORDER BY 
+						CASE 
+							WHEN path LIKE ? THEN 1
+							WHEN qualified_name LIKE ? THEN 2
+							ELSE 3
+						END
+					LIMIT ?;
+				`)
+					.all(searchPattern, searchPattern, searchPattern, `%${query}%`, `%${query}%`, limit) as Array<{
+					rowid: number;
+					id: string;
+					path: string;
+					qualified_name?: string;
+					chunk_kind?: string;
+					token_estimate?: number;
+					snippet?: string;
+				}>;
+
+				const uniquePaths = Array.from(new Set(rows.map((r) => r.path)));
+				const methodsByPath = new Map<string, any[]>();
+				if (uniquePaths.length > 0) {
+					const ph = uniquePaths.map(() => "?").join(", ");
+					const methodRows = db
+						.query(`
+						SELECT id, path, qualified_name, chunk_kind, token_estimate, substr(content, 1, 140) as snippet
+						FROM l2j_chunks
+						WHERE chunk_kind IN ('method', 'function', 'constructor')
+						  AND path IN (${ph})
+						LIMIT 50;
+					`)
+						.all(...uniquePaths) as Array<any>;
+
+					for (const m of methodRows) {
+						const list = methodsByPath.get(m.path) || [];
+						list.push(m);
+						methodsByPath.set(m.path, list);
+					}
+				}
+
+				// Busca chunks de código correspondentes para exibição rápida
+				try {
+					const chunkRows = db
+						.query(`
+						SELECT id, path, chunk_kind, qualified_name, signature, substr(content, 1, 400) as content, start_line, end_line, token_estimate
+						FROM l2j_chunks
+						WHERE content LIKE ? OR qualified_name LIKE ?
+						ORDER BY token_estimate DESC
+						LIMIT 12;
+					`)
+						.all(searchPattern, searchPattern) as any[];
+
+					for (const cr of chunkRows) {
+						const normP = cr.path.replace(/\\/g, "/");
+						const rP = normP.split("/").slice(-2).join("/");
+						foundChunks.push({
+							id: cr.id,
+							path: cr.path,
+							relPath: rP,
+							chunkKind: cr.chunk_kind || "code",
+							qualifiedName: cr.qualified_name || rP,
+							signature: cr.signature || undefined,
+							content: cr.content || "",
+							startLine: cr.start_line || undefined,
+							endLine: cr.end_line || undefined,
+							tokenEstimate: cr.token_estimate || 0,
+							projectSlug: slug,
+						});
+					}
+				} catch {}
+
+				db.close();
+
+				for (let i = 0; i < rows.length; i++) {
+					const r = rows[i]!;
+					const normPath = r.path.replace(/\\/g, "/");
+					const relPath = normPath.split("/").slice(-2).join("/");
+
+					let mod = "core";
+					if (normPath.includes("/apps/web")) mod = "apps/web";
+					else if (normPath.includes("/packages/server")) mod = "packages/server";
+					else if (normPath.includes("/contracts")) mod = "contracts";
+					else if (normPath.includes("/packages/ui")) mod = "packages/ui";
+					else if (normPath.includes("/scripts")) mod = "scripts";
+
+					const rawMethods = methodsByPath.get(r.path) || [];
+					const childMethods = rawMethods.map((m, cmIdx) => {
+						const totalM = rawMethods.length;
+						const angle = (cmIdx / Math.max(1, totalM)) * Math.PI * 2;
+						const simpleName = (m.qualified_name || "").split(".").pop() || "fn";
+						return {
+							id: m.id,
+							name: simpleName,
+							kind: (m.chunk_kind as any) || "method",
+							signature: m.qualified_name || simpleName,
+							tokenEstimate: m.token_estimate || 0,
+							contentSnippet: (m.snippet || "").trim(),
+							orbitAngle: angle,
+							orbitRadius: 0.22 + (cmIdx % 2) * 0.05,
+						};
+					});
+
+					// Distribui em raio próximo ao centro focal
+					const angle = (i / Math.max(1, rows.length)) * Math.PI * 2;
+					const radius = 0.8 + (i % 3) * 0.35;
+					const px = Math.cos(angle) * radius;
+					const pz = Math.sin(angle) * radius;
+
+					foundNodes.push({
+						id: r.id,
+						path: r.path,
+						relPath,
+						qualifiedName: r.qualified_name || relPath,
+						chunkKind: r.chunk_kind || "code",
+						module: mod,
+						position: [px, 0.05, pz],
+						tokenEstimate: r.token_estimate || 0,
+						contentSnippet: (r.snippet || "").trim(),
+						methods: childMethods,
+						projectSlug: slug,
+						projectRoot: wsPath,
+					});
+				}
+			} catch (dbErr) {
+				log.warn(`searchHermesGraphNodes.dbError for [${slug}]: ${dbErr}`);
+			}
+		}
+
+		return {
+			query,
+			nodes: foundNodes,
+			edges: [],
+			chunks: foundChunks,
+			totalMatches: foundNodes.length + foundChunks.length,
+		};
+	} catch (err) {
+		log.warn("searchHermesGraphNodes.failed", { error: String(err), query });
+		return { query, nodes: [], edges: [], totalMatches: 0 };
+	}
+}
+
+/**
  * Verifica se os arquivos do workspace de projetos ativos sofreram modificações
  * mais recentes que a data de indexação do banco SQLite (hermes.db) ou hash/mtime.
  */
+
+/**
+ * Retorna todos os chunks registrados no Hermes RAG para uma classe, arquivo ou nó especificado.
+ */
+export async function getHermesNodeChunks(
+	params: import("@thinkrail/contracts").HermesGetNodeChunksInput,
+): Promise<import("@thinkrail/contracts").HermesGetNodeChunksResult> {
+	const targetPath = (params.path || "").trim();
+	const targetNodeId = (params.nodeId || "").trim();
+	const limit = Math.min(100, Math.max(5, params.limit || 50));
+
+	const hermesHome = resolveHermesHome();
+	const targetSlugs = params.projectSlug
+		? [params.projectSlug]
+		: getActiveHermesProjects().activeSlugs;
+
+	const chunks: import("@thinkrail/contracts").HermesChunkItem[] = [];
+
+	try {
+		const { Database } = await import("bun:sqlite");
+
+		for (const slug of targetSlugs) {
+			const projectDir = join(hermesHome, "projects", slug);
+			const dbPath = join(projectDir, "hermes.db");
+			if (!existsSync(dbPath)) continue;
+
+			try {
+				const db = new Database(dbPath, { readonly: true });
+
+				let rows: any[] = [];
+				if (targetPath) {
+					// Busca por caminho exato ou sufixo normalizado
+					const normTarget = targetPath.replace(/\\/g, "/");
+					const suffix = normTarget.split("/").slice(-2).join("/");
+
+					rows = db
+						.query(`
+						SELECT id, path, chunk_kind, qualified_name, signature, content, start_line, end_line, token_estimate
+						FROM l2j_chunks
+						WHERE path = ? OR path LIKE ? OR qualified_name LIKE ? OR signature LIKE ? OR content LIKE ?
+						ORDER BY COALESCE(start_line, 0) ASC, rowid ASC
+						LIMIT ?;
+					`)
+						.all(targetPath, `%${suffix}%`, `%${targetPath}%`, `%${targetPath}%`, `%${targetPath}%`, limit) as any[];
+				} else if (targetNodeId) {
+					// Busca os chunks do mesmo arquivo a partir do id do chunk de referência
+					const refRow = db
+						.query("SELECT path FROM l2j_chunks WHERE id = ? LIMIT 1;")
+						.get(targetNodeId) as { path?: string } | null;
+
+					if (refRow?.path) {
+						rows = db
+							.query(`
+							SELECT id, path, chunk_kind, qualified_name, signature, content, start_line, end_line, token_estimate
+							FROM l2j_chunks
+							WHERE path = ?
+							ORDER BY COALESCE(start_line, 0) ASC, rowid ASC
+							LIMIT ?;
+						`)
+							.all(refRow.path, limit) as any[];
+					}
+				}
+
+				db.close();
+
+				for (const r of rows) {
+					const normP = (r.path || "").replace(/\\/g, "/");
+					const rP = normP.split("/").slice(-2).join("/");
+					chunks.push({
+						id: r.id,
+						path: r.path,
+						relPath: rP,
+						chunkKind: r.chunk_kind || "code",
+						qualifiedName: r.qualified_name || rP,
+						signature: r.signature || undefined,
+						content: r.content || "",
+						startLine: r.start_line || undefined,
+						endLine: r.end_line || undefined,
+						tokenEstimate: r.token_estimate || 0,
+						projectSlug: slug,
+					});
+				}
+
+				if (chunks.length >= limit) break;
+			} catch (dbErr) {
+				log.warn(`getHermesNodeChunks.dbError for [${slug}]: ${dbErr}`);
+			}
+		}
+
+		return {
+			nodeId: targetNodeId || undefined,
+			path: targetPath || (chunks[0]?.path ?? ""),
+			chunks,
+			totalChunks: chunks.length,
+		};
+	} catch (err) {
+		log.warn("getHermesNodeChunks.failed", { error: String(err), targetPath, targetNodeId });
+		return {
+			nodeId: targetNodeId || undefined,
+			path: targetPath,
+			chunks: [],
+			totalChunks: 0,
+		};
+	}
+}
+
 export async function checkHermesProjectsFreshness(
 	_input?: { workspaceId?: string | undefined },
 ): Promise<HermesCheckFreshnessResult> {

@@ -1,4 +1,4 @@
-import type { HermesVectorNode } from "@thinkrail/contracts";
+import type { HermesChunkItem, HermesVectorNode } from "@thinkrail/contracts";
 import {
 	RiAddLine,
 	RiArrowDownLine,
@@ -10,6 +10,7 @@ import {
 	RiChatQuoteLine,
 	RiCloseLine,
 	RiCpuLine,
+	RiDatabase2Line,
 	RiEyeLine,
 	RiEyeOffLine,
 	RiFileCodeLine,
@@ -30,21 +31,42 @@ import { getTransport } from "@/transport";
 import { openChatInTab, startChatInTab } from "./openChat";
 import { openFileInTab } from "./openTabs";
 import { OrbitCameraController } from "./neural-core/cameraController";
+import {
+	NeuralCoreChunksView,
+	NeuralCoreNodeOverview,
+	NeuralCoreSearchBox,
+} from "./neural-core/components";
 import { NeuralCoreEngine } from "./neural-core/neuralEngine";
 import { useNeuralCoreState } from "./neural-core/useNeuralCoreState";
 
 function getModuleClasses(moduleName?: string): { border: string; text: string; dot: string } {
 	switch (moduleName) {
 		case "apps/web":
-			return { border: "border-feedback-info", text: "text-feedback-info", dot: "bg-feedback-info" };
+			return {
+				border: "border-feedback-info",
+				text: "text-feedback-info",
+				dot: "bg-feedback-info",
+			};
 		case "packages/server":
 			return { border: "border-primary", text: "text-primary", dot: "bg-primary" };
 		case "contracts":
-			return { border: "border-feedback-warning", text: "text-feedback-warning", dot: "bg-feedback-warning" };
+			return {
+				border: "border-feedback-warning",
+				text: "text-feedback-warning",
+				dot: "bg-feedback-warning",
+			};
 		case "packages/ui":
-			return { border: "border-feedback-success", text: "text-feedback-success", dot: "bg-feedback-success" };
+			return {
+				border: "border-feedback-success",
+				text: "text-feedback-success",
+				dot: "bg-feedback-success",
+			};
 		case "scripts":
-			return { border: "border-feedback-error", text: "text-feedback-error", dot: "bg-feedback-error" };
+			return {
+				border: "border-feedback-error",
+				text: "text-feedback-error",
+				dot: "bg-feedback-error",
+			};
 		default:
 			return { border: "border-border-default", text: "text-text-muted", dot: "bg-text-muted" };
 	}
@@ -57,10 +79,17 @@ export function NeuralCorePanel() {
 
 	const { state, pulseKey } = useNeuralCoreState();
 	const [manualQuery, setManualQuery] = useState("");
-	const [isSearchOpen, setIsSearchOpen] = useState(false);
 	const [isPaused, setIsPaused] = useState(false);
 	const [isBottomPanelCollapsed, setIsBottomPanelCollapsed] = useState(false);
 	const [isBottomPanelCompletelyHidden, setIsBottomPanelCompletelyHidden] = useState(false);
+	const [remoteSearchMatches, setRemoteSearchMatches] = useState<HermesVectorNode[]>([]);
+	const [isSearchingRemote, setIsSearchingRemote] = useState(false);
+
+	// Chunks Registrados para a Classe e Busca
+	const [nodeChunks, setNodeChunks] = useState<HermesChunkItem[]>([]);
+	const [isLoadingNodeChunks, setIsLoadingNodeChunks] = useState(false);
+	const [searchChunks, setSearchChunks] = useState<HermesChunkItem[]>([]);
+	const [activeInfoTab, setActiveInfoTab] = useState<"details" | "chunks">("details");
 
 	// Estado da Projeção de Vetores RAG
 	const [vectorNodes, setVectorNodes] = useState<HermesVectorNode[]>([]);
@@ -72,12 +101,8 @@ export function NeuralCorePanel() {
 	const [selectedModules, setSelectedModules] = useState<string[]>([]);
 
 	// Sincronização e Reatividade com Projetos Ativos do Hermes RAG
-	const activeProjectSlugs = useAppStore(
-		(s) => s.hermesManagement.activeProjectSlugs,
-	);
-	const activeProjectSlug = useAppStore(
-		(s) => s.hermesManagement.activeProjectSlug,
-	);
+	const activeProjectSlugs = useAppStore((s) => s.hermesManagement.activeProjectSlugs);
+	const activeProjectSlug = useAppStore((s) => s.hermesManagement.activeProjectSlug);
 
 	// Carregamento dos vetores do banco SQLite hermes.db
 	const loadVectorGraph = useCallback(async () => {
@@ -179,6 +204,17 @@ export function NeuralCorePanel() {
 		}
 	}, [effectiveQuery]);
 
+	// Sincroniza polígono selecionado com o motor 3D (realce de conexões e esmaecimento de nós alheios)
+	useEffect(() => {
+		if (!engineRef.current) return;
+		if (!selectedNode) {
+			engineRef.current.setSelectedNode(null);
+		} else {
+			const idx = vectorNodes.findIndex((n) => n.id === selectedNode.id);
+			engineRef.current.setSelectedNode(idx !== -1 ? idx : null);
+		}
+	}, [selectedNode, vectorNodes]);
+
 	// Shockwave disparado por evento MCP / terminal
 	useEffect(() => {
 		if (pulseKey > 0 && engineRef.current) {
@@ -197,7 +233,8 @@ export function NeuralCorePanel() {
 		}).length;
 	}, [effectiveQuery, vectorNodes]);
 
-	// Foco Automático do Provider / MCP: centraliza a câmera 3D no símbolo inspecionado e dá vida ao polígono
+	// Foco Automático do Chat / MCP em Tempo Real:
+	// Aciona animação de pulso e movimento suave de foco da câmera APENAS quando a Rotação Dinâmica estiver ativada (!isPaused)
 	useEffect(() => {
 		if (!effectiveQuery || vectorNodes.length === 0) return;
 		const q = effectiveQuery.toLowerCase();
@@ -207,17 +244,20 @@ export function NeuralCorePanel() {
 			const rel = (n.relPath || "").toLowerCase();
 			return p.includes(q) || qn.includes(q) || rel.includes(q);
 		});
+
 		if (matchedNode) {
 			if (engineRef.current) {
 				engineRef.current.triggerMcpSearchTarget(matchedNode.id);
 			}
-			setIsPaused(true);
-			if (cameraRef.current) {
-				cameraRef.current.focusPosition(matchedNode.position, 2.5);
+
+			// Somente anima o movimento de foco e centraliza a câmera se a rotação dinâmica estiver ATIVADA
+			if (!isPaused && cameraRef.current) {
+				cameraRef.current.focusPosition(matchedNode.position, 2.3);
 			}
+
 			setInspectedNode(matchedNode);
 		}
-	}, [effectiveQuery, vectorNodes]);
+	}, [effectiveQuery, vectorNodes, isPaused]);
 
 	// Ações Rápidas de Produtividade para o Provider e Desenvolvedor
 	const handleOpenFile = async (node: HermesVectorNode) => {
@@ -253,7 +293,10 @@ export function NeuralCorePanel() {
 		if (matchedWs) {
 			store.activateWorkspaceFromRoute({ id: matchedWs.id, projectId: matchedWs.projectId });
 			await openFileInTab(matchedWs.id, node.path, "keep");
-			toast.success(`Chaveado para projeto [${node.projectSlug || matchedWs.projectId}]`, node.relPath);
+			toast.success(
+				`Chaveado para projeto [${node.projectSlug || matchedWs.projectId}]`,
+				node.relPath,
+			);
 			return;
 		}
 
@@ -267,8 +310,11 @@ export function NeuralCorePanel() {
 					const projectWorkspaces = updatedStore.workspaces[openedProject.id] || [];
 					const targetWs = projectWorkspaces[0];
 					if (targetWs) {
-						updatedStore.activateWorkspaceFromRoute({ id: targetWs.id, projectId: targetWs.projectId });
-					await openFileInTab(targetWs.id, node.path, "keep");
+						updatedStore.activateWorkspaceFromRoute({
+							id: targetWs.id,
+							projectId: targetWs.projectId,
+						});
+						await openFileInTab(targetWs.id, node.path, "keep");
 						toast.success(`Projeto [${node.projectSlug}] aberto no ThinkRail`, node.relPath);
 						return;
 					}
@@ -340,9 +386,7 @@ export function NeuralCorePanel() {
 	// Aplica filtro de módulos no motor 3D
 	const handleToggleModule = (modName: string) => {
 		setSelectedModules((prev) => {
-			const next = prev.includes(modName)
-				? prev.filter((m) => m !== modName)
-				: [...prev, modName];
+			const next = prev.includes(modName) ? prev.filter((m) => m !== modName) : [...prev, modName];
 			if (engineRef.current) {
 				engineRef.current.setVisibleModules(next);
 			}
@@ -358,21 +402,67 @@ export function NeuralCorePanel() {
 	};
 
 	// Resultados da Busca com Autocomplete (estilo Graphify search-results)
+	// Combina nós locais da cena 3D com resultados remotos do SQLite sob demanda
 	const searchMatches = useMemo(() => {
 		if (!manualQuery.trim()) return [];
 		const q = manualQuery.toLowerCase().trim();
-		return vectorNodes
-			.filter((n) => {
-				const p = (n.path || "").toLowerCase();
-				const qn = (n.qualifiedName || "").toLowerCase();
-				const rel = (n.relPath || "").toLowerCase();
-				const hasMethod = (n.methods || []).some((m) =>
-					m.name.toLowerCase().includes(q),
-				);
-				return p.includes(q) || qn.includes(q) || rel.includes(q) || hasMethod;
-			})
-			.slice(0, 10);
-	}, [manualQuery, vectorNodes]);
+		const localMatches = vectorNodes.filter((n) => {
+			const p = (n.path || "").toLowerCase();
+			const qn = (n.qualifiedName || "").toLowerCase();
+			const rel = (n.relPath || "").toLowerCase();
+			const hasMethod = (n.methods || []).some((m) => m.name.toLowerCase().includes(q));
+			return p.includes(q) || qn.includes(q) || rel.includes(q) || hasMethod;
+		});
+
+		// Adiciona nós remotos encontrados sem duplicar id
+		const seen = new Set(localMatches.map((m) => m.id));
+		const merged = [...localMatches];
+		for (const rem of remoteSearchMatches) {
+			if (!seen.has(rem.id)) {
+				merged.push(rem);
+				seen.add(rem.id);
+			}
+		}
+		return merged.slice(0, 15);
+	}, [manualQuery, vectorNodes, remoteSearchMatches]);
+
+	// Busca dinâmica no SQLite do Hermes RAG quando o usuário digita (nós e chunks)
+	useEffect(() => {
+		const q = manualQuery.trim();
+		if (!q || q.length < 2) {
+			setRemoteSearchMatches([]);
+			setSearchChunks([]);
+			return;
+		}
+
+		const timer = setTimeout(async () => {
+			setIsSearchingRemote(true);
+			try {
+				const [nodeRes, chunkRes] = await Promise.all([
+					getTransport().request("hermes.searchGraphNodes", {
+						query: q,
+						limit: 20,
+					}),
+					getTransport().request("hermes.getNodeChunks", {
+						path: q,
+						limit: 30,
+					}),
+				]);
+				if (nodeRes && Array.isArray(nodeRes.nodes)) {
+					setRemoteSearchMatches(nodeRes.nodes);
+				}
+				if (chunkRes && Array.isArray(chunkRes.chunks)) {
+					setSearchChunks(chunkRes.chunks);
+				}
+			} catch (err) {
+				console.warn("[NeuralCorePanel] Erro na busca remota de nós e chunks:", err);
+			} finally {
+				setIsSearchingRemote(false);
+			}
+		}, 180);
+
+		return () => clearTimeout(timer);
+	}, [manualQuery]);
 
 	// Ações de Câmera (Graphify navigation controls)
 	const handleZoomIn = () => {
@@ -404,6 +494,16 @@ export function NeuralCorePanel() {
 		toast.info("Visão Zenital PCB Ativada", "Plano de circuito impresso de nós");
 	};
 
+	const handleFitAll = useCallback(() => {
+		if (vectorNodes.length > 0) {
+			const positions = vectorNodes.map((n) => n.position);
+			cameraRef.current?.fitBounds(positions);
+			toast.info("Enquadramento Global (Fit All)", "Todos os nós ajustados no campo de visão");
+		} else {
+			cameraRef.current?.reset();
+		}
+	}, [vectorNodes]);
+
 	const handleResetView = () => {
 		cameraRef.current?.reset();
 		setSelectedNode(null);
@@ -419,7 +519,47 @@ export function NeuralCorePanel() {
 		});
 	};
 
+	// Atalhos de Teclado Globais do Neural Core (F: Fit All, R: Reset, +/-: Zoom, Espaço: Pausar/Girar)
+	useEffect(() => {
+		const handleKeyDown = (e: KeyboardEvent) => {
+			const target = e.target as HTMLElement | null;
+			if (target && (target.tagName === "INPUT" || target.tagName === "TEXTAREA")) {
+				return;
+			}
+
+			if (e.key === "f" || e.key === "F") {
+				e.preventDefault();
+				handleFitAll();
+			} else if ((e.key === "r" || e.key === "R") && !e.ctrlKey && !e.metaKey) {
+				e.preventDefault();
+				handleResetView();
+			} else if (e.key === "+" || e.key === "=") {
+				e.preventDefault();
+				handleZoomIn();
+			} else if (e.key === "-" || e.key === "_") {
+				e.preventDefault();
+				handleZoomOut();
+			} else if (e.key === " " && !e.repeat) {
+				e.preventDefault();
+				handleTogglePause();
+			}
+		};
+
+		window.addEventListener("keydown", handleKeyDown);
+		return () => window.removeEventListener("keydown", handleKeyDown);
+	}, [handleFitAll]);
+
 	const handleFocusNode = (node: HermesVectorNode) => {
+		// Se o nó ainda não estiver na cena 3D atual, adiciona-o dinamicamente
+		setVectorNodes((prev) => {
+			if (prev.some((n) => n.id === node.id)) return prev;
+			const next = [...prev, node];
+			if (engineRef.current) {
+				engineRef.current.setVectorGraphData(next, vectorEdges);
+			}
+			return next;
+		});
+
 		setSelectedNode(node);
 		setInspectedNode(node);
 		if (engineRef.current) {
@@ -471,6 +611,36 @@ export function NeuralCorePanel() {
 	// Nó ativo para exibição no painel fixo inferior (hover tem prioridade momentânea sobre clique)
 	const activeNode = inspectedNode || selectedNode;
 
+	// Carrega todos os chunks gravados no banco SQLite para a classe/nó ativo
+	const loadNodeChunks = useCallback(async (node: HermesVectorNode) => {
+		setIsLoadingNodeChunks(true);
+		try {
+			const res = await getTransport().request("hermes.getNodeChunks", {
+				nodeId: node.id,
+				path: node.path || node.relPath,
+				limit: 60,
+			});
+			if (res && Array.isArray(res.chunks)) {
+				setNodeChunks(res.chunks);
+			} else {
+				setNodeChunks([]);
+			}
+		} catch (err) {
+			console.warn("[NeuralCorePanel] Erro ao carregar chunks da classe:", err);
+			setNodeChunks([]);
+		} finally {
+			setIsLoadingNodeChunks(false);
+		}
+	}, []);
+
+	useEffect(() => {
+		if (activeNode) {
+			void loadNodeChunks(activeNode);
+		} else {
+			setNodeChunks([]);
+		}
+	}, [activeNode?.id, activeNode?.path, loadNodeChunks]);
+
 	// Conexões Vizinhos 1-Hop (Graphify Connected Nodes)
 	const activeNeighbors = useMemo(() => {
 		if (!activeNode || vectorNodes.length === 0) return [];
@@ -520,9 +690,7 @@ export function NeuralCorePanel() {
 							}`}
 						>
 							<span className={`size-6 rounded-full shrink-0 ${modStyle.dot}`} />
-							<span className="tr-code-text leading-none whitespace-nowrap">
-								{item.label}
-							</span>
+							<span className="tr-code-text leading-none whitespace-nowrap">{item.label}</span>
 							{item.isSearchingTarget ? (
 								<span className="tr-code-text rounded bg-feedback-warning text-container-workspace-bg tr-text-emphasis px-4 py-2 leading-none">
 									⚡ ALVO MCP
@@ -650,10 +818,20 @@ export function NeuralCorePanel() {
 
 					<button
 						type="button"
+						className="size-28 flex items-center justify-center rounded p-0 text-text-muted hover:text-primary hover:bg-control-bg transition-colors"
+						onClick={handleFitAll}
+						title="Enquadrar Todos os Nós (Fit All - Tecla F)"
+						aria-label="Enquadrar Todos os Nós"
+					>
+						<RiFocus3Line className="size-14" />
+					</button>
+
+					<button
+						type="button"
 						className="size-28 flex items-center justify-center rounded p-0 text-text-muted hover:text-text-default hover:bg-control-bg transition-colors"
 						onClick={handleResetView}
-						title="Centralizar Visão / Reset (Fit View)"
-						aria-label="Centralizar Visão"
+						title="Centralizar Visão Inicial (Reset - Tecla R)"
+						aria-label="Centralizar Visão Inicial"
 					>
 						<RiRefreshLine className="size-14" />
 					</button>
@@ -685,333 +863,296 @@ export function NeuralCorePanel() {
 								: "text-text-muted hover:text-text-default hover:bg-control-bg"
 						}`}
 						onClick={() => setIsBottomPanelCompletelyHidden((h) => !h)}
-						title={isBottomPanelCompletelyHidden ? "Exibir Caixa de Informações Inferior" : "Esconder Completamente a Caixa Inferior (Modo Tela Cheia 3D)"}
+						title={
+							isBottomPanelCompletelyHidden
+								? "Exibir Caixa de Informações Inferior"
+								: "Esconder Completamente a Caixa Inferior (Modo Tela Cheia 3D)"
+						}
 						aria-label="Esconder ou Exibir Caixa de Informações Inferior"
 					>
-						{isBottomPanelCompletelyHidden ? <RiEyeLine className="size-14" /> : <RiEyeOffLine className="size-14" />}
+						{isBottomPanelCompletelyHidden ? (
+							<RiEyeLine className="size-14" />
+						) : (
+							<RiEyeOffLine className="size-14" />
+						)}
 					</button>
 				</div>
 			</div>
 
 			{/* Painel Inferior de Informações (Alternável: Expandido / Recolhido / Oculto) */}
 			{!isBottomPanelCompletelyHidden && (
-			<div className="relative z-20 mt-auto p-12 pointer-events-none">
-				{isBottomPanelCollapsed ? (
-					/* Barra Compacta Minimizada (Visual Zen 3D) */
-					<div className="mx-auto max-w-[1080px] pointer-events-auto rounded-lg border border-border-default bg-container-elevated-bg px-12 py-6 shadow-xl backdrop-blur-md transition-all flex items-center justify-between gap-8">
-						<div className="flex items-center gap-8 min-w-0">
-							<button
-								type="button"
-								onClick={() => setIsBottomPanelCollapsed(false)}
-								className="flex items-center gap-4 rounded bg-control-bg px-8 py-4 tr-text-ui text-text-default hover:text-primary transition-colors cursor-pointer"
-								title="Expandir Caixa de Informações"
-							>
-								<RiArrowUpSLine className="size-14 text-primary" />
-								<span>Mostrar Informações</span>
-							</button>
+				<div className="relative z-20 mt-auto p-12 pointer-events-none">
+					{isBottomPanelCollapsed ? (
+						/* Barra Compacta Minimizada (Visual Zen 3D) */
+						<div className="mx-auto max-w-[1080px] pointer-events-auto rounded-lg border border-border-default bg-container-elevated-bg px-12 py-6 shadow-xl backdrop-blur-md transition-all flex items-center justify-between gap-8">
+							<div className="flex items-center gap-8 min-w-0">
+								<button
+									type="button"
+									onClick={() => setIsBottomPanelCollapsed(false)}
+									className="flex items-center gap-4 rounded bg-control-bg px-8 py-4 tr-text-ui text-text-default hover:text-primary transition-colors cursor-pointer"
+									title="Expandir Caixa de Informações"
+								>
+									<RiArrowUpSLine className="size-14 text-primary" />
+									<span>Mostrar Informações</span>
+								</button>
 
-							{activeNode && (
-								<div className="flex items-center gap-6 min-w-0 truncate">
-									<span className="size-6 rounded-full bg-primary shrink-0" />
-									<span className="tr-code-text text-primary truncate max-w-[280px]">
-										{activeNode.qualifiedName || activeNode.relPath}
-									</span>
-									<span className="tr-text-metadata text-text-muted truncate hidden sm:inline">
-										({activeNode.module})
-									</span>
-								</div>
-							)}
-						</div>
-
-						<div className="flex items-center gap-8 tr-text-metadata text-text-muted select-none shrink-0">
-							<span className="hidden sm:inline">[Botão Direito / Shift+Drag: Pan]</span>
-							<span className="hidden sm:inline">·</span>
-							<span>{totalChunks.toLocaleString()} chunks RAG</span>
-							<button
-								type="button"
-								onClick={() => setIsBottomPanelCompletelyHidden(true)}
-								className="size-24 flex items-center justify-center rounded p-0 text-text-muted hover:text-text-default hover:bg-control-bg transition-colors"
-								title="Ocultar Completamente a Caixa de Informações"
-							>
-								<RiEyeOffLine className="size-12" />
-							</button>
-						</div>
-					</div>
-				) : (
-					/* Caixa de Informações Completa Expandida (Graphify Dashboard) */
-					<div className="mx-auto max-w-[1080px] pointer-events-auto rounded-lg border border-border-default bg-container-elevated-bg p-12 shadow-2xl backdrop-blur-md transition-all flex flex-col gap-8">
-						{/* Barra de Busca com Autocomplete e Filtro de Comunidades */}
-						<div className="flex flex-wrap items-center justify-between gap-8 border-b border-border-default pb-8">
-							{/* Input de Busca com Dropdown Inteligente */}
-							<div className="relative flex-1 min-w-[240px] max-w-[420px]">
-								<div className="flex items-center gap-6 rounded border border-border-default bg-container-workspace-bg px-8 py-4 focus-within:border-primary transition-colors">
-									<RiSearchLine className="size-14 text-text-muted shrink-0" />
-									<input
-										type="text"
-										value={manualQuery}
-										onChange={(e) => {
-											setManualQuery(e.target.value);
-											setIsSearchOpen(true);
-										}}
-										onFocus={() => setIsSearchOpen(true)}
-										placeholder="Buscar classe, arquivo ou método (Fly to)..."
-										className="bg-transparent tr-code-text text-text-default placeholder:text-text-muted outline-none w-full"
-									/>
-									{manualQuery && (
-										<button
-											type="button"
-											onClick={() => setManualQuery("")}
-											className="text-text-muted hover:text-text-default p-2"
-										>
-											<RiCloseLine className="size-12" />
-										</button>
-									)}
-								</div>
-
-								{/* Dropdown de Resultados da Busca (Graphify Search Results) */}
-								{isSearchOpen && searchMatches.length > 0 && (
-									<div className="absolute bottom-full left-0 right-0 mb-4 max-h-[220px] overflow-y-auto rounded-md border border-border-default bg-container-elevated-bg p-4 shadow-xl z-50 flex flex-col gap-2">
-										{searchMatches.map((n) => {
-											const modStyle = getModuleClasses(n.module);
-											return (
-												<div
-													key={n.id}
-													onClick={() => {
-														handleFocusNode(n);
-														setIsSearchOpen(false);
-													}}
-													className={`flex items-center justify-between rounded px-8 py-4 hover:bg-control-bg cursor-pointer transition-colors group border-l-2 ${modStyle.border}`}
-												>
-													<div className="flex items-center gap-6 min-w-0">
-														<span className="tr-code-text text-text-default group-hover:text-primary truncate">
-															{n.qualifiedName || n.relPath}
-														</span>
-														<span className="tr-text-metadata text-text-muted truncate hidden sm:inline">
-															{n.module}
-														</span>
-													</div>
-													<RiArrowRightLine className="size-12 text-text-muted group-hover:text-primary shrink-0" />
-												</div>
-											);
-										})}
+								{activeNode && (
+									<div className="flex items-center gap-6 min-w-0 truncate">
+										<span className="size-6 rounded-full bg-primary shrink-0" />
+										<span className="tr-code-text text-primary truncate max-w-[280px]">
+											{activeNode.qualifiedName || activeNode.relPath}
+										</span>
+										<span className="tr-text-metadata text-text-muted truncate hidden sm:inline">
+											({activeNode.module})
+										</span>
 									</div>
 								)}
 							</div>
 
-							{/* Legenda de Módulos / Comunidades com Filtros Interativos e Botão Ocultar */}
-							<div className="flex items-center gap-6 overflow-x-auto no-scrollbar py-2">
+							<div className="flex items-center gap-8 tr-text-metadata text-text-muted select-none shrink-0">
+								<span className="hidden sm:inline">[Botão Direito / Shift+Drag: Pan]</span>
+								<span className="hidden sm:inline">·</span>
+								<span>{totalChunks.toLocaleString()} chunks RAG</span>
 								<button
 									type="button"
-									onClick={handleSelectAllModules}
-									className={`rounded px-6 py-2 tr-text-ui transition-colors ${
-										selectedModules.length === 0
-											? "bg-primary text-text-on-primary"
-											: "bg-control-bg text-text-muted hover:text-text-default"
-									}`}
+									onClick={() => setIsBottomPanelCompletelyHidden(true)}
+									className="size-24 flex items-center justify-center rounded p-0 text-text-muted hover:text-text-default hover:bg-control-bg transition-colors"
+									title="Ocultar Completamente a Caixa de Informações"
 								>
-									Todos ({vectorNodes.length})
+									<RiEyeOffLine className="size-12" />
 								</button>
-
-								{availableModules.map((m) => {
-									const isActive = selectedModules.includes(m.name);
-									return (
-										<button
-											key={m.name}
-											type="button"
-											onClick={() => handleToggleModule(m.name)}
-											className={`flex items-center gap-4 rounded border px-6 py-2 tr-code-text shrink-0 transition-colors ${
-												isActive
-													? "bg-container-workspace-bg border-primary text-text-default shadow-sm"
-													: "border-border-default text-text-muted hover:text-text-default"
-											}`}
-										>
-											<span className={`size-6 rounded-full shrink-0 ${m.classes.dot}`} />
-											<span>{m.name}</span>
-											<span className="tr-text-metadata text-text-muted">({m.count})</span>
-										</button>
-									);
-								})}
-
-								{/* Botão para Esconder a Caixa de Informações */}
-								<div className="flex items-center gap-2 ml-auto shrink-0">
-									<button
-										type="button"
-										onClick={() => setIsBottomPanelCompletelyHidden(true)}
-										className="size-28 flex items-center justify-center rounded p-0 text-text-muted hover:text-text-default hover:bg-control-bg transition-colors"
-										title="Ocultar Completamente (Visual Tela Cheia 3D)"
-										aria-label="Ocultar Completamente Caixa de Informações"
-									>
-										<RiEyeOffLine className="size-14" />
-									</button>
-
-									<button
-										type="button"
-										onClick={() => setIsBottomPanelCollapsed(true)}
-										className="size-28 flex items-center justify-center rounded p-0 text-text-muted hover:text-text-default hover:bg-control-bg transition-colors"
-										title="Recolher Caixa de Informações"
-										aria-label="Recolher Caixa de Informações"
-									>
-										<RiArrowDownSLine className="size-16" />
-									</button>
-								</div>
 							</div>
-						</div>
-
-					{/* Conteúdo do Nó em Foco / Selecionado */}
-					{activeNode ? (
-						<div className="flex flex-col gap-8">
-							{/* Linha Principal: Identificação do Nó e Botões de Ação */}
-							<div className="flex flex-wrap items-center justify-between gap-8 border-b border-border-default pb-8">
-								<div className="flex items-center gap-8 min-w-0">
-									<span className="rounded bg-control-bg px-6 py-2 tr-code-text text-primary uppercase">
-										{activeNode.language || "code"}
-									</span>
-									<span className="tr-text-emphasis text-primary truncate max-w-[340px]">
-										{activeNode.qualifiedName || activeNode.relPath}
-									</span>
-									<span className="tr-code-text text-text-muted truncate max-w-[220px] hidden sm:inline">
-										{activeNode.relPath}
-									</span>
-								</div>
-
-								{/* Ações Operacionais Compactas */}
-								<div className="flex items-center gap-4">
-									<Button
-										size="s"
-										variant="primary"
-										className="gap-4 tr-text-ui px-8"
-										onClick={() => handleOpenFile(activeNode)}
-									>
-										<RiFileCodeLine className="size-12" />
-										Abrir
-									</Button>
-
-									<Button
-										size="s"
-										variant="outline"
-										className="gap-4 tr-text-ui px-8 border-border-default"
-										onClick={() => handleInjectContext(activeNode)}
-									>
-										<RiChatQuoteLine className="size-12 text-feedback-info" />
-										Injetar Chat
-									</Button>
-
-									<Button
-										size="s"
-										variant="outline"
-										className="gap-4 tr-text-ui px-8 border-border-default"
-										onClick={() => handleAskAgent(activeNode)}
-									>
-										<RiRobot2Line className="size-12 text-feedback-warning" />
-										Analisar
-									</Button>
-
-									<Button
-										size="s"
-										variant="ghost"
-										className="gap-4 tr-text-ui px-6"
-										onClick={() => handleFocusNode(activeNode)}
-									>
-										<RiFocus3Line className="size-12 text-primary" />
-										Focar
-									</Button>
-
-									<Button
-										size="s"
-										variant="ghost"
-										className="gap-4 tr-text-ui px-6"
-										onClick={() => handleCopyPath(activeNode)}
-									>
-										<RiFileCopyLine className="size-12 text-text-muted" />
-									</Button>
-
-									{selectedNode && (
-										<button
-											type="button"
-											onClick={() => setSelectedNode(null)}
-											className="rounded p-2 text-text-muted hover:text-text-default ml-2"
-											title="Desmarcar seleção fixa"
-										>
-											<RiCloseLine className="size-14" />
-										</button>
-									)}
-								</div>
-							</div>
-
-							{/* Vizinhos Conectados 1-Hop (Graphify Connected Nodes) */}
-							{activeNeighbors.length > 0 && (
-								<div className="flex items-center gap-8 overflow-x-auto py-2 no-scrollbar border-t border-border-default pt-6">
-									<span className="tr-text-metadata text-text-muted shrink-0 select-none flex items-center gap-4">
-										<RiNodeTree className="size-12 text-primary" />
-										Vizinhos Conectados ({activeNeighbors.length}):
-									</span>
-									<div className="flex items-center gap-4">
-										{activeNeighbors.map((nb) => {
-											const nbStyle = getModuleClasses(nb.module);
-											return (
-												<button
-													key={nb.id}
-													type="button"
-													onClick={() => handleFocusNode(nb)}
-													className={`flex items-center gap-4 rounded border border-border-default bg-container-workspace-bg px-6 py-2 tr-code-text text-text-default hover:border-primary shrink-0 transition-colors border-l-2 ${nbStyle.border}`}
-													title={`Focar em ${nb.qualifiedName || nb.relPath}`}
-												>
-													<span>{nb.qualifiedName || nb.relPath}</span>
-												</button>
-											);
-										})}
-									</div>
-								</div>
-							)}
-
-							{/* Sub-Órbitas: Métodos e Funções Filhos da Classe com Scroll Horizontal */}
-							{activeNode.methods && activeNode.methods.length > 0 && (
-								<div className="flex items-center gap-8 overflow-x-auto py-2 no-scrollbar">
-									<span className="tr-text-metadata text-text-muted shrink-0 select-none">
-										Sub-Órbitas ({activeNode.methods.length}):
-									</span>
-									<div className="flex items-center gap-4">
-										{activeNode.methods.map((m: any) => (
-											<span
-												key={m.id}
-												className="rounded bg-container-workspace-bg border border-border-default px-6 py-2 tr-code-text text-text-default hover:border-primary cursor-pointer shrink-0 transition-colors"
-												title={m.signature || m.name}
-												onClick={() => setManualQuery(m.name)}
-											>
-												• {m.name}()
-											</span>
-										))}
-									</div>
-								</div>
-							)}
-
-							{/* Snippet de Código Compacto com Scroll */}
-							{activeNode.contentSnippet && (
-								<div className="max-h-[56px] overflow-y-auto rounded bg-container-workspace-bg p-6 border border-border-default">
-									<pre className="tr-code-text text-text-muted whitespace-pre-wrap select-text">
-										{activeNode.contentSnippet}
-									</pre>
-								</div>
-							)}
 						</div>
 					) : (
-						<div className="flex items-center justify-between tr-text-metadata text-text-muted select-none px-4">
-							<span className="flex items-center gap-6">
-								<RiFocus3Line className="size-12 text-primary" />
-								Passe o mouse ou clique em qualquer nó para inspecionar conexões e métodos
-							</span>
-							<div className="flex items-center gap-8">
-								<span>[Botão Direito / Shift+Drag: Pan]</span>
-								<span>·</span>
-								<span>[Scroll: Zoom]</span>
-								<span>·</span>
-								<span>{totalChunks.toLocaleString()} chunks RAG</span>
+						/* Caixa de Informações Completa Expandida (Graphify Dashboard) */
+						<div className="mx-auto max-w-[1080px] pointer-events-auto rounded-lg border border-border-default bg-container-elevated-bg p-12 shadow-2xl backdrop-blur-md transition-all flex flex-col gap-8 max-h-[58vh] min-h-0 overflow-hidden">
+							{/* Barra de Busca com Autocomplete e Filtro de Comunidades */}
+							<div className="flex flex-wrap items-center justify-between gap-8 border-b border-border-default pb-8 shrink-0">
+								{/* Caixa de Busca com Dropdown Particionado (Nós e Chunks) */}
+								<NeuralCoreSearchBox
+									query={manualQuery}
+									onQueryChange={setManualQuery}
+									isSearchingRemote={isSearchingRemote}
+									searchMatches={searchMatches}
+									searchChunks={searchChunks}
+									onSelectNode={handleFocusNode}
+									onSelectChunk={(chunk) => {
+										const matchedNode = vectorNodes.find(
+											(n) => n.path === chunk.path || n.relPath === chunk.relPath,
+										);
+										if (matchedNode) {
+											handleFocusNode(matchedNode);
+										}
+										setActiveInfoTab("chunks");
+									}}
+									getModuleClasses={getModuleClasses}
+								/>
+
+								{/* Legenda de Módulos / Comunidades com Filtros Interativos e Botão Ocultar */}
+								<div className="flex items-center gap-6 overflow-x-auto no-scrollbar py-2">
+									<button
+										type="button"
+										onClick={handleSelectAllModules}
+										className={`rounded px-6 py-2 tr-text-ui transition-colors ${
+											selectedModules.length === 0
+												? "bg-primary text-text-on-primary"
+												: "bg-control-bg text-text-muted hover:text-text-default"
+										}`}
+									>
+										Todos ({vectorNodes.length})
+									</button>
+
+									{availableModules.map((m) => {
+										const isActive = selectedModules.includes(m.name);
+										return (
+											<button
+												key={m.name}
+												type="button"
+												onClick={() => handleToggleModule(m.name)}
+												className={`flex items-center gap-4 rounded border px-6 py-2 tr-code-text shrink-0 transition-colors ${
+													isActive
+														? "bg-container-workspace-bg border-primary text-text-default shadow-sm"
+														: "border-border-default text-text-muted hover:text-text-default"
+												}`}
+											>
+												<span className={`size-6 rounded-full shrink-0 ${m.classes.dot}`} />
+												<span>{m.name}</span>
+												<span className="tr-text-metadata text-text-muted">({m.count})</span>
+											</button>
+										);
+									})}
+
+									{/* Botão para Esconder a Caixa de Informações */}
+									<div className="flex items-center gap-2 ml-auto shrink-0">
+										<button
+											type="button"
+											onClick={() => setIsBottomPanelCompletelyHidden(true)}
+											className="size-28 flex items-center justify-center rounded p-0 text-text-muted hover:text-text-default hover:bg-control-bg transition-colors"
+											title="Ocultar Completamente (Visual Tela Cheia 3D)"
+											aria-label="Ocultar Completamente Caixa de Informações"
+										>
+											<RiEyeOffLine className="size-14" />
+										</button>
+
+										<button
+											type="button"
+											onClick={() => setIsBottomPanelCollapsed(true)}
+											className="size-28 flex items-center justify-center rounded p-0 text-text-muted hover:text-text-default hover:bg-control-bg transition-colors"
+											title="Recolher Caixa de Informações"
+											aria-label="Recolher Caixa de Informações"
+										>
+											<RiArrowDownSLine className="size-16" />
+										</button>
+									</div>
+								</div>
 							</div>
+
+							{/* Conteúdo do Nó em Foco / Selecionado */}
+							{activeNode ? (
+								<div className="flex flex-col gap-8 min-h-0 flex-1 overflow-hidden">
+									{/* Linha Principal: Identificação do Nó e Botões de Ação */}
+									<div className="flex flex-wrap items-center justify-between gap-8 border-b border-border-default pb-8 shrink-0">
+										<div className="flex items-center gap-8 min-w-0">
+											<span className="rounded bg-control-bg px-6 py-2 tr-code-text text-primary uppercase">
+												{activeNode.language || "code"}
+											</span>
+											<span className="tr-text-emphasis text-primary truncate max-w-[340px]">
+												{activeNode.qualifiedName || activeNode.relPath}
+											</span>
+											<span className="tr-code-text text-text-muted truncate max-w-[220px] hidden sm:inline">
+												{activeNode.relPath}
+											</span>
+										</div>
+
+										{/* Ações Operacionais Compactas */}
+										<div className="flex items-center gap-4">
+											<Button
+												size="s"
+												variant="primary"
+												className="gap-4 tr-text-ui px-8"
+												onClick={() => handleOpenFile(activeNode)}
+											>
+												<RiFileCodeLine className="size-12" />
+												Abrir
+											</Button>
+
+											<Button
+												size="s"
+												variant="outline"
+												className="gap-4 tr-text-ui px-8 border-border-default"
+												onClick={() => handleInjectContext(activeNode)}
+											>
+												<RiChatQuoteLine className="size-12 text-feedback-info" />
+												Injetar Chat
+											</Button>
+
+											<Button
+												size="s"
+												variant="outline"
+												className="gap-4 tr-text-ui px-8 border-border-default"
+												onClick={() => handleAskAgent(activeNode)}
+											>
+												<RiRobot2Line className="size-12 text-feedback-warning" />
+												Analisar
+											</Button>
+
+											<Button
+												size="s"
+												variant="ghost"
+												className="gap-4 tr-text-ui px-6"
+												onClick={() => handleFocusNode(activeNode)}
+											>
+												<RiFocus3Line className="size-12 text-primary" />
+												Focar
+											</Button>
+
+											<Button
+												size="s"
+												variant="ghost"
+												className="gap-4 tr-text-ui px-6"
+												onClick={() => handleCopyPath(activeNode)}
+											>
+												<RiFileCopyLine className="size-12 text-text-muted" />
+											</Button>
+
+											{selectedNode && (
+												<button
+													type="button"
+													onClick={() => setSelectedNode(null)}
+													className="rounded p-2 text-text-muted hover:text-text-default ml-2 cursor-pointer"
+													title="Desmarcar seleção fixa"
+												>
+													<RiCloseLine className="size-14" />
+												</button>
+											)}
+										</div>
+									</div>
+
+									{/* Barra de Seleção de Abas do Nó: Visão Geral vs Chunks Registrados */}
+									<div className="flex items-center gap-6 border-b border-border-default pb-4 shrink-0">
+										<button
+											type="button"
+											onClick={() => setActiveInfoTab("details")}
+											className={`flex items-center gap-4 px-8 py-2 rounded tr-text-ui transition-colors cursor-pointer ${
+												activeInfoTab === "details"
+													? "bg-primary text-text-on-primary shadow-xs tr-text-emphasis"
+													: "text-text-muted hover:text-text-default hover:bg-control-bg"
+											}`}
+										>
+											<RiNodeTree className="size-12" />
+											<span>Visão Geral e Conexões</span>
+										</button>
+
+										<button
+											type="button"
+											onClick={() => setActiveInfoTab("chunks")}
+											className={`flex items-center gap-4 px-8 py-2 rounded tr-text-ui transition-colors cursor-pointer ${
+												activeInfoTab === "chunks"
+													? "bg-primary text-text-on-primary shadow-xs tr-text-emphasis"
+													: "text-text-muted hover:text-text-default hover:bg-control-bg"
+											}`}
+										>
+											<RiDatabase2Line className="size-12" />
+											<span>Chunks Registrados ({nodeChunks.length})</span>
+											{isLoadingNodeChunks && (
+												<RiRefreshLine className="size-12 animate-spin text-feedback-warning" />
+											)}
+										</button>
+									</div>
+
+									{/* Área de Conteúdo Scrollável com Scroll Nativo Desimpedido */}
+									<div className="overflow-y-auto min-h-0 flex-1 pr-2 flex flex-col gap-8">
+										{activeInfoTab === "details" ? (
+											<NeuralCoreNodeOverview
+												activeNode={activeNode}
+												activeNeighbors={activeNeighbors}
+												onFocusNeighbor={handleFocusNode}
+												onSelectMethodQuery={setManualQuery}
+												getModuleClasses={getModuleClasses}
+											/>
+										) : (
+											<NeuralCoreChunksView chunks={nodeChunks} isLoading={isLoadingNodeChunks} />
+										)}
+									</div>
+								</div>
+							) : (
+								<div className="flex items-center justify-between tr-text-metadata text-text-muted select-none px-4">
+									<span className="flex items-center gap-6">
+										<RiFocus3Line className="size-12 text-primary" />
+										Passe o mouse ou clique em qualquer nó para inspecionar conexões e métodos
+									</span>
+									<div className="flex items-center gap-8">
+										<span>[Botão Direito / Shift+Drag: Pan]</span>
+										<span>·</span>
+										<span>[Scroll: Zoom]</span>
+										<span>·</span>
+										<span>{totalChunks.toLocaleString()} chunks RAG</span>
+									</div>
+								</div>
+							)}
 						</div>
 					)}
 				</div>
-				)}
-			</div>
 			)}
 		</div>
 	);
