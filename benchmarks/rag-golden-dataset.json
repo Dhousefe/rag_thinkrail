@@ -115,5 +115,33 @@
       "ChatView"
     ],
     "ground_truth": "Em apps/web/src/chat/tools/SPEC.md e register.ts, os renderizadores de ferramentas da UI sao conectados a ferramentas via registerToolRenderer."
+  },
+  {
+    "id": "tc_09_server-engine_startjinaserver",
+    "question": "Onde reside a especificacao do ciclo de vida e operacao do daemon de embeddings Jina?",
+    "query": "embeddings jina daemon SPEC",
+    "expected_cluster": "server-engine",
+    "expected_files": [
+      "packages/server/src/embeddings/SPEC.md"
+    ],
+    "expected_symbols": [
+      "startJinaServer",
+      "embedTexts"
+    ],
+    "ground_truth": "A especificacao do daemon de embeddings e do ciclo de vida Jina reside em packages/server/src/embeddings/SPEC.md sob o id submodule-server-embeddings."
+  },
+  {
+    "id": "tc_10_server-engine_createcraftengine",
+    "question": "Onde reside a especificacao arquitetural da engine de craft e seus handlers RPC?",
+    "query": "createCraftEngine craft SPEC",
+    "expected_cluster": "server-engine",
+    "expected_files": [
+      "packages/server/src/craft/SPEC.md"
+    ],
+    "expected_symbols": [
+      "createCraftEngine",
+      "registerCraftTools"
+    ],
+    "ground_truth": "A engine de craft e suas ferramentas sao especificadas em packages/server/src/craft/SPEC.md sob o id submodule-server-craft."
   }
 ]

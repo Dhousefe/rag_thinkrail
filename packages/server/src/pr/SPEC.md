@@ -5,7 +5,6 @@ status: draft
 title: pr — push the workspace branch, open/update its GitHub PR, and act on it
 parent: module-server
 depends-on: [submodule-server-branch-review, submodule-server-todos, submodule-server-github]
-implements: [task-open-pr]
 tags: [github, pull-request, public-surface-checked]
 ---
 
