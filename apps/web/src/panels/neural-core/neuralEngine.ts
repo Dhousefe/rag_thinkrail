@@ -730,10 +730,11 @@ export class NeuralCoreEngine {
 	public findNodeUnderScreenCoord(
 		screenX: number,
 		screenY: number,
-		tolerancePx = 11,
+		tolerancePx = 18,
 	): number | null {
 		if (!this.showVectorConstellation || this.vectorNodes.length === 0) return null;
 
+		// Usa as dimensões CSS reais do canvas para coincidir exatamente com os ponteiros do mouse
 		const w = this.canvas.clientWidth || this.canvas.width;
 		const h = this.canvas.clientHeight || this.canvas.height;
 		const cx = w / 2;
@@ -774,9 +775,10 @@ export class NeuralCoreEngine {
 			const dy = screenY - py;
 			const d = Math.sqrt(dx * dx + dy * dy);
 
-			// Tolerância adaptativa baseada no zoom/profundidade (polígonos mais próximos parecem maiores)
-			const approxNodeRadiusPx = Math.max(5, Math.min(15, (0.026 / depth) * scale * 5.6));
-			const dynamicTolerance = Math.min(tolerancePx, approxNodeRadiusPx + 2.5);
+			// Raio aparente do polígono 3D projetado na tela:
+			// Um nó comum tem tamanho s=0.024 a 0.057. Em tela isso corresponde a ~14-30px.
+			const approxNodeRadiusPx = Math.max(12, Math.min(32, (0.055 / depth) * scale * 5.6));
+			const dynamicTolerance = Math.max(tolerancePx, approxNodeRadiusPx + 4.0);
 
 			if (d <= dynamicTolerance) {
 				candidates.push({
@@ -888,6 +890,7 @@ export class NeuralCoreEngine {
 			isSearchingTarget: boolean;
 			methodsCount: number;
 			importanceScore: number;
+			isSelected: boolean;
 		}> = [];
 
 		for (const proj of allProjectedNodes) {
@@ -955,6 +958,7 @@ export class NeuralCoreEngine {
 				isSearchingTarget,
 				methodsCount,
 				importanceScore: score,
+				isSelected,
 			});
 		}
 
@@ -1001,6 +1005,7 @@ export class NeuralCoreEngine {
 			isMatched: c.isMatched,
 			isSearchingTarget: c.isSearchingTarget,
 			methodsCount: c.methodsCount,
+			isSelected: c.isSelected,
 		}));
 	}
 

@@ -4,12 +4,22 @@ export class OrbitCameraController {
 	private dragMode: "orbit" | "pan" = "orbit";
 	private lastMouseX = 0;
 	private lastMouseY = 0;
+	private totalDragDistance = 0;
+	private lastDragEndTime = 0;
 
 	public theta = 0.6;
 	public phi = 0.45;
 	public distance = 5.2;
 	public target: [number, number, number] = [0, 0, 0];
 
+	private cameraSnapshot: {
+		targetX: number;
+		targetY: number;
+		targetZ: number;
+		theta: number;
+		phi: number;
+		distance: number;
+	} | null = null;
 	private flyTarget: {
 		targetX: number;
 		targetY: number;
@@ -34,6 +44,7 @@ export class OrbitCameraController {
 		this.canvas.addEventListener("mousedown", (e) => {
 			this.flyTarget = null; // Interrompe fly-to caso o usuário comece a mover manualmente
 			this.isDragging = true;
+			this.totalDragDistance = 0;
 			this.lastMouseX = e.clientX;
 			this.lastMouseY = e.clientY;
 
@@ -49,6 +60,7 @@ export class OrbitCameraController {
 			if (!this.isDragging) return;
 			const dx = e.clientX - this.lastMouseX;
 			const dy = e.clientY - this.lastMouseY;
+			this.totalDragDistance += Math.hypot(dx, dy);
 			this.lastMouseX = e.clientX;
 			this.lastMouseY = e.clientY;
 
@@ -77,6 +89,9 @@ export class OrbitCameraController {
 		});
 
 		window.addEventListener("mouseup", () => {
+			if (this.totalDragDistance > 4) {
+				this.lastDragEndTime = Date.now();
+			}
 			this.isDragging = false;
 		});
 
@@ -91,6 +106,13 @@ export class OrbitCameraController {
 				this.onUpdate?.();
 			},
 			{ passive: false },
+		);
+	}
+
+	public wasJustDragging(thresholdMs = 250): boolean {
+		return (
+			Date.now() - this.lastDragEndTime < thresholdMs ||
+			(this.isDragging && this.totalDragDistance > 4)
 		);
 	}
 
@@ -202,6 +224,46 @@ export class OrbitCameraController {
 		this.target[1] += diffTy * 0.2;
 		this.target[2] += diffTz * 0.2;
 		this.onUpdate?.();
+	}
+
+	/**
+	 * Salva o estado atual da câmera (posição de foco, ângulo e distância).
+	 * Utilizado antes de selecionar/focar um nó, para permitir restaurar a visualização.
+	 */
+	public saveCameraSnapshot() {
+		this.cameraSnapshot = {
+			targetX: this.target[0],
+			targetY: this.target[1],
+			targetZ: this.target[2],
+			theta: this.theta,
+			phi: this.phi,
+			distance: this.distance,
+		};
+	}
+
+	/**
+	 * Restaura suavemente o estado salvo anteriormente na câmera, se existir.
+	 */
+	public restoreCameraSnapshot(): boolean {
+		if (!this.cameraSnapshot) return false;
+		this.flyTarget = {
+			targetX: this.cameraSnapshot.targetX,
+			targetY: this.cameraSnapshot.targetY,
+			targetZ: this.cameraSnapshot.targetZ,
+			theta: this.cameraSnapshot.theta,
+			phi: this.cameraSnapshot.phi,
+			distance: this.cameraSnapshot.distance,
+		};
+		this.cameraSnapshot = null;
+		this.onUpdate?.();
+		return true;
+	}
+
+	/**
+	 * Limpa o snapshot salvo sem restaurar.
+	 */
+	public clearCameraSnapshot() {
+		this.cameraSnapshot = null;
 	}
 
 	public reset() {

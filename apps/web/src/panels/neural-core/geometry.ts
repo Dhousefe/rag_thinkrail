@@ -883,9 +883,18 @@ export function createVectorConstellationWireframe(
 	}
 
 	// 2. Conexões de arestas k-NN estilo Trilha de Circuito Impresso (PCB Traces Manhattan Routing)
-	// Roteadas em ângulos retos (90° / vias) com elevação de camada de cobre para NUNCA transfixar o corpo dos nós
-	// Pode ser ocultado via toggle para desobstruir a visualização de centenas de classes e polígonos.
+	// Roteadas em ângulos retos (90° / vias) com elevação de camada de cobre para NUNCA transfixar o corpo dos nós.
+	// Conta com Keepout Zone: se a trilha cruzar muito próxima ao corpo de um nó intermediário (die alheio),
+	// ela é rebaixada sob a placa ou esmaecida para não encobrir o polígono nem prejudicar a seleção.
 	if (showPcbLines) {
+		// Pré-calcula posições XZ e raios de keepout dos nós para verificação O(1)/rápida
+		const keepoutNodes = nodes.map((n) => ({
+			x: n.position[0],
+			z: n.position[2],
+			y: n.position[1],
+			radiusSq: 0.055 * 0.055, // Raio de exclusão em torno do centro do die
+		}));
+
 		for (const edge of edges) {
 			if (edge.source >= nodes.length || edge.target >= nodes.length) continue;
 			const n1 = nodes[edge.source];
@@ -901,8 +910,6 @@ export function createVectorConstellationWireframe(
 			const p2 = n2.position;
 
 			// Camada de elevação da trilha (PCB Copper Trace Layer) com separação Multi-Camada (Multi-Layer PCB)
-			// Para evitar cruzamento e sobreposição feia no mesmo plano Y, escalonamos a altura da trilha
-			// em 4 camadas discretas de cobre baseadas no hash dos nós e no tipo de relação.
 			const pairHash = Math.abs((edge.source * 31 + edge.target * 17) % 4);
 			const layerOffset = pairHash * 0.018; // Camadas L1 a L4 (0.000, 0.018, 0.036, 0.054)
 			const traceY = Math.max(p1[1], p2[1]) + 0.038 + layerOffset;
@@ -953,8 +960,6 @@ export function createVectorConstellationWireframe(
 			}
 
 			// Roteamento Ortogonal com Alternância de Eixos (Anti-Colisão Manhattan):
-			// Trilha ímpar desvia primeiro em X, trilha par desvia primeiro em Z.
-			// Isso divide o tráfego espacial pela metade, impedindo linhas colineares cruzadas.
 			const routeOrder = (edge.source + edge.target) % 2 === 0;
 			const midX = p1[0] + (p2[0] - p1[0]) * (0.45 + (pairHash % 3) * 0.05);
 			const midZ = p1[2] + (p2[2] - p1[2]) * (0.45 + (pairHash % 3) * 0.05);
@@ -978,9 +983,38 @@ export function createVectorConstellationWireframe(
 						[p2[0], p2[1], p2[2]],
 					];
 
+			// Verificação de Keepout Zone: se os pontos horizontais intermediários cruzam sobre nós alheios
+			let crossesThirdPartyNode = false;
+			const samplePoints: Array<[number, number]> = [
+				[midX, routeOrder ? p1[2] : midZ],
+				[midX, routeOrder ? p2[2] : midZ],
+			];
+
+			for (let ki = 0; ki < keepoutNodes.length; ki++) {
+				if (ki === edge.source || ki === edge.target) continue;
+				const kn = keepoutNodes[ki]!;
+				for (const [spX, spZ] of samplePoints) {
+					const dx = spX - kn.x;
+					const dz = spZ - kn.z;
+					if (dx * dx + dz * dz < kn.radiusSq) {
+						crossesThirdPartyNode = true;
+						break;
+					}
+				}
+				if (crossesThirdPartyNode) break;
+			}
+
+			// Se a trilha transpassar uma zona de keepout de outro nó, rebaixa seu alfa
+			// drasticamente (para 0.04) ou recua a altura para nunca encobrir visualmente o polígono
+			const effectiveAlpha = crossesThirdPartyNode && !isConnectedToSelected
+				? Math.min(alpha, 0.04)
+				: alpha;
+
 			const baseIdx = vOffset;
 			for (const [tx, ty, tz] of tracePts) {
-				vertexFloats.push(tx, ty, tz, trColR, trColG, trColB, alpha);
+				// Se cruza die alheio, mergulha levemente a trilha para baixo da face do polígono
+				const effectiveY = crossesThirdPartyNode && !isConnectedToSelected ? ty - 0.045 : ty;
+				vertexFloats.push(tx, effectiveY, tz, trColR, trColG, trColB, effectiveAlpha);
 				vOffset++;
 			}
 

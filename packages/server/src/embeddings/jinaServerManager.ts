@@ -1,14 +1,15 @@
-import { spawn, type ChildProcess } from "node:child_process";
+import { type ChildProcess, spawn } from "node:child_process";
 import { existsSync } from "node:fs";
-import { join } from "node:path";
+import { homedir } from "node:os";
+import { join, resolve } from "node:path";
 import type {
 	JinaEngineMode,
 	JinaIntegrityTestResult,
+	JinaRestartInput,
 	JinaServerInfo,
 	JinaServerStatus,
 	JinaStartInput,
 	JinaStopInput,
-	JinaRestartInput,
 } from "@thinkrail/contracts";
 
 /** Buffer circular para logs recentes do servidor Jina (máximo 300 linhas) */
@@ -67,7 +68,9 @@ export class JinaServerManager {
 	private readonly logs = new CircularLogBuffer(300);
 
 	private constructor() {
-		this.startHeartbeatWatcher();
+		if (process.env.NODE_ENV !== "test") {
+			this.startHeartbeatWatcher();
+		}
 	}
 
 	public static getInstance(): JinaServerManager {
@@ -77,12 +80,20 @@ export class JinaServerManager {
 		return JinaServerManager.instance;
 	}
 
+	public static resetInstanceForTesting(): void {
+		if (JinaServerManager.instance) {
+			JinaServerManager.instance.dispose();
+			JinaServerManager.instance = null;
+		}
+	}
+
 	public get baseUrl(): string {
 		return `http://127.0.0.1:${this.port}`;
 	}
 
 	public getInfo(): JinaServerInfo {
-		const uptimeMs = this.status === "running" && this.startTime > 0 ? Date.now() - this.startTime : 0;
+		const uptimeMs =
+			this.status === "running" && this.startTime > 0 ? Date.now() - this.startTime : 0;
 		return {
 			status: this.status,
 			port: this.port,
@@ -112,7 +123,7 @@ export class JinaServerManager {
 		this.logs.push(msg);
 	}
 
-	private startHeartbeatWatcher() {
+	public startHeartbeatWatcher() {
 		if (this.healthInterval) return;
 		this.healthInterval = setInterval(async () => {
 			if (this.isHealthChecking || this.isStarting || this.isStopping) return;
@@ -132,18 +143,63 @@ export class JinaServerManager {
 		}, 3000);
 	}
 
+	public stopHeartbeatWatcher(): void {
+		if (this.healthInterval) {
+			clearInterval(this.healthInterval);
+			this.healthInterval = null;
+		}
+	}
+
+	/**
+	 * Encerra o monitoramento em background e quaisquer processos filhos gerenciados.
+	 */
+	public dispose(): void {
+		this.stopHeartbeatWatcher();
+		this.autoStartEnabled = false;
+		if (this.process) {
+			try {
+				this.process.kill("SIGTERM");
+			} catch {
+				// Processo já encerrado
+			}
+			this.process = null;
+		}
+		this.status = "stopped";
+		this.startTime = 0;
+	}
+
 	/**
 	 * Localiza o script Python api_embeddings.py e o interpretador adequado do venv sem depender de bat.
+	 * Respeita variáveis de ambiente (HERMES_HOME, JINA_EMBEDDINGS_DIR) ou diretórios relativos ao projeto.
 	 */
-	private resolveScriptAndPython(): { scriptPath: string; pythonPath: string; workingDir: string } | null {
-		const possibleDirs = [
-			"D:\\Projeto_Germes\\hermes-3.0",
-			"D:\\Projeto_Germes\\hermes-2.0",
-			join(process.cwd(), "../hermes-3.0"),
-			join(process.cwd(), "../../Projeto_Germes/hermes-3.0"),
-		];
+	private resolveScriptAndPython(): {
+		scriptPath: string;
+		pythonPath: string;
+		workingDir: string;
+	} | null {
+		const envDir =
+			process.env.HERMES_HOME || process.env.HERMES_PATH || process.env.JINA_EMBEDDINGS_DIR;
+		const home = homedir();
+		const cwd = process.cwd();
 
-		for (const baseDir of possibleDirs) {
+		const candidateDirs: string[] = [];
+		if (envDir) {
+			candidateDirs.push(resolve(envDir));
+		}
+
+		// Diretórios relativos ao repositório ou diretórios irmãos usuais
+		candidateDirs.push(
+			resolve(cwd, "hermes"),
+			resolve(cwd, "hermes-3.0"),
+			resolve(cwd, "..", "hermes"),
+			resolve(cwd, "..", "hermes-3.0"),
+			resolve(cwd, "..", "..", "hermes"),
+			resolve(cwd, "..", "..", "hermes-3.0"),
+			resolve(home, ".hermes"),
+			resolve(home, ".hermes", "hermes-3.0"),
+		);
+
+		for (const baseDir of candidateDirs) {
 			const scriptPath = join(baseDir, "api_embeddings.py");
 			if (existsSync(scriptPath)) {
 				const venvPyWin = join(baseDir, "jina-env", "Scripts", "python.exe");
@@ -225,12 +281,15 @@ export class JinaServerManager {
 		this.isStarting = true;
 		this.status = "starting";
 		this.statusMessage = "Iniciando processo do Servidor Jina...";
-		this.logs.push(`[START] Iniciando Jina Embeddings na porta ${this.port} (modo: ${this.mode})...`);
+		this.logs.push(
+			`[START] Iniciando Jina Embeddings na porta ${this.port} (modo: ${this.mode})...`,
+		);
 
 		const resolved = this.resolveScriptAndPython();
 		if (!resolved) {
 			this.status = "error";
-			this.statusMessage = "api_embeddings.py não localizado em D:\\Projeto_Germes\\hermes-3.0";
+			this.statusMessage =
+				"api_embeddings.py não localizado nos diretórios configurados do Hermes.";
 			this.logs.push(`[ERRO] ${this.statusMessage}`);
 			this.isStarting = false;
 			return this.getInfo();
@@ -252,7 +311,9 @@ export class JinaServerManager {
 			});
 
 			this.process = child;
-			this.logs.push(`[SPAWN] Processo PID ${child.pid} iniciado com executável: ${resolved.pythonPath}`);
+			this.logs.push(
+				`[SPAWN] Processo PID ${child.pid} iniciado com executável: ${resolved.pythonPath}`,
+			);
 
 			child.stdout?.on("data", (chunk: Buffer) => {
 				const text = chunk.toString("utf8");
@@ -325,10 +386,17 @@ export class JinaServerManager {
 		// Se houver um processo órfão escutando na porta 9085, tentar matar no Windows se for force
 		if (input?.force && process.platform === "win32") {
 			try {
-				spawn("cmd.exe", ["/c", `for /f "tokens=5" %a in ('netstat -aon ^| findstr :${this.port}') do taskkill /F /PID %a`], {
-					stdio: "ignore",
-					windowsHide: true,
-				});
+				spawn(
+					"cmd.exe",
+					[
+						"/c",
+						`for /f "tokens=5" %a in ('netstat -aon ^| findstr :${this.port}') do taskkill /F /PID %a`,
+					],
+					{
+						stdio: "ignore",
+						windowsHide: true,
+					},
+				);
 			} catch {}
 		}
 

@@ -210,5 +210,57 @@
       "searchGraphNodes"
     ],
     "ground_truth": "A interacao e selecao de arquivos pelo chat no Neural Core so ocorrem quando a rotacao estiver pausada (isPaused === true), preservando a rotacao livre. Se o arquivo do chat nao estiver na cena, e feita busca remota via searchGraphNodes e injecao dinamica. Alem disso, handleFocusNode nao altera mais isPaused, tornando o controle de pausar e retomar 100% exclusivo do usuario."
+  },
+  {
+    "id": "tc_15_web-ui_handledeselectnode",
+    "question": "Como desmarcar nó e tornar rótulo clicável no Neural Core?",
+    "query": "neural core deselect label clickable",
+    "expected_cluster": "web-ui",
+    "expected_files": [
+      "apps/web/src/panels/NeuralCorePanel.tsx",
+      "apps/web/src/panels/neural-core/neuralEngine.ts"
+    ],
+    "expected_symbols": [
+      "handleDeselectNode",
+      "projectedLabels",
+      "triggerMcpSearchTarget"
+    ],
+    "ground_truth": "Tornar rótulos 2D projetados pointer-events-auto com botão X de desseleção substituindo a tag ALVO MCP e limpando triggerMcpSearchTarget(null)"
+  },
+  {
+    "id": "tc_16_web-ui_neuralcoresearchbox",
+    "question": "Como funciona a busca e filtragem semântica granular de chunks e sub-símbolos no Neural Core 3D?",
+    "query": "neural core granular chunks symbols searchbox",
+    "expected_cluster": "web-ui",
+    "expected_files": [
+      "apps/web/src/panels/neural-core/components/NeuralCoreSearchBox.tsx",
+      "apps/web/src/panels/neural-core/components/NeuralCoreChunksView.tsx",
+      "apps/web/src/panels/NeuralCorePanel.tsx"
+    ],
+    "expected_symbols": [
+      "NeuralCoreSearchBox",
+      "NeuralCoreChunksView",
+      "getSymbolKindBadge",
+      "getChunkKindMeta"
+    ],
+    "ground_truth": "A busca do Neural Core categoriza símbolos com badges e filtros por facetas (class, fn, var, type), permitindo navegação por teclado e foco automático na cena 3D ou resolução dinâmica remota via hermes.searchGraphNodes."
+  },
+  {
+    "id": "tc_17_web-ui_wasjustdragging",
+    "question": "Como preservar a selecao de poligonos ao virar a camera e exibir elementos no procurador de descricoes do Neural Core?",
+    "query": "OrbitCameraController wasJustDragging NeuralCoreSearchBox searchMatches",
+    "expected_cluster": "web-ui",
+    "expected_files": [
+      "apps/web/src/panels/NeuralCorePanel.tsx",
+      "apps/web/src/panels/neural-core/cameraController.ts",
+      "apps/web/src/panels/neural-core/components/NeuralCoreSearchBox.tsx"
+    ],
+    "expected_symbols": [
+      "wasJustDragging",
+      "handleCanvasClick",
+      "searchMatches",
+      "NeuralCoreSearchBox"
+    ],
+    "ground_truth": "Rastreia a distancia de arraste em OrbitCameraController com wasJustDragging() para evitar que onClick no canvas cancele a selecao durante rotacao e pan; no procurador de descricoes, remove limite restritivo de 15 para 80 itens, permite busca em snippets e assinaturas e destaca metodos correspondentes."
   }
 ]

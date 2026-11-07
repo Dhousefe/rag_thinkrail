@@ -1,29 +1,31 @@
-import { useState } from "react";
 import {
-	RiHammerLine,
-	RiGlobalLine,
-	RiGamepadLine,
-	RiTerminalBoxLine,
-	RiFolderLine,
 	RiCheckLine,
+	RiEyeLine,
+	RiFolderLine,
+	RiGamepadLine,
+	RiGlobalLine,
+	RiHammerLine,
 	RiPlayFill,
 	RiShieldCheckLine,
-	RiEyeLine,
 	RiSparklingFill,
+	RiTerminalBoxLine,
 } from "@remixicon/react";
 import type {
+	CraftInspectionMode,
 	CraftProjectState,
 	CraftTargetType,
-	CraftInspectionMode,
 	CraftViewportDiff,
 } from "@thinkrail/contracts";
+import { useT } from "@thinkrail/locales/react";
+import { useState } from "react";
 
 export function CraftPanel() {
+	const t = useT();
 	const [target, setTarget] = useState("https://news.ycombinator.com");
 	const [targetType, setTargetType] = useState<CraftTargetType>("website");
 	const [mode, setMode] = useState<CraftInspectionMode>("clean_room");
 	const [targetStack, setTargetStack] = useState("TypeScript / React + Tailwind");
-	const [instructions, setInstructions] = useState("Recriar layout limpo e responsivo mantendo todas as funcionalidades");
+	const [instructions, setInstructions] = useState(t("craft.instructionsPlaceholder"));
 	const [projectState, setProjectState] = useState<CraftProjectState | null>(null);
 	const [activeViewport, setActiveViewport] = useState<"desktop" | "tablet" | "mobile">("desktop");
 	const [isRunning, setIsRunning] = useState(false);
@@ -52,13 +54,18 @@ export function CraftPanel() {
 			},
 			currentStep: "study",
 			steps: [
-				{ step: "study", title: "1. Estudo (Study)", status: "in_progress", startedAt: now },
-				{ step: "build", title: "2. Criação (Build)", status: "pending" },
-				{ step: "verify", title: "3. Verificação (Verify)", status: "pending" },
-				{ step: "ready", title: "4. Pronto (Ready)", status: "pending" },
+				{ step: "study", title: "1. Study", status: "in_progress", startedAt: now },
+				{ step: "build", title: "2. Build", status: "pending" },
+				{ step: "verify", title: "3. Verify", status: "pending" },
+				{ step: "ready", title: "4. Ready", status: "pending" },
 			],
 			feed: [
-				{ kind: "step", step: "study", text: `Iniciando análise do alvo (${mode === "clean_room" ? "Clean Room: isolamento ativado" : "Deep inspection"}).`, timestamp: now },
+				{
+					kind: "step",
+					step: "study",
+					text: `Analyzing target (${mode === "clean_room" ? "Clean Room" : "Deep inspection"}).`,
+					timestamp: now,
+				},
 				{ kind: "user", text: instructions, timestamp: now },
 			],
 			viewportDiffs: dummyDiffs,
@@ -69,9 +76,9 @@ export function CraftPanel() {
 				totalSteps: 3,
 				passedSteps: 3,
 				steps: [
-					{ step: "core_layout", passed: true, detail: "Grid e componentes estruturados" },
-					{ step: "data_binding", passed: true, detail: "Fluxo de dados validado" },
-					{ step: "interaction", passed: true, detail: "Eventos e navegação verificados" },
+					{ step: "core_layout", passed: true, detail: "Layout structured" },
+					{ step: "data_binding", passed: true, detail: "Data binding validated" },
+					{ step: "interaction", passed: true, detail: "Interactions verified" },
 				],
 			},
 			unknowns: [],
@@ -97,7 +104,7 @@ export function CraftPanel() {
 						...prev.feed,
 						{
 							kind: "agent",
-							text: `Gerando código nativo ${targetStack} com Pi Coding Agent...`,
+							text: `Generating native ${targetStack} with Pi Coding Agent...`,
 							timestamp: Date.now(),
 						},
 					],
@@ -122,7 +129,7 @@ export function CraftPanel() {
 						{
 							kind: "step",
 							step: "verify",
-							text: "Calculando métricas visuais e validando --self-test em 3 resoluções...",
+							text: "Calculating visual metrics and validating across 3 viewports...",
 							timestamp: Date.now(),
 						},
 					],
@@ -145,7 +152,7 @@ export function CraftPanel() {
 						...prev.feed,
 						{
 							kind: "agent",
-							text: "Reconstrução concluída! Sua versão nativa atingiu 94.5% de conformidade com o original.",
+							text: "Reconstruction complete! Your native version reached 94.5% conformity with the original.",
 							timestamp: Date.now(),
 						},
 					],
@@ -165,15 +172,13 @@ export function CraftPanel() {
 						<RiHammerLine className="size-5" />
 					</div>
 					<div>
-						<h2 className="tr-text-emphasis text-text-default leading-none">Craft Anything</h2>
-						<p className="tr-text-metadata text-text-muted mt-4">
-							Engenharia reversa e reconstrução de software orientada a Clean-Room e IA
-						</p>
+						<h2 className="tr-text-emphasis text-text-default leading-none">{t("craft.title")}</h2>
+						<p className="tr-text-metadata text-text-muted mt-4">{t("craft.description")}</p>
 					</div>
 				</div>
 				<div className="flex items-center space-x-6 tr-text-metadata px-8 py-4 rounded-md bg-control-bg text-feedback-success">
 					<RiShieldCheckLine className="size-3.5" />
-					<span>Nativo ThinkRail (TypeScript)</span>
+					<span>{t("craft.badgeNative")}</span>
 				</div>
 			</div>
 
@@ -181,13 +186,15 @@ export function CraftPanel() {
 			<div className="bg-container-elevated-bg rounded-lg p-16 border border-border-default space-y-16">
 				<div className="grid grid-cols-2 gap-16">
 					<div>
-						<label className="block tr-text-metadata text-text-muted mb-4">Tipo do Alvo</label>
+						<span className="block tr-text-metadata text-text-muted mb-4">
+							{t("craft.label.targetType")}
+						</span>
 						<div className="flex rounded-md border border-control-border-default overflow-hidden bg-container-workspace-bg tr-text-metadata">
 							{[
-								{ type: "website", label: "Website", icon: RiGlobalLine },
-								{ type: "game", label: "Jogo", icon: RiGamepadLine },
-								{ type: "desktop_app", label: "Desktop", icon: RiTerminalBoxLine },
-								{ type: "directory", label: "Código", icon: RiFolderLine },
+								{ type: "website", label: t("craft.target.website"), icon: RiGlobalLine },
+								{ type: "game", label: t("craft.target.game"), icon: RiGamepadLine },
+								{ type: "desktop_app", label: t("craft.target.desktop"), icon: RiTerminalBoxLine },
+								{ type: "directory", label: t("craft.target.code"), icon: RiFolderLine },
 							].map((item) => {
 								const Icon = item.icon;
 								const selected = targetType === item.type;
@@ -211,7 +218,9 @@ export function CraftPanel() {
 					</div>
 
 					<div>
-						<label className="block tr-text-metadata text-text-muted mb-4">Modo de Isolamento</label>
+						<span className="block tr-text-metadata text-text-muted mb-4">
+							{t("craft.label.mode")}
+						</span>
 						<div className="flex rounded-md border border-control-border-default overflow-hidden bg-container-workspace-bg tr-text-metadata">
 							<button
 								type="button"
@@ -223,7 +232,7 @@ export function CraftPanel() {
 								}`}
 							>
 								<RiShieldCheckLine className="size-3.5" />
-								<span>Clean Room</span>
+								<span>{t("craft.mode.cleanRoom")}</span>
 							</button>
 							<button
 								type="button"
@@ -235,27 +244,36 @@ export function CraftPanel() {
 								}`}
 							>
 								<RiEyeLine className="size-3.5" />
-								<span>Deep Inspection</span>
+								<span>{t("craft.mode.deep")}</span>
 							</button>
 						</div>
 					</div>
 				</div>
 
 				<div>
-					<label className="block tr-text-metadata text-text-muted mb-4">Endereço / Caminho do Alvo</label>
+					<label htmlFor="craft-target" className="block tr-text-metadata text-text-muted mb-4">
+						{t("craft.label.targetAddress")}
+					</label>
 					<input
+						id="craft-target"
 						type="text"
 						value={target}
 						onChange={(e) => setTarget(e.target.value)}
 						className="w-full px-12 py-6 tr-text-ui bg-container-workspace-bg border border-control-border-default rounded-md focus:outline-none focus:border-control-border-active"
-						placeholder="https://site.com ou D:\\app\\binary.exe"
+						placeholder={t("craft.targetAddressPlaceholder")}
 					/>
 				</div>
 
 				<div className="grid grid-cols-2 gap-16">
 					<div>
-						<label className="block tr-text-metadata text-text-muted mb-4">Stack de Destino</label>
+						<label
+							htmlFor="craft-target-stack"
+							className="block tr-text-metadata text-text-muted mb-4"
+						>
+							{t("craft.label.targetStack")}
+						</label>
 						<input
+							id="craft-target-stack"
 							type="text"
 							value={targetStack}
 							onChange={(e) => setTargetStack(e.target.value)}
@@ -263,8 +281,14 @@ export function CraftPanel() {
 						/>
 					</div>
 					<div>
-						<label className="block tr-text-metadata text-text-muted mb-4">Instruções / Customização</label>
+						<label
+							htmlFor="craft-instructions"
+							className="block tr-text-metadata text-text-muted mb-4"
+						>
+							{t("craft.label.instructions")}
+						</label>
 						<input
+							id="craft-instructions"
 							type="text"
 							value={instructions}
 							onChange={(e) => setInstructions(e.target.value)}
@@ -277,10 +301,10 @@ export function CraftPanel() {
 					type="button"
 					disabled={isRunning}
 					onClick={handleStartCraft}
-					className="w-full py-8 bg-control-primary-bg hover:bg-control-primary-bg-hovered text-control-primary-text tr-text-ui rounded-md transition-colors flex items-center justify-center space-x-8 disabled:bg-control-disabled-bg disabled:text-control-disabled-text"
+					className="w-full py-8 bg-control-primary-bg hover:bg-control-primary-bg-hovered text-control-primary-text tr-text-ui rounded-md transition-colors flex items-center justify-center space-x-8 disabled:bg-control-disabled-bg disabled:text-control-disabled-text cursor-pointer"
 				>
 					<RiPlayFill className="size-4" />
-					<span>{isRunning ? "Executando Pipeline..." : "Iniciar Craft Anything"}</span>
+					<span>{isRunning ? t("craft.btn.running") : t("craft.btn.start")}</span>
 				</button>
 			</div>
 
@@ -298,8 +322,8 @@ export function CraftPanel() {
 										isPassed
 											? "border-border-default bg-container-elevated-bg text-feedback-success"
 											: isCurrent
-											? "border-border-default bg-primary-subtle text-primary tr-text-emphasis animate-pulse"
-											: "border-border-default bg-container-workspace-bg text-text-muted"
+												? "border-border-default bg-primary-subtle text-primary tr-text-emphasis animate-pulse"
+												: "border-border-default bg-container-workspace-bg text-text-muted"
 									}`}
 								>
 									<div className="flex items-center justify-between mb-4">
@@ -307,7 +331,11 @@ export function CraftPanel() {
 										{isPassed && <RiCheckLine className="size-4" />}
 									</div>
 									<span className="text-text-muted">
-										{isPassed ? "Concluído" : isCurrent ? "Executando..." : "Aguardando"}
+										{isPassed
+											? t("craft.status.passed")
+											: isCurrent
+												? t("craft.status.running")
+												: t("craft.status.waiting")}
 									</span>
 								</div>
 							);
@@ -319,15 +347,15 @@ export function CraftPanel() {
 						<div className="flex items-center justify-between">
 							<div className="flex items-center space-x-8">
 								<RiEyeLine className="size-4 text-primary" />
-								<h3 className="tr-text-emphasis">Comparação e Similaridade Visual</h3>
+								<h3 className="tr-text-emphasis">{t("craft.visualComparison.title")}</h3>
 							</div>
 							<div className="flex items-center space-x-4 tr-text-metadata bg-container-workspace-bg border border-border-default rounded-md p-2">
-								{(['desktop', 'tablet', 'mobile'] as const).map((vp) => (
+								{Array.from(["desktop", "tablet", "mobile"] as const).map((vp) => (
 									<button
 										key={vp}
 										type="button"
 										onClick={() => setActiveViewport(vp)}
-										className={`px-8 py-4 rounded-md capitalize ${
+										className={`px-8 py-4 rounded-md capitalize cursor-pointer ${
 											activeViewport === vp
 												? "bg-control-primary-bg text-control-primary-text tr-text-emphasis"
 												: "text-text-muted hover:text-text-default"
@@ -341,7 +369,7 @@ export function CraftPanel() {
 
 						{/* Métrica Geral de Similaridade */}
 						<div className="flex items-center justify-between p-12 bg-container-workspace-bg rounded-md border border-border-default tr-text-ui">
-							<span className="text-text-muted">Taxa Global de Similaridade (Clean-Room):</span>
+							<span className="text-text-muted">{t("craft.similarityRate")}</span>
 							<span className="tr-text-emphasis text-feedback-success">
 								{projectState.similarityScore?.toFixed(1)}%
 							</span>
@@ -351,28 +379,40 @@ export function CraftPanel() {
 						<div className="grid grid-cols-2 gap-16">
 							<div className="flex flex-col space-y-8">
 								<div className="tr-text-ui text-text-muted flex items-center justify-between">
-									<span className="tr-text-emphasis">Alvo Original</span>
-									<span className="tr-text-metadata text-text-subtle">Reference capture</span>
+									<span className="tr-text-emphasis">{t("craft.originalTarget")}</span>
+									<span className="tr-text-metadata text-text-subtle">
+										{t("craft.referenceCapture")}
+									</span>
 								</div>
 								<div className="h-48 border border-border-default rounded-md bg-container-workspace-bg flex items-center justify-center p-16 text-center">
 									<div className="space-y-4">
 										<RiGlobalLine className="size-8 mx-auto text-text-muted" />
-										<p className="tr-text-ui text-text-default">Original: {projectState.config.target}</p>
-										<span className="tr-text-metadata text-text-subtle block">Viewport: {activeViewport}</span>
+										<p className="tr-text-ui text-text-default">
+											{t("craft.originalPrefix", { target: projectState.config.target })}
+										</p>
+										<span className="tr-text-metadata text-text-subtle block">
+											{t("craft.viewportPrefix", { viewport: activeViewport })}
+										</span>
 									</div>
 								</div>
 							</div>
 
 							<div className="flex flex-col space-y-8">
 								<div className="tr-text-ui text-text-muted flex items-center justify-between">
-									<span className="tr-text-emphasis">Versão Recriada (ThinkRail)</span>
-									<span className="tr-text-metadata text-feedback-success">94.8% similar</span>
+									<span className="tr-text-emphasis">{t("craft.recreatedVersion")}</span>
+									<span className="tr-text-metadata text-feedback-success">
+										{t("craft.similarPercentage", { score: "94.8" })}
+									</span>
 								</div>
 								<div className="h-48 border border-border-default rounded-md bg-container-workspace-bg flex items-center justify-center p-16 text-center">
 									<div className="space-y-4">
 										<RiSparklingFill className="size-8 mx-auto text-feedback-success" />
-										<p className="tr-text-emphasis text-text-default">Reconstrução Ativa</p>
-										<span className="tr-text-metadata text-text-muted block">Stack: {projectState.config.targetStack}</span>
+										<p className="tr-text-emphasis text-text-default">
+											{t("craft.reconstructionActive")}
+										</p>
+										<span className="tr-text-metadata text-text-muted block">
+											{t("craft.stackPrefix", { stack: projectState.config.targetStack })}
+										</span>
 									</div>
 								</div>
 							</div>
@@ -381,18 +421,18 @@ export function CraftPanel() {
 
 					{/* Feed de Eventos do Agente */}
 					<div className="border border-border-default rounded-lg p-16 bg-container-elevated-bg space-y-12">
-						<h3 className="tr-text-metadata text-text-muted uppercase">Feed de Execução & Aprovações</h3>
+						<h3 className="tr-text-metadata text-text-muted uppercase">{t("craft.feedTitle")}</h3>
 						<div className="space-y-8 max-h-48 overflow-y-auto pr-4">
 							{projectState.feed.map((item, idx) => (
 								<div
-									key={idx}
+									key={`feed_${idx}_${item.timestamp}`}
 									className="tr-text-ui p-8 rounded-md bg-container-workspace-bg border border-border-default flex items-start space-x-8"
 								>
 									<span className="tr-text-emphasis text-primary uppercase tr-text-metadata px-6 py-2 rounded-md bg-primary-subtle shrink-0">
 										{item.kind}
 									</span>
 									<span className="text-text-default">
-										{'text' in item ? item.text : 'Ação de trabalho registrada'}
+										{"text" in item ? item.text : t("craft.feedFallback")}
 									</span>
 								</div>
 							))}
