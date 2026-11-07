@@ -73,6 +73,7 @@ export class NeuralCoreEngine {
 	public highlightedNodeIndex: number | null = null;
 	public selectedNodeIndex: number | null = null;
 	public isRagActive = false;
+	public showPcbLines = true;
 	public activeSearchQuery: string | null = null;
 	private currentMotionSpeed = 0.0;
 
@@ -138,6 +139,17 @@ export class NeuralCoreEngine {
 
 	public toggleVectorConstellation(show?: boolean) {
 		this.showVectorConstellation = show !== undefined ? show : !this.showVectorConstellation;
+	}
+
+	public setShowPcbLines(show: boolean) {
+		this.showPcbLines = show;
+		this.rebuildVectorMesh();
+	}
+
+	public togglePcbLines(show?: boolean): boolean {
+		this.showPcbLines = show !== undefined ? show : !this.showPcbLines;
+		this.rebuildVectorMesh();
+		return this.showPcbLines;
 	}
 
 	public toggleGimbalRings(show?: boolean) {
@@ -263,6 +275,7 @@ export class NeuralCoreEngine {
 			this.activeSearchQuery,
 			searchingAnim,
 			this.selectedNodeIndex,
+			this.showPcbLines,
 		);
 		if (this.device) {
 			this.uploadVectorMesh();

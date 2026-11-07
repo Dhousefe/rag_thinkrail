@@ -90,6 +90,7 @@ export function NeuralCorePanel() {
 	const { state, pulseKey } = useNeuralCoreState();
 	const [manualQuery, setManualQuery] = useState("");
 	const [isPaused, setIsPaused] = useState(false);
+	const [showPcbLines, setShowPcbLines] = useState(true);
 	const [isBottomPanelCollapsed, setIsBottomPanelCollapsed] = useState(false);
 	const [isBottomPanelCompletelyHidden, setIsBottomPanelCompletelyHidden] = useState(false);
 	const [remoteSearchMatches, setRemoteSearchMatches] = useState<HermesVectorNode[]>([]);
@@ -163,10 +164,12 @@ export function NeuralCorePanel() {
 							? undefined
 							: selectedProjectFilter;
 
+				// Lotes otimizados de 350 nós (anteriormente 180) para carregamento 2x mais rápido
+				// sem travar a thread de renderização WebGPU/WebGL
 				const res = await getTransport().request("hermes.getVectorGraph", {
-					limit: 180,
+					limit: 350,
 					offset: currentOffset,
-					batchSize: 180,
+					batchSize: 350,
 					includeAllClasses: true,
 					projectSlug: targetSlug,
 				});
@@ -256,7 +259,7 @@ export function NeuralCorePanel() {
 		const timer = setTimeout(async () => {
 			if (!autoStreamingRef.current || isCancelled) return;
 			await handleLoadNextBatch();
-		}, 450);
+		}, 180); // Intervalo reduzido de 450ms para 180ms para resposta rápida do streaming
 
 		return () => {
 			isCancelled = true;
@@ -401,37 +404,83 @@ export function NeuralCorePanel() {
 		}
 	}, [effectiveQuery, vectorNodes, isPaused]);
 
-	// Foco em Tempo Real nas ferramentas Read e Edit do Chat:
-	// Identifica a classe/arquivo pivô manipulado pelo chat e centraliza a câmera
-	// estritamente apenas quando a rotação dinâmica estiver ativada (!isPaused).
+	// Foco e Seleção em Tempo Real nas ferramentas do Chat (Read, Edit, Write):
+	// Interação ativada EXCLUSIVAMENTE quando a rotação estiver pausada (isPaused === true),
+	// garantindo que a rotação contínua não seja interrompida sem a vontade expressa do usuário.
+	// Se o arquivo manipulado pelo chat não estiver no lote atual da cena, busca dinamicamente
+	// no SQLite do Hermes RAG e o injeta na cena 3D com destaque imediato.
 	useEffect(() => {
-		if (!state.activeChatTool || !state.activeChatFilePath || vectorNodes.length === 0) return;
+		if (!isPaused || !state.activeChatTool || !state.activeChatFilePath) return;
 
-		const pivot = resolvePivotNode(
-			state.activeChatFilePath,
-			vectorNodes,
-			state.activeChatPivotClass,
-		);
+		let isCancelled = false;
+		const filePath = state.activeChatFilePath;
+		const pivotClass = state.activeChatPivotClass;
 
-		if (pivot) {
-			setActiveChatPivotNode(pivot);
+		// 1. Tenta resolver entre os nós já carregados no plano 3D
+		const pivot = resolvePivotNode(filePath, vectorNodes, pivotClass);
+
+		const applySelection = (targetNode: HermesVectorNode) => {
+			if (isCancelled) return;
+			setActiveChatPivotNode(targetNode);
+			setSelectedNode(targetNode);
+			setInspectedNode(targetNode);
 
 			if (engineRef.current) {
-				engineRef.current.triggerMcpSearchTarget(pivot.id);
+				engineRef.current.triggerMcpSearchTarget(targetNode.id);
+				const idx = vectorNodes.findIndex((n) => n.id === targetNode.id);
+				if (idx !== -1) {
+					engineRef.current.setSelectedNode(idx);
+				}
 			}
 
-			// Aciona o movimento de foco suave e centraliza a câmera APENAS quando a rotação dinâmica estiver ATIVADA
-			if (!isPaused && cameraRef.current) {
-				cameraRef.current.focusPosition(pivot.position, 2.3);
-				setInspectedNode(pivot);
+			if (cameraRef.current) {
+				cameraRef.current.focusPosition(targetNode.position, 2.3);
 			}
+		};
+
+		if (pivot) {
+			applySelection(pivot);
+		} else {
+			// 2. Se o nó ainda não estiver no lote local da cena, busca no SQLite do Hermes RAG
+			const targetSlug =
+				selectedProjectFilter === "all" ? undefined : selectedProjectFilter;
+
+			void getTransport()
+				.request("hermes.searchGraphNodes", {
+					query: filePath,
+					projectSlug: targetSlug,
+					limit: 1,
+				})
+				.then((res) => {
+					if (isCancelled) return;
+					if (res && Array.isArray(res.nodes) && res.nodes.length > 0) {
+						const injectedNode = res.nodes[0]!;
+						setVectorNodes((prev) => {
+							if (prev.some((n) => n.id === injectedNode.id)) return prev;
+							const updated = [...prev, injectedNode];
+							if (engineRef.current) {
+								engineRef.current.appendVectorGraphData([injectedNode], []);
+							}
+							return updated;
+						});
+						applySelection(injectedNode);
+					}
+				})
+				.catch((err) => {
+					console.warn("[NeuralCorePanel] Erro ao buscar nó do chat no banco RAG:", err);
+				});
 		}
+
+		return () => {
+			isCancelled = true;
+		};
 	}, [
 		state.activeChatTool,
 		state.activeChatFilePath,
 		state.activeChatPivotClass,
 		vectorNodes,
 		isPaused,
+		selectedProjectFilter,
 	]);
 
 	// Ações Rápidas de Produtividade para o Provider e Desenvolvedor
@@ -687,6 +736,19 @@ export function NeuralCorePanel() {
 		toast.info("Visão Zenital PCB Ativada", "Plano de circuito impresso de nós");
 	};
 
+	const handleTogglePcbLines = () => {
+		setShowPcbLines((prev) => {
+			const next = !prev;
+			engineRef.current?.setShowPcbLines(next);
+			if (next) {
+				toast.info("Trilhas PCB Visíveis", "Trilhas ortogonais de circuito Manhattan ativadas");
+			} else {
+				toast.info("Trilhas PCB Ocultadas", "Cena desobstruída: polígonos e nós em foco total");
+			}
+			return next;
+		});
+	};
+
 	const handleFitAll = useCallback(() => {
 		if (vectorNodes.length > 0) {
 			const positions = vectorNodes.map((n) => n.position);
@@ -758,10 +820,13 @@ export function NeuralCorePanel() {
 		if (engineRef.current) {
 			engineRef.current.triggerMcpSearchTarget(node.id);
 		}
-		setIsPaused(true);
+		// Não altera isPaused: o controle de rotação é exclusivo do usuário
 		if (cameraRef.current) {
 			cameraRef.current.focusPosition(node.position, 2.2);
 		}
+
+		// Revela e abre a classe selecionada imediatamente na aba Files do editor
+		void handleOpenFile(node);
 	};
 
 	const handleCopyPath = (node: HermesVectorNode) => {
@@ -935,15 +1000,15 @@ export function NeuralCorePanel() {
 						</span>
 						<span
 							className={`tr-text-metadata px-4 py-2 rounded bg-control-bg ${
-								!isPaused ? "text-feedback-success" : "text-text-muted"
+								isPaused ? "text-feedback-success" : "text-text-muted"
 							}`}
 							title={
-								!isPaused
-									? "Foco dinâmico e centralização 3D ativados"
-									: "Rotação congelada — foco da câmera mantido"
+								isPaused
+									? "Foco dinâmico do chat ativo (rotação pausada)"
+									: "Rotação livre — pause a rotação para ativar seleção automática do chat"
 							}
 						>
-							{!isPaused ? "FOCO DINÂMICO ATIVO" : "ROTAÇÃO CONGELADA"}
+							{isPaused ? "SELEÇÃO DO CHAT ATIVA" : "ROTAÇÃO LIVRE (CHAT EM ESPERA)"}
 						</span>
 					</div>
 				) : effectiveQuery ? (
@@ -1056,7 +1121,7 @@ export function NeuralCorePanel() {
 									disabled={isLoadingBatch || isAutoStreaming}
 									onClick={handleLoadNextBatch}
 									className="flex items-center gap-4 rounded bg-control-bg px-6 py-2 text-text-default hover:bg-control-bg hover:text-primary transition-colors disabled:opacity-50"
-									title="Carregar mais 180 classes no plano 3D"
+									title="Carregar mais 350 classes no plano 3D"
 								>
 									{isLoadingBatch && !isAutoStreaming ? (
 										<RiLoader4Line className="size-12 animate-spin text-primary" />
@@ -1153,6 +1218,29 @@ export function NeuralCorePanel() {
 						aria-label="Visão Zenital PCB"
 					>
 						<RiCpuLine className="size-14" />
+					</button>
+
+					{/* Toggle Mostrar/Esconder Linhas de Circuito Impresso PCB */}
+					<button
+						type="button"
+						className={`size-28 flex items-center justify-center rounded p-0 transition-colors ${
+							showPcbLines
+								? "text-primary hover:bg-control-bg"
+								: "text-text-muted hover:text-text-default hover:bg-control-bg opacity-50"
+						}`}
+						onClick={handleTogglePcbLines}
+						title={
+							showPcbLines
+								? "Ocultar Trilhas de PCB (Desobstruir visualização de polígonos)"
+								: "Mostrar Trilhas de PCB (Exibir conexões Manhattan e vias de cobre)"
+						}
+						aria-label="Alternar Trilhas PCB"
+					>
+						{showPcbLines ? (
+							<RiNodeTree className="size-14" />
+						) : (
+							<RiEyeOffLine className="size-14" />
+						)}
 					</button>
 
 					<button
