@@ -1,0 +1,119 @@
+[
+  {
+    "id": "tc_01_match_tier",
+    "question": "Como e onde é definido o tipo MatchTier e os métodos de pontuação de correspondência no ThinkRail?",
+    "query": "MatchTier matchFields",
+    "expected_cluster": "contracts",
+    "expected_files": [
+      "packages/contracts/src/match.ts"
+    ],
+    "expected_symbols": [
+      "MatchTier",
+      "matchFields",
+      "MatchField"
+    ],
+    "ground_truth": "MatchTier é definido em packages/contracts/src/match.ts como export type MatchTier = (typeof MATCH_TIER)[keyof typeof MATCH_TIER], utilizado junto com matchFields para classificar termos."
+  },
+  {
+    "id": "tc_02_hermes_mcp_dispatcher",
+    "question": "Como o servidor Hermes MCP recebe, decodifica o protocolo JSON-RPC e despacha as chamadas de ferramentas?",
+    "query": "handleMessage tools/call JSON-RPC hermes-mcp-server",
+    "expected_cluster": "cli-host",
+    "expected_files": [
+      "apps/cli/scripts/hermes-mcp-server.ts"
+    ],
+    "expected_symbols": [
+      "handleMessage",
+      "TOOLS",
+      "handleCodeSearch"
+    ],
+    "ground_truth": "No arquivo apps/cli/scripts/hermes-mcp-server.ts, o evento data de process.stdin acumula linhas no buffer e chama handleMessage, que despacha tools/call via switch para as funções handle*."
+  },
+  {
+    "id": "tc_03_l0_index_discovery",
+    "question": "Qual função implementa a descoberta estrutural ultracompacta L0 dos clusters do projeto?",
+    "query": "handleGetProjectL0Index get_project_l0_index clusterMap",
+    "expected_cluster": "cli-host",
+    "expected_files": [
+      "apps/cli/scripts/hermes-mcp-server.ts"
+    ],
+    "expected_symbols": [
+      "handleGetProjectL0Index",
+      "clusterMap"
+    ],
+    "ground_truth": "handleGetProjectL0Index no hermes-mcp-server.ts inspeciona a tabela l2j_files e mapeia os caminhos dos arquivos para 11 super-nós em menos de 250 tokens."
+  },
+  {
+    "id": "tc_04_session_manager_contracts",
+    "question": "Onde ficam as definições de interface de sessão e estados de conversa no pacote de contratos?",
+    "query": "SessionRecord session contracts SPEC",
+    "expected_cluster": "contracts",
+    "expected_files": [
+      "packages/contracts/SPEC.md",
+      "packages/contracts/src/domain.test.ts"
+    ],
+    "expected_symbols": [
+      "ResourceRecord",
+      "Normalized session state"
+    ],
+    "ground_truth": "As definições de estado normalizado de sessão e contratos de runtime residem em packages/contracts/SPEC.md e nas tipagens expostas por packages/contracts."
+  },
+  {
+    "id": "tc_05_visualize_tool_contract",
+    "question": "Onde fica a especificação do renderizador de diagramas Mermaid e componentes visuais do ThinkRail?",
+    "query": "visualize mermaid diagram options comparison",
+    "expected_cluster": "renderers",
+    "expected_files": [
+      "packages/resource-renderers/SPEC.md",
+      "packages/resource-renderers/src/index.ts"
+    ],
+    "expected_symbols": [
+      "visualize",
+      "diagram",
+      "comparison"
+    ],
+    "ground_truth": "Os renderizadores de recursos e visualizações ricas residem em packages/resource-renderers, provendo suporte para cards comparativos, visualizadores Mermaid e diff de arquivos."
+  },
+  {
+    "id": "tc_06_cli-host_handlecodesearch",
+    "question": "Onde reside a implementação das ferramentas MCP no cliente ThinkRail?",
+    "query": "hermes-mcp-server handleCodeSearch",
+    "expected_cluster": "cli-host",
+    "expected_files": [
+      "apps/cli/scripts/hermes-mcp-server.ts"
+    ],
+    "expected_symbols": [
+      "handleCodeSearch",
+      "handleGetProjectL0Index"
+    ],
+    "ground_truth": "O servidor MCP Hermes em apps/cli/scripts/hermes-mcp-server.ts gerencia ferramentas de RAG via JSON-RPC."
+  },
+  {
+    "id": "tc_07_server-engine_createagentsession",
+    "question": "Como o servidor inicializa a sessao do agente Pi in-process e gerencia extensoes MCP?",
+    "query": "createAgentSession agentSessionManager",
+    "expected_cluster": "server-engine",
+    "expected_files": [
+      "packages/server/src/agent/agentSessionManager.ts"
+    ],
+    "expected_symbols": [
+      "createAgentSession",
+      "SessionManager"
+    ],
+    "ground_truth": "Em packages/server/src/agent/agentSessionManager.ts, o servidor ThinkRail usa createAgentSession do pacote @earendil-works/pi-coding-agent para criar a sessao in-process."
+  },
+  {
+    "id": "tc_08_web-ui_registertoolrenderer",
+    "question": "Onde os renderizadores de ferramentas da UI sao registrados e conectados a ChatView?",
+    "query": "ChatView registerToolRenderer",
+    "expected_cluster": "web-ui",
+    "expected_files": [
+      "apps/web/src/chat/tools/SPEC.md"
+    ],
+    "expected_symbols": [
+      "registerToolRenderer",
+      "ChatView"
+    ],
+    "ground_truth": "Em apps/web/src/chat/tools/SPEC.md e register.ts, os renderizadores de ferramentas da UI sao conectados a ferramentas via registerToolRenderer."
+  }
+]
