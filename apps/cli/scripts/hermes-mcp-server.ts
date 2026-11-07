@@ -356,10 +356,12 @@ function handleGetProjectL0Index(project?: string): string {
 					desc = "Suítes de testes de integração, regressão e workflows";
 				}
 
-				if (!clusterMap[cid]) {
-					clusterMap[cid] = { desc, count: 0 };
+				const entry = clusterMap[cid];
+				if (!entry) {
+					clusterMap[cid] = { desc, count: 1 };
+				} else {
+					entry.count++;
 				}
-				clusterMap[cid].count++;
 			}
 
 			lines.push(`\n[Projeto: ${slug}]`);
@@ -696,7 +698,7 @@ function handleInstallSkill(repoUrl: string, skillName?: string): string {
 		let targetDir = tmpCloneDir;
 		let isAutoScaffolded = false;
 
-		if (skillDirs.length > 0) {
+		if (skillDirs.length > 0 && skillDirs[0]) {
 			targetDir = skillDirs[0];
 			const reqSkill = skillName?.trim();
 			if (reqSkill) {

@@ -116,7 +116,9 @@ export function NeuralCorePanel() {
 	const [isLoadingStats, setIsLoadingStats] = useState(false);
 
 	// Batch Loader (Carregador em Lote Progressivo)
-	const [batchOffset, setBatchOffset] = useState(0);
+	const [selectedProjectFilter, setSelectedProjectFilter] = useState<string>("all");
+	const [, setBatchOffset] = useState(0);
+	const batchOffsetRef = useRef(0);
 	const [hasMoreBatches, setHasMoreBatches] = useState(false);
 	const [totalAvailableNodes, setTotalAvailableNodes] = useState(0);
 	const [totalClassesCount, setTotalClassesCount] = useState(0);
@@ -148,32 +150,47 @@ export function NeuralCorePanel() {
 
 	// Carregamento dos vetores do banco SQLite hermes.db com suporte a lote (Batch Loader)
 	const loadVectorGraph = useCallback(
-		async (reset = true) => {
+		async (reset = true, overrideSlug?: string) => {
 			try {
 				setIsLoadingBatch(true);
-				const currentOffset = reset ? 0 : batchOffset;
+				const currentOffset = reset ? 0 : batchOffsetRef.current;
+				const targetSlug =
+					overrideSlug !== undefined
+						? overrideSlug === "all"
+							? undefined
+							: overrideSlug
+						: selectedProjectFilter === "all"
+							? undefined
+							: selectedProjectFilter;
+
 				const res = await getTransport().request("hermes.getVectorGraph", {
 					limit: 180,
 					offset: currentOffset,
 					batchSize: 180,
 					includeAllClasses: true,
+					projectSlug: targetSlug,
 				});
 				if (res && Array.isArray(res.nodes)) {
 					if (reset) {
 						setVectorNodes(res.nodes);
 						setVectorEdges(res.edges || []);
-						setBatchOffset(res.nodes.length);
+						const nextOffset = res.nodes.length;
+						batchOffsetRef.current = nextOffset;
+						setBatchOffset(nextOffset);
 						if (engineRef.current) {
 							engineRef.current.setVectorGraphData(res.nodes, res.edges || []);
 						}
 					} else {
+						// Merge de nós preservando IDs únicos e remapeando arestas
 						setVectorNodes((prev) => {
 							const existing = new Set(prev.map((n) => n.id || n.path));
 							const fresh = res.nodes.filter((n) => !existing.has(n.id || n.path));
 							return [...prev, ...fresh];
 						});
 						setVectorEdges((prev) => [...prev, ...(res.edges || [])]);
-						setBatchOffset((prev) => prev + res.nodes.length);
+						const nextOffset = batchOffsetRef.current + res.nodes.length;
+						batchOffsetRef.current = nextOffset;
+						setBatchOffset(nextOffset);
 						if (engineRef.current) {
 							engineRef.current.appendVectorGraphData(res.nodes, res.edges || []);
 						}
@@ -190,7 +207,20 @@ export function NeuralCorePanel() {
 				setIsLoadingBatch(false);
 			}
 		},
-		[batchOffset],
+		[selectedProjectFilter],
+	);
+
+	// Mudança de filtro de projeto
+	const handleSelectProjectFilter = useCallback(
+		async (slug: string) => {
+			setSelectedProjectFilter(slug);
+			batchOffsetRef.current = 0;
+			setBatchOffset(0);
+			setIsAutoStreaming(false);
+			autoStreamingRef.current = false;
+			await loadVectorGraph(true, slug);
+		},
+		[loadVectorGraph],
 	);
 
 	// Carrega o próximo lote de classes
@@ -238,7 +268,7 @@ export function NeuralCorePanel() {
 	useEffect(() => {
 		void loadClassStats();
 		void loadVectorGraph(true);
-	}, [activeProjectSlugs, activeProjectSlug, loadClassStats, loadVectorGraph]);
+	}, [activeProjectSlugs, activeProjectSlug]);
 
 	// Inicialização do Motor WebGPU Geométrico
 	useEffect(() => {
@@ -941,6 +971,25 @@ export function NeuralCorePanel() {
 					</div>
 				) : (
 					<div className="flex flex-wrap items-center gap-6 rounded-lg border border-border-default bg-container-elevated-bg px-8 py-4 tr-text-metadata text-text-muted backdrop-blur-md shadow-md pointer-events-auto">
+						{/* Seletor de Escopo de Projeto Ativo */}
+						{classStats?.projects && classStats.projects.length > 1 && (
+							<div className="flex items-center gap-4 pr-4 border-r border-border-default">
+								<select
+									value={selectedProjectFilter}
+									onChange={(e) => void handleSelectProjectFilter(e.target.value)}
+									className="bg-control-bg rounded border border-border-default px-6 py-2 tr-code-text text-text-default outline-none cursor-pointer hover:border-primary transition-colors"
+									title="Filtrar classes e grafos por projeto ativo"
+								>
+									<option value="all">Todos os Projetos ({classStats.projects.length})</option>
+									{classStats.projects.map((p) => (
+										<option key={p.slug} value={p.slug}>
+											{p.name} ({p.totalClasses} classes)
+										</option>
+									))}
+								</select>
+							</div>
+						)}
+
 						{/* Indicador de Classes e Arquivos por Projeto Ativo */}
 						<div
 							className="flex items-center gap-4 cursor-help"

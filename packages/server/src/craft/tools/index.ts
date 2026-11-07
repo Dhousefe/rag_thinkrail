@@ -1,6 +1,5 @@
 import type { CraftViewportDiff, CraftSelfTestReport } from "@thinkrail/contracts";
 import { promises as fs } from "node:fs";
-import * as path from "node:path";
 
 export interface WebInspectionResult {
 	title: string;
@@ -106,8 +105,8 @@ export async function inspectBinaryTarget(filePath: string): Promise<BinaryInspe
  * Gera relatório comparativo de diff visual entre o original e a reconstrução.
  */
 export function calculateVisualSimilarity(
-	originalPath?: string,
-	rebuiltPath?: string
+	_originalPath?: string,
+	_rebuiltPath?: string
 ): CraftViewportDiff[] {
 	return [
 		{

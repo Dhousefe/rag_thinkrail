@@ -5,14 +5,12 @@ import type {
 	CraftStep,
 	CraftFeedItem,
 	CraftApprovalRequest,
-	CraftUserQuestionRequest,
 } from "@thinkrail/contracts";
 import { calculateVisualSimilarity, inspectBinaryTarget, inspectWebTarget, parseSelfTestOutput } from "./tools";
 
 export class CraftEngine {
 	private projects = new Map<string, CraftProjectState>();
 	private approvalRequests = new Map<string, CraftApprovalRequest>();
-	private questionRequests = new Map<string, CraftUserQuestionRequest>();
 
 	/**
 	 * Inicia um novo projeto no pipeline do Craft Anything.
@@ -131,14 +129,20 @@ export class CraftEngine {
 			state.briefingMarkdown = `# Briefing de Inspeção de Aplicativo/Jogo\n- Formato: ${binInfo.fileType}\n- Tamanho: ${(binInfo.sizeBytes / 1024).toFixed(1)} KB\n- Strings de referência: ${binInfo.interestingStrings.slice(0, 10).join(", ")}`;
 		}
 
-		state.steps[0].status = "passed";
-		state.steps[0].completedAt = Date.now();
-		state.steps[0].detail = "Análise e briefing de requisitos concluídos";
+		const step0 = state.steps[0];
+		if (step0) {
+			step0.status = "passed";
+			step0.completedAt = Date.now();
+			step0.detail = "Análise e briefing de requisitos concluídos";
+		}
 
 		// 2. Etapa de Criação (Build)
 		state.currentStep = "build";
-		state.steps[1].status = "in_progress";
-		state.steps[1].startedAt = Date.now();
+		const step1 = state.steps[1];
+		if (step1) {
+			step1.status = "in_progress";
+			step1.startedAt = Date.now();
+		}
 		state.feed.push({
 			kind: "agent",
 			text: `Gerando arquitetura e código-fonte na stack "${state.config.targetStack}" seguindo as regras de isolamento.`,
@@ -146,14 +150,19 @@ export class CraftEngine {
 		});
 
 		// Simulação de tempo de build e scaffold
-		state.steps[1].status = "passed";
-		state.steps[1].completedAt = Date.now();
-		state.steps[1].detail = "Código e estrutura compilados com sucesso";
+		if (step1) {
+			step1.status = "passed";
+			step1.completedAt = Date.now();
+			step1.detail = "Código e estrutura compilados com sucesso";
+		}
 
 		// 3. Etapa de Verificação (Verify)
 		state.currentStep = "verify";
-		state.steps[2].status = "in_progress";
-		state.steps[2].startedAt = Date.now();
+		const step2 = state.steps[2];
+		if (step2) {
+			step2.status = "in_progress";
+			step2.startedAt = Date.now();
+		}
 		state.feed.push({
 			kind: "step",
 			step: "verify",
@@ -165,15 +174,20 @@ export class CraftEngine {
 		state.selfTest = await parseSelfTestOutput("non-existent");
 		state.similarityScore = 93.6;
 
-		state.steps[2].status = "passed";
-		state.steps[2].completedAt = Date.now();
-		state.steps[2].detail = `Similaridade calculada: ${state.similarityScore}% com autoteste aprovado`;
+		if (step2) {
+			step2.status = "passed";
+			step2.completedAt = Date.now();
+			step2.detail = `Similaridade calculada: ${state.similarityScore}% com autoteste aprovado`;
+		}
 
 		// 4. Etapa Pronto (Ready)
 		state.currentStep = "ready";
-		state.steps[3].status = "passed";
-		state.steps[3].completedAt = Date.now();
-		state.steps[3].detail = "Projeto pronto para execução e refinamento contínuo";
+		const step3 = state.steps[3];
+		if (step3) {
+			step3.status = "passed";
+			step3.completedAt = Date.now();
+			step3.detail = "Projeto pronto para execução e refinamento contínuo";
+		}
 		state.feed.push({
 			kind: "agent",
 			text: "Sua versão está pronta! Você pode testá-la, comparar o visual ou pedir alterações adicionais.",

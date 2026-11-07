@@ -24,7 +24,7 @@ describe("Craft Engine Pipeline", () => {
 
 		const updated = craftEngine.getProject(state.config.id);
 		expect(updated).toBeDefined();
-		expect(updated?.steps[0].status).toBe("passed");
+		expect(updated?.steps[0]?.status).toBe("passed");
 		expect(updated?.currentStep).toBe("ready");
 		expect(updated?.similarityScore).toBeGreaterThan(90);
 		expect(updated?.viewportDiffs.length).toBe(3);

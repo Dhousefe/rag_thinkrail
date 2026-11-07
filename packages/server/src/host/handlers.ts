@@ -123,6 +123,7 @@ import {
 	surveyIsCompleted,
 	surveyResponse,
 } from "../feedback";
+import { JinaServerManager } from "../embeddings/jinaServerManager";
 import { fontsDir, listInstalledFonts, readUserFonts } from "../fonts";
 import { readDir, readFile } from "../fs";
 import {
@@ -1300,6 +1301,12 @@ const handlers: WsHandlers = {
 	"hermes.manageSkills": (params) => manageHermesSkills(params),
 	"hermes.readSkill": (params) => readHermesSkill(params),
 	"hermes.revealSkillFolder": (params) => revealHermesSkillFolder(params),
+	"jina.getStatus": () => JinaServerManager.getInstance().getInfo(),
+	"jina.start": (params) => JinaServerManager.getInstance().start(params),
+	"jina.stop": (params) => JinaServerManager.getInstance().stop(params),
+	"jina.restart": (params) => JinaServerManager.getInstance().restart(params),
+	"jina.testIntegrity": () => JinaServerManager.getInstance().testIntegrity(),
+	"jina.getLogs": (params) => JinaServerManager.getInstance().getLogs(params?.limit),
 	"session.resources": (params) => {
 		const p = resourceParams(params, ["workspaceId", "sessionId"]);
 		return getSessionResources(p.workspaceId, p.sessionId, resourceCwd(p.workspaceId));

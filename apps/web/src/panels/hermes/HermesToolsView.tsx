@@ -146,27 +146,27 @@ export function HermesToolsView() {
 					<div
 						key={tool.id}
 						className={cn(
-							"flex items-start justify-between gap-16 rounded-sm border p-12 transition-colors",
+							"flex items-start justify-between gap-16 rounded-lg border p-12 transition-all shadow-2xs",
 							tool.enabled
-								? "border-border-default bg-control-bg hover:border-border-default"
+								? "border-border-default bg-control-bg hover:border-border-muted"
 								: "border-border-default bg-control-bg opacity-60",
 						)}
 					>
-						<div className="flex flex-col gap-4 min-w-0 flex-1">
+						<div className="flex flex-col gap-6 min-w-0 flex-1">
 							<div className="flex flex-wrap items-center gap-6">
 								<span className="tr-text-emphasis text-text-default">{tool.name}</span>
-								<span className="rounded-sm bg-control-bg-hovered px-6 py-2 tr-code-text text-text-muted">
+								<span className="rounded-md border border-border-default bg-container-workspace-bg px-6 py-2 tr-code-text text-text-muted">
 									{tool.id}
 								</span>
-								<span className="rounded-sm bg-feedback-info-subtle px-6 py-2 tr-text-metadata text-primary capitalize">
+								<span className="rounded-md border border-primary bg-primary-subtle px-6 py-2 tr-text-metadata text-primary capitalize">
 									{CATEGORY_LABELS[tool.category]}
 								</span>
 								{tool.readOnly ? (
-									<span className="rounded-sm bg-control-bg-hovered px-6 py-2 tr-text-metadata text-text-muted">
+									<span className="rounded-md border border-border-default bg-container-workspace-bg px-6 py-2 tr-text-metadata text-text-muted">
 										Somente Leitura
 									</span>
 								) : (
-									<span className="rounded-sm bg-feedback-warning-subtle px-6 py-2 tr-text-metadata text-feedback-warning">
+									<span className="rounded-md border border-feedback-warning bg-feedback-warning-subtle px-6 py-2 tr-text-metadata text-feedback-warning">
 										Modifica Estado
 									</span>
 								)}
@@ -182,7 +182,10 @@ export function HermesToolsView() {
 								onCheckedChange={(checked) => handleToggle(tool, checked)}
 								testId={`switch-tool-${tool.id}`}
 							/>
-							<span className="tr-text-metadata text-text-muted">
+							<span className={cn(
+								"tr-text-metadata",
+								tool.enabled ? "text-feedback-success" : "text-text-muted"
+							)}>
 								{tool.enabled ? "Ativa" : "Desativada"}
 							</span>
 						</div>

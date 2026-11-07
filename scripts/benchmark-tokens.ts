@@ -1,7 +1,7 @@
 import { spawn } from "child_process";
 
 async function runMcp(toolName: string, args: Record<string, any>): Promise<string> {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     const proc = spawn("bun", ["apps/cli/scripts/hermes-mcp-server.ts"], {
       stdio: ["pipe", "pipe", "ignore"],
     });
@@ -28,8 +28,13 @@ async function runMcp(toolName: string, args: Record<string, any>): Promise<stri
       proc.kill();
       try {
         const lines = stdout.split("\n").filter((l) => l.trim().startsWith("{"));
-        const json = JSON.parse(lines[lines.length - 1]);
-        resolve(json.result?.content?.[0]?.text || stdout);
+        const lastLine = lines[lines.length - 1];
+        if (lastLine) {
+          const json = JSON.parse(lastLine);
+          resolve(json.result?.content?.[0]?.text || stdout);
+        } else {
+          resolve(stdout);
+        }
       } catch {
         resolve(stdout);
       }

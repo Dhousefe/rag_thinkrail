@@ -155,6 +155,19 @@ try {
 	);
 	if (!proc.success) process.exit(proc.exitCode ?? 1);
 	rmSync(`${outFile}.map`, { force: true });
+
+	// Cria/atualiza também uma cópia ou link canônico padrão (thinkrail.exe) sem quebrar scripts downstream
+	const defaultBaseName = targetsWindows(target) ? "thinkrail.exe" : "thinkrail";
+	const canonicalOutFile = join(outDir, defaultBaseName);
+	if (canonicalOutFile !== outFile) {
+		try {
+			const { copyFileSync } = await import("node:fs");
+			copyFileSync(outFile, canonicalOutFile);
+			console.log(`Synced canonical binary: ${canonicalOutFile}`);
+		} catch (copyErr) {
+			console.warn(`Could not sync canonical ${defaultBaseName}: ${copyErr}`);
+		}
+	}
 } finally {
 	rmSync(webGeneratedPath, { force: true });
 	rmSync(extGeneratedPath, { force: true });

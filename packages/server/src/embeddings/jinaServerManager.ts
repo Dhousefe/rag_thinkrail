@@ -1,6 +1,6 @@
 import { spawn, type ChildProcess } from "node:child_process";
 import { existsSync } from "node:fs";
-import { join, dirname } from "node:path";
+import { join } from "node:path";
 import type {
 	JinaEngineMode,
 	JinaIntegrityTestResult,
@@ -10,9 +10,6 @@ import type {
 	JinaStopInput,
 	JinaRestartInput,
 } from "@thinkrail/contracts";
-import { logger } from "../analytics/logger";
-
-const log = logger("jina-server");
 
 /** Buffer circular para logs recentes do servidor Jina (máximo 300 linhas) */
 class CircularLogBuffer {

@@ -299,4 +299,64 @@ describe("Hermes RAG Auto-Index e Portabilidade", () => {
 		expect(batch2.offset).toBe(3);
 		expect(batch2.limit).toBe(3);
 	});
+
+	it("UC-10: getHermesVectorGraph paginação sequencial particionada multi-projeto sem repetição de nós", async () => {
+		const projDirA = join(testHermesHome, "sample-multi-batch-a");
+		const projDirB = join(testHermesHome, "sample-multi-batch-b");
+		mkdirSync(projDirA, { recursive: true });
+		mkdirSync(projDirB, { recursive: true });
+
+		const regA = await ensureHermesProjectForPath({
+			path: projDirA,
+			name: "Batch A",
+			autoIndex: false,
+		});
+		const regB = await ensureHermesProjectForPath({
+			path: projDirB,
+			name: "Batch B",
+			autoIndex: false,
+		});
+
+		const dbA = new Database(join(testHermesHome, "projects", regA.slug, "hermes.db"));
+		for (let i = 1; i <= 3; i++) {
+			dbA.run(`
+				INSERT INTO l2j_chunks (id, file_id, project_name, path, qualified_name, chunk_kind, content, created_at)
+				VALUES ('ca_${i}', 'fa_${i}', '${regA.slug}', 'src/A_${i}.ts', 'ClassA${i}', 'class', 'class ClassA${i} {}', 1000)
+			`);
+		}
+		dbA.close();
+
+		const dbB = new Database(join(testHermesHome, "projects", regB.slug, "hermes.db"));
+		for (let i = 1; i <= 4; i++) {
+			dbB.run(`
+				INSERT INTO l2j_chunks (id, file_id, project_name, path, qualified_name, chunk_kind, content, created_at)
+				VALUES ('cb_${i}', 'fb_${i}', '${regB.slug}', 'src/B_${i}.ts', 'ClassB${i}', 'class', 'class ClassB${i} {}', 1000)
+			`);
+		}
+		dbB.close();
+
+		// Total de nós combinados = 3 + 4 = 7 nós
+		// Lote 1: offset 0, batchSize 3 -> Deve ler 3 nós do projeto A
+		const b1 = await getHermesVectorGraph({ offset: 0, batchSize: 3, includeAllClasses: true });
+		expect(b1.nodes.length).toBe(3);
+		expect(b1.hasMore).toBe(true);
+		const ids1 = b1.nodes.map((n) => n.id);
+
+		// Lote 2: offset 3, batchSize 3 -> Deve transbordar para projeto B (3 nós do projeto B)
+		const b2 = await getHermesVectorGraph({ offset: 3, batchSize: 3, includeAllClasses: true });
+		expect(b2.nodes.length).toBe(3);
+		expect(b2.hasMore).toBe(true);
+		const ids2 = b2.nodes.map((n) => n.id);
+
+		// Lote 3: offset 6, batchSize 3 -> 1 nó restante do projeto B
+		const b3 = await getHermesVectorGraph({ offset: 6, batchSize: 3, includeAllClasses: true });
+		expect(b3.nodes.length).toBe(1);
+		expect(b3.hasMore).toBe(false);
+		const ids3 = b3.nodes.map((n) => n.id);
+
+		// Assegura que nenhum nó foi repetido entre os 3 lotes
+		const allIds = [...ids1, ...ids2, ...ids3];
+		const uniqueIds = new Set(allIds);
+		expect(uniqueIds.size).toBe(allIds.length);
+	});
 });

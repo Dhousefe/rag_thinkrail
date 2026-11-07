@@ -15,9 +15,12 @@ function parseArgs(args: string[]): Record<string, string> {
   const result: Record<string, string> = {};
   for (let i = 0; i < args.length; i++) {
     const arg = args[i];
-    if (arg.startsWith("--") && i + 1 < args.length) {
+    if (arg && arg.startsWith("--") && i + 1 < args.length) {
       const key = arg.slice(2);
-      result[key] = args[i + 1];
+      const val = args[i + 1];
+      if (val !== undefined) {
+        result[key] = val;
+      }
       i++;
     }
   }

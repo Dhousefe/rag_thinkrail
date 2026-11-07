@@ -238,7 +238,6 @@ function evaluateRetrieval(
     }
   });
 
-  const totalChunks = hits.length || 1;
   const hitRate = firstRankHit > 0 ? 1 : 0;
   const mrr = firstRankHit > 0 ? 1 / firstRankHit : 0;
   const contextPrecision = hits.length > 0 ? relevantChunks / hits.length : 0;

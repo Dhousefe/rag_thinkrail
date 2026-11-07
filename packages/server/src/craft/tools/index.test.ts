@@ -19,8 +19,8 @@ describe("Craft Analysis Tools", () => {
 	it("calculateVisualSimilarity yields multi-viewport scores", () => {
 		const diffs = calculateVisualSimilarity();
 		expect(diffs).toHaveLength(3);
-		expect(diffs[0].viewport).toBe("desktop");
-		expect(diffs[0].similarityScore).toBeGreaterThanOrEqual(90);
+		expect(diffs[0]?.viewport).toBe("desktop");
+		expect(diffs[0]?.similarityScore).toBeGreaterThanOrEqual(90);
 	});
 
 	it("parseSelfTestOutput defaults gracefully with standard 3-step loop", async () => {

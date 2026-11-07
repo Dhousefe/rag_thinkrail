@@ -363,59 +363,67 @@ export function HermesProjectsView() {
 				</div>
 			</div>
 
-			{/* Barra de Métricas Rápidas */}
+			{/* Barra de Métricas Rápidas com SegmentedControl e Cards Interativos */}
 			<div className="grid grid-cols-2 gap-8 sm:grid-cols-4 min-w-0 max-w-full">
 				<button
 					type="button"
 					onClick={() => setFilterStatus("all")}
 					className={cn(
-						"flex flex-col items-center justify-center p-8 rounded-md border text-center transition-colors cursor-pointer",
+						"group flex flex-col items-center justify-center p-12 rounded-lg border text-center transition-all cursor-pointer min-w-0",
 						filterStatus === "all"
-							? "border-primary bg-container-elevated-bg shadow-xs"
-							: "border-border-default bg-container-workspace-bg hover:bg-container-elevated-bg",
+							? "border-primary bg-container-elevated-bg shadow-xs ring-1 ring-primary"
+							: "border-border-default bg-container-workspace-bg hover:border-border-muted hover:bg-container-elevated-bg",
 					)}
 				>
-					<span className="tr-text-emphasis text-text-default">{stats.total}</span>
-					<span className="tr-text-metadata text-text-muted">Todos os Projetos</span>
+					<span className="tr-text-ui text-text-default">{stats.total}</span>
+					<span className="tr-text-metadata text-text-muted group-hover:text-text-default transition-colors">
+						Todos os Projetos
+					</span>
 				</button>
 				<button
 					type="button"
 					onClick={() => setFilterStatus("active")}
 					className={cn(
-						"flex flex-col items-center justify-center p-8 rounded-md border text-center transition-colors cursor-pointer",
+						"group flex flex-col items-center justify-center p-12 rounded-lg border text-center transition-all cursor-pointer min-w-0",
 						filterStatus === "active"
-							? "border-primary bg-container-elevated-bg shadow-xs"
-							: "border-border-default bg-container-workspace-bg hover:bg-container-elevated-bg",
+							? "border-primary bg-container-elevated-bg shadow-xs ring-1 ring-primary"
+							: "border-border-default bg-container-workspace-bg hover:border-border-muted hover:bg-container-elevated-bg",
 					)}
 				>
-					<span className="tr-text-emphasis text-primary">{stats.active}</span>
-					<span className="tr-text-metadata text-text-muted">Ativos no RAG</span>
+					<span className="tr-text-ui text-primary">{stats.active}</span>
+					<span className="tr-text-metadata text-text-muted group-hover:text-text-default transition-colors">
+						Ativos no RAG
+					</span>
 				</button>
 				<button
 					type="button"
 					onClick={() => setFilterStatus("withDb")}
 					className={cn(
-						"flex flex-col items-center justify-center p-8 rounded-md border text-center transition-colors cursor-pointer",
+						"group flex flex-col items-center justify-center p-12 rounded-lg border text-center transition-all cursor-pointer min-w-0",
 						filterStatus === "withDb"
-							? "border-primary bg-container-elevated-bg shadow-xs"
-							: "border-border-default bg-container-workspace-bg hover:bg-container-elevated-bg",
+							? "border-feedback-success bg-container-elevated-bg shadow-xs ring-1 ring-feedback-success"
+							: "border-border-default bg-container-workspace-bg hover:border-border-muted hover:bg-container-elevated-bg",
 					)}
 				>
-					<span className="tr-text-emphasis text-feedback-success">{stats.withDb}</span>
-					<span className="tr-text-metadata text-text-muted">Com Banco SQLite</span>
+					<span className="tr-text-ui text-feedback-success">{stats.withDb}</span>
+					<span className="tr-text-metadata text-text-muted group-hover:text-text-default transition-colors">
+						Com Banco SQLite
+					</span>
 				</button>
 				<button
 					type="button"
 					onClick={() => setFilterStatus("missingDb")}
 					className={cn(
-						"flex flex-col items-center justify-center p-8 rounded-md border text-center transition-colors cursor-pointer",
+						"group flex flex-col items-center justify-center p-12 rounded-lg border text-center transition-all cursor-pointer min-w-0",
 						filterStatus === "missingDb"
-							? "border-primary bg-container-elevated-bg shadow-xs"
-							: "border-border-default bg-container-workspace-bg hover:bg-container-elevated-bg",
+							? "border-feedback-warning bg-container-elevated-bg shadow-xs ring-1 ring-feedback-warning"
+							: "border-border-default bg-container-workspace-bg hover:border-border-muted hover:bg-container-elevated-bg",
 					)}
 				>
-					<span className="tr-text-emphasis text-feedback-warning">{stats.missingDb}</span>
-					<span className="tr-text-metadata text-text-muted">Sem Banco (Pendente)</span>
+					<span className="tr-text-ui text-feedback-warning">{stats.missingDb}</span>
+					<span className="tr-text-metadata text-text-muted group-hover:text-text-default transition-colors">
+						Sem Banco (Pendente)
+					</span>
 				</button>
 			</div>
 
@@ -490,7 +498,7 @@ export function HermesProjectsView() {
 							<div
 								key={project.slug}
 								className={cn(
-									"rounded-md border p-12 transition-all flex flex-col gap-8 min-w-0 max-w-full",
+									"rounded-lg border p-12 transition-all flex flex-col gap-8 min-w-0 max-w-full",
 									isStale
 										? "border-feedback-error bg-container-workspace-bg ring-1 ring-feedback-error shadow-xs animate-pulse-subtle"
 										: isActive
@@ -505,20 +513,20 @@ export function HermesProjectsView() {
 											<span className="tr-text-emphasis text-text-default truncate">
 												{project.name}
 											</span>
-											<span className="rounded px-6 py-2 tr-text-metadata border border-border-default bg-container-workspace-bg text-text-muted">
+											<span className="rounded-md px-6 py-2 tr-text-metadata border border-border-default bg-control-bg text-text-muted">
 												{project.slug}
 											</span>
 											{isStale ? (
-												<span className="rounded px-6 py-2 tr-text-metadata bg-feedback-error text-text-default flex items-center gap-4">
+												<span className="rounded-md px-6 py-2 tr-text-metadata bg-feedback-error-subtle text-feedback-error border border-feedback-error flex items-center gap-4">
 													<RiAlertLine className="size-12" />
 													Código Desatualizado ({freshnessItem?.changedFilesCount} alterado{freshnessItem?.changedFilesCount === 1 ? "" : "s"})
 												</span>
 											) : isActive ? (
-												<span className="rounded px-6 py-2 tr-text-metadata bg-primary text-text-default">
+												<span className="rounded-md px-6 py-2 tr-text-metadata bg-primary text-text-default">
 													✓ Ativo no RAG
 												</span>
 											) : (
-												<span className="rounded px-6 py-2 tr-text-metadata border border-border-muted text-text-muted bg-container-elevated-bg">
+												<span className="rounded-md px-6 py-2 tr-text-metadata border border-border-default text-text-muted bg-control-bg">
 													Disponível
 												</span>
 											)}
@@ -528,18 +536,18 @@ export function HermesProjectsView() {
 									{/* Badges de Status do DB e Sessão */}
 									<div className="flex flex-wrap items-center gap-6 shrink-0">
 										{project.hasDb ? (
-											<span className="flex items-center gap-4 rounded px-6 py-2 tr-text-metadata border border-feedback-success text-feedback-success bg-container-workspace-bg">
+											<span className="flex items-center gap-4 rounded-md px-6 py-2 tr-text-metadata border border-feedback-success text-feedback-success bg-feedback-success-subtle">
 												<RiDatabase2Line className="size-12" />
 												{project.dbSizeFormatted ?? "DB ok"}
 											</span>
 										) : (
-											<span className="flex items-center gap-4 rounded px-6 py-2 tr-text-metadata border border-feedback-warning text-feedback-warning bg-container-workspace-bg">
+											<span className="flex items-center gap-4 rounded-md px-6 py-2 tr-text-metadata border border-feedback-warning text-feedback-warning bg-feedback-warning-subtle">
 												<RiAlertLine className="size-12" />
 												Pendente de Indexação
 											</span>
 										)}
 										{project.hasActiveSession && (
-											<span className="flex items-center gap-4 rounded px-6 py-2 tr-text-metadata border border-primary text-primary bg-container-workspace-bg">
+											<span className="flex items-center gap-4 rounded-md px-6 py-2 tr-text-metadata border border-primary text-primary bg-primary-subtle">
 												<RiCheckLine className="size-12" />
 												Sessão Ativa
 											</span>
@@ -548,10 +556,10 @@ export function HermesProjectsView() {
 								</div>
 
 								{/* Caminho do Workspace com Botão Copiar */}
-								<div className="flex flex-wrap items-center justify-between rounded bg-container-workspace-bg px-8 py-4 border border-border-default gap-6 min-w-0">
+								<div className="flex flex-wrap items-center justify-between rounded-md bg-control-bg px-12 py-6 border border-border-default gap-6 min-w-0">
 									<div className="flex items-center gap-6 min-w-0 flex-1">
 										<RiFolder2Line className="size-14 text-text-muted shrink-0" />
-										<span className="tr-code-text text-text-muted truncate min-w-0">
+										<span className="tr-code-text text-text-muted truncate min-w-0 select-all">
 											{project.path}
 										</span>
 									</div>
@@ -582,9 +590,9 @@ export function HermesProjectsView() {
 													? "Clique para desativar este projeto do RAG"
 													: "Ativar este projeto no RAG multi-projeto"
 											}
-											className="shrink-0"
+											className="shrink-0 gap-4"
 										>
-											<RiCheckLine className={cn("size-12 mr-4", !isActive && "opacity-40")} />
+											<RiCheckLine className={cn("size-12", !isActive && "opacity-40")} />
 											{isActive ? "Ativo no RAG" : "Ativar no RAG"}
 										</Button>
 										<Button
@@ -595,7 +603,7 @@ export function HermesProjectsView() {
 												setInfoModalOpen(true);
 											}}
 											tooltip="Ver arquivos e diagnóstico do projeto"
-											className="shrink-0"
+											className="shrink-0 gap-4"
 										>
 											<RiInformationLine className="size-12" />
 											Detalhes
@@ -648,8 +656,8 @@ export function HermesProjectsView() {
 							RAG.
 						</DialogDescription>
 					</DialogHeader>
-					<form onSubmit={(e) => void handleCreateProject(e)} className="space-y-4 py-2">
-						<div className="space-y-2">
+					<form onSubmit={(e) => void handleCreateProject(e)} className="flex flex-col gap-12 py-4">
+						<div className="flex flex-col gap-6">
 							<label htmlFor="hermes-project-name" className="tr-text-metadata text-text-default">
 								Nome de Exibição
 							</label>
@@ -664,10 +672,10 @@ export function HermesProjectsView() {
 										setNewProjectSlug(e.target.value.toLowerCase().replace(/[^a-z0-9-_]/g, "-"));
 									}
 								}}
-								className="w-full rounded border border-border-default bg-container-workspace-bg px-4 py-2 tr-text-ui text-text-default focus:outline-none focus:border-primary"
+								className="w-full rounded-md border border-border-default bg-control-bg px-12 py-8 tr-text-ui text-text-default placeholder:text-text-muted outline-none transition-colors focus:border-control-border-active"
 							/>
 						</div>
-						<div className="space-y-2">
+						<div className="flex flex-col gap-6">
 							<label htmlFor="hermes-project-slug" className="tr-text-metadata text-text-default">
 								Slug / Identificador (Pasta em ~/.hermes/projects)
 							</label>
@@ -677,10 +685,10 @@ export function HermesProjectsView() {
 								placeholder="Ex: brproject-2026"
 								value={newProjectSlug}
 								onChange={(e) => setNewProjectSlug(e.target.value)}
-								className="w-full rounded border border-border-default bg-container-workspace-bg px-4 py-2 tr-code-text text-text-default focus:outline-none focus:border-primary"
+								className="w-full rounded-md border border-border-default bg-control-bg px-12 py-8 tr-code-text text-text-default placeholder:text-text-muted outline-none transition-colors focus:border-control-border-active"
 							/>
 						</div>
-						<div className="space-y-2">
+						<div className="flex flex-col gap-6">
 							<label htmlFor="hermes-project-path" className="tr-text-metadata text-text-default">
 								Caminho Absoluto do Workspace / Código-Fonte
 							</label>
@@ -690,10 +698,10 @@ export function HermesProjectsView() {
 								placeholder="Ex: D:\Brproject3.0\BrProject-2026"
 								value={newProjectPath}
 								onChange={(e) => setNewProjectPath(e.target.value)}
-								className="w-full rounded border border-border-default bg-container-workspace-bg px-4 py-2 tr-code-text text-text-default focus:outline-none focus:border-primary"
+								className="w-full rounded-md border border-border-default bg-control-bg px-12 py-8 tr-code-text text-text-default placeholder:text-text-muted outline-none transition-colors focus:border-control-border-active"
 							/>
 						</div>
-						<DialogFooter className="gap-2 pt-2">
+						<DialogFooter className="gap-8 pt-8 border-t border-border-default">
 							<Button type="button" variant="ghost" onClick={() => setCreateModalOpen(false)}>
 								Cancelar
 							</Button>
@@ -719,8 +727,8 @@ export function HermesProjectsView() {
 						</DialogDescription>
 					</DialogHeader>
 					{projectToDelete && (
-						<div className="space-y-4 py-2">
-							<div className="rounded bg-container-workspace-bg p-4 border border-border-default text-text-muted tr-text-metadata space-y-2">
+						<div className="flex flex-col gap-12 py-4">
+							<div className="rounded-lg bg-control-bg p-12 border border-border-default text-text-muted tr-text-metadata flex flex-col gap-4">
 								<p>
 									Projeto:&nbsp;
 									<strong className="text-text-default">{projectToDelete.name}</strong>
@@ -730,7 +738,7 @@ export function HermesProjectsView() {
 									<code className="tr-code-text text-text-default">{projectToDelete.slug}</code>
 								</p>
 							</div>
-							<div className="space-y-2">
+							<div className="flex flex-col gap-6">
 								<label htmlFor="hermes-confirm-slug" className="tr-text-metadata text-text-default">
 									Para confirmar, digite exatamente:&nbsp;
 									<code className="tr-code-text text-feedback-error">{projectToDelete.slug}</code>
@@ -741,19 +749,18 @@ export function HermesProjectsView() {
 									placeholder="Digite o slug do projeto"
 									value={confirmSlugInput}
 									onChange={(e) => setConfirmSlugInput(e.target.value)}
-									className="w-full rounded border border-feedback-error bg-container-workspace-bg px-4 py-2 tr-code-text text-text-default focus:outline-none"
+									className="w-full rounded-md border border-feedback-error bg-control-bg px-12 py-8 tr-code-text text-text-default outline-none transition-colors focus:border-feedback-error"
 								/>
 							</div>
 						</div>
 					)}
-					<DialogFooter className="gap-2">
+					<DialogFooter className="gap-8 pt-8 border-t border-border-default">
 						<Button type="button" variant="ghost" onClick={() => setDeleteModalOpen(false)}>
 							Cancelar
 						</Button>
 						<Button
 							type="button"
-							variant="primary"
-							className="bg-feedback-error text-text-on-primary hover:bg-feedback-error"
+							variant="destructive"
 							disabled={
 								deleting || !projectToDelete || confirmSlugInput.trim() !== projectToDelete.slug
 							}

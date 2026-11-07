@@ -48,6 +48,7 @@ import type {
 	HermesVectorGraphSample,
 	HermesVectorNode,
 } from "@thinkrail/contracts";
+import { JinaServerManager } from "../embeddings/jinaServerManager";
 import { logger } from "../log";
 
 const log = logger("hermes");
@@ -874,89 +875,9 @@ export function setActiveHermesProjects(
 	return { activeSlugs };
 }
 
-let isAutoStartingJina = false;
-
 export async function ensureJinaEmbeddingsServer(): Promise<boolean> {
-	const embeddingsUrl = process.env.EMBEDDINGS_URL || "http://127.0.0.1:9085/api/embeddings";
-	let jinaBaseUrl = "http://127.0.0.1:9085";
-	try {
-		const u = new URL(embeddingsUrl);
-		jinaBaseUrl = `${u.protocol}//${u.host}`;
-	} catch {
-		jinaBaseUrl = "http://127.0.0.1:9085";
-	}
-
-	// 1. Checa se já está respondendo
-	try {
-		const controller = new AbortController();
-		const timeoutId = setTimeout(() => controller.abort(), 1200);
-		const res = await fetch(`${jinaBaseUrl}/health`, {
-			method: "GET",
-			signal: controller.signal,
-		});
-		clearTimeout(timeoutId);
-		if (res.ok) return true;
-	} catch {}
-
-	if (isAutoStartingJina) return false;
-	isAutoStartingJina = true;
-
-	try {
-		// Procura start_embeddings.bat em locais conhecidos do Hermes
-		const candidates = [
-			"D:\\Projeto_Germes\\hermes-3.0\\start_embeddings.bat",
-			"D:\\Projeto_Germes\\hermes-2.0\\start_embeddings.bat",
-		];
-		let batPath = "";
-		for (const cand of candidates) {
-			if (existsSync(cand)) {
-				batPath = cand;
-				break;
-			}
-		}
-
-		if (batPath) {
-			const hermesDir = dirname(batPath);
-			log.info(`[Auto-Start] Disparando Jina Embeddings via ${batPath}...`);
-			if (process.platform === "win32") {
-				spawn("cmd.exe", ["/c", "start", "/min", batPath], {
-					cwd: hermesDir,
-					detached: true,
-					stdio: "ignore",
-				});
-			} else {
-				spawn(batPath, [], {
-					cwd: hermesDir,
-					detached: true,
-					stdio: "ignore",
-				});
-			}
-
-			// Aguarda até 3 segundos para que o servidor suba
-			for (let i = 0; i < 6; i++) {
-				await new Promise((r) => setTimeout(r, 500));
-				try {
-					const controller = new AbortController();
-					const timeoutId = setTimeout(() => controller.abort(), 1000);
-					const res = await fetch(`${jinaBaseUrl}/health`, {
-						method: "GET",
-						signal: controller.signal,
-					});
-					clearTimeout(timeoutId);
-					if (res.ok) {
-						log.info("[Auto-Start] Servidor Jina Embeddings iniciado com sucesso!");
-						return true;
-					}
-				} catch {}
-			}
-		}
-	} catch (err) {
-		log.error(`[Auto-Start] Falha ao disparar Jina Embeddings: ${err}`);
-	} finally {
-		isAutoStartingJina = false;
-	}
-
-	return false;
+	const info = await JinaServerManager.getInstance().start();
+	return info.status === "running";
 }
 
 export async function testHermesConnection(
@@ -1456,11 +1377,18 @@ export async function getHermesVectorGraph(
 			: params.includeAllClasses
 				? 1000
 				: 160;
-	const perProjectLimit = Math.max(1, Math.floor(targetLimit / targetSlugs.length));
-	const perProjectOffset = Math.floor(offset / targetSlugs.length);
 
 	try {
 		const { Database } = await import("bun:sqlite");
+
+		// 1. Coleta metadados e contagens por projeto ativo
+		interface ProjectMeta {
+			slug: string;
+			wsPath: string;
+			dbPath: string;
+			eligibleCount: number;
+		}
+		const projectMetas: ProjectMeta[] = [];
 
 		for (const slug of targetSlugs) {
 			const projectDir = join(hermesHome, "projects", slug);
@@ -1514,13 +1442,53 @@ export async function getHermesVectorGraph(
 					   OR (chunk_kind = 'block' AND (path LIKE '%.tsx' OR path LIKE '%.ts'))
 				`)
 					.get() as { c?: number };
-				totalAvailableNodes += eligibleCountRow?.c ?? 0;
+				const eligible = eligibleCountRow?.c ?? 0;
+				totalAvailableNodes += eligible;
 
-				// Busca chunks estruturais chave garantindo prioridade absoluta para classes, interfaces e componentes
+				projectMetas.push({
+					slug,
+					wsPath,
+					dbPath,
+					eligibleCount: eligible,
+				});
+
+				db.close();
+			} catch (projErr) {
+				log.warn(`Erro ao ler estatísticas do banco hermes.db do projeto [${slug}]: ${projErr}`);
+			}
+		}
+
+		// 2. Paginação Sequencial Particionada Multi-Projeto (Partitioned Cursor Pagination)
+		// Percorre determinística e sequencialmente os projetos ativos com base no offset global,
+		// garantindo zero repetição de nós entre lotes (batches) e transbordo suave entre projetos.
+		let skippedOffset = offset;
+
+		for (const pm of projectMetas) {
+			if (collectedRows.length >= targetLimit) break;
+
+			// Se o offset global ainda consome todos os nós deste projeto, avança para o próximo
+			if (skippedOffset >= pm.eligibleCount) {
+				skippedOffset -= pm.eligibleCount;
+				continue;
+			}
+
+			const projOffset = skippedOffset;
+			skippedOffset = 0; // O offset foi totalmente absorvido; próximos projetos começam em 0
+
+			const remainingQuota = targetLimit - collectedRows.length;
+			const availableInThisProject = Math.max(0, pm.eligibleCount - projOffset);
+			const projLimit = Math.min(remainingQuota, availableInThisProject);
+
+			if (projLimit <= 0) continue;
+
+			try {
+				const db = new Database(pm.dbPath, { readonly: true });
+
+				// Busca chunks estruturais com detecção ampla e prioritária de classes, componentes e interfaces
 				const rows = db
 					.query(`
 					SELECT rowid, id, path, qualified_name, chunk_kind, token_estimate,
-					       substr(content, 1, 140) as snippet
+					       substr(content, 1, 160) as snippet
 					FROM l2j_chunks
 					WHERE chunk_kind IN ('class', 'class_skeleton', 'class_overview', 'component', 'html_component', 'interface', 'struct', 'impl_skeleton', 'document', 'function', 'type')
 					   OR (chunk_kind = 'block' AND (path LIKE '%.tsx' OR path LIKE '%.ts'))
@@ -1540,7 +1508,7 @@ export async function getHermesVectorGraph(
 						token_estimate DESC
 					LIMIT ? OFFSET ?;
 				`)
-					.all(perProjectLimit, perProjectOffset) as Array<{
+					.all(projLimit, projOffset) as Array<{
 					rowid: number;
 					id: string;
 					path: string;
@@ -1564,16 +1532,27 @@ export async function getHermesVectorGraph(
 
 					for (const r of rows) {
 						const blob = blobByRowid.get(r.rowid) || new Uint8Array(0);
+						// Fallback de qualifiedName se vazio mas snippet define class/interface/function
+						let resolvedQName = r.qualified_name || "";
+						if (!resolvedQName && r.snippet) {
+							const classMatch = r.snippet.match(
+								/(?:export\s+)?(?:default\s+)?(?:class|interface|struct|function|const)\s+([A-Za-z0-9_]+)/,
+							);
+							if (classMatch && classMatch[1]) {
+								resolvedQName = classMatch[1];
+							}
+						}
+
 						collectedRows.push({
 							id: r.id,
 							path: r.path,
-							qualified_name: r.qualified_name,
+							qualified_name: resolvedQName,
 							chunk_kind: r.chunk_kind,
 							token_estimate: r.token_estimate,
 							snippet: r.snippet,
 							vector_blob: blob,
-							projectSlug: slug,
-							projectRoot: wsPath || projectDir,
+							projectSlug: pm.slug,
+							projectRoot: pm.wsPath || pm.slug,
 						});
 					}
 				}
@@ -1602,7 +1581,7 @@ export async function getHermesVectorGraph(
 
 				db.close();
 			} catch (projErr) {
-				log.warn(`Erro ao ler banco hermes.db do projeto [${slug}]: ${projErr}`);
+				log.warn(`Erro ao ler dados do banco hermes.db do projeto [${pm.slug}]: ${projErr}`);
 			}
 		}
 

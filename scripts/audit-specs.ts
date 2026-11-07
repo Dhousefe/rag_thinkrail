@@ -16,13 +16,13 @@ function findSpecs(dir: string, results: any[] = []) {
           const matchType = content.match(/^type:\s*([^\r\n]+)/m);
           const matchTitle = content.match(/^title:\s*([^\r\n]+)/m);
           const matchStatus = content.match(/^status:\s*([^\r\n]+)/m);
-          if (matchId && matchType) {
+          if (matchId?.[1] && matchType?.[1]) {
             results.push({
               path: relative(process.cwd(), full).split("\\").join("/"),
               id: matchId[1].trim(),
               type: matchType[1].trim(),
-              title: matchTitle ? matchTitle[1].trim() : "",
-              status: matchStatus ? matchStatus[1].trim() : "active",
+              title: matchTitle?.[1] ? matchTitle[1].trim() : "",
+              status: matchStatus?.[1] ? matchStatus[1].trim() : "active",
             });
           }
         }

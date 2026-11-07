@@ -97,8 +97,8 @@ caused by the requested change, and rerun them without asking for approval at ea
   the complete `bun run e2e:full` suite: it spends real provider tokens and much more time.
 - Documentation/spec-only changes and test-harness-only changes use targeted checks unless they can
   affect the shipped runtime.
-- Fast gates: `bun run check:deps`, `bun run check:boundaries`, `bun run check:seams`, `bun run lint`,
-  and `bun run typecheck`. Unit tests are `bun run test`; `bun run check:spec-surface` validates enrolled
+- Fast gates: `bun run build:binary`, `bun run check:deps`, `bun run check:boundaries`, `bun run check:seams`, `bun run lint`,
+  and `bun run typecheck`. O build do binário nativo em `apps/cli/dist` com a versão sufixada (ex: `thinkrail-v<versao>.exe`) é obrigatório antes de qualquer commit para evitar conflitos de nomes de binários e garantir artefatos operacionais atualizados. Unit tests are `bun run test`; `bun run check:spec-surface` validates enrolled
   spec/barrel public surfaces; `bun run check:compiler` fails when a web function newly bails out of the
   React Compiler (or starts compiling) against the committed census baseline.
 - `bun run test:workflows` is on-demand: it uses real provider tokens and is not a commit/CI gate.
