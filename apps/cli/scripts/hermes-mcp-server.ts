@@ -84,12 +84,28 @@ interface SearchHit {
 	content: string;
 }
 
-// Busca de código com FTS5 e RRF multi-projeto
-function handleCodeSearch(query: string, limit = 10): string {
+// Busca de código com FTS5 e RRF multi-projeto (com suporte a filtro de cluster/nó L2)
+function handleCodeSearch(query: string, limit = 10, clusterId?: string): string {
 	const slugs = getActiveSlugs();
 	const cleanQuery = query.trim().replace(/["\*\^\:\(\)]/g, " ").trim();
 	const terms = cleanQuery.split(/\s+/).filter(Boolean);
 	const ftsQuery = terms.length > 0 ? terms.map((t) => `"${t}"`).join(" AND ") : cleanQuery;
+
+	const clusterPatterns: Record<string, string> = {
+		"web-ui": "%apps/web%",
+		"cli-host": "%apps/cli%",
+		"desktop": "%apps/desktop%",
+		"server-engine": "%packages/server%",
+		"contracts": "%packages/contracts%",
+		"renderers": "%packages/resource-renderers%",
+		"ui-kit": "%packages/ui%",
+		"shared-utils": "%packages/shared%",
+		"locales": "%packages/locales%",
+		"e2e-tests": "%e2e%",
+		"root": "%",
+	};
+
+	const filterPattern = clusterId ? (clusterPatterns[clusterId.toLowerCase()] || `%${clusterId}%`) : null;
 
 	const allHits: SearchHit[] = [];
 
@@ -102,27 +118,51 @@ function handleCodeSearch(query: string, limit = 10): string {
 			let rows: any[] = [];
 
 			try {
-				rows = db
-					.query(
-						`SELECT c.path, c.start_line, c.end_line, c.content, c.qualified_name, c.signature, rank
-             FROM l2j_chunk_fts fts
-             JOIN l2j_chunks c ON fts.rowid = c.rowid
-             WHERE l2j_chunk_fts MATCH ?
-             ORDER BY rank
-             LIMIT ?`,
-					)
-					.all(ftsQuery, limit * 2);
+				if (filterPattern) {
+					rows = db
+						.query(
+							`SELECT c.path, c.start_line, c.end_line, c.content, c.qualified_name, c.signature, rank
+               FROM l2j_chunk_fts fts
+               JOIN l2j_chunks c ON fts.rowid = c.rowid
+               WHERE l2j_chunk_fts MATCH ? AND (c.path LIKE ? OR replace(c.path, '\\', '/') LIKE ?)
+               ORDER BY rank
+               LIMIT ?`,
+						)
+						.all(ftsQuery, filterPattern, filterPattern, limit * 2);
+				} else {
+					rows = db
+						.query(
+							`SELECT c.path, c.start_line, c.end_line, c.content, c.qualified_name, c.signature, rank
+               FROM l2j_chunk_fts fts
+               JOIN l2j_chunks c ON fts.rowid = c.rowid
+               WHERE l2j_chunk_fts MATCH ?
+               ORDER BY rank
+               LIMIT ?`,
+						)
+						.all(ftsQuery, limit * 2);
+				}
 			} catch {
 				// Fallback via LIKE direto em l2j_chunks
 				const likePattern = `%${terms[0] || query}%`;
-				rows = db
-					.query(
-						`SELECT c.path, c.start_line, c.end_line, c.content, c.qualified_name, c.signature, -1.0 as rank
-             FROM l2j_chunks c
-             WHERE c.content LIKE ? OR c.qualified_name LIKE ?
-             LIMIT ?`,
-					)
-					.all(likePattern, likePattern, limit);
+				if (filterPattern) {
+					rows = db
+						.query(
+							`SELECT c.path, c.start_line, c.end_line, c.content, c.qualified_name, c.signature, -1.0 as rank
+               FROM l2j_chunks c
+               WHERE (c.content LIKE ? OR c.qualified_name LIKE ?) AND (c.path LIKE ? OR replace(c.path, '\\', '/') LIKE ?)
+               LIMIT ?`,
+						)
+						.all(likePattern, likePattern, filterPattern, filterPattern, limit);
+				} else {
+					rows = db
+						.query(
+							`SELECT c.path, c.start_line, c.end_line, c.content, c.qualified_name, c.signature, -1.0 as rank
+               FROM l2j_chunks c
+               WHERE c.content LIKE ? OR c.qualified_name LIKE ?
+               LIMIT ?`,
+						)
+						.all(likePattern, likePattern, limit);
+				}
 			}
 
 			rows.forEach((r, idx) => {
@@ -262,6 +302,143 @@ function handleAstPredictContext(target: string, project?: string): string {
 		return `Nenhum caller ou callee registrado no grafo para "${target}".`;
 	}
 
+	return lines.join("\n");
+}
+
+// L0: Visão Global ultracompacta (< 250 tokens)
+function handleGetProjectL0Index(project?: string): string {
+	const slugs = project ? [project] : getActiveSlugs();
+	const lines: string[] = ["=== L0: MAPA ESTRUTURAL DE CLUSTERS ==="];
+
+	for (const slug of slugs) {
+		const dbPath = join(projectsDir, slug, "hermes.db");
+		if (!existsSync(dbPath)) continue;
+
+		try {
+			const db = new Database(dbPath, { readonly: true });
+			const files = db.query("SELECT path FROM l2j_files").all() as { path: string }[];
+			const clusterMap: Record<string, { desc: string; count: number }> = {};
+
+			for (const f of files) {
+				const norm = f.path.split("\\").join("/");
+				let cid = "root";
+				let desc = "Configurações, scripts e documentações raiz";
+
+				if (norm.includes("apps/web")) {
+					cid = "web-ui";
+					desc = "Interface React 19, componentes de chat, layout e visualizações";
+				} else if (norm.includes("apps/cli")) {
+					cid = "cli-host";
+					desc = "Launcher CLI, servidor MCP Hermes e scripts operacionais";
+				} else if (norm.includes("apps/desktop")) {
+					cid = "desktop";
+					desc = "Empacotamento e container desktop Electron/Tauri";
+				} else if (norm.includes("packages/server")) {
+					cid = "server-engine";
+					desc = "Host do Pi harness, endpoints RPC e orquestração de sessões";
+				} else if (norm.includes("packages/contracts")) {
+					cid = "contracts";
+					desc = "Definições de tipos, DTOs e wire contracts compartilhados";
+				} else if (norm.includes("packages/resource-renderers")) {
+					cid = "renderers";
+					desc = "Cards e renderizadores visuais de ferramentas ricas";
+				} else if (norm.includes("packages/ui")) {
+					cid = "ui-kit";
+					desc = "Primitivas de design system baseadas em Radix/Tailwind";
+				} else if (norm.includes("packages/shared")) {
+					cid = "shared-utils";
+					desc = "Utilitários compartilhados, logging e helpers de runtime";
+				} else if (norm.includes("packages/locales")) {
+					cid = "locales";
+					desc = "Catálogos e internacionalização i18n";
+				} else if (norm.includes("e2e")) {
+					cid = "e2e-tests";
+					desc = "Suítes de testes de integração, regressão e workflows";
+				}
+
+				if (!clusterMap[cid]) {
+					clusterMap[cid] = { desc, count: 0 };
+				}
+				clusterMap[cid].count++;
+			}
+
+			lines.push(`\n[Projeto: ${slug}]`);
+			for (const [cid, info] of Object.entries(clusterMap)) {
+				lines.push(`• [${cid}] (${info.count} arquivos): ${info.desc}`);
+			}
+			db.close();
+		} catch (err) {
+			lines.push(`[${slug}] Erro ao gerar L0: ${err}`);
+		}
+	}
+
+	lines.push("\nInstrução L0: Chame expand_graph_node(cluster_id) para explorar um domínio específico em L1.");
+	return lines.join("\n");
+}
+
+// L1: Expansão de Cluster / Sub-grafo (300 - 800 tokens)
+function handleExpandGraphNode(clusterId: string, project?: string): string {
+	const slugs = project ? [project] : getActiveSlugs();
+	const cleanId = clusterId.trim().toLowerCase();
+	const lines: string[] = [`=== L1: EXPANSÃO DO CLUSTER [${clusterId}] ===`];
+
+	const clusterPatterns: Record<string, string> = {
+		"web-ui": "%apps/web%",
+		"cli-host": "%apps/cli%",
+		"desktop": "%apps/desktop%",
+		"server-engine": "%packages/server%",
+		"contracts": "%packages/contracts%",
+		"renderers": "%packages/resource-renderers%",
+		"ui-kit": "%packages/ui%",
+		"shared-utils": "%packages/shared%",
+		"locales": "%packages/locales%",
+		"e2e-tests": "%e2e%",
+		"root": "%",
+	};
+
+	const pattern = clusterPatterns[cleanId] || `%${cleanId}%`;
+
+	for (const slug of slugs) {
+		const dbPath = join(projectsDir, slug, "hermes.db");
+		if (!existsSync(dbPath)) continue;
+
+		try {
+			const db = new Database(dbPath, { readonly: true });
+			const symbols = db
+				.query(
+					`SELECT s.kind, s.qualified_name, s.signature, s.start_line, s.end_line, f.path as file_path
+           FROM l2j_symbols s
+           JOIN l2j_files f ON s.file_id = f.id
+           WHERE (f.path LIKE ? OR replace(f.path, '\\', '/') LIKE ?)
+           ORDER BY f.path, s.start_line
+           LIMIT 40`,
+				)
+				.all(pattern, pattern) as any[];
+
+			if (symbols.length > 0) {
+				lines.push(`\n[${slug}] Símbolos e Contratos Principais em ${clusterId}:`);
+				let currentFile = "";
+				for (const sym of symbols) {
+					const relPath = sym.file_path.split("\\").join("/");
+					if (relPath !== currentFile) {
+						currentFile = relPath;
+						lines.push(`\n📁 ${currentFile}:`);
+					}
+					lines.push(`  - ${sym.kind} ${sym.qualified_name} (L${sym.start_line}-L${sym.end_line})`);
+					if (sym.signature) {
+						lines.push(`    sig: ${sym.signature}`);
+					}
+				}
+			} else {
+				lines.push(`[${slug}] Nenhum símbolo encontrado para o cluster '${clusterId}'.`);
+			}
+			db.close();
+		} catch (err) {
+			lines.push(`[${slug}] Erro ao expandir nó: ${err}`);
+		}
+	}
+
+	lines.push("\nInstrução L1: Chame code_search com escopo do símbolo ou nó desejado para obter L2.");
 	return lines.join("\n");
 }
 
@@ -693,13 +870,38 @@ function handleProjectManager(action: string, slug?: string): string {
 // Definição das ferramentas MCP
 const TOOLS = [
 	{
+		name: "get_project_l0_index",
+		description: "CAMADA L0: Visão global ultra-compacta (< 250 tokens) de clusters e domínios do projeto para contenção de tokens.",
+		inputSchema: {
+			type: "object",
+			properties: {
+				project: { type: "string", description: "Slug do projeto (opcional, busca nos ativos se omitido)." },
+			},
+		},
+		annotations: { readOnlyHint: true },
+	},
+	{
+		name: "expand_graph_node",
+		description: "CAMADA L1: Expande um cluster/sub-grafo específico (300-800 tokens) com assinaturas AST e interfaces.",
+		inputSchema: {
+			type: "object",
+			properties: {
+				cluster_id: { type: "string", description: "ID do cluster identificado em L0 (ex: 'web-ui', 'server-engine', 'contracts')." },
+				project: { type: "string", description: "Slug do projeto (opcional)." },
+			},
+			required: ["cluster_id"],
+		},
+		annotations: { readOnlyHint: true },
+	},
+	{
 		name: "code_search",
-		description: "Busca semântica + FTS5 + RRF no código indexado de todos os projetos ativos no Hermes.",
+		description: "CAMADA L2: Busca semântica + FTS5 + RRF cirúrgica, com suporte opcional a cluster_id para contenção estrita de tokens.",
 		inputSchema: {
 			type: "object",
 			properties: {
 				query: { type: "string", description: "Termo de busca, método, classe ou padrão arquitetural." },
 				limit: { type: "number", description: "Limite de resultados (padrão 10)." },
+				cluster_id: { type: "string", description: "Filtro de cluster L0 (ex: 'web-ui', 'server-engine', 'contracts') para isolamento estrito de contexto." },
 			},
 			required: ["query"],
 		},
@@ -842,8 +1044,12 @@ function handleMessage(req: JsonRpcRequest) {
 			(async () => {
 				try {
 					let resultText = "";
-					if (toolName === "code_search") {
-						resultText = handleCodeSearch(args.query || "", args.limit || 10);
+					if (toolName === "get_project_l0_index") {
+						resultText = handleGetProjectL0Index(args.project);
+					} else if (toolName === "expand_graph_node") {
+						resultText = handleExpandGraphNode(args.cluster_id || "", args.project);
+					} else if (toolName === "code_search") {
+						resultText = handleCodeSearch(args.query || "", args.limit || 10, args.cluster_id);
 					} else if (toolName === "ast_skeleton_tree") {
 						resultText = handleAstSkeletonTree(args.target_path || "", args.project);
 					} else if (toolName === "ast_predict_context") {
