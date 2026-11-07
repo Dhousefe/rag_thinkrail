@@ -25,6 +25,7 @@ import { preloadedLazy } from "../components/preloadedLazy";
 import { QuietScrollArea } from "../components/QuietScrollArea";
 import { type LayoutAttention, layoutResourceIdentity } from "../lib";
 import { CindyPanel } from "../panels/CindyPanel";
+import { CraftPanel } from "../panels/CraftPanel";
 import { DiffPane } from "../panels/DiffPane";
 import { FilePane } from "../panels/FilePane";
 import { FilesPanel } from "../panels/FilesPanel";
@@ -655,6 +656,11 @@ export function WorkspaceWorkbench({ workspaceId }: { workspaceId: string }) {
 			cindy: (
 				<QuietScrollArea className="h-full" viewportClassName="p-panel-inset">
 					<CindyPanel />
+				</QuietScrollArea>
+			),
+			craft: (
+				<QuietScrollArea className="h-full" viewportClassName="p-panel-inset">
+					<CraftPanel />
 				</QuietScrollArea>
 			),
 			specs: (
