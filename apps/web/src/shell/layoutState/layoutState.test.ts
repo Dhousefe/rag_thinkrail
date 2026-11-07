@@ -225,11 +225,17 @@ describe("frontend-local layout state", () => {
 		const second = await ensureWorkspaceLayoutState("workspace");
 
 		expect(first.center).toMatchObject({ kind: "group", tabs: [] });
-		expect(first.left.groups[0]?.tabs).toEqual([toolTab("projects")]);
+		expect(first.left.groups[0]?.tabs).toEqual([
+			toolTab("projects"),
+			toolTab("hermes-mcp"),
+			toolTab("cindy"),
+			toolTab("craft"),
+		]);
 		expect(first.right.groups.flatMap((group) => group.tabs)).toEqual([
 			toolTab("specs"),
 			toolTab("files"),
 			toolTab("plan"),
+			toolTab("neural-core"),
 			toolTab("review"),
 		]);
 		expect(first.bottom).toMatchObject({ visible: true, groups: [{ tabs: [] }] });
@@ -448,7 +454,12 @@ describe("frontend-local layout state", () => {
 
 		const restored = await ensureWorkspaceLayoutState("workspace");
 		expect(restored.center).toMatchObject({ kind: "group", tabs: [] });
-		expect(restored.left.groups[0]?.tabs).toEqual([toolTab("projects")]);
+		expect(restored.left.groups[0]?.tabs).toEqual([
+			toolTab("projects"),
+			toolTab("hermes-mcp"),
+			toolTab("cindy"),
+			toolTab("craft"),
+		]);
 		expect(restored.bottom.visible).toBe(true);
 	});
 

@@ -48,6 +48,7 @@ import type {
 	HermesVectorGraphSample,
 	HermesVectorNode,
 } from "@thinkrail/contracts";
+import { JinaServerManager } from "../embeddings/jinaServerManager";
 import { logger } from "../log";
 
 const log = logger("hermes");
@@ -874,89 +875,9 @@ export function setActiveHermesProjects(
 	return { activeSlugs };
 }
 
-let isAutoStartingJina = false;
-
 export async function ensureJinaEmbeddingsServer(): Promise<boolean> {
-	const embeddingsUrl = process.env.EMBEDDINGS_URL || "http://127.0.0.1:9085/api/embeddings";
-	let jinaBaseUrl = "http://127.0.0.1:9085";
-	try {
-		const u = new URL(embeddingsUrl);
-		jinaBaseUrl = `${u.protocol}//${u.host}`;
-	} catch {
-		jinaBaseUrl = "http://127.0.0.1:9085";
-	}
-
-	// 1. Checa se já está respondendo
-	try {
-		const controller = new AbortController();
-		const timeoutId = setTimeout(() => controller.abort(), 1200);
-		const res = await fetch(`${jinaBaseUrl}/health`, {
-			method: "GET",
-			signal: controller.signal,
-		});
-		clearTimeout(timeoutId);
-		if (res.ok) return true;
-	} catch {}
-
-	if (isAutoStartingJina) return false;
-	isAutoStartingJina = true;
-
-	try {
-		// Procura start_embeddings.bat em locais conhecidos do Hermes
-		const candidates = [
-			"D:\\Projeto_Germes\\hermes-3.0\\start_embeddings.bat",
-			"D:\\Projeto_Germes\\hermes-2.0\\start_embeddings.bat",
-		];
-		let batPath = "";
-		for (const cand of candidates) {
-			if (existsSync(cand)) {
-				batPath = cand;
-				break;
-			}
-		}
-
-		if (batPath) {
-			const hermesDir = dirname(batPath);
-			log.info(`[Auto-Start] Disparando Jina Embeddings via ${batPath}...`);
-			if (process.platform === "win32") {
-				spawn("cmd.exe", ["/c", "start", "/min", batPath], {
-					cwd: hermesDir,
-					detached: true,
-					stdio: "ignore",
-				});
-			} else {
-				spawn(batPath, [], {
-					cwd: hermesDir,
-					detached: true,
-					stdio: "ignore",
-				});
-			}
-
-			// Aguarda até 3 segundos para que o servidor suba
-			for (let i = 0; i < 6; i++) {
-				await new Promise((r) => setTimeout(r, 500));
-				try {
-					const controller = new AbortController();
-					const timeoutId = setTimeout(() => controller.abort(), 1000);
-					const res = await fetch(`${jinaBaseUrl}/health`, {
-						method: "GET",
-						signal: controller.signal,
-					});
-					clearTimeout(timeoutId);
-					if (res.ok) {
-						log.info("[Auto-Start] Servidor Jina Embeddings iniciado com sucesso!");
-						return true;
-					}
-				} catch {}
-			}
-		}
-	} catch (err) {
-		log.error(`[Auto-Start] Falha ao disparar Jina Embeddings: ${err}`);
-	} finally {
-		isAutoStartingJina = false;
-	}
-
-	return false;
+	const info = await JinaServerManager.getInstance().start();
+	return info.status === "running";
 }
 
 export async function testHermesConnection(
@@ -1456,11 +1377,18 @@ export async function getHermesVectorGraph(
 			: params.includeAllClasses
 				? 1000
 				: 160;
-	const perProjectLimit = Math.max(1, Math.floor(targetLimit / targetSlugs.length));
-	const perProjectOffset = Math.floor(offset / targetSlugs.length);
 
 	try {
 		const { Database } = await import("bun:sqlite");
+
+		// 1. Coleta metadados e contagens por projeto ativo
+		interface ProjectMeta {
+			slug: string;
+			wsPath: string;
+			dbPath: string;
+			eligibleCount: number;
+		}
+		const projectMetas: ProjectMeta[] = [];
 
 		for (const slug of targetSlugs) {
 			const projectDir = join(hermesHome, "projects", slug);
@@ -1494,36 +1422,82 @@ export async function getHermesVectorGraph(
 				totalChunks += totalChunksRow?.c ?? 0;
 				totalEmbeddings += totalEmbeddingsRow?.c ?? 0;
 
-				const totalClassesRow = db
-					.query(
-						`SELECT count(*) as c FROM l2j_chunks WHERE chunk_kind IN ('class', 'class_skeleton', 'class_overview', 'component', 'html_component', 'interface', 'struct', 'impl_skeleton')`,
+				// Contagem exata no SQLite alinhada à Opção B:
+				// 1 Polígono principal por Classe/Interface/Componente/Estrutura arquitetural.
+				// Métodos e funções associadas orbitam como satélites ao redor da classe.
+				const CORE_CLASS_KINDS_SQL = `
+					chunk_kind IN (
+						'class', 'class_skeleton', 'class_overview', 
+						'component', 'html_component', 'interface', 
+						'struct', 'impl_skeleton', 'enum'
 					)
+				`;
+
+				const totalClassesRow = db
+					.query(`SELECT count(*) as c FROM l2j_chunks WHERE ${CORE_CLASS_KINDS_SQL}`)
 					.get() as { c?: number };
-				totalClassesCount += totalClassesRow?.c ?? 0;
+				const exactClassesCount = totalClassesRow?.c ?? 0;
+				totalClassesCount += exactClassesCount;
 
 				const totalFilesRow = db
 					.query(`SELECT count(DISTINCT path) as c FROM l2j_chunks`)
 					.get() as { c?: number };
 				totalFilesCount += totalFilesRow?.c ?? 0;
 
-				const eligibleCountRow = db
-					.query(`
-					SELECT count(*) as c
-					FROM l2j_chunks
-					WHERE chunk_kind IN ('class', 'class_skeleton', 'class_overview', 'component', 'html_component', 'interface', 'struct', 'impl_skeleton', 'document', 'function', 'type')
-					   OR (chunk_kind = 'block' AND (path LIKE '%.tsx' OR path LIKE '%.ts'))
-				`)
-					.get() as { c?: number };
-				totalAvailableNodes += eligibleCountRow?.c ?? 0;
+				// Total de nós elegíveis do projeto rigorosamente igual à contagem de classes do SQLite
+				totalAvailableNodes += exactClassesCount;
 
-				// Busca chunks estruturais chave garantindo prioridade absoluta para classes, interfaces e componentes
+				projectMetas.push({
+					slug,
+					wsPath,
+					dbPath,
+					eligibleCount: exactClassesCount,
+				});
+
+				db.close();
+			} catch (projErr) {
+				log.warn(`Erro ao ler estatísticas do banco hermes.db do projeto [${slug}]: ${projErr}`);
+			}
+		}
+
+		// 2. Paginação Sequencial Particionada Multi-Projeto (Partitioned Cursor Pagination)
+		// Percorre determinística e sequencialmente os projetos ativos com base no offset global,
+		// garantindo zero repetição de nós entre lotes (batches) e transbordo suave entre projetos.
+		let skippedOffset = offset;
+
+		for (const pm of projectMetas) {
+			if (collectedRows.length >= targetLimit) break;
+
+			// Se o offset global ainda consome todos os nós deste projeto, avança para o próximo
+			if (skippedOffset >= pm.eligibleCount) {
+				skippedOffset -= pm.eligibleCount;
+				continue;
+			}
+
+			const projOffset = skippedOffset;
+			skippedOffset = 0; // O offset foi totalmente absorvido; próximos projetos começam em 0
+
+			const remainingQuota = targetLimit - collectedRows.length;
+			const availableInThisProject = Math.max(0, pm.eligibleCount - projOffset);
+			const projLimit = Math.min(remainingQuota, availableInThisProject);
+
+			if (projLimit <= 0) continue;
+
+			try {
+				const db = new Database(pm.dbPath, { readonly: true });
+
+				// Busca focada nas classes, componentes, interfaces e estruturas principais
+				// mantendo 100% de consistência com os contadores de limites e elegibilidade
 				const rows = db
 					.query(`
 					SELECT rowid, id, path, qualified_name, chunk_kind, token_estimate,
-					       substr(content, 1, 140) as snippet
+					       substr(content, 1, 160) as snippet
 					FROM l2j_chunks
-					WHERE chunk_kind IN ('class', 'class_skeleton', 'class_overview', 'component', 'html_component', 'interface', 'struct', 'impl_skeleton', 'document', 'function', 'type')
-					   OR (chunk_kind = 'block' AND (path LIKE '%.tsx' OR path LIKE '%.ts'))
+					WHERE chunk_kind IN (
+						'class', 'class_skeleton', 'class_overview', 
+						'component', 'html_component', 'interface', 
+						'struct', 'impl_skeleton', 'enum'
+					)
 					ORDER BY 
 						CASE 
 							WHEN chunk_kind = 'class' THEN 1
@@ -1533,14 +1507,13 @@ export async function getHermesVectorGraph(
 							WHEN chunk_kind = 'interface' THEN 3
 							WHEN chunk_kind = 'struct' THEN 4
 							WHEN chunk_kind = 'impl_skeleton' THEN 4
-							WHEN chunk_kind = 'function' THEN 5
-							WHEN chunk_kind = 'type' THEN 6
-							ELSE 7
+							WHEN chunk_kind = 'enum' THEN 5
+							ELSE 6
 						END,
 						token_estimate DESC
 					LIMIT ? OFFSET ?;
 				`)
-					.all(perProjectLimit, perProjectOffset) as Array<{
+					.all(projLimit, projOffset) as Array<{
 					rowid: number;
 					id: string;
 					path: string;
@@ -1562,20 +1535,53 @@ export async function getHermesVectorGraph(
 						for (const b of blobRows) blobByRowid.set(b.rowid, b.vector_blob);
 					} catch {}
 
-					for (const r of rows) {
-						const blob = blobByRowid.get(r.rowid) || new Uint8Array(0);
-						collectedRows.push({
-							id: r.id,
-							path: r.path,
-							qualified_name: r.qualified_name,
-							chunk_kind: r.chunk_kind,
-							token_estimate: r.token_estimate,
-							snippet: r.snippet,
-							vector_blob: blob,
-							projectSlug: slug,
-							projectRoot: wsPath || projectDir,
-						});
+				// Deduplicação determinística no lote: evita polígonos idênticos com o mesmo nome e arquivo
+				const seenEntityKeys = new Set<string>();
+
+				for (const r of rows) {
+					const blob = blobByRowid.get(r.rowid) || new Uint8Array(0);
+					// Fallback de qualifiedName se vazio mas snippet define class/interface/function
+					let resolvedQName = r.qualified_name || "";
+					if (!resolvedQName && r.snippet) {
+						const classMatch = r.snippet.match(
+							/(?:export\s+)?(?:default\s+)?(?:class|interface|struct|function|const)\s+([A-Za-z0-9_]+)/,
+						);
+						if (classMatch && classMatch[1]) {
+							resolvedQName = classMatch[1];
+						}
 					}
+
+					// Refinamento de nomes repetidos (ex: SPEC#Boundary -> SPEC.md [web/chat] # Boundary)
+					const normPath = r.path.replace(/\\/g, "/");
+					const pathParts = normPath.split("/");
+					const fileName = pathParts.pop() || "";
+					const parentDir = pathParts.pop() || "";
+
+					if (!resolvedQName || resolvedQName === r.path) {
+						resolvedQName = fileName ? `${fileName}` : "Entity";
+					} else if (resolvedQName.startsWith("SPEC#") || resolvedQName.startsWith("SPEC.md#")) {
+						const heading = resolvedQName.replace(/^SPEC(?:\.md)?#/, "");
+						resolvedQName = `${parentDir}/${fileName}#${heading}`;
+					}
+
+					const entityKey = `${pm.slug}:${normPath}:${resolvedQName}`;
+					if (seenEntityKeys.has(entityKey)) {
+						continue; // Pula chunk redundante da mesma entidade no mesmo arquivo
+					}
+					seenEntityKeys.add(entityKey);
+
+					collectedRows.push({
+						id: r.id,
+						path: r.path,
+						qualified_name: resolvedQName,
+						chunk_kind: r.chunk_kind,
+						token_estimate: r.token_estimate,
+						snippet: r.snippet,
+						vector_blob: blob,
+						projectSlug: pm.slug,
+						projectRoot: pm.wsPath || pm.slug,
+					});
+				}
 				}
 
 				const uniquePaths = Array.from(new Set(rows.map((r) => r.path))).slice(0, 120);
@@ -1602,7 +1608,7 @@ export async function getHermesVectorGraph(
 
 				db.close();
 			} catch (projErr) {
-				log.warn(`Erro ao ler banco hermes.db do projeto [${slug}]: ${projErr}`);
+				log.warn(`Erro ao ler dados do banco hermes.db do projeto [${pm.slug}]: ${projErr}`);
 			}
 		}
 
@@ -1777,21 +1783,31 @@ export async function getHermesVectorGraph(
 		const totalProjects = projectList.length;
 
 		// Disposição dos Chip Dies no plano XZ estilo PCB (Litografia de Chip)
+		// Aumentamos o distanciamento entre dies e setores para que cada projeto e módulo
+		// forme uma ilha (Die) claramente distinguível, sem sobreposição quando todas as classes estão visíveis.
+		// Disposição Galáctica Espiral (Milky Way Galaxy Layout):
+		// Cada projeto ativo forma um sistema galáctico independente ou galáxia satélite.
+		// Dentro de cada projeto, os nós se distribuem ao longo de braços espirais logarítmicos
+		// (Milky Way Spiral Arms), mantendo o núcleo estelar aberto e elegante, com
+		// partição angular semântica por módulo (Contracts, Server, Web, etc.).
 		for (let pIdx = 0; pIdx < totalProjects; pIdx++) {
 			const projSlug = projectList[pIdx]!;
 			const projItems = itemsByProject.get(projSlug)!;
 
-			// Centro do Die do Projeto no plano da placa de circuito impresso
-			let dieCenterX = 0;
-			let dieCenterZ = 0;
+			// Centros Galácticos (Galactic Cores) bem espaçados no plano XZ:
+			// Quando há múltiplos projetos ativos (Aba 'Todos os Projetos'), cada projeto
+			// ganha sua própria Galáxia no espaço 3D (ex: Via Láctea e Andrômeda),
+			// com separação de 12.0 unidades entre núcleos estelares para visualização limpa.
+			let galacticCenterX = 0;
+			let galacticCenterZ = 0;
 			if (totalProjects === 2) {
-				dieCenterX = pIdx === 0 ? -3.4 : 3.4;
-				dieCenterZ = 0;
+				galacticCenterX = pIdx === 0 ? -6.8 : 6.8;
+				galacticCenterZ = 0;
 			} else if (totalProjects > 2) {
 				const pAngle = (pIdx / totalProjects) * Math.PI * 2;
-				const pDist = 4.2 + (totalProjects - 2) * 0.8;
-				dieCenterX = Math.cos(pAngle) * pDist;
-				dieCenterZ = Math.sin(pAngle) * pDist;
+				const pDist = 8.5 + (totalProjects - 2) * 2.5;
+				galacticCenterX = Math.cos(pAngle) * pDist;
+				galacticCenterZ = Math.sin(pAngle) * pDist;
 			}
 
 			// Agrupa itens deste projeto por módulo
@@ -1804,41 +1820,55 @@ export async function getHermesVectorGraph(
 
 			const moduleNames = Array.from(itemsByModule.keys());
 			const totalModules = moduleNames.length;
-			const baseDieRadius = Math.min(2.8, Math.max(1.8, Math.sqrt(projItems.length) * 0.38));
-			const sectorAngle = (Math.PI * 2) / Math.max(1, totalModules);
+
+			// Mapeamento semântico de braços espirais:
+			// Cada módulo arquitetural ancora em um dos braços principais da galáxia
+			const getSemanticArmBaseAngle = (name: string): number => {
+				const low = name.toLowerCase();
+				if (low.includes("contract") || low.includes("interface")) return 0.0; // Braço Perseus (0 rad)
+				if (low.includes("server") || low.includes("backend") || low.includes("engine")) return (Math.PI * 2) / 3; // Braço Sagittarius (120°)
+				if (low.includes("web") || low.includes("ui") || low.includes("component")) return (Math.PI * 4) / 3; // Braço Scutum-Centaurus (240°)
+				return Math.PI; // Braço Norma (180°)
+			};
+
+			// Parâmetros da Espiral Galáctica Logarítmica: r = a * e^(b * theta)
+			// Núcleo estelar limpo: raio inicial de 2.2 unidades para afastar os nós do centro
+			const coreExclusionRadius = 2.2;
 
 			for (let mIdx = 0; mIdx < totalModules; mIdx++) {
 				const modName = moduleNames[mIdx]!;
 				const items = itemsByModule.get(modName)!;
-				const clusterAngle = mIdx * sectorAngle;
-
-				// Barramento / Setor do Módulo dentro do Die do Projeto
-				const clusterDist = baseDieRadius * (0.68 + (mIdx % 2) * 0.22);
-				const clusterCenterX = dieCenterX + Math.cos(clusterAngle) * clusterDist;
-				const clusterCenterZ = dieCenterZ + Math.sin(clusterAngle) * clusterDist;
+				const armBaseAngle = getSemanticArmBaseAngle(modName) + (mIdx % 2 === 0 ? 0.12 : -0.12);
 
 				const nItems = items.length;
-				const goldenRatio = 1.6180339887;
 
 				for (let itemIdx = 0; itemIdx < nItems; itemIdx++) {
 					const it = items[itemIdx]!;
-					const r = it.r;
 
-					// Dispersão em plano PCB com passo amplo e folga anti-colisão
-					const spiralRadius = 0.42 * Math.sqrt(itemIdx + 0.6);
-					const spiralAngle = clusterAngle + itemIdx * goldenRatio * Math.PI * 2;
+					// Progressão espiral logarítmica galáctica com espaçamento amplo entre polígonos:
+					// Passo radial aumentado (0.88) para que centenas de classes fiquem bem dispersas e fáceis de navegar
+					const radialStep = 0.88 * Math.sqrt(itemIdx + 1);
+					const rLog = coreExclusionRadius + radialStep;
 
+					// Curvatura do braço espiral da Via Láctea (espiral logarítmica)
+					const armTheta = armBaseAngle + 0.45 * Math.log(1 + radialStep * 1.5) + (itemIdx % 4) * 0.16;
+
+					// Perturbação tangencial estocástica determinística (dispersão de disco galáctico)
 					const [rx, ry, rz] = rawCoords[it.index]!;
 					const normEmb = Math.sqrt(rx * rx + ry * ry + rz * rz) || 1;
-					const semOffX = (rx / normEmb) * 0.16;
-					const semOffZ = (rz / normEmb) * 0.16;
+					const tangScatter = (rx / normEmb) * 0.32;
+					const radialScatter = (rz / normEmb) * 0.32;
 
-					const px = clusterCenterX + Math.cos(spiralAngle) * spiralRadius + semOffX;
-					const pz = clusterCenterZ + Math.sin(spiralAngle) * spiralRadius + semOffZ;
+					const finalR = rLog + radialScatter;
+					const finalTheta = armTheta + tangScatter;
 
-					// Plano estrito estilo PCB (plano XZ, Y quase zero para não ocluir nem sumir polígonos na rotação)
-					// Camadas em micro-step de 0.035 (layer 1 contratos, layer 2 server, layer 3 web)
-					const py = (it.layer - 2) * 0.035 + (ry / normEmb) * 0.02;
+					const r = it.r;
+					const px = galacticCenterX + Math.cos(finalTheta) * finalR;
+					const pz = galacticCenterZ + Math.sin(finalTheta) * finalR;
+
+					// Disco estelar fino com elevação suave em Y (plano XZ predominante da PCB)
+					// Camadas PCB estratificadas (Layer 1 Contratos, Layer 2 Server, Layer 3 Web)
+					const py = (it.layer - 2) * 0.055 + (ry / normEmb) * 0.035;
 
 					const relPath = it.normalizedPath.split("/").slice(-2).join("/");
 
@@ -1879,30 +1909,60 @@ export async function getHermesVectorGraph(
 			}
 		}
 
-		// Relaxação anti-colisão em 2D rigorosa com folga de segurança adaptativa para grandes volumes
-		const minSafeDist2D = 0.56; // Folga estrita no plano XZ entre polígonos
-		const relaxationIterations =
-			preliminaryNodes.length > 500 ? 6 : preliminaryNodes.length > 250 ? 12 : 24;
+		// Relaxação anti-colisão via Spatial Hash Grid O(N):
+		// Garante distância segura e folga generosa entre os centros de todos os polígonos da cena
+		const minSafeDist2D = 1.05; // Distância mínima física segura entre centros de polígonos
+		const cellSize = minSafeDist2D * 1.1;
+		const relaxationIterations = 6; // Iterações de relaxamento para acomodar ampla dispersão
 
 		for (let iter = 0; iter < relaxationIterations; iter++) {
+			const spatialGrid = new Map<string, number[]>();
+
+			// Indexação espacial em O(N)
+			for (let i = 0; i < preliminaryNodes.length; i++) {
+				const n = preliminaryNodes[i]!;
+				const cellX = Math.floor(n.pos[0] / cellSize);
+				const cellZ = Math.floor(n.pos[2] / cellSize);
+				const cellKey = `${cellX}:${cellZ}`;
+				let bucket = spatialGrid.get(cellKey);
+				if (!bucket) {
+					bucket = [];
+					spatialGrid.set(cellKey, bucket);
+				}
+				bucket.push(i);
+			}
+
+			// Resolução de colisões estritamente local (célula e vizinhas) em O(N)
 			for (let i = 0; i < preliminaryNodes.length; i++) {
 				const n1 = preliminaryNodes[i]!;
-				for (let j = i + 1; j < preliminaryNodes.length; j++) {
-					const n2 = preliminaryNodes[j]!;
+				const cellX = Math.floor(n1.pos[0] / cellSize);
+				const cellZ = Math.floor(n1.pos[2] / cellSize);
 
-					const dx = n2.pos[0] - n1.pos[0];
-					const dz = n2.pos[2] - n1.pos[2];
-					const dist2D = Math.sqrt(dx * dx + dz * dz) || 0.0001;
+				for (let dx = -1; dx <= 1; dx++) {
+					for (let dz = -1; dz <= 1; dz++) {
+						const neighborKey = `${cellX + dx}:${cellZ + dz}`;
+						const bucket = spatialGrid.get(neighborKey);
+						if (!bucket) continue;
 
-					if (dist2D < minSafeDist2D) {
-						const overlap2D = (minSafeDist2D - dist2D) * 0.5;
-						const nx = (dx / dist2D) * overlap2D;
-						const nz = (dz / dist2D) * overlap2D;
+						for (const j of bucket) {
+							if (j <= i) continue; // Evita pares duplicados
+							const n2 = preliminaryNodes[j]!;
 
-						n1.pos[0] -= nx;
-						n1.pos[2] -= nz;
-						n2.pos[0] += nx;
-						n2.pos[2] += nz;
+							const diffX = n2.pos[0] - n1.pos[0];
+							const diffZ = n2.pos[2] - n1.pos[2];
+							const dist2D = Math.sqrt(diffX * diffX + diffZ * diffZ) || 0.0001;
+
+							if (dist2D < minSafeDist2D) {
+								const overlap2D = (minSafeDist2D - dist2D) * 0.5;
+								const nx = (diffX / dist2D) * overlap2D;
+								const nz = (diffZ / dist2D) * overlap2D;
+
+								n1.pos[0] -= nx;
+								n1.pos[2] -= nz;
+								n2.pos[0] += nx;
+								n2.pos[2] += nz;
+							}
+						}
 					}
 				}
 			}

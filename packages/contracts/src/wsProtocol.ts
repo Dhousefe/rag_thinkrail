@@ -463,6 +463,12 @@ export const WS_METHODS = {
 	hermesManageSkills: "hermes.manageSkills",
 	hermesReadSkill: "hermes.readSkill",
 	hermesRevealSkillFolder: "hermes.revealSkillFolder",
+	jinaGetStatus: "jina.getStatus",
+	jinaStart: "jina.start",
+	jinaStop: "jina.stop",
+	jinaRestart: "jina.restart",
+	jinaTestIntegrity: "jina.testIntegrity",
+	jinaGetLogs: "jina.getLogs",
 } as const;
 
 export const WS_CHANNELS = {
@@ -1340,6 +1346,30 @@ export interface WsMethodMap {
 	"hermes.revealSkillFolder": {
 		params: HermesRevealSkillFolderInput;
 		result: HermesRevealSkillFolderResult;
+	};
+	"jina.getStatus": {
+		params: Record<string, never>;
+		result: import("./jina").JinaServerInfo;
+	};
+	"jina.start": {
+		params: import("./jina").JinaStartInput;
+		result: import("./jina").JinaServerInfo;
+	};
+	"jina.stop": {
+		params: import("./jina").JinaStopInput;
+		result: import("./jina").JinaServerInfo;
+	};
+	"jina.restart": {
+		params: import("./jina").JinaRestartInput;
+		result: import("./jina").JinaServerInfo;
+	};
+	"jina.testIntegrity": {
+		params: Record<string, never>;
+		result: import("./jina").JinaIntegrityTestResult;
+	};
+	"jina.getLogs": {
+		params: import("./jina").JinaGetLogsInput;
+		result: import("./jina").JinaGetLogsResult;
 	};
 }
 

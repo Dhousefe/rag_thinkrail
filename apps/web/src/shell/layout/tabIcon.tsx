@@ -9,6 +9,8 @@ import {
 	RiFileLine,
 	RiFolder2Fill,
 	RiFolder2Line,
+	RiHammerFill,
+	RiHammerLine,
 	RiGitPullRequestFill,
 	RiGitPullRequestLine,
 	RiLayout2Fill,
@@ -55,6 +57,8 @@ export function tabIcon(tab: LayoutTab, active = false, cls = "size-14 shrink-0"
 					return active ? <RiPlugFill className={cls} /> : <RiPlugLine className={cls} />;
 				case "cindy":
 					return active ? <RiSparklingFill className={cls} /> : <RiSparklingLine className={cls} />;
+				case "craft":
+					return active ? <RiHammerFill className={cls} /> : <RiHammerLine className={cls} />;
 				case "specs":
 					return active ? <RiBookOpenFill className={cls} /> : <RiBookOpenLine className={cls} />;
 				case "files":

@@ -1,0 +1,214 @@
+[
+  {
+    "id": "tc_01_match_tier",
+    "question": "Como e onde é definido o tipo MatchTier e os métodos de pontuação de correspondência no ThinkRail?",
+    "query": "MatchTier matchFields",
+    "expected_cluster": "contracts",
+    "expected_files": [
+      "packages/contracts/src/match.ts"
+    ],
+    "expected_symbols": [
+      "MatchTier",
+      "matchFields",
+      "MatchField"
+    ],
+    "ground_truth": "MatchTier é definido em packages/contracts/src/match.ts como export type MatchTier = (typeof MATCH_TIER)[keyof typeof MATCH_TIER], utilizado junto com matchFields para classificar termos."
+  },
+  {
+    "id": "tc_02_hermes_mcp_dispatcher",
+    "question": "Como o servidor Hermes MCP recebe, decodifica o protocolo JSON-RPC e despacha as chamadas de ferramentas?",
+    "query": "handleMessage tools/call JSON-RPC hermes-mcp-server",
+    "expected_cluster": "cli-host",
+    "expected_files": [
+      "apps/cli/scripts/hermes-mcp-server.ts"
+    ],
+    "expected_symbols": [
+      "handleMessage",
+      "TOOLS",
+      "handleCodeSearch"
+    ],
+    "ground_truth": "No arquivo apps/cli/scripts/hermes-mcp-server.ts, o evento data de process.stdin acumula linhas no buffer e chama handleMessage, que despacha tools/call via switch para as funções handle*."
+  },
+  {
+    "id": "tc_03_l0_index_discovery",
+    "question": "Qual função implementa a descoberta estrutural ultracompacta L0 dos clusters do projeto?",
+    "query": "handleGetProjectL0Index get_project_l0_index clusterMap",
+    "expected_cluster": "cli-host",
+    "expected_files": [
+      "apps/cli/scripts/hermes-mcp-server.ts"
+    ],
+    "expected_symbols": [
+      "handleGetProjectL0Index",
+      "clusterMap"
+    ],
+    "ground_truth": "handleGetProjectL0Index no hermes-mcp-server.ts inspeciona a tabela l2j_files e mapeia os caminhos dos arquivos para 11 super-nós em menos de 250 tokens."
+  },
+  {
+    "id": "tc_04_session_manager_contracts",
+    "question": "Onde ficam as definições de interface de sessão e estados de conversa no pacote de contratos?",
+    "query": "SessionRecord session contracts SPEC",
+    "expected_cluster": "contracts",
+    "expected_files": [
+      "packages/contracts/SPEC.md",
+      "packages/contracts/src/domain.test.ts"
+    ],
+    "expected_symbols": [
+      "ResourceRecord",
+      "Normalized session state"
+    ],
+    "ground_truth": "As definições de estado normalizado de sessão e contratos de runtime residem em packages/contracts/SPEC.md e nas tipagens expostas por packages/contracts."
+  },
+  {
+    "id": "tc_05_visualize_tool_contract",
+    "question": "Onde fica a especificação do renderizador de diagramas Mermaid e componentes visuais do ThinkRail?",
+    "query": "visualize mermaid diagram options comparison",
+    "expected_cluster": "renderers",
+    "expected_files": [
+      "packages/resource-renderers/SPEC.md",
+      "packages/resource-renderers/src/index.ts"
+    ],
+    "expected_symbols": [
+      "visualize",
+      "diagram",
+      "comparison"
+    ],
+    "ground_truth": "Os renderizadores de recursos e visualizações ricas residem em packages/resource-renderers, provendo suporte para cards comparativos, visualizadores Mermaid e diff de arquivos."
+  },
+  {
+    "id": "tc_06_cli-host_handlecodesearch",
+    "question": "Onde reside a implementação das ferramentas MCP no cliente ThinkRail?",
+    "query": "hermes-mcp-server handleCodeSearch",
+    "expected_cluster": "cli-host",
+    "expected_files": [
+      "apps/cli/scripts/hermes-mcp-server.ts"
+    ],
+    "expected_symbols": [
+      "handleCodeSearch",
+      "handleGetProjectL0Index"
+    ],
+    "ground_truth": "O servidor MCP Hermes em apps/cli/scripts/hermes-mcp-server.ts gerencia ferramentas de RAG via JSON-RPC."
+  },
+  {
+    "id": "tc_07_server-engine_createagentsession",
+    "question": "Como o servidor inicializa a sessao do agente Pi in-process e gerencia extensoes MCP?",
+    "query": "createAgentSession agentSessionManager",
+    "expected_cluster": "server-engine",
+    "expected_files": [
+      "packages/server/src/agent/agentSessionManager.ts"
+    ],
+    "expected_symbols": [
+      "createAgentSession",
+      "SessionManager"
+    ],
+    "ground_truth": "Em packages/server/src/agent/agentSessionManager.ts, o servidor ThinkRail usa createAgentSession do pacote @earendil-works/pi-coding-agent para criar a sessao in-process."
+  },
+  {
+    "id": "tc_08_web-ui_registertoolrenderer",
+    "question": "Onde os renderizadores de ferramentas da UI sao registrados e conectados a ChatView?",
+    "query": "ChatView registerToolRenderer",
+    "expected_cluster": "web-ui",
+    "expected_files": [
+      "apps/web/src/chat/tools/SPEC.md"
+    ],
+    "expected_symbols": [
+      "registerToolRenderer",
+      "ChatView"
+    ],
+    "ground_truth": "Em apps/web/src/chat/tools/SPEC.md e register.ts, os renderizadores de ferramentas da UI sao conectados a ferramentas via registerToolRenderer."
+  },
+  {
+    "id": "tc_09_server-engine_startjinaserver",
+    "question": "Onde reside a especificacao do ciclo de vida e operacao do daemon de embeddings Jina?",
+    "query": "embeddings jina daemon SPEC",
+    "expected_cluster": "server-engine",
+    "expected_files": [
+      "packages/server/src/embeddings/SPEC.md"
+    ],
+    "expected_symbols": [
+      "startJinaServer",
+      "embedTexts"
+    ],
+    "ground_truth": "A especificacao do daemon de embeddings e do ciclo de vida Jina reside em packages/server/src/embeddings/SPEC.md sob o id submodule-server-embeddings."
+  },
+  {
+    "id": "tc_10_server-engine_createcraftengine",
+    "question": "Onde reside a especificacao arquitetural da engine de craft e seus handlers RPC?",
+    "query": "createCraftEngine craft SPEC",
+    "expected_cluster": "server-engine",
+    "expected_files": [
+      "packages/server/src/craft/SPEC.md"
+    ],
+    "expected_symbols": [
+      "createCraftEngine",
+      "registerCraftTools"
+    ],
+    "ground_truth": "A engine de craft e suas ferramentas sao especificadas em packages/server/src/craft/SPEC.md sob o id submodule-server-craft."
+  },
+  {
+    "id": "tc_11_web-ui_createvectorconstellationwireframe",
+    "question": "Como funciona o toggle de linhas de PCB, a revelação na aba Files e a sincronização em tempo real do Chat com o Neural Core?",
+    "query": "neural-core pcb lines toggle openFileInTab chat sync rotation",
+    "expected_cluster": "web-ui",
+    "expected_files": [
+      "apps/web/src/panels/NeuralCorePanel.tsx",
+      "apps/web/src/panels/neural-core/geometry.ts",
+      "apps/web/src/panels/neural-core/neuralEngine.ts",
+      "packages/server/src/host/hermes.ts"
+    ],
+    "expected_symbols": [
+      "createVectorConstellationWireframe",
+      "setShowPcbLines",
+      "handleOpenFile",
+      "handleFocusNode",
+      "resolvePivotNode"
+    ],
+    "ground_truth": "O toggle de linhas de PCB permite ocultar as trilhas Manhattan via showPcbLines no NeuralCoreEngine e geometry.ts. A seleção de polígonos no Neural Core dispara handleOpenFile para abrir e revelar o arquivo na aba Files. A sincronização do Chat em tempo real (leituras/edições) seleciona o nó, destaca suas relações AST/k-NN e move a câmera com fly-to estritamente apenas quando a rotação dinâmica estiver ativada (!isPaused)."
+  },
+  {
+    "id": "tc_12_server-engine_gethermesvectorgraph",
+    "question": "Como o Neural Core organiza a visualizacao galactica de classes e evita colisao e cruzamento de trilhas PCB?",
+    "query": "neural core galaxy layout spiral pcb multi-layer spatial hash",
+    "expected_cluster": "server-engine",
+    "expected_files": [
+      "packages/server/src/host/hermes.ts",
+      "apps/web/src/panels/neural-core/geometry.ts",
+      "apps/web/src/panels/NeuralCorePanel.tsx"
+    ],
+    "expected_symbols": [
+      "getHermesVectorGraph",
+      "createVectorConstellationWireframe",
+      "SpatialHashGrid"
+    ],
+    "ground_truth": "O Neural Core distribui as classes em bracos espirais logaritmicos da Via Lactea r = a * e^(b*theta) com nucleo estelar aberto e relaxacao anti-colisao rapida O(N) via Spatial Hash Grid. Em multi-projetos, cada projeto ganha uma galaxia isolada no plano XZ com 13.6 unidades de separacao. O roteamento PCB emprega 4 camadas de cobre com elevacoes Y escalonadas e alternancia de eixos Manhattan (X->Z vs Z->X) para evitar cruzamentos no mesmo plano, aumentando tambem o batch size para 350 nos com streaming continuo a 180ms."
+  },
+  {
+    "id": "tc_13_server-engine_gethermesvectorgraph",
+    "question": "Como o Neural Core calcula com precisao os limites de classes e nos estruturais elegiveis direto do SQLite?",
+    "query": "neural core sqlite exact limits classes count eligible chunks",
+    "expected_cluster": "server-engine",
+    "expected_files": [
+      "packages/server/src/host/hermes.ts",
+      "apps/web/src/panels/NeuralCorePanel.tsx"
+    ],
+    "expected_symbols": [
+      "getHermesVectorGraph",
+      "CORE_CLASS_KINDS_SQL"
+    ],
+    "ground_truth": "O Neural Core padroniza a query SQL em l2j_chunks para chunk_kind IN ('class', 'class_skeleton', 'class_overview', 'component', 'html_component', 'interface', 'struct', 'impl_skeleton', 'enum'), igualando perfeitamente eligibleCount e totalClassesCount ao total real do SQLite sem inflar com types ou blocks genericos, garantindo 100% de precisao na barra de progresso."
+  },
+  {
+    "id": "tc_14_web-ui_handlefocusnode",
+    "question": "Como funciona o controle de selecao continua do chat e a exclusividade do usuario na rotacao do Neural Core?",
+    "query": "neural core chat selection isPaused user exclusive rotation control injection",
+    "expected_cluster": "web-ui",
+    "expected_files": [
+      "apps/web/src/panels/NeuralCorePanel.tsx"
+    ],
+    "expected_symbols": [
+      "handleFocusNode",
+      "activeChatPivotNode",
+      "searchGraphNodes"
+    ],
+    "ground_truth": "A interacao e selecao de arquivos pelo chat no Neural Core so ocorrem quando a rotacao estiver pausada (isPaused === true), preservando a rotacao livre. Se o arquivo do chat nao estiver na cena, e feita busca remota via searchGraphNodes e injecao dinamica. Alem disso, handleFocusNode nao altera mais isPaused, tornando o controle de pausar e retomar 100% exclusivo do usuario."
+  }
+]

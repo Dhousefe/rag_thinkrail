@@ -18,10 +18,12 @@ import { cn } from "@thinkrail/ui/utils";
 import { useEffect, useMemo, useState } from "react";
 import { deriveMcpServerRows, selectActiveWorkspace, toast, useAppStore } from "@/store";
 import { getTransport } from "@/transport";
+import { SegmentedControl } from "./SegmentedControl";
 import { HermesIndexingBar } from "./hermes/HermesIndexingBar";
 import { HermesProjectsView } from "./hermes/HermesProjectsView";
 import { HermesSkillsView } from "./hermes/HermesSkillsView";
 import { HermesToolsView } from "./hermes/HermesToolsView";
+import { JinaServerManagerCard } from "./hermes/JinaServerManagerCard";
 
 export function HermesMcpPanel() {
 	const activeWorkspace = useAppStore(selectActiveWorkspace);
@@ -36,7 +38,7 @@ export function HermesMcpPanel() {
 	const [connectionDiagnosis, setConnectionDiagnosis] = useState<HermesConnectionStatus | null>(
 		null,
 	);
-	const [panelTab, setPanelTab] = useState<"projects" | "tools" | "skills" | "telemetry">("projects");
+	const [panelTab, setPanelTab] = useState<"projects" | "jina" | "tools" | "skills" | "telemetry">("projects");
 	const [activeTelemetryFilter, setActiveTelemetryFilter] = useState<"hermes" | "all">("hermes");
 
 	// Monitor contínuo a cada 10 segundos quando ativo
@@ -363,7 +365,7 @@ export function HermesMcpPanel() {
 			<div
 				role="tablist"
 				aria-label="Abas da integração Hermes MCP"
-				className="flex flex-wrap items-center gap-6 border-b border-border-default pb-2 min-w-0 max-w-full"
+				className="flex flex-wrap items-center gap-4 border-b border-border-default pb-2 min-w-0 max-w-full"
 			>
 				<button
 					type="button"
@@ -371,18 +373,40 @@ export function HermesMcpPanel() {
 					aria-selected={panelTab === "projects"}
 					data-testid="hermes-tab-projects"
 					className={cn(
-						"relative flex items-center gap-6 rounded-md px-12 py-8 transition-all shrink-0 cursor-pointer",
+						"group relative flex items-center gap-6 rounded-md px-12 py-8 transition-all shrink-0 cursor-pointer",
 						panelTab === "projects"
 							? "text-text-default tr-text-emphasis bg-control-bg-selected shadow-xs after:absolute after:bottom-[-2px] after:left-0 after:right-0 after:h-[2px] after:bg-primary"
 							: "text-text-muted hover:bg-control-bg-hovered hover:text-text-default tr-text-ui",
 					)}
 					onClick={() => setPanelTab("projects")}
 				>
-					<RiDatabase2Line className="size-16 text-primary" />
+					<RiDatabase2Line className={cn("size-16 transition-colors", panelTab === "projects" ? "text-primary" : "text-text-muted group-hover:text-text-default")} />
 					<span>Projetos Hermes</span>
-					<span className="rounded-full bg-container-workspace-bg border border-border-default px-6 py-2 tr-text-metadata text-text-muted">
+					<span className={cn(
+						"rounded-full border px-6 py-2 tr-text-metadata transition-colors",
+						panelTab === "projects"
+							? "bg-primary-subtle text-primary border-primary"
+							: "bg-container-workspace-bg text-text-muted border-border-default"
+					)}>
 						{hermesManagement.projects.length}
 					</span>
+				</button>
+
+				<button
+					type="button"
+					role="tab"
+					aria-selected={panelTab === "jina"}
+					data-testid="hermes-tab-jina"
+					className={cn(
+						"group relative flex items-center gap-6 rounded-md px-12 py-8 transition-all shrink-0 cursor-pointer",
+						panelTab === "jina"
+							? "text-text-default tr-text-emphasis bg-control-bg-selected shadow-xs after:absolute after:bottom-[-2px] after:left-0 after:right-0 after:h-[2px] after:bg-primary"
+							: "text-text-muted hover:bg-control-bg-hovered hover:text-text-default tr-text-ui",
+					)}
+					onClick={() => setPanelTab("jina")}
+				>
+					<RiServerLine className={cn("size-16 transition-colors", panelTab === "jina" ? "text-primary" : "text-text-muted group-hover:text-text-default")} />
+					<span>Servidor Jina (Nativo)</span>
 				</button>
 
 				<button
@@ -391,16 +415,21 @@ export function HermesMcpPanel() {
 					aria-selected={panelTab === "tools"}
 					data-testid="hermes-tab-tools"
 					className={cn(
-						"relative flex items-center gap-6 rounded-md px-12 py-8 transition-all shrink-0 cursor-pointer",
+						"group relative flex items-center gap-6 rounded-md px-12 py-8 transition-all shrink-0 cursor-pointer",
 						panelTab === "tools"
 							? "text-text-default tr-text-emphasis bg-control-bg-selected shadow-xs after:absolute after:bottom-[-2px] after:left-0 after:right-0 after:h-[2px] after:bg-primary"
 							: "text-text-muted hover:bg-control-bg-hovered hover:text-text-default tr-text-ui",
 					)}
 					onClick={() => setPanelTab("tools")}
 				>
-					<RiToolsLine className="size-16 text-primary" />
+					<RiToolsLine className={cn("size-16 transition-colors", panelTab === "tools" ? "text-primary" : "text-text-muted group-hover:text-text-default")} />
 					<span>Ferramentas & Lechs</span>
-					<span className="rounded-full bg-container-workspace-bg border border-border-default px-6 py-2 tr-text-metadata text-text-muted">
+					<span className={cn(
+						"rounded-full border px-6 py-2 tr-text-metadata transition-colors",
+						panelTab === "tools"
+							? "bg-primary-subtle text-primary border-primary"
+							: "bg-container-workspace-bg text-text-muted border-border-default"
+					)}>
 						{activeToolsCount}
 					</span>
 				</button>
@@ -411,14 +440,14 @@ export function HermesMcpPanel() {
 					aria-selected={panelTab === "skills"}
 					data-testid="hermes-tab-skills"
 					className={cn(
-						"relative flex items-center gap-6 rounded-md px-12 py-8 transition-all shrink-0 cursor-pointer",
+						"group relative flex items-center gap-6 rounded-md px-12 py-8 transition-all shrink-0 cursor-pointer",
 						panelTab === "skills"
 							? "text-text-default tr-text-emphasis bg-control-bg-selected shadow-xs after:absolute after:bottom-[-2px] after:left-0 after:right-0 after:h-[2px] after:bg-primary"
 							: "text-text-muted hover:bg-control-bg-hovered hover:text-text-default tr-text-ui",
 					)}
 					onClick={() => setPanelTab("skills")}
 				>
-					<RiStarLine className="size-16 text-primary" />
+					<RiStarLine className={cn("size-16 transition-colors", panelTab === "skills" ? "text-primary" : "text-text-muted group-hover:text-text-default")} />
 					<span>Skills & Hub</span>
 				</button>
 
@@ -428,16 +457,21 @@ export function HermesMcpPanel() {
 					aria-selected={panelTab === "telemetry"}
 					data-testid="hermes-tab-telemetry"
 					className={cn(
-						"relative flex items-center gap-6 rounded-md px-12 py-8 transition-all shrink-0 cursor-pointer",
+						"group relative flex items-center gap-6 rounded-md px-12 py-8 transition-all shrink-0 cursor-pointer",
 						panelTab === "telemetry"
 							? "text-text-default tr-text-emphasis bg-control-bg-selected shadow-xs after:absolute after:bottom-[-2px] after:left-0 after:right-0 after:h-[2px] after:bg-primary"
 							: "text-text-muted hover:bg-control-bg-hovered hover:text-text-default tr-text-ui",
 					)}
 					onClick={() => setPanelTab("telemetry")}
 				>
-					<RiSpeedUpLine className="size-16 text-primary" />
+					<RiSpeedUpLine className={cn("size-16 transition-colors", panelTab === "telemetry" ? "text-primary" : "text-text-muted group-hover:text-text-default")} />
 					<span>Telemetria & Latência</span>
-					<span className="rounded-full bg-container-workspace-bg border border-border-default px-6 py-2 tr-text-metadata text-text-muted">
+					<span className={cn(
+						"rounded-full border px-6 py-2 tr-text-metadata transition-colors",
+						panelTab === "telemetry"
+							? "bg-primary-subtle text-primary border-primary"
+							: "bg-container-workspace-bg text-text-muted border-border-default"
+					)}>
 						{stats.total}
 					</span>
 				</button>
@@ -449,6 +483,8 @@ export function HermesMcpPanel() {
 			)}
 
 			{panelTab === "projects" && <HermesProjectsView />}
+
+			{panelTab === "jina" && <JinaServerManagerCard />}
 
 			{panelTab === "tools" && <HermesToolsView />}
 
@@ -498,32 +534,16 @@ export function HermesMcpPanel() {
 						<div className="flex items-center justify-between border-b border-border-default px-16 py-8 bg-control-bg-hovered">
 							<div className="flex items-center gap-12">
 								<h3 className="tr-text-ui text-text-default">Histórico de Chamadas e Latência</h3>
-								<div className="flex rounded-md bg-control-bg p-2">
-									<button
-										type="button"
-										className={cn(
-											"rounded px-8 py-2 tr-text-metadata transition-colors",
-											activeTelemetryFilter === "hermes"
-												? "bg-control-bg-hovered text-text-default shadow-xs"
-												: "text-text-muted hover:text-text-default",
-										)}
-										onClick={() => setActiveTelemetryFilter("hermes")}
-									>
-										Hermes MCP
-									</button>
-									<button
-										type="button"
-										className={cn(
-											"rounded px-8 py-2 tr-text-metadata transition-colors",
-											activeTelemetryFilter === "all"
-												? "bg-control-bg-hovered text-text-default shadow-xs"
-												: "text-text-muted hover:text-text-default",
-										)}
-										onClick={() => setActiveTelemetryFilter("all")}
-									>
-										Todos Servidores
-									</button>
-								</div>
+								<SegmentedControl<"hermes" | "all">
+									name="telemetry-filter"
+									label="Filtro de telemetria"
+									value={activeTelemetryFilter}
+									onSelect={(val) => setActiveTelemetryFilter(val)}
+									options={[
+										{ id: "hermes", label: "Hermes MCP" },
+										{ id: "all", label: "Todos Servidores" },
+									]}
+								/>
 							</div>
 
 							{metrics.length > 0 && (

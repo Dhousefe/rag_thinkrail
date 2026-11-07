@@ -3,6 +3,7 @@ import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@thinkrail
 import { useState } from "react";
 import { QuietScrollArea } from "../components/QuietScrollArea";
 import { CindyPanel } from "../panels/CindyPanel";
+import { CraftPanel } from "../panels/CraftPanel";
 import { HermesMcpPanel } from "../panels/HermesMcpPanel";
 import { ProjectTree } from "../panels/ProjectTree";
 import { WelcomePanel } from "../panels/WelcomePanel";
@@ -24,6 +25,7 @@ const PROJECTS_PANE_ID = "project-home-projects";
 const PROJECTS_RAIL_ENTRY_KEY = "projects";
 const HERMES_RAIL_ENTRY_KEY = "hermes-mcp";
 const CINDY_RAIL_ENTRY_KEY = "cindy";
+const CRAFT_RAIL_ENTRY_KEY = "craft";
 const PROJECTS_PANE_DEFAULT_PERCENT =
 	resolveLayoutPreset(DEFAULT_LAYOUT_PRESET_ID, []).left.width * 100;
 const PROJECTS_PANE_MIN_PERCENT = 12;
@@ -43,7 +45,7 @@ export function ProjectHome({ projects }: { projects: CollapsibleRegion<HTMLDivE
 	} = projects;
 	const t = useT();
 	const onboarding = useAppStore(selectOnboardingActive);
-	const [activeTool, setActiveTool] = useState<"projects" | "hermes-mcp" | "cindy">("projects");
+	const [activeTool, setActiveTool] = useState<"projects" | "hermes-mcp" | "cindy" | "craft">("projects");
 
 	const projectsEntry: AuxiliaryRailToolEntry = {
 		key: PROJECTS_RAIL_ENTRY_KEY,
@@ -78,7 +80,18 @@ export function ProjectHome({ projects }: { projects: CollapsibleRegion<HTMLDivE
 		expanded: !collapsed && activeTool === "cindy",
 	};
 
-	const handleToolActivate = (tool: "projects" | "hermes-mcp" | "cindy") => {
+	const craftEntry: AuxiliaryRailToolEntry = {
+		key: CRAFT_RAIL_ENTRY_KEY,
+		region: "left",
+		kind: "tool",
+		groupId: null,
+		tool: "craft",
+		tab: null,
+		selected: activeTool === "craft",
+		expanded: !collapsed && activeTool === "craft",
+	};
+
+	const handleToolActivate = (tool: "projects" | "hermes-mcp" | "cindy" | "craft") => {
 		if (collapsed) {
 			setActiveTool(tool);
 			toggle();
@@ -99,7 +112,7 @@ export function ProjectHome({ projects }: { projects: CollapsibleRegion<HTMLDivE
 			{onboarding ? null : (
 				<AuxiliaryRail
 					region="left"
-					entries={[projectsEntry, hermesEntry, cindyEntry]}
+					entries={[projectsEntry, hermesEntry, cindyEntry, craftEntry]}
 					renderEntry={(entry, control) => (
 						<AuxiliaryRailToolButton
 							ref={entry.key === PROJECTS_RAIL_ENTRY_KEY ? railRef : undefined}
@@ -108,7 +121,7 @@ export function ProjectHome({ projects }: { projects: CollapsibleRegion<HTMLDivE
 							control={control}
 							onActivate={() =>
 								handleToolActivate(
-									(entry as AuxiliaryRailToolEntry).tool as "projects" | "hermes-mcp" | "cindy",
+									(entry as AuxiliaryRailToolEntry).tool as "projects" | "hermes-mcp" | "cindy" | "craft",
 								)
 							}
 						/>
@@ -141,6 +154,8 @@ export function ProjectHome({ projects }: { projects: CollapsibleRegion<HTMLDivE
 										? t("workbench.tool.hermesMcp")
 										: activeTool === "cindy"
 										? t("workbench.tool.cindy")
+										: activeTool === "craft"
+										? t("workbench.tool.craft")
 										: t("shell.projectHome.projects")
 								}
 								aria-hidden={collapsed || undefined}
@@ -153,6 +168,8 @@ export function ProjectHome({ projects }: { projects: CollapsibleRegion<HTMLDivE
 											? t("workbench.tool.hermesMcp")
 											: activeTool === "cindy"
 											? t("workbench.tool.cindy")
+											: activeTool === "craft"
+											? t("workbench.tool.craft")
 											: t("shell.projectHome.projects")
 									}
 									actions={
@@ -177,6 +194,8 @@ export function ProjectHome({ projects }: { projects: CollapsibleRegion<HTMLDivE
 											<HermesMcpPanel />
 										) : activeTool === "cindy" ? (
 											<CindyPanel />
+										) : activeTool === "craft" ? (
+											<CraftPanel />
 										) : (
 											<ProjectTree />
 										)}

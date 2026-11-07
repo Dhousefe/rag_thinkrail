@@ -90,6 +90,7 @@ export function NeuralCorePanel() {
 	const { state, pulseKey } = useNeuralCoreState();
 	const [manualQuery, setManualQuery] = useState("");
 	const [isPaused, setIsPaused] = useState(false);
+	const [showPcbLines, setShowPcbLines] = useState(true);
 	const [isBottomPanelCollapsed, setIsBottomPanelCollapsed] = useState(false);
 	const [isBottomPanelCompletelyHidden, setIsBottomPanelCompletelyHidden] = useState(false);
 	const [remoteSearchMatches, setRemoteSearchMatches] = useState<HermesVectorNode[]>([]);
@@ -116,7 +117,9 @@ export function NeuralCorePanel() {
 	const [isLoadingStats, setIsLoadingStats] = useState(false);
 
 	// Batch Loader (Carregador em Lote Progressivo)
-	const [batchOffset, setBatchOffset] = useState(0);
+	const [selectedProjectFilter, setSelectedProjectFilter] = useState<string>("all");
+	const [, setBatchOffset] = useState(0);
+	const batchOffsetRef = useRef(0);
 	const [hasMoreBatches, setHasMoreBatches] = useState(false);
 	const [totalAvailableNodes, setTotalAvailableNodes] = useState(0);
 	const [totalClassesCount, setTotalClassesCount] = useState(0);
@@ -148,32 +151,49 @@ export function NeuralCorePanel() {
 
 	// Carregamento dos vetores do banco SQLite hermes.db com suporte a lote (Batch Loader)
 	const loadVectorGraph = useCallback(
-		async (reset = true) => {
+		async (reset = true, overrideSlug?: string) => {
 			try {
 				setIsLoadingBatch(true);
-				const currentOffset = reset ? 0 : batchOffset;
+				const currentOffset = reset ? 0 : batchOffsetRef.current;
+				const targetSlug =
+					overrideSlug !== undefined
+						? overrideSlug === "all"
+							? undefined
+							: overrideSlug
+						: selectedProjectFilter === "all"
+							? undefined
+							: selectedProjectFilter;
+
+				// Lotes otimizados de 350 nós (anteriormente 180) para carregamento 2x mais rápido
+				// sem travar a thread de renderização WebGPU/WebGL
 				const res = await getTransport().request("hermes.getVectorGraph", {
-					limit: 180,
+					limit: 350,
 					offset: currentOffset,
-					batchSize: 180,
+					batchSize: 350,
 					includeAllClasses: true,
+					projectSlug: targetSlug,
 				});
 				if (res && Array.isArray(res.nodes)) {
 					if (reset) {
 						setVectorNodes(res.nodes);
 						setVectorEdges(res.edges || []);
-						setBatchOffset(res.nodes.length);
+						const nextOffset = res.nodes.length;
+						batchOffsetRef.current = nextOffset;
+						setBatchOffset(nextOffset);
 						if (engineRef.current) {
 							engineRef.current.setVectorGraphData(res.nodes, res.edges || []);
 						}
 					} else {
+						// Merge de nós preservando IDs únicos e remapeando arestas
 						setVectorNodes((prev) => {
 							const existing = new Set(prev.map((n) => n.id || n.path));
 							const fresh = res.nodes.filter((n) => !existing.has(n.id || n.path));
 							return [...prev, ...fresh];
 						});
 						setVectorEdges((prev) => [...prev, ...(res.edges || [])]);
-						setBatchOffset((prev) => prev + res.nodes.length);
+						const nextOffset = batchOffsetRef.current + res.nodes.length;
+						batchOffsetRef.current = nextOffset;
+						setBatchOffset(nextOffset);
 						if (engineRef.current) {
 							engineRef.current.appendVectorGraphData(res.nodes, res.edges || []);
 						}
@@ -190,7 +210,20 @@ export function NeuralCorePanel() {
 				setIsLoadingBatch(false);
 			}
 		},
-		[batchOffset],
+		[selectedProjectFilter],
+	);
+
+	// Mudança de filtro de projeto
+	const handleSelectProjectFilter = useCallback(
+		async (slug: string) => {
+			setSelectedProjectFilter(slug);
+			batchOffsetRef.current = 0;
+			setBatchOffset(0);
+			setIsAutoStreaming(false);
+			autoStreamingRef.current = false;
+			await loadVectorGraph(true, slug);
+		},
+		[loadVectorGraph],
 	);
 
 	// Carrega o próximo lote de classes
@@ -226,7 +259,7 @@ export function NeuralCorePanel() {
 		const timer = setTimeout(async () => {
 			if (!autoStreamingRef.current || isCancelled) return;
 			await handleLoadNextBatch();
-		}, 450);
+		}, 180); // Intervalo reduzido de 450ms para 180ms para resposta rápida do streaming
 
 		return () => {
 			isCancelled = true;
@@ -238,7 +271,7 @@ export function NeuralCorePanel() {
 	useEffect(() => {
 		void loadClassStats();
 		void loadVectorGraph(true);
-	}, [activeProjectSlugs, activeProjectSlug, loadClassStats, loadVectorGraph]);
+	}, [activeProjectSlugs, activeProjectSlug]);
 
 	// Inicialização do Motor WebGPU Geométrico
 	useEffect(() => {
@@ -371,37 +404,83 @@ export function NeuralCorePanel() {
 		}
 	}, [effectiveQuery, vectorNodes, isPaused]);
 
-	// Foco em Tempo Real nas ferramentas Read e Edit do Chat:
-	// Identifica a classe/arquivo pivô manipulado pelo chat e centraliza a câmera
-	// estritamente apenas quando a rotação dinâmica estiver ativada (!isPaused).
+	// Foco e Seleção em Tempo Real nas ferramentas do Chat (Read, Edit, Write):
+	// Interação ativada EXCLUSIVAMENTE quando a rotação estiver pausada (isPaused === true),
+	// garantindo que a rotação contínua não seja interrompida sem a vontade expressa do usuário.
+	// Se o arquivo manipulado pelo chat não estiver no lote atual da cena, busca dinamicamente
+	// no SQLite do Hermes RAG e o injeta na cena 3D com destaque imediato.
 	useEffect(() => {
-		if (!state.activeChatTool || !state.activeChatFilePath || vectorNodes.length === 0) return;
+		if (!isPaused || !state.activeChatTool || !state.activeChatFilePath) return;
 
-		const pivot = resolvePivotNode(
-			state.activeChatFilePath,
-			vectorNodes,
-			state.activeChatPivotClass,
-		);
+		let isCancelled = false;
+		const filePath = state.activeChatFilePath;
+		const pivotClass = state.activeChatPivotClass;
 
-		if (pivot) {
-			setActiveChatPivotNode(pivot);
+		// 1. Tenta resolver entre os nós já carregados no plano 3D
+		const pivot = resolvePivotNode(filePath, vectorNodes, pivotClass);
+
+		const applySelection = (targetNode: HermesVectorNode) => {
+			if (isCancelled) return;
+			setActiveChatPivotNode(targetNode);
+			setSelectedNode(targetNode);
+			setInspectedNode(targetNode);
 
 			if (engineRef.current) {
-				engineRef.current.triggerMcpSearchTarget(pivot.id);
+				engineRef.current.triggerMcpSearchTarget(targetNode.id);
+				const idx = vectorNodes.findIndex((n) => n.id === targetNode.id);
+				if (idx !== -1) {
+					engineRef.current.setSelectedNode(idx);
+				}
 			}
 
-			// Aciona o movimento de foco suave e centraliza a câmera APENAS quando a rotação dinâmica estiver ATIVADA
-			if (!isPaused && cameraRef.current) {
-				cameraRef.current.focusPosition(pivot.position, 2.3);
-				setInspectedNode(pivot);
+			if (cameraRef.current) {
+				cameraRef.current.focusPosition(targetNode.position, 2.3);
 			}
+		};
+
+		if (pivot) {
+			applySelection(pivot);
+		} else {
+			// 2. Se o nó ainda não estiver no lote local da cena, busca no SQLite do Hermes RAG
+			const targetSlug =
+				selectedProjectFilter === "all" ? undefined : selectedProjectFilter;
+
+			void getTransport()
+				.request("hermes.searchGraphNodes", {
+					query: filePath,
+					projectSlug: targetSlug,
+					limit: 1,
+				})
+				.then((res) => {
+					if (isCancelled) return;
+					if (res && Array.isArray(res.nodes) && res.nodes.length > 0) {
+						const injectedNode = res.nodes[0]!;
+						setVectorNodes((prev) => {
+							if (prev.some((n) => n.id === injectedNode.id)) return prev;
+							const updated = [...prev, injectedNode];
+							if (engineRef.current) {
+								engineRef.current.appendVectorGraphData([injectedNode], []);
+							}
+							return updated;
+						});
+						applySelection(injectedNode);
+					}
+				})
+				.catch((err) => {
+					console.warn("[NeuralCorePanel] Erro ao buscar nó do chat no banco RAG:", err);
+				});
 		}
+
+		return () => {
+			isCancelled = true;
+		};
 	}, [
 		state.activeChatTool,
 		state.activeChatFilePath,
 		state.activeChatPivotClass,
 		vectorNodes,
 		isPaused,
+		selectedProjectFilter,
 	]);
 
 	// Ações Rápidas de Produtividade para o Provider e Desenvolvedor
@@ -657,6 +736,19 @@ export function NeuralCorePanel() {
 		toast.info("Visão Zenital PCB Ativada", "Plano de circuito impresso de nós");
 	};
 
+	const handleTogglePcbLines = () => {
+		setShowPcbLines((prev) => {
+			const next = !prev;
+			engineRef.current?.setShowPcbLines(next);
+			if (next) {
+				toast.info("Trilhas PCB Visíveis", "Trilhas ortogonais de circuito Manhattan ativadas");
+			} else {
+				toast.info("Trilhas PCB Ocultadas", "Cena desobstruída: polígonos e nós em foco total");
+			}
+			return next;
+		});
+	};
+
 	const handleFitAll = useCallback(() => {
 		if (vectorNodes.length > 0) {
 			const positions = vectorNodes.map((n) => n.position);
@@ -667,10 +759,17 @@ export function NeuralCorePanel() {
 		}
 	}, [vectorNodes]);
 
-	const handleResetView = () => {
-		cameraRef.current?.reset();
+	const handleDeselectNode = useCallback(() => {
 		setSelectedNode(null);
 		setInspectedNode(null);
+		if (engineRef.current) {
+			engineRef.current.setHighlightedNode(null);
+		}
+	}, []);
+
+	const handleResetView = () => {
+		cameraRef.current?.reset();
+		handleDeselectNode();
 		toast.info("Visão centralizada", "Câmera retornou à posição panorâmica inicial");
 	};
 
@@ -728,10 +827,13 @@ export function NeuralCorePanel() {
 		if (engineRef.current) {
 			engineRef.current.triggerMcpSearchTarget(node.id);
 		}
-		setIsPaused(true);
+		// Não altera isPaused: o controle de rotação é exclusivo do usuário
 		if (cameraRef.current) {
 			cameraRef.current.focusPosition(node.position, 2.2);
 		}
+
+		// Revela e abre a classe selecionada imediatamente na aba Files do editor
+		void handleOpenFile(node);
 	};
 
 	const handleCopyPath = (node: HermesVectorNode) => {
@@ -739,19 +841,33 @@ export function NeuralCorePanel() {
 		toast.success("Caminho copiado", node.relPath);
 	};
 
-	// Detecção de nó sob coordenadas do mouse
+	// Detecção de nó sob coordenadas do mouse com tolerância estrita a partir do polígono
 	const handlePointerMove = (e: React.PointerEvent<HTMLCanvasElement>) => {
 		if (!engineRef.current || !canvasRef.current) return;
 		const rect = canvasRef.current.getBoundingClientRect();
 		const x = e.clientX - rect.left;
 		const y = e.clientY - rect.top;
 
-		const nodeIdx = engineRef.current.findNodeUnderScreenCoord(x, y, 22);
+		// Registra posição do cursor para projeção de nomes por raio seguro
+		engineRef.current.setCursorScreenCoord(x, y);
+
+		// Tolerância de 11px ajustada estritamente ao corpo físico do polígono
+		const nodeIdx = engineRef.current.findNodeUnderScreenCoord(x, y, 11);
 		engineRef.current.setHighlightedNode(nodeIdx);
 
 		if (nodeIdx !== null && vectorNodes[nodeIdx]) {
 			setInspectedNode(vectorNodes[nodeIdx]);
 		} else if (!selectedNode) {
+			setInspectedNode(null);
+		}
+	};
+
+	const handlePointerLeave = () => {
+		if (engineRef.current) {
+			engineRef.current.setCursorScreenCoord(null, null);
+			engineRef.current.setHighlightedNode(null);
+		}
+		if (!selectedNode) {
 			setInspectedNode(null);
 		}
 	};
@@ -768,6 +884,9 @@ export function NeuralCorePanel() {
 			setSelectedNode(n);
 			setInspectedNode(n);
 			handleFocusNode(n);
+		} else {
+			// Clicou no espaço vazio da cena 3D -> desmarca seleção e fecha painel
+			handleDeselectNode();
 		}
 	};
 
@@ -827,11 +946,12 @@ export function NeuralCorePanel() {
 			<canvas
 				ref={canvasRef}
 				onPointerMove={handlePointerMove}
+				onPointerLeave={handlePointerLeave}
 				onClick={handleCanvasClick}
 				className="absolute inset-0 h-full w-full cursor-grab active:cursor-grabbing"
 			/>
 
-			{/* Rótulos Inteligentes Projetados em 2D sobre o Canvas (Graphify style) */}
+			{/* Rótulos Inteligentes Projetados em 2D sobre o Canvas com Repulsão Magnética */}
 			<div className="absolute inset-0 pointer-events-none overflow-hidden z-10">
 				{projectedLabels.map((item) => {
 					const modStyle = getModuleClasses(item.module);
@@ -840,7 +960,7 @@ export function NeuralCorePanel() {
 							key={item.id}
 							style={{
 								left: `${Math.round(item.x)}px`,
-								top: `${Math.round(item.y - 18)}px`,
+								top: `${Math.round(item.y)}px`,
 							}}
 							className={`absolute -translate-x-1/2 -translate-y-1/2 flex items-center gap-4 rounded border px-6 py-2 backdrop-blur-md transition-all select-none ${
 								item.isSearchingTarget
@@ -905,15 +1025,15 @@ export function NeuralCorePanel() {
 						</span>
 						<span
 							className={`tr-text-metadata px-4 py-2 rounded bg-control-bg ${
-								!isPaused ? "text-feedback-success" : "text-text-muted"
+								isPaused ? "text-feedback-success" : "text-text-muted"
 							}`}
 							title={
-								!isPaused
-									? "Foco dinâmico e centralização 3D ativados"
-									: "Rotação congelada — foco da câmera mantido"
+								isPaused
+									? "Foco dinâmico do chat ativo (rotação pausada)"
+									: "Rotação livre — pause a rotação para ativar seleção automática do chat"
 							}
 						>
-							{!isPaused ? "FOCO DINÂMICO ATIVO" : "ROTAÇÃO CONGELADA"}
+							{isPaused ? "SELEÇÃO DO CHAT ATIVA" : "ROTAÇÃO LIVRE (CHAT EM ESPERA)"}
 						</span>
 					</div>
 				) : effectiveQuery ? (
@@ -941,6 +1061,25 @@ export function NeuralCorePanel() {
 					</div>
 				) : (
 					<div className="flex flex-wrap items-center gap-6 rounded-lg border border-border-default bg-container-elevated-bg px-8 py-4 tr-text-metadata text-text-muted backdrop-blur-md shadow-md pointer-events-auto">
+						{/* Seletor de Escopo de Projeto Ativo */}
+						{classStats?.projects && classStats.projects.length > 1 && (
+							<div className="flex items-center gap-4 pr-4 border-r border-border-default">
+								<select
+									value={selectedProjectFilter}
+									onChange={(e) => void handleSelectProjectFilter(e.target.value)}
+									className="bg-control-bg rounded border border-border-default px-6 py-2 tr-code-text text-text-default outline-none cursor-pointer hover:border-primary transition-colors"
+									title="Filtrar classes e grafos por projeto ativo"
+								>
+									<option value="all">Todos os Projetos ({classStats.projects.length})</option>
+									{classStats.projects.map((p) => (
+										<option key={p.slug} value={p.slug}>
+											{p.name} ({p.totalClasses} classes)
+										</option>
+									))}
+								</select>
+							</div>
+						)}
+
 						{/* Indicador de Classes e Arquivos por Projeto Ativo */}
 						<div
 							className="flex items-center gap-4 cursor-help"
@@ -1007,7 +1146,7 @@ export function NeuralCorePanel() {
 									disabled={isLoadingBatch || isAutoStreaming}
 									onClick={handleLoadNextBatch}
 									className="flex items-center gap-4 rounded bg-control-bg px-6 py-2 text-text-default hover:bg-control-bg hover:text-primary transition-colors disabled:opacity-50"
-									title="Carregar mais 180 classes no plano 3D"
+									title="Carregar mais 350 classes no plano 3D"
 								>
 									{isLoadingBatch && !isAutoStreaming ? (
 										<RiLoader4Line className="size-12 animate-spin text-primary" />
@@ -1106,6 +1245,29 @@ export function NeuralCorePanel() {
 						<RiCpuLine className="size-14" />
 					</button>
 
+					{/* Toggle Mostrar/Esconder Linhas de Circuito Impresso PCB */}
+					<button
+						type="button"
+						className={`size-28 flex items-center justify-center rounded p-0 transition-colors ${
+							showPcbLines
+								? "text-primary hover:bg-control-bg"
+								: "text-text-muted hover:text-text-default hover:bg-control-bg opacity-50"
+						}`}
+						onClick={handleTogglePcbLines}
+						title={
+							showPcbLines
+								? "Ocultar Trilhas de PCB (Desobstruir visualização de polígonos)"
+								: "Mostrar Trilhas de PCB (Exibir conexões Manhattan e vias de cobre)"
+						}
+						aria-label="Alternar Trilhas PCB"
+					>
+						{showPcbLines ? (
+							<RiNodeTree className="size-14" />
+						) : (
+							<RiEyeOffLine className="size-14" />
+						)}
+					</button>
+
 					<button
 						type="button"
 						className="size-28 flex items-center justify-center rounded p-0 text-text-muted hover:text-text-default hover:bg-control-bg transition-colors"
@@ -1189,8 +1351,8 @@ export function NeuralCorePanel() {
 				</div>
 			</div>
 
-			{/* Painel Inferior de Informações (Alternável: Expandido / Recolhido / Oculto) */}
-			{!isBottomPanelCompletelyHidden && (
+			{/* Painel Inferior de Informações (Exibido apenas quando houver um polígono clicado/selecionado) */}
+			{Boolean(selectedNode) && !isBottomPanelCompletelyHidden && (
 				<div className="relative z-20 mt-auto p-12 pointer-events-none">
 					{isBottomPanelCollapsed ? (
 						/* Barra Compacta Minimizada (Visual Zen 3D) */
@@ -1212,6 +1374,15 @@ export function NeuralCorePanel() {
 										<span className="tr-code-text text-primary truncate max-w-[280px]">
 											{activeNode.qualifiedName || activeNode.relPath}
 										</span>
+										<button
+											type="button"
+											onClick={handleDeselectNode}
+											className="size-18 flex items-center justify-center rounded-full bg-control-bg text-text-muted hover:text-text-default hover:bg-control-bg transition-colors p-0 cursor-pointer shrink-0"
+											title="Remover seleção do polígono"
+											aria-label="Remover seleção"
+										>
+											<RiCloseLine className="size-12" />
+										</button>
 										<span className="tr-text-metadata text-text-muted truncate hidden sm:inline">
 											({activeNode.module})
 										</span>
@@ -1322,13 +1493,22 @@ export function NeuralCorePanel() {
 								<div className="flex flex-col gap-8 min-h-0 flex-1 overflow-hidden">
 									{/* Linha Principal: Identificação do Nó e Botões de Ação */}
 									<div className="flex flex-wrap items-center justify-between gap-8 border-b border-border-default pb-8 shrink-0">
-										<div className="flex items-center gap-8 min-w-0">
+										<div className="flex items-center gap-6 min-w-0">
 											<span className="rounded bg-control-bg px-6 py-2 tr-code-text text-primary uppercase">
 												{activeNode.language || "code"}
 											</span>
 											<span className="tr-text-emphasis text-primary truncate max-w-[340px]">
 												{activeNode.qualifiedName || activeNode.relPath}
 											</span>
+											<button
+												type="button"
+												onClick={handleDeselectNode}
+												className="size-20 flex items-center justify-center rounded-full bg-control-bg text-text-muted hover:text-text-default hover:bg-control-bg transition-colors p-0 cursor-pointer shrink-0"
+												title="Remover seleção do polígono"
+												aria-label="Remover seleção"
+											>
+												<RiCloseLine className="size-14" />
+											</button>
 											<span className="tr-code-text text-text-muted truncate max-w-[220px] hidden sm:inline">
 												{activeNode.relPath}
 											</span>
@@ -1388,7 +1568,7 @@ export function NeuralCorePanel() {
 											{selectedNode && (
 												<button
 													type="button"
-													onClick={() => setSelectedNode(null)}
+													onClick={handleDeselectNode}
 													className="rounded p-2 text-text-muted hover:text-text-default ml-2 cursor-pointer"
 													title="Desmarcar seleção fixa"
 												>

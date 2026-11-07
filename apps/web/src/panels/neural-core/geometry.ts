@@ -648,6 +648,7 @@ export function createVectorConstellationWireframe(
 	_activeSearchQuery?: string | null,
 	searchingAnim?: SearchingNodeAnimState | null,
 	selectedNodeIndex: number | null = null,
+	showPcbLines: boolean = true,
 ): GeometryMeshData {
 	const vertexFloats: number[] = [];
 	const edgeIndices: number[] = [];
@@ -883,115 +884,130 @@ export function createVectorConstellationWireframe(
 
 	// 2. Conexões de arestas k-NN estilo Trilha de Circuito Impresso (PCB Traces Manhattan Routing)
 	// Roteadas em ângulos retos (90° / vias) com elevação de camada de cobre para NUNCA transfixar o corpo dos nós
-	for (const edge of edges) {
-		if (edge.source >= nodes.length || edge.target >= nodes.length) continue;
-		const n1 = nodes[edge.source];
-		const n2 = nodes[edge.target];
-		if (!n1 || !n2) continue;
+	// Pode ser ocultado via toggle para desobstruir a visualização de centenas de classes e polígonos.
+	if (showPcbLines) {
+		for (const edge of edges) {
+			if (edge.source >= nodes.length || edge.target >= nodes.length) continue;
+			const n1 = nodes[edge.source];
+			const n2 = nodes[edge.target];
+			if (!n1 || !n2) continue;
 
-		const isConnectedToSelected =
-			hasActiveSelection &&
-			(edge.source === selectedNodeIndex || edge.target === selectedNodeIndex);
-		const isEdgeUnrelated = hasActiveSelection && !isConnectedToSelected;
+			const isConnectedToSelected =
+				hasActiveSelection &&
+				(edge.source === selectedNodeIndex || edge.target === selectedNodeIndex);
+			const isEdgeUnrelated = hasActiveSelection && !isConnectedToSelected;
 
-		const p1 = n1.position;
-		const p2 = n2.position;
+			const p1 = n1.position;
+			const p2 = n2.position;
 
-		// Camada de elevação da trilha (PCB Copper Trace Layer)
-		const traceY = Math.max(p1[1], p2[1]) + 0.042;
-		let alpha = Math.min(0.75, Math.max(0.18, edge.similarity * 0.85));
+			// Camada de elevação da trilha (PCB Copper Trace Layer) com separação Multi-Camada (Multi-Layer PCB)
+			// Para evitar cruzamento e sobreposição feia no mesmo plano Y, escalonamos a altura da trilha
+			// em 4 camadas discretas de cobre baseadas no hash dos nós e no tipo de relação.
+			const pairHash = Math.abs((edge.source * 31 + edge.target * 17) % 4);
+			const layerOffset = pairHash * 0.018; // Camadas L1 a L4 (0.000, 0.018, 0.036, 0.054)
+			const traceY = Math.max(p1[1], p2[1]) + 0.038 + layerOffset;
+			let alpha = Math.min(0.75, Math.max(0.18, edge.similarity * 0.85));
 
-		// Cores de trilha metálica condutora (Ouro/Cobre e Turquesa)
-		const isCrossProject =
-			n1.module.includes(":") &&
-			n2.module.includes(":") &&
-			n1.module.split(":")[0] !== n2.module.split(":")[0];
-		let trColR = isCrossProject ? 1.0 : 0.15;
-		let trColG = isCrossProject ? 0.75 : 0.85;
-		let trColB = isCrossProject ? 0.2 : 0.95;
+			// Cores de trilha metálica condutora (Ouro/Cobre e Turquesa)
+			const isCrossProject =
+				n1.module.includes(":") &&
+				n2.module.includes(":") &&
+				n1.module.split(":")[0] !== n2.module.split(":")[0];
+			let trColR = isCrossProject ? 1.0 : 0.15;
+			let trColG = isCrossProject ? 0.75 : 0.85;
+			let trColB = isCrossProject ? 0.2 : 0.95;
 
-		if (isConnectedToSelected) {
-			const otherIdx = edge.source === selectedNodeIndex ? edge.target : edge.source;
-			if (relations.callNeighbors.has(otherIdx)) {
-				// Chamada de método / Caller
-				trColR = 0.1;
-				trColG = 1.0;
-				trColB = 0.65;
-				alpha = 0.95;
-			} else if (relations.importNeighbors.has(otherIdx)) {
-				// Importação de dependência
-				trColR = 0.2;
-				trColG = 0.85;
-				trColB = 1.0;
-				alpha = 0.95;
-			} else if (relations.typeNeighbors.has(otherIdx)) {
-				// Tipo / Interface
-				trColR = 1.0;
-				trColG = 0.45;
-				trColB = 0.9;
-				alpha = 0.95;
-			} else {
-				// k-NN relevante
-				trColR = 1.0;
-				trColG = 0.85;
-				trColB = 0.2;
-				alpha = 0.9;
+			if (isConnectedToSelected) {
+				const otherIdx = edge.source === selectedNodeIndex ? edge.target : edge.source;
+				if (relations.callNeighbors.has(otherIdx)) {
+					// Chamada de método / Caller
+					trColR = 0.1;
+					trColG = 1.0;
+					trColB = 0.65;
+					alpha = 0.95;
+				} else if (relations.importNeighbors.has(otherIdx)) {
+					// Importação de dependência
+					trColR = 0.2;
+					trColG = 0.85;
+					trColB = 1.0;
+					alpha = 0.95;
+				} else if (relations.typeNeighbors.has(otherIdx)) {
+					// Tipo / Interface
+					trColR = 1.0;
+					trColG = 0.45;
+					trColB = 0.9;
+					alpha = 0.95;
+				} else {
+					// k-NN relevante
+					trColR = 1.0;
+					trColG = 0.85;
+					trColB = 0.2;
+					alpha = 0.9;
+				}
+			} else if (isEdgeUnrelated) {
+				// Esmaecer arestas que não conectam ao nó selecionado
+				alpha = 0.02;
+				trColR *= 0.25;
+				trColG *= 0.25;
+				trColB *= 0.25;
 			}
-		} else if (isEdgeUnrelated) {
-			// Esmaecer arestas que não conectam ao nó selecionado
-			alpha = 0.03;
-			trColR *= 0.3;
-			trColG *= 0.3;
-			trColB *= 0.3;
+
+			// Roteamento Ortogonal com Alternância de Eixos (Anti-Colisão Manhattan):
+			// Trilha ímpar desvia primeiro em X, trilha par desvia primeiro em Z.
+			// Isso divide o tráfego espacial pela metade, impedindo linhas colineares cruzadas.
+			const routeOrder = (edge.source + edge.target) % 2 === 0;
+			const midX = p1[0] + (p2[0] - p1[0]) * (0.45 + (pairHash % 3) * 0.05);
+			const midZ = p1[2] + (p2[2] - p1[2]) * (0.45 + (pairHash % 3) * 0.05);
+
+			// Segmentos da trilha PCB com vias anti-transfixação:
+			const tracePts: [number, number, number][] = routeOrder
+				? [
+						[p1[0], p1[1], p1[2]],
+						[p1[0], traceY, p1[2]],
+						[midX, traceY, p1[2]],
+						[midX, traceY, p2[2]],
+						[p2[0], traceY, p2[2]],
+						[p2[0], p2[1], p2[2]],
+					]
+				: [
+						[p1[0], p1[1], p1[2]],
+						[p1[0], traceY, p1[2]],
+						[p1[0], traceY, midZ],
+						[p2[0], traceY, midZ],
+						[p2[0], traceY, p2[2]],
+						[p2[0], p2[1], p2[2]],
+					];
+
+			const baseIdx = vOffset;
+			for (const [tx, ty, tz] of tracePts) {
+				vertexFloats.push(tx, ty, tz, trColR, trColG, trColB, alpha);
+				vOffset++;
+			}
+
+			// Adiciona os 5 segmentos interligados
+			edgeIndices.push(
+				baseIdx + 0,
+				baseIdx + 1,
+				baseIdx + 1,
+				baseIdx + 2,
+				baseIdx + 2,
+				baseIdx + 3,
+				baseIdx + 3,
+				baseIdx + 4,
+				baseIdx + 4,
+				baseIdx + 5,
+			);
+
+			// Micro-via metálica (Pad circular de 4 pontos) no ponto de inflexão
+			const viaR = 0.016;
+			const viaBase = vOffset;
+			vertexFloats.push(midX + viaR, traceY, midX ? p1[2] : 0, 1.0, 0.85, 0.3, alpha * 0.9);
+			vertexFloats.push(midX - viaR, traceY, midX ? p1[2] : 0, 1.0, 0.85, 0.3, alpha * 0.9);
+			vertexFloats.push(midX, traceY, p1[2] + viaR, 1.0, 0.85, 0.3, alpha * 0.9);
+			vertexFloats.push(midX, traceY, p1[2] - viaR, 1.0, 0.85, 0.3, alpha * 0.9);
+			vOffset += 4;
+			edgeIndices.push(viaBase + 0, viaBase + 1, viaBase + 2, viaBase + 3);
 		}
-
-		// Ponto intermediário ortogonal (Manhattan midpoint)
-		const midX = (p1[0] + p2[0]) * 0.5;
-
-		// Segmentos da trilha PCB:
-		// 1) Via de saída do chip: (p1[0], p1[1], p1[2]) -> (p1[0], traceY, p1[2])
-		// 2) Trilha horizontal X:  (p1[0], traceY, p1[2]) -> (midX, traceY, p1[2])
-		// 3) Trilha transversal Z: (midX, traceY, p1[2])  -> (midX, traceY, p2[2])
-		// 4) Trilha horizontal X:  (midX, traceY, p2[2])  -> (p2[0], traceY, p2[2])
-		// 5) Via de entrada no pad: (p2[0], traceY, p2[2]) -> (p2[0], p2[1], p2[2])
-		const tracePts: [number, number, number][] = [
-			[p1[0], p1[1], p1[2]],
-			[p1[0], traceY, p1[2]],
-			[midX, traceY, p1[2]],
-			[midX, traceY, p2[2]],
-			[p2[0], traceY, p2[2]],
-			[p2[0], p2[1], p2[2]],
-		];
-
-		const baseIdx = vOffset;
-		for (const [tx, ty, tz] of tracePts) {
-			vertexFloats.push(tx, ty, tz, trColR, trColG, trColB, alpha);
-			vOffset++;
-		}
-
-		// Adiciona os 5 segmentos interligados
-		edgeIndices.push(
-			baseIdx + 0,
-			baseIdx + 1,
-			baseIdx + 1,
-			baseIdx + 2,
-			baseIdx + 2,
-			baseIdx + 3,
-			baseIdx + 3,
-			baseIdx + 4,
-			baseIdx + 4,
-			baseIdx + 5,
-		);
-
-		// Micro-via metálica (Pad circular de 4 pontos) no ponto de inflexão
-		const viaR = 0.016;
-		const viaBase = vOffset;
-		vertexFloats.push(midX + viaR, traceY, midX ? p1[2] : 0, 1.0, 0.85, 0.3, alpha * 0.9);
-		vertexFloats.push(midX - viaR, traceY, midX ? p1[2] : 0, 1.0, 0.85, 0.3, alpha * 0.9);
-		vertexFloats.push(midX, traceY, p1[2] + viaR, 1.0, 0.85, 0.3, alpha * 0.9);
-		vertexFloats.push(midX, traceY, p1[2] - viaR, 1.0, 0.85, 0.3, alpha * 0.9);
-		vOffset += 4;
-		edgeIndices.push(viaBase + 0, viaBase + 1, viaBase + 2, viaBase + 3);
 	}
 
 	// 3. Feixes de Ligação Direta e Luminosa para Vizinhos AST da Classe Selecionada

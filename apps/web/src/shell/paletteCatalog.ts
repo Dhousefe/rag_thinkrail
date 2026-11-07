@@ -9,6 +9,7 @@ import {
 	RiFileList3Line,
 	RiFolderLine,
 	RiFolderOpenLine,
+	RiHammerLine,
 	RiHistoryLine,
 	RiHome4Line,
 	RiInboxArchiveLine,
@@ -41,6 +42,7 @@ export type PaletteTool = Exclude<LayoutToolId, "projects">;
 const TOOL_LABELS: Record<PaletteTool, MessageKey> = {
 	"hermes-mcp": "workbench.tool.hermesMcp",
 	cindy: "workbench.tool.cindy",
+	craft: "workbench.tool.craft",
 	specs: "workbench.tool.specs",
 	files: "workbench.tool.files",
 	review: "workbench.tool.review",
@@ -51,6 +53,7 @@ const TOOL_LABELS: Record<PaletteTool, MessageKey> = {
 const TOOL_ICONS: Record<PaletteTool, RemixiconComponentType> = {
 	"hermes-mcp": RiPlugLine,
 	cindy: RiSparkling2Line,
+	craft: RiHammerLine,
 	specs: RiNodeTree,
 	files: RiFolderLine,
 	review: RiFileList3Line,
