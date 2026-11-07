@@ -169,7 +169,11 @@ only exemptions. `architecture.md` Decision #10 owns the rationale.
    - **Regra**: O parâmetro `cluster_id` é obrigatório no `code_search` para restringir a busca ao domínio validado em L0/L1, bloqueando recuperação cruzada de arquivos não relacionados de outros projetos do Hermes.
 
 - **Multi-Projeto Automático**: O Hermes RAG opera com fusão recíproca (RRF) em múltiplos bancos SQLite ativos configurados em `~/.hermes/active_projects.json`.
-- **Sincronização Pós-Edição**: Mantenha os índices atualizados executando `bun run rag:reindex` ou `scripts/rag-reindex.bat` após refatorações.
+- **REGRA MANDATÓRIA DE RAG SEMPRE QUENTE (Reindexação Pós-Trabalho)**: Ao concluir qualquer alteração de código, adição ou edição de arquivos (`.ts`, `.tsx`, `.md`, `.json`, etc.), o agente ou subagente DEVE OBRIGATORIAMENTE disparar a sincronização incremental do banco RAG executando:
+  ```bash
+  bun run rag:reindex
+  ```
+  Isso garante que novos símbolos, arquivos e specs sejam imediatamente absorvidos no SQLite (`l2j_chunks` e `l2j_chunk_fts`), mantendo o índice sempre aquecido para as próximas mensagens, tarefas e buscas sem lacunas de conhecimento. Em tarefas com múltiplos passos no TODO list, inclua a reindexação no checklist final antes da entrega.
 
 ## Gravação de Descobertas Técnicas no Golden Dataset (Curadoria Contínua)
 
