@@ -72,6 +72,7 @@ export class NeuralCoreEngine {
 	public vectorEdges: VectorEdgeInput[] = [];
 	public highlightedNodeIndex: number | null = null;
 	public selectedNodeIndex: number | null = null;
+	public cursorScreenCoord: { x: number; y: number } | null = null;
 	public isRagActive = false;
 	public showPcbLines = true;
 	public activeSearchQuery: string | null = null;
@@ -159,6 +160,14 @@ export class NeuralCoreEngine {
 	public togglePause(paused?: boolean) {
 		this.isPaused = paused !== undefined ? paused : !this.isPaused;
 		this.onPauseChange?.(this.isPaused);
+	}
+
+	public setCursorScreenCoord(x: number | null, y: number | null) {
+		if (x === null || y === null) {
+			this.cursorScreenCoord = null;
+		} else {
+			this.cursorScreenCoord = { x, y };
+		}
 	}
 
 	/**
@@ -721,7 +730,7 @@ export class NeuralCoreEngine {
 	public findNodeUnderScreenCoord(
 		screenX: number,
 		screenY: number,
-		tolerancePx = 24,
+		tolerancePx = 11,
 	): number | null {
 		if (!this.showVectorConstellation || this.vectorNodes.length === 0) return null;
 
@@ -766,7 +775,8 @@ export class NeuralCoreEngine {
 			const d = Math.sqrt(dx * dx + dy * dy);
 
 			// Tolerância adaptativa baseada no zoom/profundidade (polígonos mais próximos parecem maiores)
-			const dynamicTolerance = tolerancePx * Math.min(1.6, Math.max(0.7, 5.0 / depth));
+			const approxNodeRadiusPx = Math.max(5, Math.min(15, (0.026 / depth) * scale * 5.6));
+			const dynamicTolerance = Math.min(tolerancePx, approxNodeRadiusPx + 2.5);
 
 			if (d <= dynamicTolerance) {
 				candidates.push({
@@ -797,7 +807,7 @@ export class NeuralCoreEngine {
 	/**
 	 * Calcula coordenadas 2D na tela para nós estratégicos exibirem labels inteligentes (Graphify style).
 	 */
-	public getProjectedNodeLabels(maxLabels = 14): Array<{
+	public getProjectedNodeLabels(maxLabels = 8): Array<{ 
 		index: number;
 		id: string;
 		label: string;
@@ -824,21 +834,6 @@ export class NeuralCoreEngine {
 		const baseDist = Math.max(1.0, this.cameraOrbit.distance);
 		const [tx0, ty0, tz0] = this.cameraOrbit.target || [0, 0, 0];
 
-		const results: Array<{
-			index: number;
-			id: string;
-			label: string;
-			module: string;
-			x: number;
-			y: number;
-			depth: number;
-			isHovered: boolean;
-			isMatched: boolean;
-			isSearchingTarget: boolean;
-			methodsCount: number;
-			importanceScore: number;
-		}> = [];
-
 		const hasActiveSelection =
 			this.selectedNodeIndex !== null &&
 			this.selectedNodeIndex >= 0 &&
@@ -846,6 +841,13 @@ export class NeuralCoreEngine {
 		const relations = hasActiveSelection
 			? computeNodeRelations(this.selectedNodeIndex, this.vectorNodes, this.vectorEdges)
 			: null;
+
+		// Raio seguro a partir do cursor para evitar poluição visual (em pixels)
+		const cursorRadiusPx = 135;
+		const cursor = this.cursorScreenCoord;
+
+		// 1. Projeção de todos os nós visíveis na tela para uso na repulsão magnética
+		const allProjectedNodes: Array<{ index: number; px: number; py: number; depth: number }> = [];
 
 		for (let i = 0; i < this.vectorNodes.length; i++) {
 			const node = this.vectorNodes[i]!;
@@ -865,14 +867,37 @@ export class NeuralCoreEngine {
 			const px = cx + (rx / depth) * scale * 5.6;
 			const py = cy - (ry / depth) * scale * 5.6;
 
-			// Descarta nós fora da tela visível
-			if (px < 40 || px > w - 40 || py < 40 || py > h - 40) continue;
+			if (px >= 20 && px <= w - 20 && py >= 20 && py <= h - 20) {
+				allProjectedNodes.push({ index: i, px, py, depth });
+			}
+		}
 
+		// 2. Filtra nós candidatos para receberem rótulo conforme raio do cursor e prioridade
+		const candidateLabels: Array<{
+			index: number;
+			id: string;
+			label: string;
+			module: string;
+			nodePx: number;
+			nodePy: number;
+			x: number;
+			y: number;
+			depth: number;
+			isHovered: boolean;
+			isMatched: boolean;
+			isSearchingTarget: boolean;
+			methodsCount: number;
+			importanceScore: number;
+		}> = [];
+
+		for (const proj of allProjectedNodes) {
+			const i = proj.index;
+			const node = this.vectorNodes[i]!;
 			const isSelected = hasActiveSelection && i === this.selectedNodeIndex;
 			const isRelated = Boolean(relations?.directNeighbors.has(i));
 			const isUnrelated = hasActiveSelection && !isSelected && !isRelated;
 
-			// Se houver seleção ativa, suprime rótulos de nós não-relacionados para clareza visual máxima
+			// Se houver seleção ativa, suprime nós não relacionados
 			if (isUnrelated) continue;
 
 			const isHovered = i === this.highlightedNodeIndex;
@@ -880,24 +905,51 @@ export class NeuralCoreEngine {
 			const isSearchingTarget = this.searchingNodeId === node.id;
 			const methodsCount = node.methods?.length || 0;
 
-			let score = methodsCount;
-			if (isSelected) score += 5000;
-			if (isRelated) score += 2500;
-			if (isSearchingTarget) score += 2000;
-			if (isHovered) score += 1000;
-			if (isMatched) score += 500;
+			// Checa se está dentro do raio seguro a partir do cursor
+			let isWithinCursorRadius = false;
+			if (cursor) {
+				const cdx = proj.px - cursor.x;
+				const cdy = proj.py - cursor.y;
+				const distCursor = Math.sqrt(cdx * cdx + cdy * cdy);
+				if (distCursor <= cursorRadiusPx) {
+					isWithinCursorRadius = true;
+				}
+			}
 
-			const nameParts = (node.relPath || node.id).split(/[/\\]/);
+			// Rótulo só é exibido se:
+			// 1) O nó estiver em hover direto pelo cursor;
+			// 2) O nó estiver selecionado por clique;
+			// 3) For alvo de busca ativa MCP/RAG;
+			// 4) Estiver no raio pequeno do cursor
+			if (!isHovered && !isSelected && !isSearchingTarget && !isWithinCursorRadius) {
+				continue;
+			}
+
+			let score = methodsCount;
+			if (isSelected) score += 6000;
+			if (isHovered) score += 5000;
+			if (isSearchingTarget) score += 3000;
+			if (isRelated) score += 1500;
+			if (isMatched) score += 800;
+			if (isWithinCursorRadius) score += 500;
+
+			const nameParts = (node.relPath || node.id).split(/[\/\\]/);
 			const cleanLabel = nameParts[nameParts.length - 1] || node.id;
 
-			results.push({
+			// Posição base do rótulo: SEMPRE ACIMA do polígono em questão (offset inicial -22px em Y)
+			const initialLabelX = proj.px;
+			const initialLabelY = proj.py - 22;
+
+			candidateLabels.push({
 				index: i,
 				id: node.id,
 				label: cleanLabel,
 				module: node.module,
-				x: px,
-				y: py,
-				depth,
+				nodePx: proj.px,
+				nodePy: proj.py,
+				x: initialLabelX,
+				y: initialLabelY,
+				depth: proj.depth,
 				isHovered,
 				isMatched,
 				isSearchingTarget,
@@ -906,8 +958,50 @@ export class NeuralCoreEngine {
 			});
 		}
 
-		results.sort((a, b) => b.importanceScore - a.importanceScore);
-		return results.slice(0, maxLabels);
+		// Ordena por prioridade e limita ao máximo de rótulos permitidos
+		candidateLabels.sort((a, b) => b.importanceScore - a.importanceScore);
+		const selectedCandidates = candidateLabels.slice(0, maxLabels);
+
+		// 3. Aplicação do MAGNETISMO DE MESMA POLARIDADE (Repulsão Coulombiana Suave):
+		// Garante que o rótulo NUNCA fique sobreposto em cima de outro polígono vizinho.
+		// Quando um polígono vizinho estiver muito próximo da área do rótulo, repele suavemente
+		// o rótulo para cima e diagonal livre.
+		const minSafeLabelDist = 32;
+
+		for (const item of selectedCandidates) {
+			for (const otherProj of allProjectedNodes) {
+				if (otherProj.index === item.index) continue;
+
+				const dx = item.x - otherProj.px;
+				const dy = item.y - otherProj.py;
+				const dist = Math.sqrt(dx * dx + dy * dy);
+
+				if (dist < minSafeLabelDist) {
+					const safeD = Math.max(dist, 1.0);
+					const overlap = minSafeLabelDist - safeD;
+					const repulseStrength = overlap / minSafeLabelDist;
+
+					const nx = dx / safeD;
+					const ny = dy < 0 ? dy / safeD : -0.85;
+
+					item.x += nx * repulseStrength * 16;
+					item.y += ny * repulseStrength * 20;
+				}
+			}
+		}
+
+		return selectedCandidates.map((c) => ({
+			index: c.index,
+			id: c.id,
+			label: c.label,
+			module: c.module,
+			x: c.x,
+			y: c.y,
+			isHovered: c.isHovered,
+			isMatched: c.isMatched,
+			isSearchingTarget: c.isSearchingTarget,
+			methodsCount: c.methodsCount,
+		}));
 	}
 
 	private renderGeometricCanvas2D() {

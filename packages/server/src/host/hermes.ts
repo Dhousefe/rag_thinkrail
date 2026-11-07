@@ -1832,32 +1832,32 @@ export async function getHermesVectorGraph(
 			};
 
 			// Parâmetros da Espiral Galáctica Logarítmica: r = a * e^(b * theta)
-			// Núcleo estelar limpo: raio inicial mínimo de 1.4 unidades
-			const coreExclusionRadius = 1.35;
+			// Núcleo estelar limpo: raio inicial de 2.2 unidades para afastar os nós do centro
+			const coreExclusionRadius = 2.2;
 
 			for (let mIdx = 0; mIdx < totalModules; mIdx++) {
 				const modName = moduleNames[mIdx]!;
 				const items = itemsByModule.get(modName)!;
-				const armBaseAngle = getSemanticArmBaseAngle(modName) + (mIdx % 2 === 0 ? 0.08 : -0.08);
+				const armBaseAngle = getSemanticArmBaseAngle(modName) + (mIdx % 2 === 0 ? 0.12 : -0.12);
 
 				const nItems = items.length;
 
 				for (let itemIdx = 0; itemIdx < nItems; itemIdx++) {
 					const it = items[itemIdx]!;
 
-					// Progressão espiral logarítmica galáctica com densidade decrescente na periferia:
-					// O raio cresce suavemente para acomodar centenas de polígonos sem aglomeração
-					const radialStep = 0.42 * Math.sqrt(itemIdx + 1);
+					// Progressão espiral logarítmica galáctica com espaçamento amplo entre polígonos:
+					// Passo radial aumentado (0.88) para que centenas de classes fiquem bem dispersas e fáceis de navegar
+					const radialStep = 0.88 * Math.sqrt(itemIdx + 1);
 					const rLog = coreExclusionRadius + radialStep;
 
-					// Curvatura do braço espiral da Via Láctea (espiral logarítmica com b=0.22)
-					const armTheta = armBaseAngle + 0.38 * Math.log(1 + radialStep * 1.8) + (itemIdx % 3) * 0.12;
+					// Curvatura do braço espiral da Via Láctea (espiral logarítmica)
+					const armTheta = armBaseAngle + 0.45 * Math.log(1 + radialStep * 1.5) + (itemIdx % 4) * 0.16;
 
 					// Perturbação tangencial estocástica determinística (dispersão de disco galáctico)
 					const [rx, ry, rz] = rawCoords[it.index]!;
 					const normEmb = Math.sqrt(rx * rx + ry * ry + rz * rz) || 1;
-					const tangScatter = (rx / normEmb) * 0.18;
-					const radialScatter = (rz / normEmb) * 0.18;
+					const tangScatter = (rx / normEmb) * 0.32;
+					const radialScatter = (rz / normEmb) * 0.32;
 
 					const finalR = rLog + radialScatter;
 					const finalTheta = armTheta + tangScatter;
@@ -1868,7 +1868,7 @@ export async function getHermesVectorGraph(
 
 					// Disco estelar fino com elevação suave em Y (plano XZ predominante da PCB)
 					// Camadas PCB estratificadas (Layer 1 Contratos, Layer 2 Server, Layer 3 Web)
-					const py = (it.layer - 2) * 0.045 + (ry / normEmb) * 0.025;
+					const py = (it.layer - 2) * 0.055 + (ry / normEmb) * 0.035;
 
 					const relPath = it.normalizedPath.split("/").slice(-2).join("/");
 
@@ -1909,12 +1909,11 @@ export async function getHermesVectorGraph(
 			}
 		}
 
-		// Relaxação anti-colisão ultra-rápida via Spatial Hash Grid O(N):
-		// Substitui o antigo duplo loop O(N^2) que travava a CPU ao carregar centenas de classes.
-		// Divide o plano 2D em células de grade de tamanho minSafeDist2D e resolve apenas vizinhos próximos.
-		const minSafeDist2D = 0.52; // Distância mínima ideal entre centros de polígonos
+		// Relaxação anti-colisão via Spatial Hash Grid O(N):
+		// Garante distância segura e folga generosa entre os centros de todos os polígonos da cena
+		const minSafeDist2D = 1.05; // Distância mínima física segura entre centros de polígonos
 		const cellSize = minSafeDist2D * 1.1;
-		const relaxationIterations = 4; // Apenas 4 passadas rápidas agora que a espiral já distribui uniformemente
+		const relaxationIterations = 6; // Iterações de relaxamento para acomodar ampla dispersão
 
 		for (let iter = 0; iter < relaxationIterations; iter++) {
 			const spatialGrid = new Map<string, number[]>();

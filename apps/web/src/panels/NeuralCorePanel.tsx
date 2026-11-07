@@ -759,10 +759,17 @@ export function NeuralCorePanel() {
 		}
 	}, [vectorNodes]);
 
-	const handleResetView = () => {
-		cameraRef.current?.reset();
+	const handleDeselectNode = useCallback(() => {
 		setSelectedNode(null);
 		setInspectedNode(null);
+		if (engineRef.current) {
+			engineRef.current.setHighlightedNode(null);
+		}
+	}, []);
+
+	const handleResetView = () => {
+		cameraRef.current?.reset();
+		handleDeselectNode();
 		toast.info("Visão centralizada", "Câmera retornou à posição panorâmica inicial");
 	};
 
@@ -834,19 +841,33 @@ export function NeuralCorePanel() {
 		toast.success("Caminho copiado", node.relPath);
 	};
 
-	// Detecção de nó sob coordenadas do mouse
+	// Detecção de nó sob coordenadas do mouse com tolerância estrita a partir do polígono
 	const handlePointerMove = (e: React.PointerEvent<HTMLCanvasElement>) => {
 		if (!engineRef.current || !canvasRef.current) return;
 		const rect = canvasRef.current.getBoundingClientRect();
 		const x = e.clientX - rect.left;
 		const y = e.clientY - rect.top;
 
-		const nodeIdx = engineRef.current.findNodeUnderScreenCoord(x, y, 22);
+		// Registra posição do cursor para projeção de nomes por raio seguro
+		engineRef.current.setCursorScreenCoord(x, y);
+
+		// Tolerância de 11px ajustada estritamente ao corpo físico do polígono
+		const nodeIdx = engineRef.current.findNodeUnderScreenCoord(x, y, 11);
 		engineRef.current.setHighlightedNode(nodeIdx);
 
 		if (nodeIdx !== null && vectorNodes[nodeIdx]) {
 			setInspectedNode(vectorNodes[nodeIdx]);
 		} else if (!selectedNode) {
+			setInspectedNode(null);
+		}
+	};
+
+	const handlePointerLeave = () => {
+		if (engineRef.current) {
+			engineRef.current.setCursorScreenCoord(null, null);
+			engineRef.current.setHighlightedNode(null);
+		}
+		if (!selectedNode) {
 			setInspectedNode(null);
 		}
 	};
@@ -863,6 +884,9 @@ export function NeuralCorePanel() {
 			setSelectedNode(n);
 			setInspectedNode(n);
 			handleFocusNode(n);
+		} else {
+			// Clicou no espaço vazio da cena 3D -> desmarca seleção e fecha painel
+			handleDeselectNode();
 		}
 	};
 
@@ -922,11 +946,12 @@ export function NeuralCorePanel() {
 			<canvas
 				ref={canvasRef}
 				onPointerMove={handlePointerMove}
+				onPointerLeave={handlePointerLeave}
 				onClick={handleCanvasClick}
 				className="absolute inset-0 h-full w-full cursor-grab active:cursor-grabbing"
 			/>
 
-			{/* Rótulos Inteligentes Projetados em 2D sobre o Canvas (Graphify style) */}
+			{/* Rótulos Inteligentes Projetados em 2D sobre o Canvas com Repulsão Magnética */}
 			<div className="absolute inset-0 pointer-events-none overflow-hidden z-10">
 				{projectedLabels.map((item) => {
 					const modStyle = getModuleClasses(item.module);
@@ -935,7 +960,7 @@ export function NeuralCorePanel() {
 							key={item.id}
 							style={{
 								left: `${Math.round(item.x)}px`,
-								top: `${Math.round(item.y - 18)}px`,
+								top: `${Math.round(item.y)}px`,
 							}}
 							className={`absolute -translate-x-1/2 -translate-y-1/2 flex items-center gap-4 rounded border px-6 py-2 backdrop-blur-md transition-all select-none ${
 								item.isSearchingTarget
@@ -1326,8 +1351,8 @@ export function NeuralCorePanel() {
 				</div>
 			</div>
 
-			{/* Painel Inferior de Informações (Alternável: Expandido / Recolhido / Oculto) */}
-			{!isBottomPanelCompletelyHidden && (
+			{/* Painel Inferior de Informações (Exibido apenas quando houver um polígono clicado/selecionado) */}
+			{Boolean(selectedNode) && !isBottomPanelCompletelyHidden && (
 				<div className="relative z-20 mt-auto p-12 pointer-events-none">
 					{isBottomPanelCollapsed ? (
 						/* Barra Compacta Minimizada (Visual Zen 3D) */
@@ -1349,6 +1374,15 @@ export function NeuralCorePanel() {
 										<span className="tr-code-text text-primary truncate max-w-[280px]">
 											{activeNode.qualifiedName || activeNode.relPath}
 										</span>
+										<button
+											type="button"
+											onClick={handleDeselectNode}
+											className="size-18 flex items-center justify-center rounded-full bg-control-bg text-text-muted hover:text-text-default hover:bg-control-bg transition-colors p-0 cursor-pointer shrink-0"
+											title="Remover seleção do polígono"
+											aria-label="Remover seleção"
+										>
+											<RiCloseLine className="size-12" />
+										</button>
 										<span className="tr-text-metadata text-text-muted truncate hidden sm:inline">
 											({activeNode.module})
 										</span>
@@ -1459,13 +1493,22 @@ export function NeuralCorePanel() {
 								<div className="flex flex-col gap-8 min-h-0 flex-1 overflow-hidden">
 									{/* Linha Principal: Identificação do Nó e Botões de Ação */}
 									<div className="flex flex-wrap items-center justify-between gap-8 border-b border-border-default pb-8 shrink-0">
-										<div className="flex items-center gap-8 min-w-0">
+										<div className="flex items-center gap-6 min-w-0">
 											<span className="rounded bg-control-bg px-6 py-2 tr-code-text text-primary uppercase">
 												{activeNode.language || "code"}
 											</span>
 											<span className="tr-text-emphasis text-primary truncate max-w-[340px]">
 												{activeNode.qualifiedName || activeNode.relPath}
 											</span>
+											<button
+												type="button"
+												onClick={handleDeselectNode}
+												className="size-20 flex items-center justify-center rounded-full bg-control-bg text-text-muted hover:text-text-default hover:bg-control-bg transition-colors p-0 cursor-pointer shrink-0"
+												title="Remover seleção do polígono"
+												aria-label="Remover seleção"
+											>
+												<RiCloseLine className="size-14" />
+											</button>
 											<span className="tr-code-text text-text-muted truncate max-w-[220px] hidden sm:inline">
 												{activeNode.relPath}
 											</span>
@@ -1525,7 +1568,7 @@ export function NeuralCorePanel() {
 											{selectedNode && (
 												<button
 													type="button"
-													onClick={() => setSelectedNode(null)}
+													onClick={handleDeselectNode}
 													className="rounded p-2 text-text-muted hover:text-text-default ml-2 cursor-pointer"
 													title="Desmarcar seleção fixa"
 												>
