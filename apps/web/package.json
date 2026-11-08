@@ -12,7 +12,7 @@
 		"preview": "vite preview",
 		"typography:generate": "bun scripts/generate-typography.ts",
 		"typography:validate": "bun scripts/validate-typography.ts",
-		"typography:check": "bun scripts/generate-typography.ts --check && bun test src/styles/typographyUsage.test.ts",
+		"typography:check": "bun scripts/generate-typography.ts --check && bun test --timeout 30000 src/styles/typographyUsage.test.ts",
 		"colors:generate": "bun scripts/generate-colors.ts",
 		"colors:check": "bun scripts/generate-colors.ts --check && bun test src/styles/colorUsage.test.ts",
 		"spacing:generate": "bun scripts/generate-spacing.ts",

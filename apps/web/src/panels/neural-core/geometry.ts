@@ -649,6 +649,7 @@ export function createVectorConstellationWireframe(
 	searchingAnim?: SearchingNodeAnimState | null,
 	selectedNodeIndex: number | null = null,
 	showPcbLines: boolean = true,
+	timeMs: number = 0,
 ): GeometryMeshData {
 	const vertexFloats: number[] = [];
 	const edgeIndices: number[] = [];
@@ -883,9 +884,18 @@ export function createVectorConstellationWireframe(
 	}
 
 	// 2. Conexões de arestas k-NN estilo Trilha de Circuito Impresso (PCB Traces Manhattan Routing)
-	// Roteadas em ângulos retos (90° / vias) com elevação de camada de cobre para NUNCA transfixar o corpo dos nós
-	// Pode ser ocultado via toggle para desobstruir a visualização de centenas de classes e polígonos.
+	// Roteadas em ângulos retos (90° / vias) com elevação de camada de cobre para NUNCA transfixar o corpo dos nós.
+	// Conta com Keepout Zone: se a trilha cruzar muito próxima ao corpo de um nó intermediário (die alheio),
+	// ela é rebaixada sob a placa ou esmaecida para não encobrir o polígono nem prejudicar a seleção.
 	if (showPcbLines) {
+		// Pré-calcula posições XZ e raios de keepout dos nós para verificação O(1)/rápida
+		const keepoutNodes = nodes.map((n) => ({
+			x: n.position[0],
+			z: n.position[2],
+			y: n.position[1],
+			radiusSq: 0.055 * 0.055, // Raio de exclusão em torno do centro do die
+		}));
+
 		for (const edge of edges) {
 			if (edge.source >= nodes.length || edge.target >= nodes.length) continue;
 			const n1 = nodes[edge.source];
@@ -901,8 +911,6 @@ export function createVectorConstellationWireframe(
 			const p2 = n2.position;
 
 			// Camada de elevação da trilha (PCB Copper Trace Layer) com separação Multi-Camada (Multi-Layer PCB)
-			// Para evitar cruzamento e sobreposição feia no mesmo plano Y, escalonamos a altura da trilha
-			// em 4 camadas discretas de cobre baseadas no hash dos nós e no tipo de relação.
 			const pairHash = Math.abs((edge.source * 31 + edge.target * 17) % 4);
 			const layerOffset = pairHash * 0.018; // Camadas L1 a L4 (0.000, 0.018, 0.036, 0.054)
 			const traceY = Math.max(p1[1], p2[1]) + 0.038 + layerOffset;
@@ -919,30 +927,36 @@ export function createVectorConstellationWireframe(
 
 			if (isConnectedToSelected) {
 				const otherIdx = edge.source === selectedNodeIndex ? edge.target : edge.source;
+				// Pulsos intermitentes nas linhas de dependência da classe selecionada
+				const pulsePhase =
+					(timeMs * 0.005 + (edge.source * 13 + edge.target * 29) * 0.1) % (Math.PI * 2);
+				const pulseFactor = Math.max(0, Math.sin(pulsePhase)) ** 3.0;
+				const spark = Math.sin(timeMs * 0.015 + pairHash * 2.5) > 0.65 ? 0.25 : 0.0;
+
 				if (relations.callNeighbors.has(otherIdx)) {
 					// Chamada de método / Caller
-					trColR = 0.1;
+					trColR = 0.1 + pulseFactor * 0.35 + spark;
 					trColG = 1.0;
-					trColB = 0.65;
-					alpha = 0.95;
+					trColB = 0.65 + pulseFactor * 0.35;
+					alpha = Math.min(1.0, 0.7 + pulseFactor * 0.3);
 				} else if (relations.importNeighbors.has(otherIdx)) {
 					// Importação de dependência
-					trColR = 0.2;
-					trColG = 0.85;
+					trColR = 0.2 + pulseFactor * 0.3 + spark;
+					trColG = 0.85 + pulseFactor * 0.15;
 					trColB = 1.0;
-					alpha = 0.95;
+					alpha = Math.min(1.0, 0.7 + pulseFactor * 0.3);
 				} else if (relations.typeNeighbors.has(otherIdx)) {
 					// Tipo / Interface
 					trColR = 1.0;
-					trColG = 0.45;
-					trColB = 0.9;
-					alpha = 0.95;
+					trColG = 0.45 + pulseFactor * 0.4 + spark;
+					trColB = 0.9 + pulseFactor * 0.1;
+					alpha = Math.min(1.0, 0.7 + pulseFactor * 0.3);
 				} else {
 					// k-NN relevante
 					trColR = 1.0;
-					trColG = 0.85;
-					trColB = 0.2;
-					alpha = 0.9;
+					trColG = 0.85 + pulseFactor * 0.15;
+					trColB = 0.2 + pulseFactor * 0.5 + spark;
+					alpha = Math.min(1.0, 0.65 + pulseFactor * 0.35);
 				}
 			} else if (isEdgeUnrelated) {
 				// Esmaecer arestas que não conectam ao nó selecionado
@@ -953,8 +967,6 @@ export function createVectorConstellationWireframe(
 			}
 
 			// Roteamento Ortogonal com Alternância de Eixos (Anti-Colisão Manhattan):
-			// Trilha ímpar desvia primeiro em X, trilha par desvia primeiro em Z.
-			// Isso divide o tráfego espacial pela metade, impedindo linhas colineares cruzadas.
 			const routeOrder = (edge.source + edge.target) % 2 === 0;
 			const midX = p1[0] + (p2[0] - p1[0]) * (0.45 + (pairHash % 3) * 0.05);
 			const midZ = p1[2] + (p2[2] - p1[2]) * (0.45 + (pairHash % 3) * 0.05);
@@ -978,9 +990,37 @@ export function createVectorConstellationWireframe(
 						[p2[0], p2[1], p2[2]],
 					];
 
+			// Verificação de Keepout Zone: se os pontos horizontais intermediários cruzam sobre nós alheios
+			let crossesThirdPartyNode = false;
+			const samplePoints: Array<[number, number]> = [
+				[midX, routeOrder ? p1[2] : midZ],
+				[midX, routeOrder ? p2[2] : midZ],
+			];
+
+			for (let ki = 0; ki < keepoutNodes.length; ki++) {
+				if (ki === edge.source || ki === edge.target) continue;
+				const kn = keepoutNodes[ki]!;
+				for (const [spX, spZ] of samplePoints) {
+					const dx = spX - kn.x;
+					const dz = spZ - kn.z;
+					if (dx * dx + dz * dz < kn.radiusSq) {
+						crossesThirdPartyNode = true;
+						break;
+					}
+				}
+				if (crossesThirdPartyNode) break;
+			}
+
+			// Se a trilha transpassar uma zona de keepout de outro nó, rebaixa seu alfa
+			// drasticamente (para 0.04) ou recua a altura para nunca encobrir visualmente o polígono
+			const effectiveAlpha =
+				crossesThirdPartyNode && !isConnectedToSelected ? Math.min(alpha, 0.04) : alpha;
+
 			const baseIdx = vOffset;
 			for (const [tx, ty, tz] of tracePts) {
-				vertexFloats.push(tx, ty, tz, trColR, trColG, trColB, alpha);
+				// Se cruza die alheio, mergulha levemente a trilha para baixo da face do polígono
+				const effectiveY = crossesThirdPartyNode && !isConnectedToSelected ? ty - 0.045 : ty;
+				vertexFloats.push(tx, effectiveY, tz, trColR, trColG, trColB, effectiveAlpha);
 				vOffset++;
 			}
 
@@ -1010,7 +1050,7 @@ export function createVectorConstellationWireframe(
 		}
 	}
 
-	// 3. Feixes de Ligação Direta e Luminosa para Vizinhos AST da Classe Selecionada
+	// 3. Feixes de Ligação Direta e Pulsos Intermitentes para Vizinhos AST da Classe Selecionada
 	if (hasActiveSelection && selectedNodeIndex !== null) {
 		const selNode = nodes[selectedNodeIndex];
 		if (selNode) {
@@ -1029,12 +1069,34 @@ export function createVectorConstellationWireframe(
 					rCol = [1.0, 0.45, 0.9]; // Magenta para tipos e interfaces
 				}
 
-				// Linha direta com brilho
+				// Pulso intermitente senoidal na linha direta
+				const linePulse = 0.55 + 0.45 * Math.sin(timeMs * 0.006 + neighborIdx * 1.3) ** 2;
+				const spark = Math.sin(timeMs * 0.016 + neighborIdx * 3.1) > 0.7 ? 0.35 : 0.0;
+				const effR = Math.min(1.0, rCol[0] + spark + linePulse * 0.15);
+				const effG = Math.min(1.0, rCol[1] + spark + linePulse * 0.15);
+				const effB = Math.min(1.0, rCol[2] + spark + linePulse * 0.15);
+				const lineAlpha = Math.min(1.0, 0.5 + linePulse * 0.5);
+
+				// Linha direta com pulso luminoso
 				const lineStart = vOffset;
-				vertexFloats.push(sx, sy, sz, rCol[0], rCol[1], rCol[2], 0.85);
-				vertexFloats.push(nx, ny, nz, rCol[0], rCol[1], rCol[2], 0.95);
+				vertexFloats.push(sx, sy, sz, effR, effG, effB, lineAlpha * 0.85);
+				vertexFloats.push(nx, ny, nz, effR, effG, effB, lineAlpha);
 				vOffset += 2;
 				edgeIndices.push(lineStart, lineStart + 1);
+
+				// Micro-pulso luminoso que viaja ao longo da linha de dependência
+				const t = (timeMs * 0.0016 + neighborIdx * 0.28) % 1.0;
+				const px = sx + (nx - sx) * t;
+				const py = sy + (ny - sy) * t;
+				const pz = sz + (nz - sz) * t;
+				const pRad = 0.014;
+				const pulseStart = vOffset;
+				vertexFloats.push(px + pRad, py, pz, 1.0, 1.0, 1.0, 0.95);
+				vertexFloats.push(px - pRad, py, pz, effR, effG, effB, 0.95);
+				vertexFloats.push(px, py + pRad, pz, 1.0, 1.0, 1.0, 0.95);
+				vertexFloats.push(px, py - pRad, pz, effR, effG, effB, 0.95);
+				vOffset += 4;
+				edgeIndices.push(pulseStart + 0, pulseStart + 1, pulseStart + 2, pulseStart + 3);
 			}
 		}
 	}

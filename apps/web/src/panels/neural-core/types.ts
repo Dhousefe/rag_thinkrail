@@ -8,7 +8,7 @@ export interface NeuralTelemetryState {
 	activeRagQuery?: string | undefined;
 	activeRagToolName?: string | undefined;
 	isRagSearching?: boolean | undefined;
-	activeChatTool?: "read" | "edit" | "write" | undefined;
+	activeChatTool?: "read" | "edit" | "write" | "ast" | "rag" | undefined;
 	activeChatFilePath?: string | undefined;
 	activeChatPivotClass?: string | undefined;
 	terminalCommand?: string | undefined;

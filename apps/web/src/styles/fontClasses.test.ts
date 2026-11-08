@@ -20,7 +20,7 @@ function sourceFiles(dir: string): string[] {
 }
 
 describe("font-family utilities", () => {
-	it("never uses the bare font-" + "[var(--font-*)] form (Tailwind compiles it to an invalid weight)", () => {
+	it("never uses the bare font-[var(--font-*)] form (Tailwind compiles it to an invalid weight)", () => {
 		const offenders: string[] = [];
 		for (const file of sourceFiles(SRC)) {
 			if (file.endsWith("index.css")) continue;

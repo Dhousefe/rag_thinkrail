@@ -1,11 +1,13 @@
 import { spawn } from "node:child_process";
 import {
 	copyFileSync,
+	cpSync,
 	existsSync,
 	mkdirSync,
 	readdirSync,
 	readFileSync,
 	realpathSync,
+	renameSync,
 	rmSync,
 	statSync,
 	writeFileSync,
@@ -1535,53 +1537,53 @@ export async function getHermesVectorGraph(
 						for (const b of blobRows) blobByRowid.set(b.rowid, b.vector_blob);
 					} catch {}
 
-				// Deduplicação determinística no lote: evita polígonos idênticos com o mesmo nome e arquivo
-				const seenEntityKeys = new Set<string>();
+					// Deduplicação determinística no lote: evita polígonos idênticos com o mesmo nome e arquivo
+					const seenEntityKeys = new Set<string>();
 
-				for (const r of rows) {
-					const blob = blobByRowid.get(r.rowid) || new Uint8Array(0);
-					// Fallback de qualifiedName se vazio mas snippet define class/interface/function
-					let resolvedQName = r.qualified_name || "";
-					if (!resolvedQName && r.snippet) {
-						const classMatch = r.snippet.match(
-							/(?:export\s+)?(?:default\s+)?(?:class|interface|struct|function|const)\s+([A-Za-z0-9_]+)/,
-						);
-						if (classMatch && classMatch[1]) {
-							resolvedQName = classMatch[1];
+					for (const r of rows) {
+						const blob = blobByRowid.get(r.rowid) || new Uint8Array(0);
+						// Fallback de qualifiedName se vazio mas snippet define class/interface/function
+						let resolvedQName = r.qualified_name || "";
+						if (!resolvedQName && r.snippet) {
+							const classMatch = r.snippet.match(
+								/(?:export\s+)?(?:default\s+)?(?:class|interface|struct|function|const)\s+([A-Za-z0-9_]+)/,
+							);
+							if (classMatch && classMatch[1]) {
+								resolvedQName = classMatch[1];
+							}
 						}
+
+						// Refinamento de nomes repetidos (ex: SPEC#Boundary -> SPEC.md [web/chat] # Boundary)
+						const normPath = r.path.replace(/\\/g, "/");
+						const pathParts = normPath.split("/");
+						const fileName = pathParts.pop() || "";
+						const parentDir = pathParts.pop() || "";
+
+						if (!resolvedQName || resolvedQName === r.path) {
+							resolvedQName = fileName ? `${fileName}` : "Entity";
+						} else if (resolvedQName.startsWith("SPEC#") || resolvedQName.startsWith("SPEC.md#")) {
+							const heading = resolvedQName.replace(/^SPEC(?:\.md)?#/, "");
+							resolvedQName = `${parentDir}/${fileName}#${heading}`;
+						}
+
+						const entityKey = `${pm.slug}:${normPath}:${resolvedQName}`;
+						if (seenEntityKeys.has(entityKey)) {
+							continue; // Pula chunk redundante da mesma entidade no mesmo arquivo
+						}
+						seenEntityKeys.add(entityKey);
+
+						collectedRows.push({
+							id: r.id,
+							path: r.path,
+							qualified_name: resolvedQName,
+							chunk_kind: r.chunk_kind,
+							token_estimate: r.token_estimate,
+							snippet: r.snippet,
+							vector_blob: blob,
+							projectSlug: pm.slug,
+							projectRoot: pm.wsPath || pm.slug,
+						});
 					}
-
-					// Refinamento de nomes repetidos (ex: SPEC#Boundary -> SPEC.md [web/chat] # Boundary)
-					const normPath = r.path.replace(/\\/g, "/");
-					const pathParts = normPath.split("/");
-					const fileName = pathParts.pop() || "";
-					const parentDir = pathParts.pop() || "";
-
-					if (!resolvedQName || resolvedQName === r.path) {
-						resolvedQName = fileName ? `${fileName}` : "Entity";
-					} else if (resolvedQName.startsWith("SPEC#") || resolvedQName.startsWith("SPEC.md#")) {
-						const heading = resolvedQName.replace(/^SPEC(?:\.md)?#/, "");
-						resolvedQName = `${parentDir}/${fileName}#${heading}`;
-					}
-
-					const entityKey = `${pm.slug}:${normPath}:${resolvedQName}`;
-					if (seenEntityKeys.has(entityKey)) {
-						continue; // Pula chunk redundante da mesma entidade no mesmo arquivo
-					}
-					seenEntityKeys.add(entityKey);
-
-					collectedRows.push({
-						id: r.id,
-						path: r.path,
-						qualified_name: resolvedQName,
-						chunk_kind: r.chunk_kind,
-						token_estimate: r.token_estimate,
-						snippet: r.snippet,
-						vector_blob: blob,
-						projectSlug: pm.slug,
-						projectRoot: pm.wsPath || pm.slug,
-					});
-				}
 				}
 
 				const uniquePaths = Array.from(new Set(rows.map((r) => r.path))).slice(0, 120);
@@ -1826,8 +1828,10 @@ export async function getHermesVectorGraph(
 			const getSemanticArmBaseAngle = (name: string): number => {
 				const low = name.toLowerCase();
 				if (low.includes("contract") || low.includes("interface")) return 0.0; // Braço Perseus (0 rad)
-				if (low.includes("server") || low.includes("backend") || low.includes("engine")) return (Math.PI * 2) / 3; // Braço Sagittarius (120°)
-				if (low.includes("web") || low.includes("ui") || low.includes("component")) return (Math.PI * 4) / 3; // Braço Scutum-Centaurus (240°)
+				if (low.includes("server") || low.includes("backend") || low.includes("engine"))
+					return (Math.PI * 2) / 3; // Braço Sagittarius (120°)
+				if (low.includes("web") || low.includes("ui") || low.includes("component"))
+					return (Math.PI * 4) / 3; // Braço Scutum-Centaurus (240°)
 				return Math.PI; // Braço Norma (180°)
 			};
 
@@ -1851,7 +1855,8 @@ export async function getHermesVectorGraph(
 					const rLog = coreExclusionRadius + radialStep;
 
 					// Curvatura do braço espiral da Via Láctea (espiral logarítmica)
-					const armTheta = armBaseAngle + 0.45 * Math.log(1 + radialStep * 1.5) + (itemIdx % 4) * 0.16;
+					const armTheta =
+						armBaseAngle + 0.45 * Math.log(1 + radialStep * 1.5) + (itemIdx % 4) * 0.16;
 
 					// Perturbação tangencial estocástica determinística (dispersão de disco galáctico)
 					const [rx, ry, rz] = rawCoords[it.index]!;
@@ -2125,7 +2130,7 @@ export async function searchHermesGraphNodes(
 	const targetSlugs = params.projectSlug
 		? [params.projectSlug]
 		: getActiveHermesProjects().activeSlugs;
-	const limit = Math.min(60, Math.max(5, params.limit || 20));
+	const limit = Math.min(100, Math.max(10, params.limit || 40));
 
 	const foundNodes: HermesVectorNode[] = [];
 	const foundChunks: import("@thinkrail/contracts").HermesChunkItem[] = [];
@@ -2154,8 +2159,7 @@ export async function searchHermesGraphNodes(
 			try {
 				const db = new Database(dbPath, { readonly: true });
 
-				// Busca inteligente por caminho, nome qualificado, tipo de chunk ou conteúdo
-				const lowerQuery = query.toLowerCase();
+				// Busca inteligente por caminho, nome qualificado, assinatura, tipo de chunk ou conteúdo
 				const rows = db
 					.query(`
 					SELECT rowid, id, path, qualified_name, chunk_kind, token_estimate,
@@ -2163,23 +2167,27 @@ export async function searchHermesGraphNodes(
 					FROM l2j_chunks
 					WHERE path LIKE ?
 					   OR qualified_name LIKE ?
-					   OR chunk_kind = ?
+					   OR signature LIKE ?
+					   OR chunk_kind LIKE ?
 					   OR content LIKE ?
 					ORDER BY 
 						CASE 
-							WHEN chunk_kind = ? THEN 1
-							WHEN qualified_name LIKE ? THEN 2
-							WHEN path LIKE ? THEN 3
-							ELSE 4
+							WHEN qualified_name LIKE ? THEN 1
+							WHEN signature LIKE ? THEN 2
+							WHEN chunk_kind LIKE ? THEN 3
+							WHEN path LIKE ? THEN 4
+							ELSE 5
 						END
 					LIMIT ?;
 				`)
 					.all(
 						searchPattern,
 						searchPattern,
-						lowerQuery,
 						searchPattern,
-						lowerQuery,
+						searchPattern,
+						searchPattern,
+						searchPattern,
+						searchPattern,
 						searchPattern,
 						searchPattern,
 						limit,
@@ -2220,11 +2228,24 @@ export async function searchHermesGraphNodes(
 						.query(`
 						SELECT id, path, chunk_kind, qualified_name, signature, substr(content, 1, 400) as content, start_line, end_line, token_estimate
 						FROM l2j_chunks
-						WHERE content LIKE ? OR qualified_name LIKE ?
-						ORDER BY token_estimate DESC
-						LIMIT 12;
+						WHERE content LIKE ? OR qualified_name LIKE ? OR signature LIKE ? OR path LIKE ?
+						ORDER BY 
+							CASE 
+								WHEN qualified_name LIKE ? THEN 1
+								WHEN signature LIKE ? THEN 2
+								ELSE 3
+							END,
+							token_estimate DESC
+						LIMIT 40;
 					`)
-						.all(searchPattern, searchPattern) as any[];
+						.all(
+							searchPattern,
+							searchPattern,
+							searchPattern,
+							searchPattern,
+							searchPattern,
+							searchPattern,
+						) as any[];
 
 					for (const cr of chunkRows) {
 						const normP = cr.path.replace(/\\/g, "/");
@@ -2328,7 +2349,7 @@ export async function getHermesNodeChunks(
 ): Promise<import("@thinkrail/contracts").HermesGetNodeChunksResult> {
 	const targetPath = (params.path || "").trim();
 	const targetNodeId = (params.nodeId || "").trim();
-	const limit = Math.min(100, Math.max(5, params.limit || 50));
+	const limit = Math.min(200, Math.max(5, params.limit || 50));
 
 	const hermesHome = resolveHermesHome();
 	const targetSlugs = params.projectSlug
@@ -2598,37 +2619,54 @@ export async function findHermesSkills(
 	input: HermesFindSkillsInput,
 ): Promise<HermesFindSkillsResult> {
 	const query = input.query.trim();
-	const limit = input.limit ?? 10;
-	const minStars = input.minStars ?? 50;
+	const limit = Math.min(50, Math.max(1, input.limit ?? 10));
+	const minStars = Math.max(0, input.minStars ?? 50);
+
+	// Sanitiza termos de busca para prevenir quebra de sintaxe no GitHub Search e caracteres de controle
+	const sanitizedQuery = query
+		.replace(/[\x00-\x1f\x7f]/g, "")
+		.replace(/[:"'\\]/g, " ")
+		.trim();
+
+	if (!sanitizedQuery) {
+		return {
+			query,
+			results: [],
+		};
+	}
 
 	const results: HermesSkillRepoResult[] = [];
 
 	// 1. skills.sh API
 	try {
-		const encQuery = encodeURIComponent(query);
+		const encQuery = encodeURIComponent(sanitizedQuery);
 		const res = await fetch(`https://skills.sh/api/v1/skills/search?q=${encQuery}&limit=${limit}`, {
 			headers: { Accept: "application/json", "User-Agent": "thinkrail-hermes/3.0" },
 			signal: AbortSignal.timeout(10000),
 		});
 		if (res.ok) {
-			const data: any = await res.json();
-			const items = Array.isArray(data) ? data : data?.skills || data?.results || [];
-			for (const item of items) {
-				if (item.isDuplicate === true || item.isDuplicate === "true") continue;
-				const name = item.name || item.slug;
-				if (!name) continue;
-				const installs = Number(item.installs) || 0;
-				results.push({
-					fullName: item.source || name,
-					description: item.description || name,
-					stars: Math.floor(installs / 10),
-					url: `https://skills.sh/${item.id || item.slug || ""}`,
-					topics: [],
-					source: "skills.sh",
-					installCmd: item.installUrl ? `npx skills add ${item.installUrl}` : "",
-					installs,
-				});
+			const data: any = await res.json().catch(() => null);
+			if (data) {
+				const items = Array.isArray(data) ? data : data?.skills || data?.results || [];
+				for (const item of items) {
+					if (item.isDuplicate === true || item.isDuplicate === "true") continue;
+					const name = item.name || item.slug;
+					if (!name) continue;
+					const installs = Number(item.installs) || 0;
+					results.push({
+						fullName: item.source || name,
+						description: item.description || name,
+						stars: Math.floor(installs / 10),
+						url: `https://skills.sh/${item.id || item.slug || ""}`,
+						topics: [],
+						source: "skills.sh",
+						installCmd: item.installUrl ? `npx skills add ${item.installUrl}` : "",
+						installs,
+					});
+				}
 			}
+		} else {
+			log.warn(`skills.sh API retornou HTTP ${res.status}: ${res.statusText}`);
 		}
 	} catch (err) {
 		log.warn(`Erro na busca do skills.sh: ${err}`);
@@ -2636,7 +2674,7 @@ export async function findHermesSkills(
 
 	// 2. GitHub Search API
 	try {
-		const encQuery = encodeURIComponent(`${query} stars:>${minStars}`);
+		const encQuery = encodeURIComponent(`${sanitizedQuery} stars:>=${minStars}`);
 		const headers: Record<string, string> = {
 			Accept: "application/vnd.github.v3+json",
 			"User-Agent": "thinkrail-hermes/3.0",
@@ -2652,20 +2690,23 @@ export async function findHermesSkills(
 			},
 		);
 		if (res.ok) {
-			const data: any = await res.json();
-			const items = data.items || [];
-			for (const item of items) {
-				results.push({
-					fullName: item.full_name,
-					description: item.description || "",
-					stars: item.stargazers_count || 0,
-					url: item.html_url,
-					topics: Array.isArray(item.topics) ? item.topics.slice(0, 8) : [],
-					source: "github",
-					installCmd: `git clone ${item.html_url}`,
-					installs: 0,
-				});
+			const data: any = await res.json().catch(() => null);
+			if (data && Array.isArray(data.items)) {
+				for (const item of data.items) {
+					results.push({
+						fullName: item.full_name,
+						description: item.description || "",
+						stars: item.stargazers_count || 0,
+						url: item.html_url,
+						topics: Array.isArray(item.topics) ? item.topics.slice(0, 8) : [],
+						source: "github",
+						installCmd: `git clone ${item.html_url}`,
+						installs: 0,
+					});
+				}
 			}
+		} else {
+			log.warn(`GitHub Search API retornou HTTP ${res.status}: ${res.statusText}`);
 		}
 	} catch (err) {
 		log.warn(`Erro na busca do GitHub: ${err}`);
@@ -2791,6 +2832,26 @@ export async function installHermesSkill(
 		return { success: false, message: "URL do repositório inválida." };
 	}
 
+	if (cleanUrl.startsWith("-")) {
+		return {
+			success: false,
+			message: "URL do repositório inválida: opções ou argumentos com traço não são permitidos.",
+		};
+	}
+
+	let parsedUrl: URL;
+	try {
+		parsedUrl = new URL(cleanUrl);
+		if (parsedUrl.protocol !== "http:" && parsedUrl.protocol !== "https:") {
+			return {
+				success: false,
+				message: "Apenas repositórios com protocolo HTTP ou HTTPS são permitidos para clonagem.",
+			};
+		}
+	} catch {
+		return { success: false, message: "URL do repositório inválida: formato de URL inválido." };
+	}
+
 	const rawName =
 		cleanUrl
 			.split("/")
@@ -2800,7 +2861,7 @@ export async function installHermesSkill(
 	const tmpCloneDir = join(homedir(), `.thinkrail_skill_tmp_${safeRepoName}_${Date.now()}`);
 
 	try {
-		const cloneProc = Bun.spawnSync(["git", "clone", "--depth", "1", cleanUrl, tmpCloneDir], {
+		const cloneProc = Bun.spawnSync(["git", "clone", "--depth", "1", "--", cleanUrl, tmpCloneDir], {
 			timeout: 60000,
 		});
 		if (!cloneProc.success) {
@@ -2851,7 +2912,6 @@ export async function installHermesSkill(
 			};
 		}
 
-		const { cpSync } = await import("node:fs");
 		cpSync(targetDir, destPath, { recursive: true });
 		rmSync(tmpCloneDir, { recursive: true, force: true });
 
@@ -2978,7 +3038,6 @@ export function manageHermesSkills(input: HermesManageSkillsInput): HermesManage
 			}
 			const dest = join(disabledSkillsDir, targetFolder);
 			if (existsSync(dest)) rmSync(dest, { recursive: true, force: true });
-			const { renameSync } = require("node:fs");
 			renameSync(curPath, dest);
 			return {
 				success: true,
@@ -3016,7 +3075,6 @@ export function manageHermesSkills(input: HermesManageSkillsInput): HermesManage
 			}
 			const dest = join(agentSkillsDir, targetFolder);
 			if (existsSync(dest)) rmSync(dest, { recursive: true, force: true });
-			const { renameSync } = require("node:fs");
 			renameSync(curPath, dest);
 			return {
 				success: true,

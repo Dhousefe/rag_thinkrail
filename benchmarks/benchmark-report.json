@@ -1,41 +1,41 @@
 {
   "summary": {
-    "totalTestCases": 10,
+    "totalTestCases": 14,
     "baseline": {
-      "avgTokensIngested": 1111,
-      "avgPrecision": 0.55,
-      "avgRecall": 0.8,
-      "avgMrr": 0.9,
-      "avgHitRate": 0.9,
-      "avgLatencyMs": 17
+      "avgTokensIngested": 1115,
+      "avgPrecision": 0.52,
+      "avgRecall": 0.76,
+      "avgMrr": 0.93,
+      "avgHitRate": 0.93,
+      "avgLatencyMs": 36
     },
     "optimized": {
-      "avgTokensIngested": 341,
-      "avgTotalCycleTokens": 613,
-      "avgPrecision": 0.8,
-      "avgRecall": 0.9,
-      "avgMrr": 0.93,
+      "avgTokensIngested": 363,
+      "avgTotalCycleTokens": 636,
+      "avgPrecision": 0.74,
+      "avgRecall": 0.81,
+      "avgMrr": 0.95,
       "avgHitRate": 1,
-      "avgLatencyMs": 85
+      "avgLatencyMs": 855
     },
-    "tokenSavingsPct": 69,
-    "totalCycleSavingsPct": 45
+    "tokenSavingsPct": 67,
+    "totalCycleSavingsPct": 43
   },
   "baselineResults": [
     {
-      "retrievalTimeMs": 6,
-      "tokensIngested": 1143,
-      "totalCycleTokens": 1143,
+      "retrievalTimeMs": 41,
+      "tokensIngested": 1131,
+      "totalCycleTokens": 1131,
       "hitRate": 1,
       "mrr": 1,
-      "contextPrecision": 0.8,
+      "contextPrecision": 0.9,
       "contextRecall": 1,
       "crossProjectNoiseRatio": 0,
-      "relevantChunksFound": 8,
+      "relevantChunksFound": 9,
       "totalChunksReturned": 10
     },
     {
-      "retrievalTimeMs": 8,
+      "retrievalTimeMs": 51,
       "tokensIngested": 1264,
       "totalCycleTokens": 1264,
       "hitRate": 1,
@@ -47,19 +47,19 @@
       "totalChunksReturned": 10
     },
     {
-      "retrievalTimeMs": 6,
-      "tokensIngested": 506,
-      "totalCycleTokens": 506,
+      "retrievalTimeMs": 30,
+      "tokensIngested": 498,
+      "totalCycleTokens": 498,
       "hitRate": 1,
       "mrr": 1,
-      "contextPrecision": 0.5,
+      "contextPrecision": 0.75,
       "contextRecall": 1,
       "crossProjectNoiseRatio": 0,
-      "relevantChunksFound": 2,
+      "relevantChunksFound": 3,
       "totalChunksReturned": 4
     },
     {
-      "retrievalTimeMs": 11,
+      "retrievalTimeMs": 46,
       "tokensIngested": 1212,
       "totalCycleTokens": 1212,
       "hitRate": 0,
@@ -71,7 +71,7 @@
       "totalChunksReturned": 10
     },
     {
-      "retrievalTimeMs": 7,
+      "retrievalTimeMs": 25,
       "tokensIngested": 1234,
       "totalCycleTokens": 1234,
       "hitRate": 1,
@@ -83,19 +83,19 @@
       "totalChunksReturned": 10
     },
     {
-      "retrievalTimeMs": 7,
-      "tokensIngested": 1146,
-      "totalCycleTokens": 1146,
+      "retrievalTimeMs": 25,
+      "tokensIngested": 1150,
+      "totalCycleTokens": 1150,
       "hitRate": 1,
       "mrr": 1,
-      "contextPrecision": 0.3,
+      "contextPrecision": 0.5,
       "contextRecall": 1,
       "crossProjectNoiseRatio": 0.5,
-      "relevantChunksFound": 3,
+      "relevantChunksFound": 5,
       "totalChunksReturned": 10
     },
     {
-      "retrievalTimeMs": 5,
+      "retrievalTimeMs": 15,
       "tokensIngested": 1166,
       "totalCycleTokens": 1166,
       "hitRate": 1,
@@ -107,7 +107,7 @@
       "totalChunksReturned": 10
     },
     {
-      "retrievalTimeMs": 5,
+      "retrievalTimeMs": 13,
       "tokensIngested": 1167,
       "totalCycleTokens": 1167,
       "hitRate": 1,
@@ -119,9 +119,9 @@
       "totalChunksReturned": 10
     },
     {
-      "retrievalTimeMs": 109,
-      "tokensIngested": 1251,
-      "totalCycleTokens": 1251,
+      "retrievalTimeMs": 174,
+      "tokensIngested": 1276,
+      "totalCycleTokens": 1276,
       "hitRate": 1,
       "mrr": 1,
       "contextPrecision": 0.1,
@@ -131,9 +131,57 @@
       "totalChunksReturned": 10
     },
     {
-      "retrievalTimeMs": 5,
-      "tokensIngested": 1016,
-      "totalCycleTokens": 1016,
+      "retrievalTimeMs": 10,
+      "tokensIngested": 1006,
+      "totalCycleTokens": 1006,
+      "hitRate": 1,
+      "mrr": 1,
+      "contextPrecision": 0.1,
+      "contextRecall": 1,
+      "crossProjectNoiseRatio": 0.5,
+      "relevantChunksFound": 1,
+      "totalChunksReturned": 10
+    },
+    {
+      "retrievalTimeMs": 20,
+      "tokensIngested": 1214,
+      "totalCycleTokens": 1214,
+      "hitRate": 1,
+      "mrr": 1,
+      "contextPrecision": 0.9,
+      "contextRecall": 0.75,
+      "crossProjectNoiseRatio": 0,
+      "relevantChunksFound": 9,
+      "totalChunksReturned": 10
+    },
+    {
+      "retrievalTimeMs": 21,
+      "tokensIngested": 1097,
+      "totalCycleTokens": 1097,
+      "hitRate": 1,
+      "mrr": 1,
+      "contextPrecision": 0.1,
+      "contextRecall": 0.3333333333333333,
+      "crossProjectNoiseRatio": 0.5,
+      "relevantChunksFound": 1,
+      "totalChunksReturned": 10
+    },
+    {
+      "retrievalTimeMs": 18,
+      "tokensIngested": 1097,
+      "totalCycleTokens": 1097,
+      "hitRate": 1,
+      "mrr": 1,
+      "contextPrecision": 0.1,
+      "contextRecall": 0.5,
+      "crossProjectNoiseRatio": 0.5,
+      "relevantChunksFound": 1,
+      "totalChunksReturned": 10
+    },
+    {
+      "retrievalTimeMs": 19,
+      "tokensIngested": 1097,
+      "totalCycleTokens": 1097,
       "hitRate": 1,
       "mrr": 1,
       "contextPrecision": 0.1,
@@ -157,9 +205,9 @@
       "totalChunksReturned": 3
     },
     {
-      "retrievalTimeMs": 10,
-      "tokensIngested": 378,
-      "totalCycleTokens": 657,
+      "retrievalTimeMs": 69,
+      "tokensIngested": 379,
+      "totalCycleTokens": 655,
       "hitRate": 1,
       "mrr": 1,
       "contextPrecision": 1,
@@ -169,19 +217,19 @@
       "totalChunksReturned": 3
     },
     {
-      "retrievalTimeMs": 5,
-      "tokensIngested": 254,
-      "totalCycleTokens": 533,
+      "retrievalTimeMs": 6,
+      "tokensIngested": 379,
+      "totalCycleTokens": 655,
       "hitRate": 1,
       "mrr": 1,
       "contextPrecision": 1,
       "contextRecall": 1,
       "crossProjectNoiseRatio": 0,
-      "relevantChunksFound": 2,
-      "totalChunksReturned": 2
+      "relevantChunksFound": 3,
+      "totalChunksReturned": 3
     },
     {
-      "retrievalTimeMs": 25,
+      "retrievalTimeMs": 316,
       "tokensIngested": 367,
       "totalCycleTokens": 590,
       "hitRate": 1,
@@ -193,7 +241,7 @@
       "totalChunksReturned": 3
     },
     {
-      "retrievalTimeMs": 14,
+      "retrievalTimeMs": 153,
       "tokensIngested": 344,
       "totalCycleTokens": 641,
       "hitRate": 1,
@@ -205,9 +253,9 @@
       "totalChunksReturned": 3
     },
     {
-      "retrievalTimeMs": 6,
+      "retrievalTimeMs": 7,
       "tokensIngested": 379,
-      "totalCycleTokens": 658,
+      "totalCycleTokens": 655,
       "hitRate": 1,
       "mrr": 1,
       "contextPrecision": 1,
@@ -217,7 +265,7 @@
       "totalChunksReturned": 3
     },
     {
-      "retrievalTimeMs": 5,
+      "retrievalTimeMs": 4,
       "tokensIngested": 348,
       "totalCycleTokens": 644,
       "hitRate": 1,
@@ -241,9 +289,9 @@
       "totalChunksReturned": 3
     },
     {
-      "retrievalTimeMs": 772,
-      "tokensIngested": 376,
-      "totalCycleTokens": 672,
+      "retrievalTimeMs": 11158,
+      "tokensIngested": 393,
+      "totalCycleTokens": 689,
       "hitRate": 1,
       "mrr": 1,
       "contextPrecision": 0.3333333333333333,
@@ -253,9 +301,57 @@
       "totalChunksReturned": 3
     },
     {
-      "retrievalTimeMs": 4,
-      "tokensIngested": 256,
-      "totalCycleTokens": 552,
+      "retrievalTimeMs": 5,
+      "tokensIngested": 316,
+      "totalCycleTokens": 612,
+      "hitRate": 1,
+      "mrr": 1,
+      "contextPrecision": 0.3333333333333333,
+      "contextRecall": 1,
+      "crossProjectNoiseRatio": 0,
+      "relevantChunksFound": 1,
+      "totalChunksReturned": 3
+    },
+    {
+      "retrievalTimeMs": 5,
+      "tokensIngested": 390,
+      "totalCycleTokens": 648,
+      "hitRate": 1,
+      "mrr": 1,
+      "contextPrecision": 0.6666666666666666,
+      "contextRecall": 0.5,
+      "crossProjectNoiseRatio": 0,
+      "relevantChunksFound": 2,
+      "totalChunksReturned": 3
+    },
+    {
+      "retrievalTimeMs": 101,
+      "tokensIngested": 380,
+      "totalCycleTokens": 676,
+      "hitRate": 1,
+      "mrr": 1,
+      "contextPrecision": 0.6666666666666666,
+      "contextRecall": 0.3333333333333333,
+      "crossProjectNoiseRatio": 0,
+      "relevantChunksFound": 2,
+      "totalChunksReturned": 3
+    },
+    {
+      "retrievalTimeMs": 68,
+      "tokensIngested": 380,
+      "totalCycleTokens": 676,
+      "hitRate": 1,
+      "mrr": 1,
+      "contextPrecision": 0.6666666666666666,
+      "contextRecall": 0.5,
+      "crossProjectNoiseRatio": 0,
+      "relevantChunksFound": 2,
+      "totalChunksReturned": 3
+    },
+    {
+      "retrievalTimeMs": 66,
+      "tokensIngested": 325,
+      "totalCycleTokens": 583,
       "hitRate": 1,
       "mrr": 1,
       "contextPrecision": 0.3333333333333333,

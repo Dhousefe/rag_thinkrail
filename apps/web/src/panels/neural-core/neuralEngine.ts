@@ -98,6 +98,7 @@ export class NeuralCoreEngine {
 	public searchingNodeId: string | null = null;
 	public searchAnimStartTime = 0;
 	public readonly searchAnimDurationMs = 2000;
+	private lastPulseMeshUpdate = 0;
 	public onPauseChange?: ((isPaused: boolean) => void) | undefined;
 	public visibleModules: Set<string> = new Set();
 	public onFrameMetrics?: ((fps: number, elementsCount: number) => void) | undefined;
@@ -171,13 +172,13 @@ export class NeuralCoreEngine {
 	}
 
 	/**
-	 * Aciona o alvo procurado pelo MCP/ThinkRail, pausando a órbita
-	 * e disparando animação de vida gradativa de 2 segundos no polígono.
+	 * Aciona o alvo procurado pelo MCP/Chat, disparando animação de vida gradativa
+	 * no polígono (respeitando a rotação dinâmica a menos que autoPause seja solicitado).
 	 */
-	public triggerMcpSearchTarget(nodeId: string | null) {
+	public triggerMcpSearchTarget(nodeId: string | null, autoPause = false) {
 		this.searchingNodeId = nodeId;
 		this.searchAnimStartTime = performance.now();
-		if (nodeId) {
+		if (nodeId && autoPause) {
 			this.isPaused = true;
 			this.onPauseChange?.(true);
 		}
@@ -258,7 +259,7 @@ export class NeuralCoreEngine {
 		}
 	}
 
-	private rebuildVectorMesh() {
+	private rebuildVectorMesh(timeNow?: number) {
 		if (this.vectorNodes.length === 0) {
 			this.vectorMesh = null;
 			return;
@@ -268,7 +269,7 @@ export class NeuralCoreEngine {
 				? this.vectorNodes.filter((n) => this.visibleModules.has(n.module))
 				: this.vectorNodes;
 
-		const now = performance.now();
+		const now = timeNow ?? performance.now();
 		const elapsed = now - this.searchAnimStartTime;
 		const searchingAnim = this.searchingNodeId
 			? {
@@ -285,6 +286,7 @@ export class NeuralCoreEngine {
 			searchingAnim,
 			this.selectedNodeIndex,
 			this.showPcbLines,
+			now,
 		);
 		if (this.device) {
 			this.uploadVectorMesh();
@@ -485,9 +487,15 @@ export class NeuralCoreEngine {
 			const targetSpeed = isMotionActive ? 1.0 + this.telemetry.intensity * 2.5 : 0.0;
 			this.currentMotionSpeed += (targetSpeed - this.currentMotionSpeed) * Math.min(1.0, dt * 5.0);
 
-			// Se houver polígono sendo buscado no MCP, anima gradativamente frame a frame por 2 segundos
-			if (this.searchingNodeId && now - this.searchAnimStartTime <= this.searchAnimDurationMs) {
-				this.rebuildVectorMesh();
+			// Se houver polígono sendo buscado no MCP ou seleção ativa de classe, anima os pulsos intermitentes
+			const isSearchingActive =
+				Boolean(this.searchingNodeId) &&
+				now - this.searchAnimStartTime <= this.searchAnimDurationMs;
+			const hasActiveSelection = this.selectedNodeIndex !== null && this.selectedNodeIndex >= 0;
+
+			if (isSearchingActive || (hasActiveSelection && now - this.lastPulseMeshUpdate >= 32)) {
+				this.lastPulseMeshUpdate = now;
+				this.rebuildVectorMesh(now);
 			}
 
 			if (!this.isPaused && this.currentMotionSpeed > 0.001) {
@@ -730,10 +738,11 @@ export class NeuralCoreEngine {
 	public findNodeUnderScreenCoord(
 		screenX: number,
 		screenY: number,
-		tolerancePx = 11,
+		tolerancePx = 18,
 	): number | null {
 		if (!this.showVectorConstellation || this.vectorNodes.length === 0) return null;
 
+		// Usa as dimensões CSS reais do canvas para coincidir exatamente com os ponteiros do mouse
 		const w = this.canvas.clientWidth || this.canvas.width;
 		const h = this.canvas.clientHeight || this.canvas.height;
 		const cx = w / 2;
@@ -774,9 +783,10 @@ export class NeuralCoreEngine {
 			const dy = screenY - py;
 			const d = Math.sqrt(dx * dx + dy * dy);
 
-			// Tolerância adaptativa baseada no zoom/profundidade (polígonos mais próximos parecem maiores)
-			const approxNodeRadiusPx = Math.max(5, Math.min(15, (0.026 / depth) * scale * 5.6));
-			const dynamicTolerance = Math.min(tolerancePx, approxNodeRadiusPx + 2.5);
+			// Raio aparente do polígono 3D projetado na tela:
+			// Um nó comum tem tamanho s=0.024 a 0.057. Em tela isso corresponde a ~14-30px.
+			const approxNodeRadiusPx = Math.max(12, Math.min(32, (0.055 / depth) * scale * 5.6));
+			const dynamicTolerance = Math.max(tolerancePx, approxNodeRadiusPx + 4.0);
 
 			if (d <= dynamicTolerance) {
 				candidates.push({
@@ -807,7 +817,7 @@ export class NeuralCoreEngine {
 	/**
 	 * Calcula coordenadas 2D na tela para nós estratégicos exibirem labels inteligentes (Graphify style).
 	 */
-	public getProjectedNodeLabels(maxLabels = 8): Array<{ 
+	public getProjectedNodeLabels(maxLabels = 8): Array<{
 		index: number;
 		id: string;
 		label: string;
@@ -888,6 +898,7 @@ export class NeuralCoreEngine {
 			isSearchingTarget: boolean;
 			methodsCount: number;
 			importanceScore: number;
+			isSelected: boolean;
 		}> = [];
 
 		for (const proj of allProjectedNodes) {
@@ -933,7 +944,7 @@ export class NeuralCoreEngine {
 			if (isMatched) score += 800;
 			if (isWithinCursorRadius) score += 500;
 
-			const nameParts = (node.relPath || node.id).split(/[\/\\]/);
+			const nameParts = (node.relPath || node.id).split(/[/\\]/);
 			const cleanLabel = nameParts[nameParts.length - 1] || node.id;
 
 			// Posição base do rótulo: SEMPRE ACIMA do polígono em questão (offset inicial -22px em Y)
@@ -955,6 +966,7 @@ export class NeuralCoreEngine {
 				isSearchingTarget,
 				methodsCount,
 				importanceScore: score,
+				isSelected,
 			});
 		}
 
@@ -1001,6 +1013,7 @@ export class NeuralCoreEngine {
 			isMatched: c.isMatched,
 			isSearchingTarget: c.isSearchingTarget,
 			methodsCount: c.methodsCount,
+			isSelected: c.isSelected,
 		}));
 	}
 

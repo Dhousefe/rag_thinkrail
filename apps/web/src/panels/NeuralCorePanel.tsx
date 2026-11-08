@@ -37,6 +37,7 @@ import { Button } from "@thinkrail/ui/button";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { selectWorkspaceById, selectWorkspaceChatTab, toast, useAppStore } from "@/store";
 import { getTransport } from "@/transport";
+import { projectRelativePath } from "../lib";
 import { OrbitCameraController } from "./neural-core/cameraController";
 import {
 	NeuralCoreChunksView,
@@ -86,6 +87,8 @@ export function NeuralCorePanel() {
 	const canvasRef = useRef<HTMLCanvasElement | null>(null);
 	const engineRef = useRef<NeuralCoreEngine | null>(null);
 	const cameraRef = useRef<OrbitCameraController | null>(null);
+	const pointerDownPosRef = useRef<{ x: number; y: number } | null>(null);
+	const hasDraggedRef = useRef<boolean>(false);
 
 	const { state, pulseKey } = useNeuralCoreState();
 	const [manualQuery, setManualQuery] = useState("");
@@ -96,6 +99,7 @@ export function NeuralCorePanel() {
 	const [remoteSearchMatches, setRemoteSearchMatches] = useState<HermesVectorNode[]>([]);
 	const [isSearchingRemote, setIsSearchingRemote] = useState(false);
 	const [activeChatPivotNode, setActiveChatPivotNode] = useState<HermesVectorNode | null>(null);
+	const lastChatPivotNodeIdRef = useRef<string | null>(null);
 
 	// Chunks Registrados para a Classe e Busca
 	const [nodeChunks, setNodeChunks] = useState<HermesChunkItem[]>([]);
@@ -404,13 +408,12 @@ export function NeuralCorePanel() {
 		}
 	}, [effectiveQuery, vectorNodes, isPaused]);
 
-	// Foco e Seleção em Tempo Real nas ferramentas do Chat (Read, Edit, Write):
-	// Interação ativada EXCLUSIVAMENTE quando a rotação estiver pausada (isPaused === true),
-	// garantindo que a rotação contínua não seja interrompida sem a vontade expressa do usuário.
-	// Se o arquivo manipulado pelo chat não estiver no lote atual da cena, busca dinamicamente
-	// no SQLite do Hermes RAG e o injeta na cena 3D com destaque imediato.
+	// Foco e Seleção Dinâmica em Tempo Real nas ferramentas do Chat (Read, Edit, Write, AST, RAG):
+	// Interage ativamente mesmo com a Rotação Dinâmica ativada (!isPaused) ou pausada,
+	// voando a câmera suavemente para a classe manipulada e destacando seus métodos e conexões.
+	// Ao mudar de classe, desfaz o foco anterior e foca a nova classe alvo com transição animada.
 	useEffect(() => {
-		if (!isPaused || !state.activeChatTool || !state.activeChatFilePath) return;
+		if (!state.activeChatTool || !state.activeChatFilePath) return;
 
 		let isCancelled = false;
 		const filePath = state.activeChatFilePath;
@@ -421,12 +424,14 @@ export function NeuralCorePanel() {
 
 		const applySelection = (targetNode: HermesVectorNode) => {
 			if (isCancelled) return;
+			lastChatPivotNodeIdRef.current = targetNode.id;
 			setActiveChatPivotNode(targetNode);
 			setSelectedNode(targetNode);
 			setInspectedNode(targetNode);
 
 			if (engineRef.current) {
-				engineRef.current.triggerMcpSearchTarget(targetNode.id);
+				// Dispara pulso de vida no polígono sem forçar a pausa da rotação dinâmica
+				engineRef.current.triggerMcpSearchTarget(targetNode.id, false);
 				const idx = vectorNodes.findIndex((n) => n.id === targetNode.id);
 				if (idx !== -1) {
 					engineRef.current.setSelectedNode(idx);
@@ -434,7 +439,8 @@ export function NeuralCorePanel() {
 			}
 
 			if (cameraRef.current) {
-				cameraRef.current.focusPosition(targetNode.position, 2.3);
+				// Transição suave e orgânica da câmera via interpolação lerp
+				cameraRef.current.focusPosition(targetNode.position, 2.2);
 			}
 		};
 
@@ -442,8 +448,7 @@ export function NeuralCorePanel() {
 			applySelection(pivot);
 		} else {
 			// 2. Se o nó ainda não estiver no lote local da cena, busca no SQLite do Hermes RAG
-			const targetSlug =
-				selectedProjectFilter === "all" ? undefined : selectedProjectFilter;
+			const targetSlug = selectedProjectFilter === "all" ? undefined : selectedProjectFilter;
 
 			void getTransport()
 				.request("hermes.searchGraphNodes", {
@@ -479,7 +484,6 @@ export function NeuralCorePanel() {
 		state.activeChatFilePath,
 		state.activeChatPivotClass,
 		vectorNodes,
-		isPaused,
 		selectedProjectFilter,
 	]);
 
@@ -490,38 +494,38 @@ export function NeuralCorePanel() {
 		const currentWsId = store.activeWorkspaceId;
 		const currentWs = currentWsId ? selectWorkspaceById(store, currentWsId) : null;
 
-		// 1. Normaliza caminhos
-		const normNodePath = node.path.replace(/\\/g, "/");
-		const normCurrentRoot = (currentWs?.worktreePath || "").replace(/\\/g, "/");
+		// 1. Resolução ultrarrápida no workspace atual (0ms)
+		const currentRelPath = projectRelativePath(node.path, currentWs?.worktreePath) || node.relPath;
+		const isInsideCurrentWs =
+			Boolean(currentWs) &&
+			Boolean(currentRelPath) &&
+			!currentRelPath.startsWith("..") &&
+			!currentRelPath.includes(":");
 
-		// Se o arquivo estiver dentro do workspace ativo atualmente
-		if (currentWs && normCurrentRoot && normNodePath.startsWith(normCurrentRoot)) {
-			await openFileInTab(currentWs.id, node.path, "keep");
-			toast.success("Arquivo aberto no editor", node.relPath);
+		if (currentWs && isInsideCurrentWs) {
+			// Revela imediatamente na árvore de arquivos sem esperar RPC
+			store.revealInFiles(currentWs.id, currentRelPath);
+			void openFileInTab(currentWs.id, node.path, "keep");
+			toast.success("Arquivo aberto no editor", node.relPath || currentRelPath);
 			return;
 		}
 
-		// 2. Busca entre todos os workspaces abertos no ThinkRail se algum corresponde à raiz do arquivo
-		let matchedWs: any = null;
+		// 2. Busca rápida entre os outros workspaces já abertos no ThinkRail
 		for (const wsList of Object.values(store.workspaces)) {
 			for (const ws of wsList) {
-				const wsRoot = (ws.worktreePath || "").replace(/\\/g, "/");
-				if (wsRoot && normNodePath.startsWith(wsRoot)) {
-					matchedWs = ws;
-					break;
+				if (ws.id === currentWsId) continue;
+				const rel = projectRelativePath(node.path, ws.worktreePath);
+				if (rel && !rel.startsWith("..") && !rel.includes(":")) {
+					store.activateWorkspaceFromRoute({ id: ws.id, projectId: ws.projectId });
+					store.revealInFiles(ws.id, rel);
+					void openFileInTab(ws.id, node.path, "keep");
+					toast.success(
+						`Chaveado para projeto [${node.projectSlug || ws.projectId}]`,
+						node.relPath || rel,
+					);
+					return;
 				}
 			}
-			if (matchedWs) break;
-		}
-
-		if (matchedWs) {
-			store.activateWorkspaceFromRoute({ id: matchedWs.id, projectId: matchedWs.projectId });
-			await openFileInTab(matchedWs.id, node.path, "keep");
-			toast.success(
-				`Chaveado para projeto [${node.projectSlug || matchedWs.projectId}]`,
-				node.relPath,
-			);
-			return;
 		}
 
 		// 3. Se o projeto RAG não estiver aberto em nenhum workspace atual, abre o projeto via project.open
@@ -538,7 +542,9 @@ export function NeuralCorePanel() {
 							id: targetWs.id,
 							projectId: targetWs.projectId,
 						});
-						await openFileInTab(targetWs.id, node.path, "keep");
+						const targetRel = projectRelativePath(node.path, targetWs.worktreePath) || node.relPath;
+						updatedStore.revealInFiles(targetWs.id, targetRel);
+						void openFileInTab(targetWs.id, node.path, "keep");
 						toast.success(`Projeto [${node.projectSlug}] aberto no ThinkRail`, node.relPath);
 						return;
 					}
@@ -551,7 +557,10 @@ export function NeuralCorePanel() {
 		// 4. Fallback seguro
 		if (currentWsId) {
 			try {
-				await openFileInTab(currentWsId, node.path, "keep");
+				if (currentRelPath) {
+					store.revealInFiles(currentWsId, currentRelPath);
+				}
+				void openFileInTab(currentWsId, node.path, "keep");
 				toast.success("Arquivo aberto no editor", node.relPath);
 			} catch {
 				void navigator.clipboard.writeText(node.path);
@@ -634,8 +643,24 @@ export function NeuralCorePanel() {
 			const p = (n.path || "").toLowerCase();
 			const qn = (n.qualifiedName || "").toLowerCase();
 			const rel = (n.relPath || "").toLowerCase();
-			const hasMethod = (n.methods || []).some((m) => m.name.toLowerCase().includes(q));
-			return p.includes(q) || qn.includes(q) || rel.includes(q) || hasMethod;
+			const snippet = (n.contentSnippet || "").toLowerCase();
+			const mod = (n.module || "").toLowerCase();
+			const kind = (n.chunkKind || "").toLowerCase();
+			const hasMethod = (n.methods || []).some(
+				(m) =>
+					m.name.toLowerCase().includes(q) ||
+					(m.signature || "").toLowerCase().includes(q) ||
+					(m.contentSnippet || "").toLowerCase().includes(q),
+			);
+			return (
+				p.includes(q) ||
+				qn.includes(q) ||
+				rel.includes(q) ||
+				snippet.includes(q) ||
+				mod.includes(q) ||
+				kind.includes(q) ||
+				hasMethod
+			);
 		});
 
 		// Adiciona nós remotos encontrados sem duplicar id
@@ -647,13 +672,14 @@ export function NeuralCorePanel() {
 				seen.add(rem.id);
 			}
 		}
-		return merged.slice(0, 15);
+		// Retorna até 80 itens correspondentes para garantir visualização completa com scroll fluido
+		return merged.slice(0, 80);
 	}, [manualQuery, vectorNodes, remoteSearchMatches]);
 
 	// Busca dinâmica no SQLite do Hermes RAG quando o usuário digita (nós e chunks)
 	useEffect(() => {
 		const q = manualQuery.trim();
-		if (!q || q.length < 2) {
+		if (!q) {
 			setRemoteSearchMatches([]);
 			setSearchChunks([]);
 			return;
@@ -665,11 +691,11 @@ export function NeuralCorePanel() {
 				const [nodeRes, chunkRes] = await Promise.all([
 					getTransport().request("hermes.searchGraphNodes", {
 						query: q,
-						limit: 24,
+						limit: 60,
 					}),
 					getTransport().request("hermes.getNodeChunks", {
 						path: q,
-						limit: 30,
+						limit: 60,
 					}),
 				]);
 				if (nodeRes && Array.isArray(nodeRes.nodes)) {
@@ -759,13 +785,25 @@ export function NeuralCorePanel() {
 		}
 	}, [vectorNodes]);
 
-	const handleDeselectNode = useCallback(() => {
+	const handleDeselectNode = useCallback((restoreCamera: boolean = true) => {
 		setSelectedNode(null);
 		setInspectedNode(null);
 		if (engineRef.current) {
 			engineRef.current.setHighlightedNode(null);
+			engineRef.current.triggerMcpSearchTarget(null);
+			engineRef.current.setSelectedNode(null);
+		}
+		if (restoreCamera && cameraRef.current) {
+			const restored = cameraRef.current.restoreCameraSnapshot();
+			if (restored) {
+				toast.info("Câmera restaurada", "Retornou à visão anterior à seleção");
+			}
 		}
 	}, []);
+
+	const handleDeselectClick = useCallback(() => {
+		handleDeselectNode(true);
+	}, [handleDeselectNode]);
 
 	const handleResetView = () => {
 		cameraRef.current?.reset();
@@ -792,8 +830,12 @@ export function NeuralCorePanel() {
 			if (e.key === "f" || e.key === "F") {
 				e.preventDefault();
 				handleFitAll();
+			} else if (e.key === "Escape") {
+				e.preventDefault();
+				handleDeselectNode(true);
 			} else if ((e.key === "r" || e.key === "R") && !e.ctrlKey && !e.metaKey) {
 				e.preventDefault();
+				cameraRef.current?.clearCameraSnapshot();
 				handleResetView();
 			} else if (e.key === "+" || e.key === "=") {
 				e.preventDefault();
@@ -822,10 +864,19 @@ export function NeuralCorePanel() {
 			return next;
 		});
 
+		// Salva o snapshot da câmera antes de focar no nó para permitir restauração ao desselecionar
+		if (!selectedNode && cameraRef.current) {
+			cameraRef.current.saveCameraSnapshot();
+		}
+
 		setSelectedNode(node);
 		setInspectedNode(node);
 		if (engineRef.current) {
 			engineRef.current.triggerMcpSearchTarget(node.id);
+			const nodeIdx = engineRef.current.vectorNodes.findIndex((n) => n.id === node.id);
+			if (nodeIdx !== -1) {
+				engineRef.current.setSelectedNode(nodeIdx);
+			}
 		}
 		// Não altera isPaused: o controle de rotação é exclusivo do usuário
 		if (cameraRef.current) {
@@ -842,7 +893,30 @@ export function NeuralCorePanel() {
 	};
 
 	// Detecção de nó sob coordenadas do mouse com tolerância estrita a partir do polígono
+	const handlePointerDown = (e: React.PointerEvent<HTMLCanvasElement>) => {
+		pointerDownPosRef.current = { x: e.clientX, y: e.clientY };
+		hasDraggedRef.current = false;
+	};
+
+	const handlePointerUp = (e: React.PointerEvent<HTMLCanvasElement>) => {
+		if (pointerDownPosRef.current) {
+			const dx = e.clientX - pointerDownPosRef.current.x;
+			const dy = e.clientY - pointerDownPosRef.current.y;
+			if (Math.hypot(dx, dy) > 5) {
+				hasDraggedRef.current = true;
+			}
+		}
+	};
+
 	const handlePointerMove = (e: React.PointerEvent<HTMLCanvasElement>) => {
+		if (pointerDownPosRef.current) {
+			const dx = e.clientX - pointerDownPosRef.current.x;
+			const dy = e.clientY - pointerDownPosRef.current.y;
+			if (Math.hypot(dx, dy) > 5) {
+				hasDraggedRef.current = true;
+			}
+		}
+
 		if (!engineRef.current || !canvasRef.current) return;
 		const rect = canvasRef.current.getBoundingClientRect();
 		const x = e.clientX - rect.left;
@@ -851,9 +925,12 @@ export function NeuralCorePanel() {
 		// Registra posição do cursor para projeção de nomes por raio seguro
 		engineRef.current.setCursorScreenCoord(x, y);
 
-		// Tolerância de 11px ajustada estritamente ao corpo físico do polígono
-		const nodeIdx = engineRef.current.findNodeUnderScreenCoord(x, y, 11);
+		// Tolerância ampla ajustada para capturar o corpo do polígono com extrema precisão
+		const nodeIdx = engineRef.current.findNodeUnderScreenCoord(x, y, 22);
 		engineRef.current.setHighlightedNode(nodeIdx);
+		if (canvasRef.current) {
+			canvasRef.current.style.cursor = nodeIdx !== null ? "pointer" : "default";
+		}
 
 		if (nodeIdx !== null && vectorNodes[nodeIdx]) {
 			setInspectedNode(vectorNodes[nodeIdx]);
@@ -863,6 +940,9 @@ export function NeuralCorePanel() {
 	};
 
 	const handlePointerLeave = () => {
+		if (canvasRef.current) {
+			canvasRef.current.style.cursor = "default";
+		}
 		if (engineRef.current) {
 			engineRef.current.setCursorScreenCoord(null, null);
 			engineRef.current.setHighlightedNode(null);
@@ -873,20 +953,31 @@ export function NeuralCorePanel() {
 	};
 
 	const handleCanvasClick = (e: React.MouseEvent<HTMLCanvasElement>) => {
+		// Se o usuário estava arrastando para virar a câmera ou dar pan, nunca cancela nem altera a seleção!
+		const wasDragging =
+			hasDraggedRef.current || (cameraRef.current ? cameraRef.current.wasJustDragging() : false);
+
+		hasDraggedRef.current = false;
+		pointerDownPosRef.current = null;
+
+		if (wasDragging) {
+			return;
+		}
+
 		if (!engineRef.current || !canvasRef.current) return;
 		const rect = canvasRef.current.getBoundingClientRect();
 		const x = e.clientX - rect.left;
 		const y = e.clientY - rect.top;
 
-		const nodeIdx = engineRef.current.findNodeUnderScreenCoord(x, y, 24);
+		const nodeIdx = engineRef.current.findNodeUnderScreenCoord(x, y, 26);
 		if (nodeIdx !== null && vectorNodes[nodeIdx]) {
 			const n = vectorNodes[nodeIdx]!;
 			setSelectedNode(n);
 			setInspectedNode(n);
 			handleFocusNode(n);
 		} else {
-			// Clicou no espaço vazio da cena 3D -> desmarca seleção e fecha painel
-			handleDeselectNode();
+			// Clicou no espaço vazio da cena 3D -> desmarca seleção e restaura câmera suavemente
+			handleDeselectNode(true);
 		}
 	};
 
@@ -900,7 +991,7 @@ export function NeuralCorePanel() {
 			const res = await getTransport().request("hermes.getNodeChunks", {
 				nodeId: node.id,
 				path: node.path || node.relPath,
-				limit: 60,
+				limit: 150,
 			});
 			if (res && Array.isArray(res.chunks)) {
 				setNodeChunks(res.chunks);
@@ -945,6 +1036,8 @@ export function NeuralCorePanel() {
 			{/* Canvas WebGPU / 3D Scene Desimpedido */}
 			<canvas
 				ref={canvasRef}
+				onPointerDown={handlePointerDown}
+				onPointerUp={handlePointerUp}
 				onPointerMove={handlePointerMove}
 				onPointerLeave={handlePointerLeave}
 				onClick={handleCanvasClick}
@@ -955,6 +1048,7 @@ export function NeuralCorePanel() {
 			<div className="absolute inset-0 pointer-events-none overflow-hidden z-10">
 				{projectedLabels.map((item) => {
 					const modStyle = getModuleClasses(item.module);
+					const isNodeSelected = selectedNode?.id === item.id || item.isSelected;
 					return (
 						<div
 							key={item.id}
@@ -962,27 +1056,68 @@ export function NeuralCorePanel() {
 								left: `${Math.round(item.x)}px`,
 								top: `${Math.round(item.y)}px`,
 							}}
-							className={`absolute -translate-x-1/2 -translate-y-1/2 flex items-center gap-4 rounded border px-6 py-2 backdrop-blur-md transition-all select-none ${
-								item.isSearchingTarget
-									? "bg-container-elevated-bg border-feedback-warning shadow-xl scale-125 z-40 opacity-100 ring-2 ring-feedback-warning animate-pulse text-feedback-warning"
+							className={`absolute -translate-x-1/2 -translate-y-1/2 flex items-center gap-4 rounded border px-6 py-2 backdrop-blur-md transition-all select-none pointer-events-auto ${
+								isNodeSelected
+									? "bg-container-elevated-bg border-primary shadow-xl scale-110 z-40 opacity-100 ring-2 ring-primary text-text-default"
 									: item.isHovered
-										? "bg-container-elevated-bg border-primary shadow-lg scale-110 z-30 opacity-100 ring-1 ring-primary"
+										? "bg-container-elevated-bg border-primary shadow-lg scale-105 z-30 opacity-100 ring-1 ring-primary text-text-default"
 										: item.isMatched
 											? "bg-container-elevated-bg border-feedback-warning shadow-md scale-105 z-20 opacity-95 text-feedback-warning"
-											: `bg-container-elevated-bg ${modStyle.border} shadow-sm opacity-85 z-10 text-text-default`
+											: `bg-container-elevated-bg ${modStyle.border} shadow-sm opacity-85 z-10 text-text-default hover:opacity-100 hover:border-primary`
 							}`}
 						>
-							<span className={`size-6 rounded-full shrink-0 ${modStyle.dot}`} />
-							<span className="tr-code-text leading-none whitespace-nowrap">{item.label}</span>
-							{item.isSearchingTarget ? (
-								<span className="tr-code-text rounded bg-feedback-warning text-container-workspace-bg tr-text-emphasis px-4 py-2 leading-none">
-									⚡ ALVO MCP
-								</span>
-							) : item.methodsCount > 0 ? (
-								<span className="tr-text-metadata text-text-muted leading-none rounded bg-control-bg px-4 py-2">
-									{item.methodsCount}
-								</span>
-							) : null}
+							<button
+								type="button"
+								onClick={(e) => {
+									e.stopPropagation();
+									const targetNode = vectorNodes.find((n) => n.id === item.id);
+									if (targetNode) {
+										handleFocusNode(targetNode);
+									}
+								}}
+								onPointerEnter={() => {
+									const targetNode = vectorNodes.find((n) => n.id === item.id);
+									if (targetNode) {
+										setInspectedNode(targetNode);
+										const idx = vectorNodes.findIndex((n) => n.id === item.id);
+										engineRef.current?.setHighlightedNode(idx !== -1 ? idx : item.index);
+									}
+								}}
+								onPointerLeave={() => {
+									engineRef.current?.setHighlightedNode(null);
+									if (!selectedNode) {
+										setInspectedNode(null);
+									}
+								}}
+								className="flex items-center gap-4 bg-transparent border-none p-0 cursor-pointer text-inherit outline-none"
+								title={
+									isNodeSelected
+										? `Polígono selecionado (${item.label})`
+										: `Clique para focar em ${item.label}`
+								}
+							>
+								<span className={`size-6 rounded-full shrink-0 ${modStyle.dot}`} />
+								<span className="tr-code-text leading-none whitespace-nowrap">{item.label}</span>
+								{item.methodsCount > 0 && !isNodeSelected && (
+									<span className="tr-text-metadata text-text-muted leading-none rounded bg-control-bg px-4 py-2">
+										{item.methodsCount}
+									</span>
+								)}
+							</button>
+							{isNodeSelected && (
+								<button
+									type="button"
+									onClick={(e) => {
+										e.stopPropagation();
+										handleDeselectNode();
+									}}
+									className="size-16 flex items-center justify-center rounded-full bg-control-bg text-text-muted hover:text-text-default hover:bg-container-workspace-bg transition-colors p-0 cursor-pointer shrink-0"
+									title="Remover seleção"
+									aria-label="Remover seleção"
+								>
+									<RiCloseLine className="size-12" />
+								</button>
+							)}
 						</div>
 					);
 				})}
@@ -1009,8 +1144,9 @@ export function NeuralCorePanel() {
 						>
 							CHAT {state.activeChatTool}:
 						</span>
-						<span
-							className="rounded bg-control-bg px-6 py-2 tr-code-text text-text-default max-w-[260px] truncate cursor-pointer hover:text-primary transition-colors"
+						<button
+							type="button"
+							className="rounded bg-control-bg px-6 py-2 tr-code-text text-text-default max-w-[260px] truncate cursor-pointer hover:text-primary transition-colors text-left"
 							onClick={() => {
 								if (activeChatPivotNode && cameraRef.current) {
 									cameraRef.current.focusPosition(activeChatPivotNode.position, 2.3);
@@ -1022,18 +1158,23 @@ export function NeuralCorePanel() {
 							{activeChatPivotNode?.qualifiedName ||
 								state.activeChatPivotClass ||
 								state.activeChatFilePath}
-						</span>
+						</button>
 						<span
-							className={`tr-text-metadata px-4 py-2 rounded bg-control-bg ${
-								isPaused ? "text-feedback-success" : "text-text-muted"
+							className={`tr-text-metadata px-4 py-2 rounded bg-control-bg flex items-center gap-2 ${
+								!isPaused ? "text-primary" : "text-feedback-success"
 							}`}
 							title={
-								isPaused
-									? "Foco dinâmico do chat ativo (rotação pausada)"
-									: "Rotação livre — pause a rotação para ativar seleção automática do chat"
+								!isPaused
+									? "Foco dinâmico com rotação ativa em tempo real"
+									: "Foco dinâmico fixado (rotação pausada)"
 							}
 						>
-							{isPaused ? "SELEÇÃO DO CHAT ATIVA" : "ROTAÇÃO LIVRE (CHAT EM ESPERA)"}
+							<span
+								className={`size-6 rounded-full shrink-0 ${
+									!isPaused ? "bg-primary animate-ping" : "bg-feedback-success"
+								}`}
+							/>
+							<span>{!isPaused ? "FOCO DINÂMICO ATIVO" : "SELEÇÃO FIXADA"}</span>
 						</span>
 					</div>
 				) : effectiveQuery ? (
@@ -1376,7 +1517,7 @@ export function NeuralCorePanel() {
 										</span>
 										<button
 											type="button"
-											onClick={handleDeselectNode}
+											onClick={handleDeselectClick}
 											className="size-18 flex items-center justify-center rounded-full bg-control-bg text-text-muted hover:text-text-default hover:bg-control-bg transition-colors p-0 cursor-pointer shrink-0"
 											title="Remover seleção do polígono"
 											aria-label="Remover seleção"
@@ -1406,7 +1547,7 @@ export function NeuralCorePanel() {
 						</div>
 					) : (
 						/* Caixa de Informações Completa Expandida (Graphify Dashboard) */
-						<div className="mx-auto max-w-[1080px] pointer-events-auto rounded-lg border border-border-default bg-container-elevated-bg p-12 shadow-2xl backdrop-blur-md transition-all flex flex-col gap-8 max-h-[58vh] min-h-0 overflow-hidden">
+						<div className="mx-auto max-w-[1080px] pointer-events-auto rounded-lg border border-border-default bg-container-elevated-bg p-12 shadow-2xl backdrop-blur-md transition-all flex flex-col gap-8 max-h-[58vh] min-h-0 overflow-visible">
 							{/* Barra de Busca com Autocomplete e Filtro de Comunidades */}
 							<div className="flex flex-wrap items-center justify-between gap-8 border-b border-border-default pb-8 shrink-0">
 								{/* Caixa de Busca com Dropdown Particionado (Nós e Chunks) */}
@@ -1419,10 +1560,27 @@ export function NeuralCorePanel() {
 									onSelectNode={handleFocusNode}
 									onSelectChunk={(chunk) => {
 										const matchedNode = vectorNodes.find(
-											(n) => n.path === chunk.path || n.relPath === chunk.relPath,
+											(n) =>
+												n.path === chunk.path ||
+												n.relPath === chunk.relPath ||
+												(chunk.path && n.path && n.path.endsWith(chunk.path)) ||
+												(n.relPath && chunk.relPath && n.relPath.endsWith(chunk.relPath)),
 										);
 										if (matchedNode) {
 											handleFocusNode(matchedNode);
+										} else if (chunk.path || chunk.relPath) {
+											// Se o nó ainda não estiver na cena, pesquisa dinamicamente para injetar e focar
+											const targetPath = chunk.path || chunk.relPath || "";
+											void getTransport()
+												.request("hermes.searchGraphNodes", {
+													query: chunk.qualifiedName || targetPath,
+													limit: 1,
+												})
+												.then((res) => {
+													if (res && res.nodes && res.nodes[0]) {
+														handleFocusNode(res.nodes[0]);
+													}
+												});
 										}
 										setActiveInfoTab("chunks");
 									}}
@@ -1493,7 +1651,7 @@ export function NeuralCorePanel() {
 								<div className="flex flex-col gap-8 min-h-0 flex-1 overflow-hidden">
 									{/* Linha Principal: Identificação do Nó e Botões de Ação */}
 									<div className="flex flex-wrap items-center justify-between gap-8 border-b border-border-default pb-8 shrink-0">
-										<div className="flex items-center gap-6 min-w-0">
+										<div className="flex flex-wrap items-center gap-6 min-w-0 flex-1">
 											<span className="rounded bg-control-bg px-6 py-2 tr-code-text text-primary uppercase">
 												{activeNode.language || "code"}
 											</span>
@@ -1502,7 +1660,7 @@ export function NeuralCorePanel() {
 											</span>
 											<button
 												type="button"
-												onClick={handleDeselectNode}
+												onClick={handleDeselectClick}
 												className="size-20 flex items-center justify-center rounded-full bg-control-bg text-text-muted hover:text-text-default hover:bg-control-bg transition-colors p-0 cursor-pointer shrink-0"
 												title="Remover seleção do polígono"
 												aria-label="Remover seleção"
@@ -1515,7 +1673,7 @@ export function NeuralCorePanel() {
 										</div>
 
 										{/* Ações Operacionais Compactas */}
-										<div className="flex items-center gap-4">
+										<div className="flex flex-wrap items-center gap-4 shrink-0">
 											<Button
 												size="s"
 												variant="primary"
@@ -1568,7 +1726,7 @@ export function NeuralCorePanel() {
 											{selectedNode && (
 												<button
 													type="button"
-													onClick={handleDeselectNode}
+													onClick={handleDeselectClick}
 													className="rounded p-2 text-text-muted hover:text-text-default ml-2 cursor-pointer"
 													title="Desmarcar seleção fixa"
 												>
@@ -1579,7 +1737,7 @@ export function NeuralCorePanel() {
 									</div>
 
 									{/* Barra de Seleção de Abas do Nó: Visão Geral vs Chunks Registrados */}
-									<div className="flex items-center gap-6 border-b border-border-default pb-4 shrink-0">
+									<div className="flex flex-wrap items-center gap-6 border-b border-border-default pb-4 shrink-0">
 										<button
 											type="button"
 											onClick={() => setActiveInfoTab("details")}
