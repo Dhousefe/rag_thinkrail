@@ -262,5 +262,22 @@
       "NeuralCoreSearchBox"
     ],
     "ground_truth": "Rastreia a distancia de arraste em OrbitCameraController com wasJustDragging() para evitar que onClick no canvas cancele a selecao durante rotacao e pan; no procurador de descricoes, remove limite restritivo de 15 para 80 itens, permite busca em snippets e assinaturas e destaca metodos correspondentes."
+  },
+  {
+    "id": "tc_18_root_neuralcorepanel",
+    "question": "Como funciona a arquitetura de aneis, o Neural Core 3D e o protocolo progressivo L0-L1-L2 no ThinkRail?",
+    "query": "arquitetura neural core 3d rag l0 l1 l2 pacotes",
+    "expected_cluster": "root",
+    "expected_files": [
+      "README.md",
+      "packages/shared/src/version.ts",
+      "doc/guia-compilacao.md"
+    ],
+    "expected_symbols": [
+      "NeuralCorePanel",
+      "NeuralCoreEngine",
+      "get_project_l0_index"
+    ],
+    "ground_truth": "O ThinkRail opera em tres aneis (engine host, typed wire, web UI), com Neural Core 3D em WebGL renderizando topologia PCB e pulsos de dependencia em tempo real, acompanhado do protocolo L0-L1-L2 para contencao de tokens no Hermes RAG."
   }
 ]
