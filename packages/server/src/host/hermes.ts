@@ -204,6 +204,22 @@ let activeIndexingProgress: HermesIndexingProgress = {
 	status: "idle",
 };
 
+let activeIndexingChildProcess: import("node:child_process").ChildProcess | null = null;
+
+function killProcessTree(proc: import("node:child_process").ChildProcess | null): void {
+	if (!proc || !proc.pid) return;
+	const pid = proc.pid;
+	try {
+		if (process.platform === "win32") {
+			spawn("taskkill", ["/PID", String(pid), "/T", "/F"], { stdio: "ignore" });
+		} else {
+			proc.kill("SIGTERM");
+		}
+	} catch {
+		// Processo já finalizado
+	}
+}
+
 export function getHermesIndexingProgress(): HermesIndexingProgress {
 	if (activeIndexingProgress.isIndexing && activeIndexingProgress.startTime) {
 		const now = Date.now();
@@ -519,6 +535,29 @@ export async function reindexHermesProject(
 	}
 
 	const dbPath = join(projectDir, "hermes.db");
+
+	// Mutex de concorrência: se já houver uma indexação ativa para o MESMO projeto, rejeita nova execução
+	if (
+		activeIndexingProgress.isIndexing &&
+		activeIndexingProgress.projectSlug === input.slug &&
+		activeIndexingChildProcess
+	) {
+		log.warn(`Reindexação para [${input.slug}] já em andamento. Ignorando requisição duplicada.`);
+		return {
+			success: true,
+			message: `Reindexação já em andamento para o projeto ${input.slug}.`,
+			projectSlug: input.slug,
+			elapsedMs: activeIndexingProgress.startTime ? Date.now() - activeIndexingProgress.startTime : 0,
+		};
+	}
+
+	// Se houver processo anterior de outro projeto ou travado, mata a árvore antes de iniciar
+	if (activeIndexingChildProcess) {
+		log.info(`Finalizando processo anterior de indexação antes de iniciar novo ciclo.`);
+		killProcessTree(activeIndexingChildProcess);
+		activeIndexingChildProcess = null;
+	}
+
 	log.info(`Iniciando reindexação Hermes para [${input.slug}] no caminho: ${targetPath}`);
 
 	// Inicializa o progresso no singleton do host
@@ -566,6 +605,7 @@ export async function reindexHermesProject(
 					windowsHide: true,
 				},
 			);
+			activeIndexingChildProcess = proc;
 
 			let stdoutBuffer = "";
 			proc.stdout?.on("data", (chunk: Buffer) => {
@@ -609,6 +649,7 @@ export async function reindexHermesProject(
 			});
 
 			proc.on("close", (code) => {
+				activeIndexingChildProcess = null;
 				const totalElapsed = Date.now() - startTime;
 				if (code === 0) {
 					log.info(`Reindexação Hermes para [${input.slug}] concluída em ${totalElapsed}ms`);
@@ -652,6 +693,7 @@ export async function reindexHermesProject(
 			});
 
 			proc.on("error", (err) => {
+				activeIndexingChildProcess = null;
 				log.error(`Erro ao disparar processo de reindexação Hermes: ${err}`);
 				activeIndexingProgress = {
 					...activeIndexingProgress,

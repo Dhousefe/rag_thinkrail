@@ -65,6 +65,8 @@ export class JinaServerManager {
 	private isHealthChecking = false;
 	private isStarting = false;
 	private isStopping = false;
+	private consecutiveHealthFailures = 0;
+	private readonly maxConsecutiveFailures = 3;
 	private readonly logs = new CircularLogBuffer(300);
 
 	private constructor() {
@@ -130,17 +132,29 @@ export class JinaServerManager {
 			this.isHealthChecking = true;
 			try {
 				const isAlive = await this.checkHealth();
-				if (!isAlive && this.autoStartEnabled && !this.isStarting && this.status !== "stopped") {
-					// Auto-heal se o servidor caiu durante uso ativo
-					this.logs.push("[AUTO-HEAL] Detectada queda do servidor Jina. Recuperando...");
-					void this.start();
+				if (isAlive) {
+					this.consecutiveHealthFailures = 0;
+				} else {
+					this.consecutiveHealthFailures++;
+					if (
+						this.consecutiveHealthFailures >= this.maxConsecutiveFailures &&
+						this.autoStartEnabled &&
+						!this.isStarting &&
+						this.status !== "stopped"
+					) {
+						this.logs.push(
+							`[AUTO-HEAL] Detectadas ${this.consecutiveHealthFailures} falhas consecutivas de heartbeat. Recuperando servidor Jina...`,
+						);
+						this.consecutiveHealthFailures = 0;
+						void this.start();
+					}
 				}
 			} catch {
 				// Ignora erros no heartbeat em silêncio
 			} finally {
 				this.isHealthChecking = false;
 			}
-		}, 3000);
+		}, 5000);
 	}
 
 	public stopHeartbeatWatcher(): void {
@@ -156,9 +170,14 @@ export class JinaServerManager {
 	public dispose(): void {
 		this.stopHeartbeatWatcher();
 		this.autoStartEnabled = false;
-		if (this.process) {
+		if (this.process && this.process.pid) {
+			const pid = this.process.pid;
 			try {
-				this.process.kill("SIGTERM");
+				if (process.platform === "win32") {
+					spawn("taskkill", ["/PID", String(pid), "/T", "/F"], { stdio: "ignore" });
+				} else {
+					this.process.kill("SIGTERM");
+				}
 			} catch {
 				// Processo já encerrado
 			}
@@ -166,6 +185,7 @@ export class JinaServerManager {
 		}
 		this.status = "stopped";
 		this.startTime = 0;
+		this.consecutiveHealthFailures = 0;
 	}
 
 	/**
@@ -187,8 +207,10 @@ export class JinaServerManager {
 			candidateDirs.push(resolve(envDir));
 		}
 
-		// Diretórios relativos ao repositório ou diretórios irmãos usuais
+		// Diretórios prioritários e relativos ao repositório
 		candidateDirs.push(
+			"D:\\Projeto_Germes\\hermes-3.0",
+			"D:/Projeto_Germes/hermes-3.0",
 			resolve(cwd, "hermes"),
 			resolve(cwd, "hermes-3.0"),
 			resolve(cwd, "..", "hermes"),
@@ -217,13 +239,13 @@ export class JinaServerManager {
 	}
 
 	/**
-	 * Testa conectividade /health com timeout curto de 1500ms.
+	 * Testa conectividade /health com timeout tolerante de 3500ms para evitar falsos negativos durante inferência.
 	 */
 	public async checkHealth(): Promise<boolean> {
 		const start = Date.now();
 		try {
 			const controller = new AbortController();
-			const timeoutId = setTimeout(() => controller.abort(), 1500);
+			const timeoutId = setTimeout(() => controller.abort(), 3500);
 			const res = await fetch(`${this.baseUrl}/health`, {
 				method: "GET",
 				signal: controller.signal,
@@ -371,8 +393,11 @@ export class JinaServerManager {
 		this.logs.push("[STOP] Encerrando o Servidor Jina Embeddings...");
 
 		if (this.process) {
+			const pid = this.process.pid;
 			try {
-				if (input?.force) {
+				if (process.platform === "win32" && pid) {
+					spawn("taskkill", ["/PID", String(pid), "/T", "/F"], { stdio: "ignore" });
+				} else if (input?.force) {
 					this.process.kill("SIGKILL");
 				} else {
 					this.process.kill("SIGTERM");

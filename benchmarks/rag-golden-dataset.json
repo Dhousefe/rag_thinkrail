@@ -279,5 +279,23 @@
       "get_project_l0_index"
     ],
     "ground_truth": "O ThinkRail opera em tres aneis (engine host, typed wire, web UI), com Neural Core 3D em WebGL renderizando topologia PCB e pulsos de dependencia em tempo real, acompanhado do protocolo L0-L1-L2 para contencao de tokens no Hermes RAG."
+  },
+  {
+    "id": "tc_19_server-engine_runincrementalreindex",
+    "question": "Como o ThinkRail previne congelamentos de IPC e colisoes de concorrencia na reindexacao e no daemon Jina?",
+    "query": "rag reindex ipc throttling mutex process tree jina heartbeat",
+    "expected_cluster": "server-engine",
+    "expected_files": [
+      "scripts/rag-reindex.ts",
+      "packages/server/src/host/hermes.ts",
+      "packages/server/src/embeddings/jinaServerManager.ts"
+    ],
+    "expected_symbols": [
+      "runIncrementalReindex",
+      "reindexHermesProject",
+      "killProcessTree",
+      "JinaServerManager"
+    ],
+    "ground_truth": "O ThinkRail utiliza throttling de PROGRESS a cada 25 arquivos ou 150ms no rag-reindex.ts com backoff para SQLITE_BUSY, mutex de processo por slug no hermes.ts com taskkill /PID /T /F no Windows, e janela tolerante de 3 falhas de heartbeat no JinaServerManager."
   }
 ]
