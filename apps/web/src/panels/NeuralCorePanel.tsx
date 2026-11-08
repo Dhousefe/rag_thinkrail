@@ -37,6 +37,7 @@ import { Button } from "@thinkrail/ui/button";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { selectWorkspaceById, selectWorkspaceChatTab, toast, useAppStore } from "@/store";
 import { getTransport } from "@/transport";
+import { projectRelativePath } from "../lib";
 import { OrbitCameraController } from "./neural-core/cameraController";
 import {
 	NeuralCoreChunksView,
@@ -98,6 +99,7 @@ export function NeuralCorePanel() {
 	const [remoteSearchMatches, setRemoteSearchMatches] = useState<HermesVectorNode[]>([]);
 	const [isSearchingRemote, setIsSearchingRemote] = useState(false);
 	const [activeChatPivotNode, setActiveChatPivotNode] = useState<HermesVectorNode | null>(null);
+	const lastChatPivotNodeIdRef = useRef<string | null>(null);
 
 	// Chunks Registrados para a Classe e Busca
 	const [nodeChunks, setNodeChunks] = useState<HermesChunkItem[]>([]);
@@ -406,13 +408,12 @@ export function NeuralCorePanel() {
 		}
 	}, [effectiveQuery, vectorNodes, isPaused]);
 
-	// Foco e Seleção em Tempo Real nas ferramentas do Chat (Read, Edit, Write):
-	// Interação ativada EXCLUSIVAMENTE quando a rotação estiver pausada (isPaused === true),
-	// garantindo que a rotação contínua não seja interrompida sem a vontade expressa do usuário.
-	// Se o arquivo manipulado pelo chat não estiver no lote atual da cena, busca dinamicamente
-	// no SQLite do Hermes RAG e o injeta na cena 3D com destaque imediato.
+	// Foco e Seleção Dinâmica em Tempo Real nas ferramentas do Chat (Read, Edit, Write, AST, RAG):
+	// Interage ativamente mesmo com a Rotação Dinâmica ativada (!isPaused) ou pausada,
+	// voando a câmera suavemente para a classe manipulada e destacando seus métodos e conexões.
+	// Ao mudar de classe, desfaz o foco anterior e foca a nova classe alvo com transição animada.
 	useEffect(() => {
-		if (!isPaused || !state.activeChatTool || !state.activeChatFilePath) return;
+		if (!state.activeChatTool || !state.activeChatFilePath) return;
 
 		let isCancelled = false;
 		const filePath = state.activeChatFilePath;
@@ -423,12 +424,14 @@ export function NeuralCorePanel() {
 
 		const applySelection = (targetNode: HermesVectorNode) => {
 			if (isCancelled) return;
+			lastChatPivotNodeIdRef.current = targetNode.id;
 			setActiveChatPivotNode(targetNode);
 			setSelectedNode(targetNode);
 			setInspectedNode(targetNode);
 
 			if (engineRef.current) {
-				engineRef.current.triggerMcpSearchTarget(targetNode.id);
+				// Dispara pulso de vida no polígono sem forçar a pausa da rotação dinâmica
+				engineRef.current.triggerMcpSearchTarget(targetNode.id, false);
 				const idx = vectorNodes.findIndex((n) => n.id === targetNode.id);
 				if (idx !== -1) {
 					engineRef.current.setSelectedNode(idx);
@@ -436,7 +439,8 @@ export function NeuralCorePanel() {
 			}
 
 			if (cameraRef.current) {
-				cameraRef.current.focusPosition(targetNode.position, 2.3);
+				// Transição suave e orgânica da câmera via interpolação lerp
+				cameraRef.current.focusPosition(targetNode.position, 2.2);
 			}
 		};
 
@@ -480,7 +484,6 @@ export function NeuralCorePanel() {
 		state.activeChatFilePath,
 		state.activeChatPivotClass,
 		vectorNodes,
-		isPaused,
 		selectedProjectFilter,
 	]);
 
@@ -491,38 +494,38 @@ export function NeuralCorePanel() {
 		const currentWsId = store.activeWorkspaceId;
 		const currentWs = currentWsId ? selectWorkspaceById(store, currentWsId) : null;
 
-		// 1. Normaliza caminhos
-		const normNodePath = node.path.replace(/\\/g, "/");
-		const normCurrentRoot = (currentWs?.worktreePath || "").replace(/\\/g, "/");
+		// 1. Resolução ultrarrápida no workspace atual (0ms)
+		const currentRelPath = projectRelativePath(node.path, currentWs?.worktreePath) || node.relPath;
+		const isInsideCurrentWs =
+			Boolean(currentWs) &&
+			Boolean(currentRelPath) &&
+			!currentRelPath.startsWith("..") &&
+			!currentRelPath.includes(":");
 
-		// Se o arquivo estiver dentro do workspace ativo atualmente
-		if (currentWs && normCurrentRoot && normNodePath.startsWith(normCurrentRoot)) {
-			await openFileInTab(currentWs.id, node.path, "keep");
-			toast.success("Arquivo aberto no editor", node.relPath);
+		if (currentWs && isInsideCurrentWs) {
+			// Revela imediatamente na árvore de arquivos sem esperar RPC
+			store.revealInFiles(currentWs.id, currentRelPath);
+			void openFileInTab(currentWs.id, node.path, "keep");
+			toast.success("Arquivo aberto no editor", node.relPath || currentRelPath);
 			return;
 		}
 
-		// 2. Busca entre todos os workspaces abertos no ThinkRail se algum corresponde à raiz do arquivo
-		let matchedWs: any = null;
+		// 2. Busca rápida entre os outros workspaces já abertos no ThinkRail
 		for (const wsList of Object.values(store.workspaces)) {
 			for (const ws of wsList) {
-				const wsRoot = (ws.worktreePath || "").replace(/\\/g, "/");
-				if (wsRoot && normNodePath.startsWith(wsRoot)) {
-					matchedWs = ws;
-					break;
+				if (ws.id === currentWsId) continue;
+				const rel = projectRelativePath(node.path, ws.worktreePath);
+				if (rel && !rel.startsWith("..") && !rel.includes(":")) {
+					store.activateWorkspaceFromRoute({ id: ws.id, projectId: ws.projectId });
+					store.revealInFiles(ws.id, rel);
+					void openFileInTab(ws.id, node.path, "keep");
+					toast.success(
+						`Chaveado para projeto [${node.projectSlug || ws.projectId}]`,
+						node.relPath || rel,
+					);
+					return;
 				}
 			}
-			if (matchedWs) break;
-		}
-
-		if (matchedWs) {
-			store.activateWorkspaceFromRoute({ id: matchedWs.id, projectId: matchedWs.projectId });
-			await openFileInTab(matchedWs.id, node.path, "keep");
-			toast.success(
-				`Chaveado para projeto [${node.projectSlug || matchedWs.projectId}]`,
-				node.relPath,
-			);
-			return;
 		}
 
 		// 3. Se o projeto RAG não estiver aberto em nenhum workspace atual, abre o projeto via project.open
@@ -539,7 +542,9 @@ export function NeuralCorePanel() {
 							id: targetWs.id,
 							projectId: targetWs.projectId,
 						});
-						await openFileInTab(targetWs.id, node.path, "keep");
+						const targetRel = projectRelativePath(node.path, targetWs.worktreePath) || node.relPath;
+						updatedStore.revealInFiles(targetWs.id, targetRel);
+						void openFileInTab(targetWs.id, node.path, "keep");
 						toast.success(`Projeto [${node.projectSlug}] aberto no ThinkRail`, node.relPath);
 						return;
 					}
@@ -552,7 +557,10 @@ export function NeuralCorePanel() {
 		// 4. Fallback seguro
 		if (currentWsId) {
 			try {
-				await openFileInTab(currentWsId, node.path, "keep");
+				if (currentRelPath) {
+					store.revealInFiles(currentWsId, currentRelPath);
+				}
+				void openFileInTab(currentWsId, node.path, "keep");
 				toast.success("Arquivo aberto no editor", node.relPath);
 			} catch {
 				void navigator.clipboard.writeText(node.path);
@@ -947,8 +955,7 @@ export function NeuralCorePanel() {
 	const handleCanvasClick = (e: React.MouseEvent<HTMLCanvasElement>) => {
 		// Se o usuário estava arrastando para virar a câmera ou dar pan, nunca cancela nem altera a seleção!
 		const wasDragging =
-			hasDraggedRef.current ||
-			(cameraRef.current ? cameraRef.current.wasJustDragging() : false);
+			hasDraggedRef.current || (cameraRef.current ? cameraRef.current.wasJustDragging() : false);
 
 		hasDraggedRef.current = false;
 		pointerDownPosRef.current = null;
@@ -1137,8 +1144,9 @@ export function NeuralCorePanel() {
 						>
 							CHAT {state.activeChatTool}:
 						</span>
-						<span
-							className="rounded bg-control-bg px-6 py-2 tr-code-text text-text-default max-w-[260px] truncate cursor-pointer hover:text-primary transition-colors"
+						<button
+							type="button"
+							className="rounded bg-control-bg px-6 py-2 tr-code-text text-text-default max-w-[260px] truncate cursor-pointer hover:text-primary transition-colors text-left"
 							onClick={() => {
 								if (activeChatPivotNode && cameraRef.current) {
 									cameraRef.current.focusPosition(activeChatPivotNode.position, 2.3);
@@ -1150,18 +1158,23 @@ export function NeuralCorePanel() {
 							{activeChatPivotNode?.qualifiedName ||
 								state.activeChatPivotClass ||
 								state.activeChatFilePath}
-						</span>
+						</button>
 						<span
-							className={`tr-text-metadata px-4 py-2 rounded bg-control-bg ${
-								isPaused ? "text-feedback-success" : "text-text-muted"
+							className={`tr-text-metadata px-4 py-2 rounded bg-control-bg flex items-center gap-2 ${
+								!isPaused ? "text-primary" : "text-feedback-success"
 							}`}
 							title={
-								isPaused
-									? "Foco dinâmico do chat ativo (rotação pausada)"
-									: "Rotação livre — pause a rotação para ativar seleção automática do chat"
+								!isPaused
+									? "Foco dinâmico com rotação ativa em tempo real"
+									: "Foco dinâmico fixado (rotação pausada)"
 							}
 						>
-							{isPaused ? "SELEÇÃO DO CHAT ATIVA" : "ROTAÇÃO LIVRE (CHAT EM ESPERA)"}
+							<span
+								className={`size-6 rounded-full shrink-0 ${
+									!isPaused ? "bg-primary animate-ping" : "bg-feedback-success"
+								}`}
+							/>
+							<span>{!isPaused ? "FOCO DINÂMICO ATIVO" : "SELEÇÃO FIXADA"}</span>
 						</span>
 					</div>
 				) : effectiveQuery ? (
@@ -1534,7 +1547,7 @@ export function NeuralCorePanel() {
 						</div>
 					) : (
 						/* Caixa de Informações Completa Expandida (Graphify Dashboard) */
-						<div className="mx-auto max-w-[1080px] pointer-events-auto rounded-lg border border-border-default bg-container-elevated-bg p-12 shadow-2xl backdrop-blur-md transition-all flex flex-col gap-8 max-h-[58vh] min-h-0 overflow-hidden">
+						<div className="mx-auto max-w-[1080px] pointer-events-auto rounded-lg border border-border-default bg-container-elevated-bg p-12 shadow-2xl backdrop-blur-md transition-all flex flex-col gap-8 max-h-[58vh] min-h-0 overflow-visible">
 							{/* Barra de Busca com Autocomplete e Filtro de Comunidades */}
 							<div className="flex flex-wrap items-center justify-between gap-8 border-b border-border-default pb-8 shrink-0">
 								{/* Caixa de Busca com Dropdown Particionado (Nós e Chunks) */}

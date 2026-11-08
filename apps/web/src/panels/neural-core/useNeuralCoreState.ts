@@ -20,7 +20,7 @@ export function useNeuralCoreState() {
 		let activeRagQuery: string | undefined;
 		let activeRagToolName: string | undefined;
 		let isRagSearching = false;
-		let toolArgs: any = undefined;
+		let toolArgs: any;
 
 		const runningCallKeys = Object.keys(activeCalls);
 		if (runningCallKeys.length > 0) {
@@ -37,18 +37,18 @@ export function useNeuralCoreState() {
 				const age = Date.now() - (latest.startedAt || 0);
 				if (age < 5000) {
 					activity = latest.status === "error" ? "error" : "tool_exec";
-					intensity = Math.max(0.2, 1.0 - (age / 5000));
+					intensity = Math.max(0.2, 1.0 - age / 5000);
 					activeToolName = latest.toolName || latest.tool;
 					toolArgs = latest.args;
 				}
 			}
 		}
 
-		let activeChatTool: "read" | "edit" | "write" | undefined;
+		let activeChatTool: "read" | "edit" | "write" | "ast" | "rag" | undefined;
 		let activeChatFilePath: string | undefined;
 		let activeChatPivotClass: string | undefined;
 
-		// Extrai ferramentas de código do chat (read, edit, write) e identifica o arquivo/classe pivô
+		// Extrai ferramentas de código do chat (read, edit, write, ast, rag) e identifica o arquivo/classe pivô
 		if (activeToolName) {
 			const toolLower = activeToolName.toLowerCase().trim();
 			if (toolLower === "read" || toolLower.endsWith(":read")) {
@@ -57,15 +57,35 @@ export function useNeuralCoreState() {
 				activeChatTool = "edit";
 			} else if (toolLower === "write" || toolLower.endsWith(":write")) {
 				activeChatTool = "write";
+			} else if (toolLower.includes("ast_")) {
+				activeChatTool = "ast";
+			} else if (toolLower.includes("code_search") || toolLower.includes("cindy_search")) {
+				activeChatTool = "rag";
 			}
 
-			if (activeChatTool && toolArgs && typeof toolArgs === "object") {
-				const rawPath = (toolArgs.path || toolArgs.file || toolArgs.target_path) as string | undefined;
+			if (toolArgs && typeof toolArgs === "object") {
+				const rawPath = (toolArgs.path || toolArgs.file || toolArgs.target_path) as
+					| string
+					| undefined;
 				if (rawPath && typeof rawPath === "string") {
 					activeChatFilePath = rawPath.replace(/\\/g, "/");
-					// Extrai nome base sem extensão para referência de classe pivô
 					const fileName = activeChatFilePath.split("/").pop() || "";
 					activeChatPivotClass = fileName.replace(/\.[^.]+$/, "");
+				}
+
+				const rawTarget = (toolArgs.target || toolArgs.symbol || toolArgs.target_path) as
+					| string
+					| undefined;
+				if (rawTarget && typeof rawTarget === "string") {
+					const cleanTarget = rawTarget.trim();
+					if (cleanTarget.includes("/") || cleanTarget.includes("\\")) {
+						const norm = cleanTarget.replace(/\\/g, "/");
+						activeChatFilePath = activeChatFilePath || norm;
+						const fileName = norm.split("/").pop() || "";
+						activeChatPivotClass = fileName.replace(/\.[^.]+$/, "");
+					} else if (/^[A-Za-z0-9_]+$/.test(cleanTarget)) {
+						activeChatPivotClass = cleanTarget;
+					}
 				}
 			}
 		}
@@ -85,12 +105,19 @@ export function useNeuralCoreState() {
 				isRagSearching = true;
 				activeRagToolName = activeToolName.split("__").pop() || activeToolName;
 				if (toolArgs && typeof toolArgs === "object") {
-					activeRagQuery = toolArgs.query || toolArgs.target || toolArgs.symbol || toolArgs.target_path || toolArgs.pattern;
+					activeRagQuery =
+						toolArgs.query ||
+						toolArgs.target ||
+						toolArgs.symbol ||
+						toolArgs.target_path ||
+						toolArgs.pattern;
 				}
 			}
 		}
 
-		const isBash = activeToolName?.toLowerCase().includes("bash") || activeToolName?.toLowerCase().includes("shell");
+		const isBash =
+			activeToolName?.toLowerCase().includes("bash") ||
+			activeToolName?.toLowerCase().includes("shell");
 		if (isBash) {
 			activity = "bash_exec";
 		}
@@ -98,7 +125,11 @@ export function useNeuralCoreState() {
 		return {
 			activity,
 			intensity,
-			tokenStreamingSpeed: isRagSearching ? 60 : activity === "tool_exec" || activity === "bash_exec" ? 40 : 0,
+			tokenStreamingSpeed: isRagSearching
+				? 60
+				: activity === "tool_exec" || activity === "bash_exec"
+					? 40
+					: 0,
 			activeToolName,
 			activeRagQuery,
 			activeRagToolName,

@@ -1,5 +1,5 @@
-import type { HermesChunkItem, HermesVectorNode } from "@thinkrail/contracts";
 import {
+	type RemixiconComponentType,
 	RiArrowRightLine,
 	RiCloseLine,
 	RiCodeSSlashLine,
@@ -11,6 +11,7 @@ import {
 	RiRefreshLine,
 	RiSearchLine,
 } from "@remixicon/react";
+import type { HermesChunkItem, HermesVectorNode } from "@thinkrail/contracts";
 import { useEffect, useMemo, useRef, useState } from "react";
 
 export interface NeuralCoreSearchBoxProps {
@@ -29,20 +30,32 @@ type SymbolCategoryFilter = "all" | "class" | "function" | "variable" | "type";
 function getSymbolKindBadge(kind?: string): {
 	label: string;
 	color: string;
-	icon: any;
+	icon: RemixiconComponentType;
 } {
 	const k = (kind || "").toLowerCase();
 	if (k.includes("class") || k.includes("struct") || k.includes("impl")) {
 		return { label: "class", color: "bg-primary text-text-on-primary", icon: RiNodeTree };
 	}
 	if (k.includes("func") || k.includes("method") || k.includes("handler")) {
-		return { label: "fn", color: "bg-feedback-info text-container-workspace-bg", icon: RiFunctionLine };
+		return {
+			label: "fn",
+			color: "bg-feedback-info text-container-workspace-bg",
+			icon: RiFunctionLine,
+		};
 	}
 	if (k.includes("const") || k.includes("var") || k.includes("let") || k.includes("field")) {
-		return { label: "var", color: "bg-feedback-warning text-container-workspace-bg", icon: RiInputField };
+		return {
+			label: "var",
+			color: "bg-feedback-warning text-container-workspace-bg",
+			icon: RiInputField,
+		};
 	}
 	if (k.includes("type") || k.includes("interface") || k.includes("enum")) {
-		return { label: "type", color: "bg-feedback-success text-container-workspace-bg", icon: RiCodeSSlashLine };
+		return {
+			label: "type",
+			color: "bg-feedback-success text-container-workspace-bg",
+			icon: RiCodeSSlashLine,
+		};
 	}
 	return { label: "file", color: "bg-control-bg text-text-muted", icon: RiFileCodeLine };
 }
@@ -62,6 +75,21 @@ export function NeuralCoreSearchBox({
 	const [categoryFilter, setCategoryFilter] = useState<SymbolCategoryFilter>("all");
 	const [selectedIndex, setSelectedIndex] = useState(0);
 	const listContainerRef = useRef<HTMLDivElement | null>(null);
+	const containerRef = useRef<HTMLDivElement | null>(null);
+
+	// Fecha o dropdown se o usuário clicar fora do componente
+	useEffect(() => {
+		if (!isSearchOpen) return;
+		const handleClickOutside = (e: MouseEvent | TouchEvent) => {
+			if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
+				setIsSearchOpen(false);
+			}
+		};
+		document.addEventListener("mousedown", handleClickOutside);
+		return () => {
+			document.removeEventListener("mousedown", handleClickOutside);
+		};
+	}, [isSearchOpen]);
 
 	// Filtra itens com base na faceta selecionada
 	const filteredNodes = useMemo(() => {
@@ -69,7 +97,9 @@ export function NeuralCoreSearchBox({
 		return searchMatches.filter((n) => {
 			const k = (n.chunkKind || "").toLowerCase();
 			if (categoryFilter === "class") {
-				return k.includes("class") || k.includes("struct") || k.includes("impl") || k.includes("model");
+				return (
+					k.includes("class") || k.includes("struct") || k.includes("impl") || k.includes("model")
+				);
 			}
 			if (categoryFilter === "function") {
 				return (
@@ -107,8 +137,10 @@ export function NeuralCoreSearchBox({
 			const k = (c.chunkKind || "").toLowerCase();
 			if (categoryFilter === "class") return k.includes("class") || k.includes("struct");
 			if (categoryFilter === "function") return k.includes("func") || k.includes("method");
-			if (categoryFilter === "variable") return k.includes("const") || k.includes("var") || k.includes("field");
-			if (categoryFilter === "type") return k.includes("type") || k.includes("interface") || k.includes("enum");
+			if (categoryFilter === "variable")
+				return k.includes("const") || k.includes("var") || k.includes("field");
+			if (categoryFilter === "type")
+				return k.includes("type") || k.includes("interface") || k.includes("enum");
 			return true;
 		});
 	}, [searchChunks, categoryFilter]);
@@ -158,7 +190,7 @@ export function NeuralCoreSearchBox({
 	};
 
 	return (
-		<div className="relative flex-1 min-w-[260px] max-w-[460px]">
+		<div ref={containerRef} className="relative flex-1 min-w-[260px] max-w-[460px]">
 			{/* Input de Busca com Design Flutuante e Indicador Visual */}
 			<div className="flex items-center gap-6 rounded-md border border-border-default bg-container-workspace-bg px-8 py-4 focus-within:border-primary transition-colors shadow-xs">
 				<RiSearchLine className="size-14 text-text-muted shrink-0" />
@@ -190,7 +222,7 @@ export function NeuralCoreSearchBox({
 
 			{/* Dropdown Inteligente de Resultados da Busca com Abas e Filtros de Pílulas */}
 			{isSearchOpen && query.trim().length >= 1 && (
-				<div className="absolute bottom-full left-0 right-0 mb-4 max-h-[380px] overflow-hidden rounded-lg border border-border-default bg-container-elevated-bg shadow-2xl z-50 flex flex-col backdrop-blur-md">
+				<div className="absolute bottom-full left-0 mb-4 w-full min-w-[340px] sm:min-w-[480px] max-w-[580px] max-h-[380px] overflow-hidden rounded-lg border border-border-default bg-container-elevated-bg shadow-2xl z-50 flex flex-col backdrop-blur-md">
 					{/* Abas Superiores e Botão Fechar */}
 					<div className="flex items-center border-b border-border-default bg-container-workspace-bg px-6 py-4 gap-4 shrink-0">
 						<button
@@ -407,4 +439,3 @@ export function NeuralCoreSearchBox({
 		</div>
 	);
 }
-
