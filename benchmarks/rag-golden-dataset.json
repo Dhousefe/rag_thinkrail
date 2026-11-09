@@ -397,5 +397,22 @@
       "L2JBrasil"
     ],
     "ground_truth": "O protocolo RAG progressivo L0-L1-L2 contem o uso de tokens por niveis (L0 < 250 tok, L1 300-800 tok, L2 < 600 tok). Os materiais didaticos e tecnicos estao salvos em doc/desenvolvimento/postagem/ em versoes Markdown, BBCode e diagramas Mermaid."
+  },
+  {
+    "id": "tc_26_web-ui_createvectorconstellationwireframe",
+    "question": "Como restaurar a estabilidade e definicao geometrica do Neural Core 3D sem jitter?",
+    "query": "neural core geometry render loop rebuildVectorMesh camera fitBounds",
+    "expected_cluster": "web-ui",
+    "expected_files": [
+      "apps/web/src/panels/neural-core/geometry.ts",
+      "apps/web/src/panels/neural-core/neuralEngine.ts",
+      "apps/web/src/panels/NeuralCorePanel.tsx"
+    ],
+    "expected_symbols": [
+      "createVectorConstellationWireframe",
+      "rebuildVectorMesh",
+      "fitBounds"
+    ],
+    "ground_truth": "A instabilidade visual decorria de um loop continuo de 32ms chamando rebuildVectorMesh no CPU em neuralEngine.ts para atualizar pulsos senoidais. A solucao removeu o loop continuo, calibrou a escala e opacidade de nos nao relacionados em geometry.ts (0.65 e 0.22) e adicionou fitBounds de camera automatico na carga inicial do grafo em NeuralCorePanel.tsx."
   }
 ]

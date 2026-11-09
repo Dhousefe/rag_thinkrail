@@ -50,4 +50,23 @@ describe("OrbitCameraController drag protection", () => {
 		// Imediatamente após mouseup (dentro da janela de 250ms), ainda reporta wasJustDragging = true
 		expect(controller.wasJustDragging()).toBe(true);
 	});
+
+	it("calcula fitBounds estável com múltiplos nós sem NaN", () => {
+		const canvasMock = {
+			addEventListener: () => {},
+		} as unknown as HTMLCanvasElement;
+
+		const controller = new OrbitCameraController(canvasMock);
+		const mockPositions: Array<[number, number, number]> = [
+			[-15, 0, -10],
+			[12, 0.05, 30],
+			[0, -0.04, 5],
+		];
+
+		controller.fitBounds(mockPositions);
+		expect(controller.distance).toBeGreaterThanOrEqual(5.2);
+		expect(Number.isFinite(controller.target[0])).toBe(true);
+		expect(Number.isFinite(controller.target[1])).toBe(true);
+		expect(Number.isFinite(controller.target[2])).toBe(true);
+	});
 });
