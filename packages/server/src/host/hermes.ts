@@ -619,6 +619,8 @@ export async function reindexHermesProject(
 				},
 			);
 			activeIndexingChildProcess = proc;
+			proc.stdout?.on("error", () => {});
+			proc.stderr?.on("error", () => {});
 
 			let stdoutBuffer = "";
 			proc.stdout?.on("data", (chunk: Buffer) => {
@@ -1048,9 +1050,34 @@ export async function testHermesConnection(
 						windowsHide: true,
 					});
 
+					// Registra listeners de erro imediatamente para blindar contra EPIPE uncaughtException
+					proc.stdin?.on("error", () => {});
+					proc.stdout?.on("error", () => {});
+
+					let isTerminated = false;
+					const terminateChild = () => {
+						if (isTerminated) return;
+						isTerminated = true;
+						try {
+							proc.stdin?.destroy();
+						} catch {}
+						try {
+							proc.stdout?.destroy();
+						} catch {}
+						try {
+							proc.kill();
+						} catch {}
+					};
+
 					const safeWrite = (data: string): void => {
 						try {
-							if (proc.stdin && !proc.stdin.destroyed && proc.stdin.writable) {
+							if (
+								!isTerminated &&
+								proc.stdin &&
+								!proc.stdin.destroyed &&
+								proc.stdin.writable &&
+								!proc.killed
+							) {
 								proc.stdin.write(data, () => {});
 							}
 						} catch {
@@ -1058,17 +1085,14 @@ export async function testHermesConnection(
 						}
 					};
 
-					proc.stdin?.on("error", () => {
-						// Absorve EPIPE ou outras falhas de stream no stdin do processo filho
-					});
-
 					let stdoutData = "";
 					const timer = setTimeout(() => {
-						proc.kill();
+						terminateChild();
 						resolvePromise({ ok: false, error: "Timeout ao inicializar handshake MCP (>3s)" });
 					}, 3000);
 
 					proc.stdout?.on("data", (chunk: Buffer) => {
+						if (isTerminated) return;
 						stdoutData += chunk.toString("utf-8");
 						const lines = stdoutData.split("\n");
 						for (const line of lines) {
@@ -1090,7 +1114,7 @@ export async function testHermesConnection(
 										);
 									} else if (parsed.id === 2 && Array.isArray(parsed.result?.tools)) {
 										clearTimeout(timer);
-										proc.kill();
+										terminateChild();
 										resolvePromise({ ok: true, toolsCount: parsed.result.tools.length });
 										return;
 									}
@@ -1101,6 +1125,7 @@ export async function testHermesConnection(
 
 					proc.on("error", (err) => {
 						clearTimeout(timer);
+						terminateChild();
 						resolvePromise({ ok: false, error: err.message });
 					});
 

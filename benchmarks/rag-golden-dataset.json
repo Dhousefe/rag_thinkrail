@@ -414,5 +414,24 @@
       "fitBounds"
     ],
     "ground_truth": "A instabilidade visual decorria de um loop continuo de 32ms chamando rebuildVectorMesh no CPU em neuralEngine.ts para atualizar pulsos senoidais. A solucao removeu o loop continuo, calibrou a escala e opacidade de nos nao relacionados em geometry.ts (0.65 e 0.22) e adicionou fitBounds de camera automatico na carga inicial do grafo em NeuralCorePanel.tsx."
+  },
+  {
+    "id": "tc_27_web-ui_computesemanticfingerprint",
+    "question": "Como o Neural Core calcula a impressão digital semântica anti-plágio e renderiza linhas de dependência pulsantes sem cruzamento 3D?",
+    "query": "computeSemanticFingerprint createVectorConstellationWireframe getPolygonKindForFile",
+    "expected_cluster": "web-ui",
+    "expected_files": [
+      "apps/web/src/panels/neural-core/geometry.ts",
+      "apps/web/src/panels/NeuralCorePanel.tsx",
+      "apps/web/src/panels/neural-core/neuralEngine.ts"
+    ],
+    "expected_symbols": [
+      "computeSemanticFingerprint",
+      "createVectorConstellationWireframe",
+      "getPolygonKindForFile",
+      "resolveFileTypeColor",
+      "NeuralCoreFingerprintCard"
+    ],
+    "ground_truth": "O Neural Core v18 calcula um hash deterministico SHA-256 equiv e entropia de Shannon sobre os nos e arestas indexados no RAG para auditoria anti-plagio, atribuindo poligonos 3D e paletas cromaticas distintas por tipo de arquivo, com linhas ortogonais Manhattan multicamada em cotas Y isoladas sem cruzamento 3D e feixes pulsantes direcionais de fluxo."
   }
 ]

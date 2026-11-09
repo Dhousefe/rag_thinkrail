@@ -77,6 +77,7 @@ export class NeuralCoreEngine {
 	public showPcbLines = true;
 	public activeSearchQuery: string | null = null;
 	private currentMotionSpeed = 0.0;
+	private lastPulseMeshUpdate = 0;
 
 	// Telemetria
 	public telemetry: NeuralTelemetryState = {
@@ -254,11 +255,11 @@ export class NeuralCoreEngine {
 	public setSelectedNode(index: number | null) {
 		if (this.selectedNodeIndex !== index) {
 			this.selectedNodeIndex = index;
-			this.rebuildVectorMesh();
+			this.rebuildVectorMesh(performance.now() / 1000);
 		}
 	}
 
-	private rebuildVectorMesh() {
+	private rebuildVectorMesh(overrideAnimTime?: number) {
 		if (this.vectorNodes.length === 0) {
 			this.vectorMesh = null;
 			return;
@@ -277,6 +278,8 @@ export class NeuralCoreEngine {
 				}
 			: null;
 
+		const animTime = overrideAnimTime !== undefined ? overrideAnimTime : now / 1000;
+
 		this.vectorMesh = createVectorConstellationWireframe(
 			filteredNodes,
 			this.vectorEdges,
@@ -285,6 +288,7 @@ export class NeuralCoreEngine {
 			searchingAnim,
 			this.selectedNodeIndex,
 			this.showPcbLines,
+			animTime,
 		);
 		if (this.device) {
 			this.uploadVectorMesh();
@@ -487,7 +491,11 @@ export class NeuralCoreEngine {
 
 			// Se houver polígono sendo buscado no MCP, anima gradativamente frame a frame por 2 segundos
 			if (this.searchingNodeId && now - this.searchAnimStartTime <= this.searchAnimDurationMs) {
-				this.rebuildVectorMesh();
+				this.rebuildVectorMesh(now / 1000);
+			} else if (this.selectedNodeIndex !== null && now - this.lastPulseMeshUpdate >= 32) {
+				// Anima continuamente feixes pulsantes das linhas de dependência e fluxo direcional a ~30 FPS
+				this.lastPulseMeshUpdate = now;
+				this.rebuildVectorMesh(now / 1000);
 			}
 
 			if (!this.isPaused && this.currentMotionSpeed > 0.001) {
@@ -820,6 +828,9 @@ export class NeuralCoreEngine {
 		isMatched: boolean;
 		isSearchingTarget: boolean;
 		methodsCount: number;
+		isSelected?: boolean | undefined;
+		isRelated?: boolean | undefined;
+		relationKind?: "CALLER" | "IMPORT" | "TYPE" | "DEPENDENCY" | undefined;
 	}> {
 		if (!this.showVectorConstellation || this.vectorNodes.length === 0) return [];
 
@@ -891,6 +902,8 @@ export class NeuralCoreEngine {
 			methodsCount: number;
 			importanceScore: number;
 			isSelected: boolean;
+			isRelated: boolean;
+			relationKind?: "CALLER" | "IMPORT" | "TYPE" | "DEPENDENCY" | undefined;
 		}> = [];
 
 		for (const proj of allProjectedNodes) {
@@ -908,6 +921,15 @@ export class NeuralCoreEngine {
 			const isSearchingTarget = this.searchingNodeId === node.id;
 			const methodsCount = node.methods?.length || 0;
 
+			// Determina a tag de relação para classes conectadas ao nó selecionado
+			let relationKind: "CALLER" | "IMPORT" | "TYPE" | "DEPENDENCY" | undefined;
+			if (isRelated && relations) {
+				if (relations.callNeighbors.has(i)) relationKind = "CALLER";
+				else if (relations.importNeighbors.has(i)) relationKind = "IMPORT";
+				else if (relations.typeNeighbors.has(i)) relationKind = "TYPE";
+				else relationKind = "DEPENDENCY";
+			}
+
 			// Checa se está dentro do raio seguro a partir do cursor
 			let isWithinCursorRadius = false;
 			if (cursor) {
@@ -919,12 +941,13 @@ export class NeuralCoreEngine {
 				}
 			}
 
-			// Rótulo só é exibido se:
+			// Rótulo é exibido se:
 			// 1) O nó estiver em hover direto pelo cursor;
 			// 2) O nó estiver selecionado por clique;
-			// 3) For alvo de busca ativa MCP/RAG;
-			// 4) Estiver no raio pequeno do cursor
-			if (!isHovered && !isSelected && !isSearchingTarget && !isWithinCursorRadius) {
+			// 3) O nó for relacionado/conectado ao polígono selecionado;
+			// 4) For alvo de busca ativa MCP/RAG;
+			// 5) Estiver no raio pequeno do cursor
+			if (!isHovered && !isSelected && !isRelated && !isSearchingTarget && !isWithinCursorRadius) {
 				continue;
 			}
 
@@ -932,7 +955,7 @@ export class NeuralCoreEngine {
 			if (isSelected) score += 6000;
 			if (isHovered) score += 5000;
 			if (isSearchingTarget) score += 3000;
-			if (isRelated) score += 1500;
+			if (isRelated) score += 2500;
 			if (isMatched) score += 800;
 			if (isWithinCursorRadius) score += 500;
 
@@ -959,12 +982,15 @@ export class NeuralCoreEngine {
 				methodsCount,
 				importanceScore: score,
 				isSelected,
+				isRelated,
+				relationKind,
 			});
 		}
 
-		// Ordena por prioridade e limita ao máximo de rótulos permitidos
+		// Ordena por prioridade e limita ao máximo de rótulos permitidos (expandido quando há nós relacionados)
 		candidateLabels.sort((a, b) => b.importanceScore - a.importanceScore);
-		const selectedCandidates = candidateLabels.slice(0, maxLabels);
+		const effectiveMax = hasActiveSelection ? Math.max(maxLabels, 32) : maxLabels;
+		const selectedCandidates = candidateLabels.slice(0, effectiveMax);
 
 		// 3. Aplicação do MAGNETISMO DE MESMA POLARIDADE (Repulsão Coulombiana Suave):
 		// Garante que o rótulo NUNCA fique sobreposto em cima de outro polígono vizinho.
@@ -1006,6 +1032,8 @@ export class NeuralCoreEngine {
 			isSearchingTarget: c.isSearchingTarget,
 			methodsCount: c.methodsCount,
 			isSelected: c.isSelected,
+			isRelated: c.isRelated,
+			relationKind: c.relationKind,
 		}));
 	}
 
