@@ -116,14 +116,27 @@ export function ensureHermesEnvironment(): {
 
 	// Se germes.exe não estiver no bin/ do Hermes, tenta copiar dos locais de distribuição
 	const targetGermesExe = join(binDir, "germes.exe");
-	if (!existsSync(targetGermesExe)) {
-		const candidate = resolveGermesExecutable();
-		if (candidate && existsSync(candidate) && resolve(candidate) !== resolve(targetGermesExe)) {
+	const candidate = resolveGermesExecutable();
+	if (candidate && existsSync(candidate)) {
+		const candidateDir = dirname(candidate);
+		if (!existsSync(targetGermesExe) && resolve(candidate) !== resolve(targetGermesExe)) {
 			try {
 				copyFileSync(candidate, targetGermesExe);
 				log.info(`germes.exe copiado com sucesso para: ${targetGermesExe}`);
 			} catch (err) {
 				log.warn(`Não foi possível copiar germes.exe para ${targetGermesExe}: ${err}`);
+			}
+		}
+
+		// Sincroniza DLLs e configurações essenciais para o bin/ do Hermes se existirem na origem
+		for (const helperFile of ["windows_utf8.dll", "vec0.dll", "hermes.properties"]) {
+			const src = join(candidateDir, helperFile);
+			const dst = join(binDir, helperFile);
+			if (existsSync(src) && !existsSync(dst)) {
+				try {
+					copyFileSync(src, dst);
+					log.info(`Dependência ${helperFile} copiada para ${dst}`);
+				} catch {}
 			}
 		}
 	}
@@ -203,6 +216,22 @@ let activeIndexingProgress: HermesIndexingProgress = {
 	estimatedRemainingMs: null,
 	status: "idle",
 };
+
+let activeIndexingChildProcess: import("node:child_process").ChildProcess | null = null;
+
+function killProcessTree(proc: import("node:child_process").ChildProcess | null): void {
+	if (!proc || !proc.pid) return;
+	const pid = proc.pid;
+	try {
+		if (process.platform === "win32") {
+			spawn("taskkill", ["/PID", String(pid), "/T", "/F"], { stdio: "ignore" });
+		} else {
+			proc.kill("SIGTERM");
+		}
+	} catch {
+		// Processo já finalizado
+	}
+}
 
 export function getHermesIndexingProgress(): HermesIndexingProgress {
 	if (activeIndexingProgress.isIndexing && activeIndexingProgress.startTime) {
@@ -519,6 +548,29 @@ export async function reindexHermesProject(
 	}
 
 	const dbPath = join(projectDir, "hermes.db");
+
+	// Mutex de concorrência: se já houver uma indexação ativa para o MESMO projeto, rejeita nova execução
+	if (
+		activeIndexingProgress.isIndexing &&
+		activeIndexingProgress.projectSlug === input.slug &&
+		activeIndexingChildProcess
+	) {
+		log.warn(`Reindexação para [${input.slug}] já em andamento. Ignorando requisição duplicada.`);
+		return {
+			success: true,
+			message: `Reindexação já em andamento para o projeto ${input.slug}.`,
+			projectSlug: input.slug,
+			elapsedMs: activeIndexingProgress.startTime ? Date.now() - activeIndexingProgress.startTime : 0,
+		};
+	}
+
+	// Se houver processo anterior de outro projeto ou travado, mata a árvore antes de iniciar
+	if (activeIndexingChildProcess) {
+		log.info(`Finalizando processo anterior de indexação antes de iniciar novo ciclo.`);
+		killProcessTree(activeIndexingChildProcess);
+		activeIndexingChildProcess = null;
+	}
+
 	log.info(`Iniciando reindexação Hermes para [${input.slug}] no caminho: ${targetPath}`);
 
 	// Inicializa o progresso no singleton do host
@@ -566,6 +618,7 @@ export async function reindexHermesProject(
 					windowsHide: true,
 				},
 			);
+			activeIndexingChildProcess = proc;
 
 			let stdoutBuffer = "";
 			proc.stdout?.on("data", (chunk: Buffer) => {
@@ -609,6 +662,7 @@ export async function reindexHermesProject(
 			});
 
 			proc.on("close", (code) => {
+				activeIndexingChildProcess = null;
 				const totalElapsed = Date.now() - startTime;
 				if (code === 0) {
 					log.info(`Reindexação Hermes para [${input.slug}] concluída em ${totalElapsed}ms`);
@@ -652,6 +706,7 @@ export async function reindexHermesProject(
 			});
 
 			proc.on("error", (err) => {
+				activeIndexingChildProcess = null;
 				log.error(`Erro ao disparar processo de reindexação Hermes: ${err}`);
 				activeIndexingProgress = {
 					...activeIndexingProgress,
@@ -977,9 +1032,10 @@ export async function testHermesConnection(
 
 					const targetWorkspace =
 						process.env.HERMES_WORKSPACE_ROOT ||
+						process.cwd() ||
 						(existsSync("D:/Projet_Thinkrail/source/thinkrail")
 							? "D:/Projet_Thinkrail/source/thinkrail"
-							: process.cwd());
+							: homedir());
 
 					const proc = spawn(cmd, args, {
 						cwd: targetWorkspace,
@@ -990,6 +1046,20 @@ export async function testHermesConnection(
 						},
 						stdio: ["pipe", "pipe", "ignore"],
 						windowsHide: true,
+					});
+
+					const safeWrite = (data: string): void => {
+						try {
+							if (proc.stdin && !proc.stdin.destroyed && proc.stdin.writable) {
+								proc.stdin.write(data, () => {});
+							}
+						} catch {
+							// Ignora erros de escrita caso o pipe tenha sido fechado
+						}
+					};
+
+					proc.stdin?.on("error", () => {
+						// Absorve EPIPE ou outras falhas de stream no stdin do processo filho
 					});
 
 					let stdoutData = "";
@@ -1010,7 +1080,7 @@ export async function testHermesConnection(
 										result?: { serverInfo?: unknown; tools?: unknown[] };
 									};
 									if (parsed.id === 1 && parsed.result?.serverInfo) {
-										proc.stdin?.write(
+										safeWrite(
 											JSON.stringify({
 												jsonrpc: "2.0",
 												id: 2,
@@ -1034,7 +1104,7 @@ export async function testHermesConnection(
 						resolvePromise({ ok: false, error: err.message });
 					});
 
-					proc.stdin?.write(
+					safeWrite(
 						JSON.stringify({
 							jsonrpc: "2.0",
 							id: 1,

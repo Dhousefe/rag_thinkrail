@@ -279,5 +279,123 @@
       "get_project_l0_index"
     ],
     "ground_truth": "O ThinkRail opera em tres aneis (engine host, typed wire, web UI), com Neural Core 3D em WebGL renderizando topologia PCB e pulsos de dependencia em tempo real, acompanhado do protocolo L0-L1-L2 para contencao de tokens no Hermes RAG."
+  },
+  {
+    "id": "tc_19_server-engine_runincrementalreindex",
+    "question": "Como o ThinkRail previne congelamentos de IPC e colisoes de concorrencia na reindexacao e no daemon Jina?",
+    "query": "rag reindex ipc throttling mutex process tree jina heartbeat",
+    "expected_cluster": "server-engine",
+    "expected_files": [
+      "scripts/rag-reindex.ts",
+      "packages/server/src/host/hermes.ts",
+      "packages/server/src/embeddings/jinaServerManager.ts"
+    ],
+    "expected_symbols": [
+      "runIncrementalReindex",
+      "reindexHermesProject",
+      "killProcessTree",
+      "JinaServerManager"
+    ],
+    "ground_truth": "O ThinkRail utiliza throttling de PROGRESS a cada 25 arquivos ou 150ms no rag-reindex.ts com backoff para SQLITE_BUSY, mutex de processo por slug no hermes.ts com taskkill /PID /T /F no Windows, e janela tolerante de 3 falhas de heartbeat no JinaServerManager."
+  },
+  {
+    "id": "tc_20_server-engine_safewrite",
+    "question": "Por que o ThinkRail estava fechando subitamente sem logs de erro no terminal?",
+    "query": "uncaughtException EPIPE broken pipe hermes mcp probe crashLog",
+    "expected_cluster": "server-engine",
+    "expected_files": [
+      "packages/server/src/host/hermes.ts",
+      "packages/server/src/host/crashLog.ts"
+    ],
+    "expected_symbols": [
+      "safeWrite",
+      "probeResult",
+      "installCrashLog"
+    ],
+    "ground_truth": "O probe do Hermes MCP em hermes.ts tentava escrever no stdin do subprocesso sem verificar se proc.stdin estava writable e sem listener on('error'). Quando o processo encerrava ou fechava o pipe, o Node/Bun disparava EPIPE uncaughtException, acionando installCrashLog que encerrava o processo com process.exit(1). A correcao foi adicionar safeWrite e listener de erro no stdin."
+  },
+  {
+    "id": "tc_21_cli-host_create_desktop_shortcut",
+    "question": "Como criar instalador nativo profissional em C para ThinkRail e Hermes sem violar limite de 100MB do GitHub?",
+    "query": "installer Setup-ThinkRail gcc Win32 IShellLink hermes projects jina-env",
+    "expected_cluster": "cli-host",
+    "expected_files": [
+      "apps/cli/dist/instalador/installer.c",
+      "apps/cli/dist/Setup-ThinkRail.exe",
+      "apps/cli/dist/setup-ambiente.bat"
+    ],
+    "expected_symbols": [
+      "create_desktop_shortcut",
+      "create_dir_if_not_exists",
+      "copy_file_safe"
+    ],
+    "ground_truth": "Desenvolvido instalador nativo compilado com GCC em C utilizando Win32 API e IShellLinkW para criar atalhos, gerenciar pastas ~/.hermes/projects e sincronizar binarios nativos germes.exe e DLLs, com download sob demanda de modelos Jina Code ONNX contornando limites do GitHub."
+  },
+  {
+    "id": "tc_22_cli-host_mainicon",
+    "question": "Como compilar e assinar digitalmente executaveis nativos com GCC, windres e certificado Dhousefe?",
+    "query": "windres resource.rc Logo.ico Set-AuthenticodeSignature Dhousefe Code Signing",
+    "expected_cluster": "cli-host",
+    "expected_files": [
+      "apps/cli/dist/instalador/resource.rc",
+      "apps/cli/dist/instalador/Setup-ThinkRail.exe",
+      "apps/cli/dist/Setup-ThinkRail.exe"
+    ],
+    "expected_symbols": [
+      "MAINICON",
+      "VERSIONINFO",
+      "Set-AuthenticodeSignature"
+    ],
+    "ground_truth": "Compilacao de recursos Win32 com windres embutindo Logo.ico e metadados de versao Dhousefe, linkagem com GCC e assinatura digital Authenticode SHA256 usando o certificado Dhousefe Code Signing Certificate valido ate 2031."
+  },
+  {
+    "id": "tc_23_cli-host_brandwindowsexecutable",
+    "question": "Como aplicar Logo.ico e assinatura digital Authenticode no executavel compilado germes.exe?",
+    "query": "brandWindowsExecutable resedit germes.exe Logo.ico Set-AuthenticodeSignature Dhousefe",
+    "expected_cluster": "cli-host",
+    "expected_files": [
+      "scripts/brand-germes-executable.ts",
+      "apps/cli/dist/germes.exe"
+    ],
+    "expected_symbols": [
+      "brandWindowsExecutable",
+      "Set-AuthenticodeSignature"
+    ],
+    "ground_truth": "Utilizado script scripts/brand-germes-executable.ts baseado em resedit para injetar o Logo.ico e metadados de versao Dhousefe no executavel PE germes.exe e posteriormente assinado com Set-AuthenticodeSignature SHA256 usando o certificado Dhousefe Code Signing Certificate valido ate 2031."
+  },
+  {
+    "id": "tc_24_cli-host_create_dir",
+    "question": "Como empacotar e disponibilizar binarios e instaladores nativos para Linux no pacote de distribuicao do ThinkRail?",
+    "query": "installer_linux setup-ambiente.sh thinkrail germes.jar index.js dist",
+    "expected_cluster": "cli-host",
+    "expected_files": [
+      "apps/cli/dist/instalador/installer_linux.c",
+      "apps/cli/dist/setup-ambiente.sh",
+      "apps/cli/dist/thinkrail",
+      "apps/cli/dist/index.js"
+    ],
+    "expected_symbols": [
+      "create_dir",
+      "print_banner",
+      "setup-ambiente.sh"
+    ],
+    "ground_truth": "Desenvolvido instalador nativo POSIX em C installer_linux.c com Makefile, instalador em shell script setup-ambiente.sh de 1-clique para distros Linux, lancador thinkrail executavel e bundle standalone index.js de 30MB para execucao direta em Linux com Bun ou Node.js, alem de germes.jar para o runtime Hermes multiplataforma."
+  },
+  {
+    "id": "tc_25_root_progressiverag",
+    "question": "Como funciona o protocolo RAG progressivo L0-L1-L2 e onde ficam os materiais de divulgacao tecnica para L2JBrasil?",
+    "query": "RAG progressivo L0 L1 L2 postagem l2jbrasil diagramas",
+    "expected_cluster": "root",
+    "expected_files": [
+      "doc/desenvolvimento/postagem/post_l2jbrasil_markdown.md",
+      "doc/desenvolvimento/postagem/post_l2jbrasil_bbcode.txt",
+      "doc/desenvolvimento/postagem/diagramas.md"
+    ],
+    "expected_symbols": [
+      "ProgressiveRAG",
+      "HermesRAG",
+      "L2JBrasil"
+    ],
+    "ground_truth": "O protocolo RAG progressivo L0-L1-L2 contem o uso de tokens por niveis (L0 < 250 tok, L1 300-800 tok, L2 < 600 tok). Os materiais didaticos e tecnicos estao salvos em doc/desenvolvimento/postagem/ em versoes Markdown, BBCode e diagramas Mermaid."
   }
 ]

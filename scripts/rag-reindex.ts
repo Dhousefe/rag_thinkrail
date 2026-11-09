@@ -94,7 +94,8 @@ export async function runIncrementalReindex(options: ReindexOptions = {}) {
 
 	const db = new Database(dbPath);
 	db.run("PRAGMA journal_mode = WAL;");
-	db.run("PRAGMA busy_timeout = 60000;");
+	db.run("PRAGMA synchronous = NORMAL;");
+	db.run("PRAGMA busy_timeout = 30000;");
 	db.run("PRAGMA foreign_keys = OFF;");
 
 	// Garante schema inicial caso seja um banco novo
@@ -223,12 +224,11 @@ export async function runIncrementalReindex(options: ReindexOptions = {}) {
 	let indexed = 0;
 	let chunksTotal = 0;
 	let processed = 0;
+	let lastProgressEmitTime = 0;
 
 	for (const filePath of uniqueFiles) {
 		processed++;
 		const relPath = relative(workspaceRoot, filePath) || filePath;
-		// Emite evento de progresso padronizado para o servidor
-		console.log(`PROGRESS:${processed}:${totalFiles}:${relPath}`);
 
 		if (!existsSync(filePath)) continue;
 		const stats = statSync(filePath);
@@ -237,10 +237,23 @@ export async function runIncrementalReindex(options: ReindexOptions = {}) {
 		const hash = sha256(content);
 
 		const existingEntry = existingFilesMap.get(filePath);
-		if (existingEntry && existingEntry.sha256 === hash && existingEntry.mtime_ms === mtime) {
+		const isUnchanged =
+			existingEntry && existingEntry.sha256 === hash && existingEntry.mtime_ms === mtime;
+
+		if (isUnchanged) {
 			skipped++;
+			// Throttling inteligente: só emite PROGRESS para arquivos inalterados a cada 25 itens ou a cada 150ms
+			const now = Date.now();
+			if (processed === totalFiles || processed % 25 === 0 || now - lastProgressEmitTime >= 150) {
+				lastProgressEmitTime = now;
+				console.log(`PROGRESS:${processed}:${totalFiles}:${relPath}`);
+			}
 			continue;
 		}
+
+		// Arquivo alterado ou novo: emite PROGRESS imediatamente
+		lastProgressEmitTime = Date.now();
+		console.log(`PROGRESS:${processed}:${totalFiles}:${relPath}`);
 
 		const fileId = existingEntry ? existingEntry.id : sha256(`${projectSlug}|${filePath}`);
 
@@ -318,14 +331,15 @@ export async function runIncrementalReindex(options: ReindexOptions = {}) {
 
 		let fileChunks = 0;
 		let attempts = 0;
-		while (attempts < 5) {
+		while (attempts < 6) {
 			try {
 				fileChunks = indexFileTx();
 				break;
 			} catch (err: any) {
-				if (err?.code === "SQLITE_BUSY" && attempts < 4) {
+				if (err?.code === "SQLITE_BUSY" && attempts < 5) {
 					attempts++;
-					const waitMs = 50 * attempts;
+					// Exponential backoff suave com jitter para liberar fila concorrente
+					const waitMs = 50 * (2 ** (attempts - 1)) + Math.floor(Math.random() * 40);
 					Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, waitMs);
 					continue;
 				}
