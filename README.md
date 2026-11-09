@@ -3,7 +3,7 @@
 [![Projeto Incubadora JetBrains](https://jb.gg/badges/incubator-plastic.svg)](https://confluence.jetbrains.com/display/ALL/JetBrains+on+GitHub)
 [![GitHub stars](https://img.shields.io/github/stars/JetBrains/thinkrail?style=social)](https://star-history.com/#JetBrains/thinkrail&Date)
 [![Discord](https://img.shields.io/badge/Discord-Entrar%20no%20chat-5865F2?logo=discord&logoColor=white)](https://thinkrail.ai/discord)
-[![Versão](https://img.shields.io/badge/version-14.0.2-blue.svg)](packages/shared/src/version.ts)
+[![Versão](https://img.shields.io/badge/version-16.0.2-blue.svg)](packages/shared/src/version.ts)
 [![Engine](https://img.shields.io/badge/engine-pi--coding--agent-orange.svg)](https://www.npmjs.com/package/@earendil-works/pi-coding-agent)
 
 O **ThinkRail** é a IDE agêntica de nova geração que evolui a cada uso — aprendendo a arquitetura do seu projeto através de especificações vivas (*living specs*), inspecionando código e interfaces visualmente com IA multimodal e sintetizando suas próprias ferramentas de forma autônoma.
@@ -253,7 +253,7 @@ bun run rag:prune     # Purga registros órfãos de arquivos deletados ou movido
 ### Geração do Binário Standalone (V14)
 ```bash
 # Compila a Web UI e empacota o executável single-file nativo com sufixo de versão
-bun run build:binary  # Gera apps/cli/dist/thinkrail-v14.0.2.exe
+bun run build:binary  # Gera apps/cli/dist/thinkrail-v16.0.0.exe
 ```
 
 ### Validação Visual com Gravação de GIF
@@ -279,7 +279,7 @@ O ThinkRail está disponível como instalador de desktop nativo e como binário 
 
 ### Versão Desktop & Binários Autônomos
 Faça o download do pacote da sua plataforma na [página de lançamentos](https://github.com/JetBrains/thinkrail/releases):
-- **Windows (x64):** Execute o instalador `thinkrail-setup.exe` ou o binário autônomo V14 (`thinkrail.exe` / `thinkrail-v14.0.2.exe`).
+- **Windows (x64):** Execute o instalador `thinkrail-setup.exe` ou o binário autônomo V16 (`thinkrail.exe` / `thinkrail-v16.0.0.exe`).
 - **macOS 14+ (Apple Silicon ou Intel):** Abra o arquivo DMG correspondente ou execute o binário nativo.
 - **Linux (x64 / arm64):** Pacotes AppImage ou binários autônomos.
 

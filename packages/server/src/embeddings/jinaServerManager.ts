@@ -1,7 +1,7 @@
 import { type ChildProcess, spawn } from "node:child_process";
 import { existsSync } from "node:fs";
 import { homedir } from "node:os";
-import { join, resolve } from "node:path";
+import { dirname, join, resolve } from "node:path";
 import type {
 	JinaEngineMode,
 	JinaIntegrityTestResult,
@@ -207,18 +207,27 @@ export class JinaServerManager {
 			candidateDirs.push(resolve(envDir));
 		}
 
-		// Diretórios prioritários e relativos ao repositório
+		const execDir = dirname(process.execPath);
+
+		// Diretórios prioritários portáteis (ao lado do executável ThinkRail ou em subdiretórios)
 		candidateDirs.push(
-			"D:\\Projeto_Germes\\hermes-3.0",
-			"D:/Projeto_Germes/hermes-3.0",
+			execDir,
+			join(execDir, "hermes"),
+			join(execDir, "jina"),
+			join(execDir, "dist"),
+			join(execDir, "apps", "cli", "dist"),
+			resolve(cwd),
 			resolve(cwd, "hermes"),
 			resolve(cwd, "hermes-3.0"),
+			resolve(cwd, "apps", "cli", "dist"),
+			resolve(cwd, "dist"),
 			resolve(cwd, "..", "hermes"),
 			resolve(cwd, "..", "hermes-3.0"),
-			resolve(cwd, "..", "..", "hermes"),
-			resolve(cwd, "..", "..", "hermes-3.0"),
 			resolve(home, ".hermes"),
 			resolve(home, ".hermes", "hermes-3.0"),
+			// Fallbacks de desenvolvimento local caso ainda existam
+			"D:\\Projeto_Germes\\hermes-3.0",
+			"D:/Projeto_Germes/hermes-3.0",
 		);
 
 		for (const baseDir of candidateDirs) {

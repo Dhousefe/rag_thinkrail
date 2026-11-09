@@ -116,14 +116,27 @@ export function ensureHermesEnvironment(): {
 
 	// Se germes.exe não estiver no bin/ do Hermes, tenta copiar dos locais de distribuição
 	const targetGermesExe = join(binDir, "germes.exe");
-	if (!existsSync(targetGermesExe)) {
-		const candidate = resolveGermesExecutable();
-		if (candidate && existsSync(candidate) && resolve(candidate) !== resolve(targetGermesExe)) {
+	const candidate = resolveGermesExecutable();
+	if (candidate && existsSync(candidate)) {
+		const candidateDir = dirname(candidate);
+		if (!existsSync(targetGermesExe) && resolve(candidate) !== resolve(targetGermesExe)) {
 			try {
 				copyFileSync(candidate, targetGermesExe);
 				log.info(`germes.exe copiado com sucesso para: ${targetGermesExe}`);
 			} catch (err) {
 				log.warn(`Não foi possível copiar germes.exe para ${targetGermesExe}: ${err}`);
+			}
+		}
+
+		// Sincroniza DLLs e configurações essenciais para o bin/ do Hermes se existirem na origem
+		for (const helperFile of ["windows_utf8.dll", "vec0.dll", "hermes.properties"]) {
+			const src = join(candidateDir, helperFile);
+			const dst = join(binDir, helperFile);
+			if (existsSync(src) && !existsSync(dst)) {
+				try {
+					copyFileSync(src, dst);
+					log.info(`Dependência ${helperFile} copiada para ${dst}`);
+				} catch {}
 			}
 		}
 	}
@@ -1019,9 +1032,10 @@ export async function testHermesConnection(
 
 					const targetWorkspace =
 						process.env.HERMES_WORKSPACE_ROOT ||
+						process.cwd() ||
 						(existsSync("D:/Projet_Thinkrail/source/thinkrail")
 							? "D:/Projet_Thinkrail/source/thinkrail"
-							: process.cwd());
+							: homedir());
 
 					const proc = spawn(cmd, args, {
 						cwd: targetWorkspace,
@@ -1032,6 +1046,20 @@ export async function testHermesConnection(
 						},
 						stdio: ["pipe", "pipe", "ignore"],
 						windowsHide: true,
+					});
+
+					const safeWrite = (data: string): void => {
+						try {
+							if (proc.stdin && !proc.stdin.destroyed && proc.stdin.writable) {
+								proc.stdin.write(data, () => {});
+							}
+						} catch {
+							// Ignora erros de escrita caso o pipe tenha sido fechado
+						}
+					};
+
+					proc.stdin?.on("error", () => {
+						// Absorve EPIPE ou outras falhas de stream no stdin do processo filho
 					});
 
 					let stdoutData = "";
@@ -1052,7 +1080,7 @@ export async function testHermesConnection(
 										result?: { serverInfo?: unknown; tools?: unknown[] };
 									};
 									if (parsed.id === 1 && parsed.result?.serverInfo) {
-										proc.stdin?.write(
+										safeWrite(
 											JSON.stringify({
 												jsonrpc: "2.0",
 												id: 2,
@@ -1076,7 +1104,7 @@ export async function testHermesConnection(
 						resolvePromise({ ok: false, error: err.message });
 					});
 
-					proc.stdin?.write(
+					safeWrite(
 						JSON.stringify({
 							jsonrpc: "2.0",
 							id: 1,
