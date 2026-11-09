@@ -17,6 +17,7 @@ import {
 	RiEyeOffLine,
 	RiFileCodeLine,
 	RiFileCopyLine,
+	RiFingerprintLine,
 	RiFocus3Line,
 	RiLoader4Line,
 	RiNodeTree,
@@ -41,9 +42,11 @@ import { projectRelativePath } from "../lib";
 import { OrbitCameraController } from "./neural-core/cameraController";
 import {
 	NeuralCoreChunksView,
+	NeuralCoreFingerprintCard,
 	NeuralCoreNodeOverview,
 	NeuralCoreSearchBox,
 } from "./neural-core/components";
+import { computeSemanticFingerprint } from "./neural-core/geometry";
 import { NeuralCoreEngine } from "./neural-core/neuralEngine";
 import { resolvePivotNode } from "./neural-core/resolvePivotNode";
 import { useNeuralCoreState } from "./neural-core/useNeuralCoreState";
@@ -93,7 +96,7 @@ export function NeuralCorePanel() {
 	const { state, pulseKey } = useNeuralCoreState();
 	const [manualQuery, setManualQuery] = useState("");
 	const [isPaused, setIsPaused] = useState(false);
-	const [showPcbLines, setShowPcbLines] = useState(true);
+	const [showFingerprintCard, setShowFingerprintCard] = useState(false);
 	const [isBottomPanelCollapsed, setIsBottomPanelCollapsed] = useState(false);
 	const [isBottomPanelCompletelyHidden, setIsBottomPanelCompletelyHidden] = useState(false);
 	const [remoteSearchMatches, setRemoteSearchMatches] = useState<HermesVectorNode[]>([]);
@@ -119,6 +122,11 @@ export function NeuralCorePanel() {
 	// Estatísticas de Classes e Arquivos dos Projetos Ativos
 	const [classStats, setClassStats] = useState<HermesClassStatsResult | null>(null);
 	const [isLoadingStats, setIsLoadingStats] = useState(false);
+
+	// Impressão Digital Semântica e Auditor Anti-Plágio do Repositório (Calculado a partir do Grafo RAG)
+	const semanticFingerprint = useMemo(() => {
+		return computeSemanticFingerprint(vectorNodes, vectorEdges);
+	}, [vectorNodes, vectorEdges]);
 
 	// Batch Loader (Carregador em Lote Progressivo)
 	const [selectedProjectFilter, setSelectedProjectFilter] = useState<string>("all");
@@ -767,19 +775,6 @@ export function NeuralCorePanel() {
 		toast.info("Visão Zenital PCB Ativada", "Plano de circuito impresso de nós");
 	};
 
-	const handleTogglePcbLines = () => {
-		setShowPcbLines((prev) => {
-			const next = !prev;
-			engineRef.current?.setShowPcbLines(next);
-			if (next) {
-				toast.info("Trilhas PCB Visíveis", "Trilhas ortogonais de circuito Manhattan ativadas");
-			} else {
-				toast.info("Trilhas PCB Ocultadas", "Cena desobstruída: polígonos e nós em foco total");
-			}
-			return next;
-		});
-	};
-
 	const handleFitAll = useCallback(() => {
 		if (vectorNodes.length > 0) {
 			const positions = vectorNodes.map((n) => n.position);
@@ -1064,11 +1059,19 @@ export function NeuralCorePanel() {
 							className={`absolute -translate-x-1/2 -translate-y-1/2 flex items-center gap-4 rounded border px-6 py-2 backdrop-blur-md transition-all select-none pointer-events-auto ${
 								isNodeSelected
 									? "bg-container-elevated-bg border-primary shadow-xl scale-110 z-40 opacity-100 ring-2 ring-primary text-text-default"
-									: item.isHovered
-										? "bg-container-elevated-bg border-primary shadow-lg scale-105 z-30 opacity-100 ring-1 ring-primary text-text-default"
-										: item.isMatched
-											? "bg-container-elevated-bg border-feedback-warning shadow-md scale-105 z-20 opacity-95 text-feedback-warning"
-											: `bg-container-elevated-bg ${modStyle.border} shadow-sm opacity-85 z-10 text-text-default hover:opacity-100 hover:border-primary`
+									: item.isRelated
+										? item.relationKind === "CALLER"
+											? "bg-container-elevated-bg border-feedback-success shadow-md z-35 opacity-100 ring-1 ring-feedback-success text-text-default scale-105"
+											: item.relationKind === "IMPORT"
+												? "bg-container-elevated-bg border-feedback-info shadow-md z-35 opacity-100 ring-1 ring-feedback-info text-text-default scale-105"
+												: item.relationKind === "TYPE"
+													? "bg-container-elevated-bg border-feedback-warning shadow-md z-35 opacity-100 ring-1 ring-feedback-warning text-text-default scale-105"
+													: "bg-container-elevated-bg border-primary shadow-md z-30 opacity-95 text-text-default scale-100"
+										: item.isHovered
+											? "bg-container-elevated-bg border-primary shadow-lg scale-105 z-30 opacity-100 ring-1 ring-primary text-text-default"
+											: item.isMatched
+												? "bg-container-elevated-bg border-feedback-warning shadow-md scale-105 z-20 opacity-95 text-feedback-warning"
+												: `bg-container-elevated-bg ${modStyle.border} shadow-sm opacity-85 z-10 text-text-default hover:opacity-100 hover:border-primary`
 							}`}
 						>
 							<button
@@ -1103,7 +1106,23 @@ export function NeuralCorePanel() {
 							>
 								<span className={`size-6 rounded-full shrink-0 ${modStyle.dot}`} />
 								<span className="tr-code-text leading-none whitespace-nowrap">{item.label}</span>
-								{item.methodsCount > 0 && !isNodeSelected && (
+								{item.relationKind && (
+									<span
+										className={`tr-code-text tr-text-emphasis px-4 py-2 rounded leading-none ${
+											item.relationKind === "CALLER"
+												? "bg-feedback-success-subtle text-feedback-success border border-feedback-success-muted"
+												: item.relationKind === "IMPORT"
+													? "bg-feedback-info-subtle text-feedback-info border border-feedback-info-muted"
+													: item.relationKind === "TYPE"
+														? "bg-feedback-warning-subtle text-feedback-warning border border-feedback-warning-muted"
+														: "bg-control-bg text-primary border border-border-default"
+										}`}
+										title={`Tipo de relação com nó selecionado: ${item.relationKind}`}
+									>
+										{item.relationKind}
+									</span>
+								)}
+								{item.methodsCount > 0 && !isNodeSelected && !item.relationKind && (
 									<span className="tr-text-metadata text-text-muted leading-none rounded bg-control-bg px-4 py-2">
 										{item.methodsCount}
 									</span>
@@ -1332,6 +1351,26 @@ export function NeuralCorePanel() {
 								<span className="tr-text-emphasis">100% Carregado</span>
 							</div>
 						)}
+
+						{/* Badge e Botão do Auditor Anti-Plágio de Impressão Digital Semântica */}
+						<div className="flex items-center gap-4 ml-2 pl-2 border-l border-border-default">
+							<button
+								type="button"
+								onClick={() => setShowFingerprintCard((prev) => !prev)}
+								className={`flex items-center gap-4 rounded px-6 py-2 transition-all cursor-pointer ${
+									showFingerprintCard
+										? "border border-feedback-success bg-feedback-success-subtle text-feedback-success tr-text-emphasis shadow-sm"
+										: "bg-control-bg text-text-default hover:text-feedback-success hover:border-feedback-success border border-transparent"
+								}`}
+								title={`Impressão Digital Semântica: ${semanticFingerprint.shortHash} (Clique para auditoria anti-plágio)`}
+								aria-label="Auditor Anti-Plágio"
+							>
+								<RiFingerprintLine className="size-12 text-feedback-success animate-pulse" />
+								<span className="tr-code-text text-feedback-success">
+									{semanticFingerprint.shortHash}
+								</span>
+							</button>
+						</div>
 					</div>
 				)}
 
@@ -1389,29 +1428,6 @@ export function NeuralCorePanel() {
 						aria-label="Visão Zenital PCB"
 					>
 						<RiCpuLine className="size-14" />
-					</button>
-
-					{/* Toggle Mostrar/Esconder Linhas de Circuito Impresso PCB */}
-					<button
-						type="button"
-						className={`size-28 flex items-center justify-center rounded p-0 transition-colors ${
-							showPcbLines
-								? "text-primary hover:bg-control-bg"
-								: "text-text-muted hover:text-text-default hover:bg-control-bg opacity-50"
-						}`}
-						onClick={handleTogglePcbLines}
-						title={
-							showPcbLines
-								? "Ocultar Trilhas de PCB (Desobstruir visualização de polígonos)"
-								: "Mostrar Trilhas de PCB (Exibir conexões Manhattan e vias de cobre)"
-						}
-						aria-label="Alternar Trilhas PCB"
-					>
-						{showPcbLines ? (
-							<RiNodeTree className="size-14" />
-						) : (
-							<RiEyeOffLine className="size-14" />
-						)}
 					</button>
 
 					<button
@@ -1496,6 +1512,16 @@ export function NeuralCorePanel() {
 					</button>
 				</div>
 			</div>
+
+			{/* Card Flutuante de Auditoria Anti-Plágio de Impressão Digital Semântica */}
+			{showFingerprintCard && (
+				<div className="absolute top-64 left-12 z-30 pointer-events-auto">
+					<NeuralCoreFingerprintCard
+						fingerprint={semanticFingerprint}
+						onClose={() => setShowFingerprintCard(false)}
+					/>
+				</div>
+			)}
 
 			{/* Painel Inferior de Informações (Exibido apenas quando houver um polígono clicado/selecionado) */}
 			{Boolean(selectedNode) && !isBottomPanelCompletelyHidden && (

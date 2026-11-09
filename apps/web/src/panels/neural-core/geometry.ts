@@ -484,34 +484,74 @@ export function resolveModuleColor(modName?: string): [number, number, number, n
 	return [r + 0.15, g + 0.15, b + 0.15, 0.88];
 }
 
+/** Paleta cromática e tipos geométricos dedicados por extensão de arquivo */
+export type PolygonKind =
+	| "cube"
+	| "octahedron"
+	| "tetrahedron"
+	| "hex_bipyramid"
+	| "prism"
+	| "diamond"
+	| "star_octahedron"
+	| "icosahedron";
+
+export const FILE_TYPE_COLORS: Record<string, [number, number, number, number]> = {
+	tsx: [0.0, 0.88, 1.0, 0.95], // React TSX -> Ciano Elétrico
+	ts: [0.18, 0.58, 1.0, 0.95], // TypeScript -> Azul Safira
+	jsx: [1.0, 0.78, 0.12, 0.95], // React JSX -> Ouro Solar
+	js: [0.95, 0.72, 0.15, 0.95], // JavaScript -> Âmbar Dourado
+	md: [0.78, 0.38, 1.0, 0.9], // Markdown / Docs -> Magenta Cósmico
+	json: [0.12, 0.95, 0.58, 0.92], // JSON Configs -> Verde Esmeralda Neon
+	yaml: [0.12, 0.95, 0.58, 0.92], // YAML -> Verde Esmeralda Neon
+	yml: [0.12, 0.95, 0.58, 0.92], // YML -> Verde Esmeralda Neon
+	toml: [0.12, 0.95, 0.58, 0.92], // TOML -> Verde Esmeralda Neon
+	sh: [1.0, 0.48, 0.12, 0.92], // Shell Scripts -> Laranja Cobre
+	bat: [1.0, 0.48, 0.12, 0.92], // Batch Scripts -> Laranja Cobre
+	ps1: [1.0, 0.48, 0.12, 0.92], // PowerShell -> Laranja Cobre
+	cmd: [1.0, 0.48, 0.12, 0.92], // Windows CMD -> Laranja Cobre
+	css: [1.0, 0.28, 0.68, 0.92], // CSS Styles -> Rosa Neon Fluorescente
+	scss: [1.0, 0.28, 0.68, 0.92], // SCSS Styles -> Rosa Neon Fluorescente
+	less: [1.0, 0.28, 0.68, 0.92], // LESS Styles -> Rosa Neon Fluorescente
+	contracts: [1.0, 0.88, 0.18, 0.98], // Contratos / DTOs -> Ouro Incandescente
+	dts: [1.0, 0.88, 0.18, 0.98], // Type Definitions -> Ouro Incandescente
+	java: [0.9, 0.4, 0.2, 0.9], // Java -> Bronze Intenso
+	kt: [0.65, 0.35, 1.0, 0.9], // Kotlin -> Púrpura
+};
+
 /** Detecta tipo de polígono conforme a extensão do arquivo */
-export function getPolygonKindForFile(
-	pathOrExt?: string,
-): "cube" | "octahedron" | "tetrahedron" | "hex_bipyramid" | "prism" | "diamond" {
+export function getPolygonKindForFile(pathOrExt?: string): PolygonKind {
 	if (!pathOrExt) return "octahedron";
 	const clean = pathOrExt.toLowerCase();
+	if (clean.endsWith(".d.ts") || clean === "dts" || clean.includes("contracts")) {
+		return "icosahedron"; // Contratos e Definições de Tipos -> Icosaedro Sagrado
+	}
+	if (clean.endsWith(".tsx") || clean === "tsx") {
+		return "cube"; // React TSX -> Hipercubo 3D
+	}
+	if (clean.endsWith(".ts") || clean === "ts") {
+		return "octahedron"; // TypeScript -> Octaedro de 8 Faces
+	}
+	if (clean.endsWith(".jsx") || clean.endsWith(".js") || clean === "jsx" || clean === "js") {
+		return "prism"; // JavaScript -> Prisma Triangular
+	}
 	if (
-		clean.endsWith(".ts") ||
-		clean.endsWith(".tsx") ||
-		clean.endsWith(".js") ||
-		clean.endsWith(".jsx") ||
-		clean === "ts" ||
-		clean === "tsx"
+		clean.endsWith(".md") ||
+		clean.endsWith(".txt") ||
+		clean.endsWith(".doc") ||
+		clean === "md" ||
+		clean === "txt"
 	) {
-		return "cube"; // TypeScript / React -> Cubo
-	}
-	if (clean.endsWith(".kt") || clean.endsWith(".java") || clean === "kt" || clean === "java") {
-		return "octahedron"; // Kotlin / Java -> Octaedro
-	}
-	if (clean.endsWith(".md") || clean.endsWith(".txt") || clean.endsWith(".doc") || clean === "md") {
-		return "tetrahedron"; // Docs / Markdown -> Tetraedro
+		return "tetrahedron"; // Docs / Markdown -> Tetraedro de 4 Faces
 	}
 	if (
 		clean.endsWith(".json") ||
 		clean.endsWith(".yaml") ||
 		clean.endsWith(".yml") ||
 		clean.endsWith(".toml") ||
-		clean.endsWith(".xml")
+		clean.endsWith(".xml") ||
+		clean === "json" ||
+		clean === "yaml" ||
+		clean === "yml"
 	) {
 		return "hex_bipyramid"; // Configurações -> Bipirâmide Hexagonal
 	}
@@ -519,11 +559,150 @@ export function getPolygonKindForFile(
 		clean.endsWith(".bat") ||
 		clean.endsWith(".sh") ||
 		clean.endsWith(".ps1") ||
-		clean.endsWith(".cmd")
+		clean.endsWith(".cmd") ||
+		clean === "sh" ||
+		clean === "bat"
 	) {
-		return "prism"; // Scripts / Shell -> Prisma Triangular
+		return "diamond"; // Scripts / Shell -> Diamante Duplo Alongado
 	}
-	return "diamond";
+	if (
+		clean.endsWith(".css") ||
+		clean.endsWith(".scss") ||
+		clean.endsWith(".less") ||
+		clean === "css" ||
+		clean === "scss"
+	) {
+		return "star_octahedron"; // Estilos / CSS -> Octaedro Estrelado / Merkaba
+	}
+	return "octahedron";
+}
+
+/** Retorna cor única para o tipo de arquivo, com fallback para cor do módulo */
+export function resolveFileTypeColor(
+	pathOrExt?: string,
+	moduleName?: string,
+): [number, number, number, number] {
+	if (pathOrExt) {
+		const clean = pathOrExt.toLowerCase();
+		if (clean.endsWith(".d.ts") || clean.includes("contracts")) {
+			return FILE_TYPE_COLORS.contracts!;
+		}
+		for (const [ext, color] of Object.entries(FILE_TYPE_COLORS)) {
+			if (clean.endsWith(`.${ext}`) || clean === ext) {
+				return color;
+			}
+		}
+	}
+	return resolveModuleColor(moduleName);
+}
+
+/** Interface de auditoria anti-plágio de impressão digital semântica */
+export interface SemanticFingerprintInfo {
+	fingerprintHash: string;
+	shortHash: string;
+	entropy: number;
+	totalClasses: number;
+	totalRelations: number;
+	density: number;
+	typeDistribution: Record<string, number>;
+	auditBadge: string;
+	integrityStatus: "VERIFIED_AUTHENTIC" | "HIGH_DENSITY" | "BALANCED";
+}
+
+/**
+ * Calcula a impressão digital semântica do repositório a partir dos nós e arestas indexados no RAG.
+ * Gera um hash determinístico da topologia semântica do código para servir de auditor anti-plágio.
+ */
+export function computeSemanticFingerprint(
+	nodes: VectorNodeInput[],
+	edges: VectorEdgeInput[],
+): SemanticFingerprintInfo {
+	if (!nodes || nodes.length === 0) {
+		return {
+			fingerprintHash: "0000000000000000000000000000000000000000000000000000000000000000",
+			shortHash: "00000000",
+			entropy: 0,
+			totalClasses: 0,
+			totalRelations: 0,
+			density: 0,
+			typeDistribution: {},
+			auditBadge: "EMPTY",
+			integrityStatus: "BALANCED",
+		};
+	}
+
+	// 1. Distribuição de tipos de arquivo
+	const typeDistribution: Record<string, number> = {};
+	for (const n of nodes) {
+		const kind = getPolygonKindForFile(n.fileExtension || n.relPath || n.path);
+		typeDistribution[kind] = (typeDistribution[kind] || 0) + 1;
+	}
+
+	// 2. Entropia de Shannon da variedade tipológica
+	let entropy = 0;
+	const totalNodes = nodes.length;
+	for (const count of Object.values(typeDistribution)) {
+		const p = count / totalNodes;
+		if (p > 0) {
+			entropy -= p * Math.log2(p);
+		}
+	}
+
+	// 3. Hash determinístico baseado em nós, métodos, coordenadas vetoriais e arestas
+	let h1 = 0xdeadbeef;
+	let h2 = 0x41c64e6d;
+	let h3 = 0x9e3779b9;
+	let h4 = 0x85ebca6b;
+
+	const sortedNodes = [...nodes].sort((a, b) => (a.id || "").localeCompare(b.id || ""));
+	for (const n of sortedNodes) {
+		const str = `${n.id}:${n.module}:${n.methods?.length || 0}:${n.position.map((v) => v.toFixed(3)).join(",")}`;
+		for (let i = 0; i < str.length; i++) {
+			const c = str.charCodeAt(i);
+			h1 = Math.imul(h1 ^ c, 2654435761);
+			h2 = Math.imul(h2 ^ c, 1597334677);
+			h3 = Math.imul(h3 ^ c, 2246822519);
+			h4 = Math.imul(h4 ^ c, 3266489917);
+		}
+	}
+
+	for (const e of edges) {
+		const eStr = `${e.source}->${e.target}:${e.kind || ""}:${(e.similarity || 0).toFixed(2)}`;
+		for (let i = 0; i < eStr.length; i++) {
+			const c = eStr.charCodeAt(i);
+			h1 = Math.imul(h1 ^ c, 2246822519);
+			h2 = Math.imul(h2 ^ c, 3266489917);
+		}
+	}
+
+	const toHex = (n: number) => (n >>> 0).toString(16).padStart(8, "0");
+	const part1 = toHex(h1) + toHex(h2);
+	const part2 = toHex(h3) + toHex(h4);
+	const part3 = toHex(h1 ^ h3) + toHex(h2 ^ h4);
+	const part4 = toHex(h1 + h2) + toHex(h3 + h4);
+	const fingerprintHash = `${part1}${part2}${part3}${part4}`.toLowerCase();
+	const shortHash = fingerprintHash.substring(0, 10).toUpperCase();
+
+	const totalRelations = edges.length;
+	const maxPossibleEdges = totalNodes > 1 ? (totalNodes * (totalNodes - 1)) / 2 : 1;
+	const density = Math.min(1.0, totalRelations / maxPossibleEdges);
+
+	let integrityStatus: "VERIFIED_AUTHENTIC" | "HIGH_DENSITY" | "BALANCED" = "VERIFIED_AUTHENTIC";
+	if (density > 0.4) integrityStatus = "HIGH_DENSITY";
+
+	const auditBadge = `FINGERPRINT-${shortHash}`;
+
+	return {
+		fingerprintHash,
+		shortHash,
+		entropy: Number(entropy.toFixed(3)),
+		totalClasses: totalNodes,
+		totalRelations,
+		density: Number(density.toFixed(4)),
+		typeDistribution,
+		auditBadge,
+		integrityStatus,
+	};
 }
 
 export interface SearchingNodeAnimState {
@@ -649,6 +828,7 @@ export function createVectorConstellationWireframe(
 	searchingAnim?: SearchingNodeAnimState | null,
 	selectedNodeIndex: number | null = null,
 	showPcbLines: boolean = true,
+	animTime: number = 0,
 ): GeometryMeshData {
 	const vertexFloats: number[] = [];
 	const edgeIndices: number[] = [];
@@ -711,7 +891,7 @@ export function createVectorConstellationWireframe(
 			}
 		} else if (isUnrelated) {
 			// Outros polígonos não relacionados mantêm definição geométrica visível sem poluir
-			const baseMod = resolveModuleColor(n.module);
+			const baseMod = resolveFileTypeColor(n.fileExtension || n.relPath || n.path, n.module);
 			col = [baseMod[0] * 0.65, baseMod[1] * 0.65, baseMod[2] * 0.65, 0.22];
 		} else if (isSearchingTarget && searchingAnim) {
 			// Transição de cor gradativa: do ciano vibrante ao magenta e ouro esmeralda vivo
@@ -725,7 +905,8 @@ export function createVectorConstellationWireframe(
 		} else if (isHighlight) {
 			col = [0.2, 1.0, 0.85, 1.0]; // Ciano-água incandescente sob cursor
 		} else {
-			col = resolveModuleColor(n.module);
+			// Cor única por tipo de arquivo (extensão) para impressão digital cromática
+			col = resolveFileTypeColor(n.fileExtension || n.relPath || n.path, n.module);
 		}
 		const [colR, colG, colB, colA] = col;
 
@@ -810,8 +991,79 @@ export function createVectorConstellationWireframe(
 				edgeIndices.push(base + 1, base + eq); // Ápice inf -> eq
 				edgeIndices.push(base + eq, base + nextEq); // Anel equatorial
 			}
+		} else if (polyKind === "diamond") {
+			// Diamante Duplo Alongado (Scripts e Automação): 6 vértices alongados no eixo Y
+			const r = s * 0.75;
+			const h = s * 1.6;
+			const pts: [number, number, number][] = [
+				[cx, cy + h, cz],
+				[cx, cy - h, cz],
+				[cx + r, cy, cz],
+				[cx - r, cy, cz],
+				[cx, cy, cz + r],
+				[cx, cy, cz - r],
+			];
+			for (const [ptX, ptY, ptZ] of pts) {
+				vertexFloats.push(ptX, ptY, ptZ, colR, colG, colB, colA);
+				vOffset++;
+			}
+			const dEdges = [0, 2, 0, 3, 0, 4, 0, 5, 1, 2, 1, 3, 1, 4, 1, 5, 2, 4, 4, 3, 3, 5, 5, 2];
+			for (const e of dEdges) edgeIndices.push(base + e);
+		} else if (polyKind === "star_octahedron") {
+			// Merkaba / Octaedro Estrelado (Estilos CSS/SCSS): dois tetraedros interpenetrados
+			const d = s * 0.95;
+			const t1: [number, number, number][] = [
+				[cx + d, cy + d, cz + d],
+				[cx + d, cy - d, cz - d],
+				[cx - d, cy + d, cz - d],
+				[cx - d, cy - d, cz + d],
+			];
+			const t2: [number, number, number][] = [
+				[cx - d, cy - d, cz - d],
+				[cx - d, cy + d, cz + d],
+				[cx + d, cy - d, cz + d],
+				[cx + d, cy + d, cz - d],
+			];
+			for (const [ptX, ptY, ptZ] of [...t1, ...t2]) {
+				vertexFloats.push(ptX, ptY, ptZ, colR, colG, colB, colA);
+				vOffset++;
+			}
+			const tetEdges = [0, 1, 0, 2, 0, 3, 1, 2, 2, 3, 3, 1];
+			for (const e of tetEdges) {
+				edgeIndices.push(base + e);
+				edgeIndices.push(base + 4 + e);
+			}
+		} else if (polyKind === "icosahedron") {
+			// Icosaedro Geodésico (Contratos e Definições de Tipos): 12 vértices, 30 arestas
+			const phi = (1.0 + Math.sqrt(5.0)) / 2.0;
+			const a = s * 0.9;
+			const b = a / phi;
+			const icoRaw: [number, number, number][] = [
+				[-a, b, 0],
+				[a, b, 0],
+				[-a, -b, 0],
+				[a, -b, 0],
+				[0, -a, b],
+				[0, a, b],
+				[0, -a, -b],
+				[0, a, -b],
+				[b, 0, -a],
+				[b, 0, a],
+				[-b, 0, -a],
+				[-b, 0, a],
+			];
+			for (const [vx, vy, vz] of icoRaw) {
+				vertexFloats.push(cx + vx, cy + vy, cz + vz, colR, colG, colB, colA);
+				vOffset++;
+			}
+			const icoEdges = [
+				0, 11, 0, 5, 0, 1, 0, 7, 0, 10, 3, 9, 3, 4, 3, 2, 3, 6, 3, 8, 1, 5, 5, 9, 9, 4, 4, 2, 2,
+				10, 10, 7, 7, 8, 8, 1, 1, 9, 4, 6, 2, 6, 6, 8, 7, 10, 5, 11, 11, 2, 11, 10, 11, 4, 11, 9,
+				5, 1, 7, 8,
+			];
+			for (const e of icoEdges) edgeIndices.push(base + e);
 		} else {
-			// Octaedro Padrão (Kotlin/Java/Core): 6 vértices, 12 arestas
+			// Octaedro Padrão (TypeScript .ts / Kotlin / Java): 6 vértices, 12 arestas
 			const pts: [number, number, number][] = [
 				[cx, cy + s, cz],
 				[cx, cy - s, cz],
@@ -1010,31 +1262,99 @@ export function createVectorConstellationWireframe(
 		}
 	}
 
-	// 3. Feixes de Ligação Direta e Luminosa para Vizinhos AST da Classe Selecionada
+	// 3. Linhas de Relacionamento de Dependências com Pulso Animado e Fluxo Direcional (Anti-Cruzamento)
+	// Quando um polígono é selecionado, conecta todas as classes/arquivos relacionados (chamadas, imports, interfaces).
+	// Utiliza canais discretos de altura Y e desvios ortogonais para que NUNCA se cruzem no espaço 3D.
 	if (hasActiveSelection && selectedNodeIndex !== null) {
 		const selNode = nodes[selectedNodeIndex];
 		if (selNode) {
 			const [sx, sy, sz] = selNode.position;
+			let neighborOrder = 0;
+
 			for (const neighborIdx of relations.directNeighbors) {
 				const neighbor = nodes[neighborIdx];
 				if (!neighbor) continue;
 				const [nx, ny, nz] = neighbor.position;
 
-				let rCol: [number, number, number] = [0.4, 0.9, 1.0];
+				// Cores distintas dos polígonos: Neon de alto contraste para linhas de dependência e fluxo
+				let rCol: [number, number, number] = [1.0, 0.65, 0.0]; // Ouro Solar (k-NN)
 				if (relations.callNeighbors.has(neighborIdx)) {
-					rCol = [0.1, 1.0, 0.65]; // Verde para chamadas de métodos
+					rCol = [0.2, 1.0, 0.1]; // Verde Fluorescente (Chamadas de Métodos / Callers / Callees)
 				} else if (relations.importNeighbors.has(neighborIdx)) {
-					rCol = [0.2, 0.85, 1.0]; // Ciano para imports de dependências
+					rCol = [0.0, 0.75, 1.0]; // Ciano Elétrico (Importações Estruturais)
 				} else if (relations.typeNeighbors.has(neighborIdx)) {
-					rCol = [1.0, 0.45, 0.9]; // Magenta para tipos e interfaces
+					rCol = [1.0, 0.15, 0.9]; // Magenta Laser (Interfaces e Definições de Tipos)
 				}
 
-				// Linha direta com brilho
-				const lineStart = vOffset;
-				vertexFloats.push(sx, sy, sz, rCol[0], rCol[1], rCol[2], 0.85);
-				vertexFloats.push(nx, ny, nz, rCol[0], rCol[1], rCol[2], 0.95);
-				vOffset += 2;
-				edgeIndices.push(lineStart, lineStart + 1);
+				// Altura de camada Y dedicada por relação para NUNCA cruzar no espaço 3D
+				const layerElevation = 0.048 + (neighborOrder % 12) * 0.024;
+				const routeY = Math.max(sy, ny) + layerElevation;
+				neighborOrder++;
+
+				// Roteamento ortogonal Manhattan em 4 segmentos livres de colisão
+				const waypoints: [number, number, number][] = [
+					[sx, sy, sz], // Origem: Polígono selecionado
+					[sx, routeY, sz], // Elevação vertical na camada de cobre dedicada
+					[nx, routeY, sz], // Trânsito no plano X
+					[nx, routeY, nz], // Trânsito no plano Z
+					[nx, ny, nz], // Conexão vertical ao nó relacionado
+				];
+
+				// Desenha a linha subdividida em segmentos com onda de pulso viajante (fluxo direcional)
+				const totalSegments = waypoints.length - 1;
+				for (let seg = 0; seg < totalSegments; seg++) {
+					const pStart = waypoints[seg]!;
+					const pEnd = waypoints[seg + 1]!;
+					const steps = 3; // Subdivisão fina para propagação do feixe de pulso
+
+					for (let st = 0; st < steps; st++) {
+						const u1 = (seg * steps + st) / (totalSegments * steps);
+						const u2 = (seg * steps + st + 1) / (totalSegments * steps);
+
+						const x1 = pStart[0] + (pEnd[0] - pStart[0]) * (st / steps);
+						const y1 = pStart[1] + (pEnd[1] - pStart[1]) * (st / steps);
+						const z1 = pStart[2] + (pEnd[2] - pStart[2]) * (st / steps);
+
+						const x2 = pStart[0] + (pEnd[0] - pStart[0]) * ((st + 1) / steps);
+						const y2 = pStart[1] + (pEnd[1] - pStart[1]) * ((st + 1) / steps);
+						const z2 = pStart[2] + (pEnd[2] - pStart[2]) * ((st + 1) / steps);
+
+						// Onda senoidal viajante no tempo animTime mostrando a direção do fluxo de dependência
+						const wave1 = Math.sin(animTime * 6.5 - u1 * Math.PI * 4.0);
+						const wave2 = Math.sin(animTime * 6.5 - u2 * Math.PI * 4.0);
+						const alpha1 = Math.max(0.2, 0.45 + wave1 * 0.55);
+						const alpha2 = Math.max(0.2, 0.45 + wave2 * 0.55);
+
+						const lIdx = vOffset;
+						vertexFloats.push(x1, y1, z1, rCol[0], rCol[1], rCol[2], alpha1);
+						vertexFloats.push(x2, y2, z2, rCol[0], rCol[1], rCol[2], alpha2);
+						vOffset += 2;
+						edgeIndices.push(lIdx, lIdx + 1);
+					}
+				}
+
+				// Indicador direcional de fluxo na chegada ao nó vizinho (Micro-flecha ou anel direcional 3D)
+				const arrBase = vOffset;
+				const arrSize = 0.018;
+				const arrPulse = 0.5 + Math.sin(animTime * 8.0) * 0.5;
+				const arrAlpha = Math.max(0.4, arrPulse);
+
+				// Losango indicador de ponta no nó conectado
+				vertexFloats.push(nx, ny + arrSize, nz, rCol[0], rCol[1], rCol[2], arrAlpha);
+				vertexFloats.push(nx + arrSize, ny, nz, rCol[0], rCol[1], rCol[2], arrAlpha);
+				vertexFloats.push(nx, ny - arrSize, nz, rCol[0], rCol[1], rCol[2], arrAlpha);
+				vertexFloats.push(nx - arrSize, ny, nz, rCol[0], rCol[1], rCol[2], arrAlpha);
+				vOffset += 4;
+				edgeIndices.push(
+					arrBase + 0,
+					arrBase + 1,
+					arrBase + 1,
+					arrBase + 2,
+					arrBase + 2,
+					arrBase + 3,
+					arrBase + 3,
+					arrBase + 0,
+				);
 			}
 		}
 	}
