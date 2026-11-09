@@ -187,6 +187,11 @@ export function NeuralCorePanel() {
 						if (engineRef.current) {
 							engineRef.current.setVectorGraphData(res.nodes, res.edges || []);
 						}
+						// Ajusta o enquadramento inicial da câmera aos nós carregados para visualização ótima
+						if (res.nodes.length > 0 && cameraRef.current) {
+							const positions = res.nodes.map((n: HermesVectorNode) => n.position);
+							cameraRef.current.fitBounds(positions);
+						}
 					} else {
 						// Merge de nós preservando IDs únicos e remapeando arestas
 						setVectorNodes((prev) => {

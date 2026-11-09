@@ -98,7 +98,6 @@ export class NeuralCoreEngine {
 	public searchingNodeId: string | null = null;
 	public searchAnimStartTime = 0;
 	public readonly searchAnimDurationMs = 2000;
-	private lastPulseMeshUpdate = 0;
 	public onPauseChange?: ((isPaused: boolean) => void) | undefined;
 	public visibleModules: Set<string> = new Set();
 	public onFrameMetrics?: ((fps: number, elementsCount: number) => void) | undefined;
@@ -259,7 +258,7 @@ export class NeuralCoreEngine {
 		}
 	}
 
-	private rebuildVectorMesh(timeNow?: number) {
+	private rebuildVectorMesh() {
 		if (this.vectorNodes.length === 0) {
 			this.vectorMesh = null;
 			return;
@@ -269,7 +268,7 @@ export class NeuralCoreEngine {
 				? this.vectorNodes.filter((n) => this.visibleModules.has(n.module))
 				: this.vectorNodes;
 
-		const now = timeNow ?? performance.now();
+		const now = performance.now();
 		const elapsed = now - this.searchAnimStartTime;
 		const searchingAnim = this.searchingNodeId
 			? {
@@ -286,7 +285,6 @@ export class NeuralCoreEngine {
 			searchingAnim,
 			this.selectedNodeIndex,
 			this.showPcbLines,
-			now,
 		);
 		if (this.device) {
 			this.uploadVectorMesh();
@@ -487,15 +485,9 @@ export class NeuralCoreEngine {
 			const targetSpeed = isMotionActive ? 1.0 + this.telemetry.intensity * 2.5 : 0.0;
 			this.currentMotionSpeed += (targetSpeed - this.currentMotionSpeed) * Math.min(1.0, dt * 5.0);
 
-			// Se houver polígono sendo buscado no MCP ou seleção ativa de classe, anima os pulsos intermitentes
-			const isSearchingActive =
-				Boolean(this.searchingNodeId) &&
-				now - this.searchAnimStartTime <= this.searchAnimDurationMs;
-			const hasActiveSelection = this.selectedNodeIndex !== null && this.selectedNodeIndex >= 0;
-
-			if (isSearchingActive || (hasActiveSelection && now - this.lastPulseMeshUpdate >= 32)) {
-				this.lastPulseMeshUpdate = now;
-				this.rebuildVectorMesh(now);
+			// Se houver polígono sendo buscado no MCP, anima gradativamente frame a frame por 2 segundos
+			if (this.searchingNodeId && now - this.searchAnimStartTime <= this.searchAnimDurationMs) {
+				this.rebuildVectorMesh();
 			}
 
 			if (!this.isPaused && this.currentMotionSpeed > 0.001) {
