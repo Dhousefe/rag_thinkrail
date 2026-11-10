@@ -1,0 +1,12 @@
+{
+  "id": "5379ff1590c76944e0567c0aa5f3e29c7d0954be73626ec9f2c16df817c97570",
+  "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "kind": "variable",
+  "name": "mName",
+  "start_line": 803,
+  "end_line": 803,
+  "content": "\t\t}\n\n\t\t// Relação de chamadas entre métodos e assinaturas\n\t\tconst isMethodLinked = (selectedNode.methods || []).some((m) => {\n\t\t\tconst mName = m.name.toLowerCase();\n\t\t\tconst mSig = (m.signature || \"\").toLowerCase();\n\t\t\treturn (\n\t\t\t\tmSig.includes(otherBaseName) ||",
+  "token_estimate": 66,
+  "created_at": 1794331101033
+}

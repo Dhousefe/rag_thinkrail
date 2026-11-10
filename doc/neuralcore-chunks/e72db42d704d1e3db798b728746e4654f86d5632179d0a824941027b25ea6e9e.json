@@ -1,0 +1,12 @@
+{
+  "id": "e72db42d704d1e3db798b728746e4654f86d5632179d0a824941027b25ea6e9e",
+  "file": "apps\\web\\src\\panels\\neural-core\\cameraController.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\cameraController.ts",
+  "kind": "method",
+  "name": "OrbitCameraController.panRight",
+  "start_line": 142,
+  "end_line": 144,
+  "content": "\tpublic panLeft(step = 120) {\n\t\tthis.panBy(step, 0);\n\t}\n\n\tpublic panRight(step = 120) {\n\t\tthis.panBy(-step, 0);\n\t}\n\n\tpublic panUp(step = 120) {\n\t\tthis.panBy(0, step);",
+  "token_estimate": 42,
+  "created_at": 1794331100871
+}

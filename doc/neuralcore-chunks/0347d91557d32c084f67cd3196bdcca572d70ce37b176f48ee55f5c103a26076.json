@@ -1,0 +1,12 @@
+{
+  "id": "0347d91557d32c084f67cd3196bdcca572d70ce37b176f48ee55f5c103a26076",
+  "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "kind": "variable",
+  "name": "d",
+  "start_line": 918,
+  "end_line": 918,
+  "content": "\t\tconst base = vOffset;\n\n\t\tif (polyKind === \"cube\") {\n\t\t\t// Cubo 3D (TypeScript/React): 8 vértices, 12 arestas\n\t\t\tconst d = s * 0.85;\n\t\t\tfor (let dx = -1; dx <= 1; dx += 2) {\n\t\t\t\tfor (let dy = -1; dy <= 1; dy += 2) {\n\t\t\t\t\tfor (let dz = -1; dz <= 1; dz += 2) {",
+  "token_estimate": 65,
+  "created_at": 1794331101041
+}

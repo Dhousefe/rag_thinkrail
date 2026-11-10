@@ -1,0 +1,12 @@
+{
+  "id": "ddd6b16c6dd68cac0ce734f86cedc0754602424fa7df2ba35dcfd879bbb9919d",
+  "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "kind": "variable",
+  "name": "h",
+  "start_line": 997,
+  "end_line": 997,
+  "content": "\t\t\t}\n\t\t} else if (polyKind === \"diamond\") {\n\t\t\t// Diamante Duplo Alongado (Scripts e Automação): 6 vértices alongados no eixo Y\n\t\t\tconst r = s * 0.75;\n\t\t\tconst h = s * 1.6;\n\t\t\tconst pts: [number, number, number][] = [\n\t\t\t\t[cx, cy + h, cz],\n\t\t\t\t[cx, cy - h, cz],",
+  "token_estimate": 66,
+  "created_at": 1794331101049
+}

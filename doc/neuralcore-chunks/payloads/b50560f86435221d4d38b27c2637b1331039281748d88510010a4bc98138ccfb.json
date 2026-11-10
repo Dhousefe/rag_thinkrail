@@ -1,0 +1,13 @@
+{
+  "id": "b50560f86435221d4d38b27c2637b1331039281748d88510010a4bc98138ccfb",
+  "text": "\t\t\tfor (let mIdx = 0; mIdx < totalM; mIdx++) {\n\t\t\t\tconst m = n.methods[mIdx];\n\t\t\t\tif (!m) continue;\n\t\t\t\tconst mAngle = m.orbitAngle ?? (mIdx / totalM) * Math.PI * 2;\n\t\t\t\tconst mRadius = m.orbitRadius ?? 0.16;\n\n\t\t\t\tconst mx = cx + Math.cos(mAngle) * mRadius;\n\t\t\t\tconst my = cy + Math.sin(mAngle) * 0.45 * mRadius;",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+    "kind": "variable",
+    "name": "mRadius",
+    "start_line": 1090,
+    "end_line": 1090,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

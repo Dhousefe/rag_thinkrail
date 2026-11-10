@@ -1,0 +1,12 @@
+{
+  "id": "55306e087a6f71426d12451827f4f5bf7ac8c5490479f3bb9e0602ae26d2c8cd",
+  "file": "apps\\web\\src\\panels\\neural-core\\cameraController.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\cameraController.ts",
+  "kind": "variable",
+  "name": "upX",
+  "start_line": 128,
+  "end_line": 128,
+  "content": "\t\tconst rightX = Math.cos(this.theta);\n\t\tconst rightZ = -Math.sin(this.theta);\n\n\t\t// Vetor Up da câmera\n\t\tconst upX = -Math.sin(this.phi) * Math.sin(this.theta);\n\t\tconst upY = Math.cos(this.phi);\n\t\tconst upZ = -Math.sin(this.phi) * Math.cos(this.theta);\n",
+  "token_estimate": 64,
+  "created_at": 1794331100882
+}

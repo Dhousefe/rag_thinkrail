@@ -1,0 +1,12 @@
+{
+  "id": "9caf9a4ee9f758983411aae7149464a5507f9b7f41fe37c050946ab97cd1758d",
+  "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "kind": "variable",
+  "name": "dist",
+  "start_line": 1007,
+  "end_line": 1007,
+  "content": "\t\t\t\tif (otherProj.index === item.index) continue;\n\n\t\t\t\tconst dx = item.x - otherProj.px;\n\t\t\t\tconst dy = item.y - otherProj.py;\n\t\t\t\tconst dist = Math.sqrt(dx * dx + dy * dy);\n\n\t\t\t\tif (dist < minSafeLabelDist) {\n\t\t\t\t\tconst safeD = Math.max(dist, 1.0);",
+  "token_estimate": 63,
+  "created_at": 1794331101159
+}

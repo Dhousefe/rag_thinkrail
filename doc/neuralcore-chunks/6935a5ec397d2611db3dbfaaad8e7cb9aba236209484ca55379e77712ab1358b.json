@@ -1,0 +1,12 @@
+{
+  "id": "6935a5ec397d2611db3dbfaaad8e7cb9aba236209484ca55379e77712ab1358b",
+  "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "kind": "variable",
+  "name": "mBase",
+  "start_line": 1098,
+  "end_line": 1098,
+  "content": "\t\t\t\tconst mz = cz + Math.sin(mAngle) * mRadius;\n\n\t\t\t\t// Micro-diamante para a função na sub-órbita\n\t\t\t\tconst ms = s * 0.38;\n\t\t\t\tconst mBase = vOffset;\n\t\t\t\tconst [mColR, mColG, mColB, mColA]: [number, number, number, number] = isMatched\n\t\t\t\t\t? [1.0, 0.9, 0.2, 0.95]\n\t\t\t\t\t: [colR, colG, colB, 0.75];",
+  "token_estimate": 75,
+  "created_at": 1794331101057
+}

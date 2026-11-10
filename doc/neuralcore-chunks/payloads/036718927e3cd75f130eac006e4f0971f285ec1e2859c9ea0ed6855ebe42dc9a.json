@@ -1,0 +1,13 @@
+{
+  "id": "036718927e3cd75f130eac006e4f0971f285ec1e2859c9ea0ed6855ebe42dc9a",
+  "text": "\t\t\tthis.primaryMesh = createTesseractWireframe(1.2, this.angleRotation * 0.7);\n\t\t\tthis.device.queue.writeBuffer(this.primaryVBuffer!, 0, this.primaryMesh.vertices as any);\n\t\t}\n\n\t\tconst commandEncoder = this.device.createCommandEncoder();\n\t\tconst textureView = this.context.getCurrentTexture().createView();\n\t\tconst renderPass = commandEncoder.beginRenderPass({\n\t\t\tcolorAttachments: [",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+    "kind": "variable",
+    "name": "commandEncoder",
+    "start_line": 577,
+    "end_line": 577,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

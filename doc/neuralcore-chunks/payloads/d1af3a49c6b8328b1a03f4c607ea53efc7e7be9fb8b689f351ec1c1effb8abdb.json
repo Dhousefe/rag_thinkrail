@@ -1,0 +1,13 @@
+{
+  "id": "d1af3a49c6b8328b1a03f4c607ea53efc7e7be9fb8b689f351ec1c1effb8abdb",
+  "text": "\t/**\n\t * Salva o estado atual da câmera (posição de foco, ângulo e distância).\n\t * Utilizado antes de selecionar/focar um nó, para permitir restaurar a visualização.\n\t */\n\tpublic saveCameraSnapshot() {\n\t\tthis.cameraSnapshot = {\n\t\t\ttargetX: this.target[0],\n\t\t\ttargetY: this.target[1],\n\t\t\ttargetZ: this.target[2],\n\t\t\ttheta: this.theta,\n\t\t\tphi: this.phi,\n\t\t\tdistance: this.distance,\n\t\t};\n\t}\n\n\t/**\n\t * Restaura suavemente o estado salvo anteriormente na câmera, se existir.",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\cameraController.ts",
+    "kind": "method",
+    "name": "OrbitCameraController.saveCameraSnapshot",
+    "start_line": 233,
+    "end_line": 242,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

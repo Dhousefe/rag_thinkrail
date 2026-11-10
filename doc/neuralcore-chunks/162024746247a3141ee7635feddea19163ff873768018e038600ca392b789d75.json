@@ -1,0 +1,12 @@
+{
+  "id": "162024746247a3141ee7635feddea19163ff873768018e038600ca392b789d75",
+  "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "kind": "variable",
+  "name": "arrSize",
+  "start_line": 1338,
+  "end_line": 1338,
+  "content": "\t\t\t\t}\n\n\t\t\t\t// Indicador direcional de fluxo na chegada ao nó vizinho (Micro-flecha ou anel direcional 3D)\n\t\t\t\tconst arrBase = vOffset;\n\t\t\t\tconst arrSize = 0.018;\n\t\t\t\tconst arrPulse = 0.5 + Math.sin(animTime * 8.0) * 0.5;\n\t\t\t\tconst arrAlpha = Math.max(0.4, arrPulse);\n",
+  "token_estimate": 67,
+  "created_at": 1794331101077
+}

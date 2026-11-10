@@ -1,0 +1,13 @@
+{
+  "id": "ae4a3d8c40b1438671f9c57410e077e10e35a20ca562546638f97c568dc126ed",
+  "text": "\t\tconst x1_raw = upZ * z0 - upX * z2;\n\t\tconst x2_raw = upX * z1 - upY * z0;\n\t\tconst xLen = Math.hypot(x0_raw, x1_raw, x2_raw) || 1;\n\t\tconst x0 = x0_raw / xLen;\n\t\tconst x1 = x1_raw / xLen;\n\t\tconst x2 = x2_raw / xLen;\n\n\t\t// Vetor Y = cross(Z, X) (sempre ortogonal e normalizado)",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+    "kind": "variable",
+    "name": "x1",
+    "start_line": 666,
+    "end_line": 666,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

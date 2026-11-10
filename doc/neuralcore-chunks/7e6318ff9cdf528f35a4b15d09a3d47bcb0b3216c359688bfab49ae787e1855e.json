@@ -1,0 +1,12 @@
+{
+  "id": "7e6318ff9cdf528f35a4b15d09a3d47bcb0b3216c359688bfab49ae787e1855e",
+  "file": "apps\\web\\src\\panels\\neural-core\\semanticFingerprint.test.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\semanticFingerprint.test.ts",
+  "kind": "variable",
+  "name": "mesh",
+  "start_line": 184,
+  "end_line": 193,
+  "content": "\t\t\texpect(rels.importNeighbors.has(2)).toBe(true);\n\t\t});\n\n\t\tit(\"gera malha com feixes pulsantes e roteamento Manhattan sem NaN ou erros de índice\", () => {\n\t\t\tconst mesh = createVectorConstellationWireframe(\n\t\t\t\tnodes,\n\t\t\t\tedges,\n\t\t\t\tnull,\n\t\t\t\tnull,\n\t\t\t\tnull,\n\t\t\t\t0,\n\t\t\t\ttrue,\n\t\t\t\t1.5, // animTime\n\t\t\t);\n\n\t\t\texpect(mesh.count).toBeGreaterThan(0);\n\t\t\texpect(mesh.vertices.length).toBeGreaterThan(0);",
+  "token_estimate": 100,
+  "created_at": 1794331101203
+}

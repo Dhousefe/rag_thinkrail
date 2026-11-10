@@ -1,0 +1,12 @@
+{
+  "id": "bd720570f1eab166db088b8d712fcb23f36ea21175779bc449ce98c6755a4ea5",
+  "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "kind": "variable",
+  "name": "d",
+  "start_line": 1143,
+  "end_line": 1143,
+  "content": "\t\t\t\tconst vz = node.position[2] - tz0;\n\t\t\t\tconst rx = vx * cosO - vz * sinO;\n\t\t\t\tconst rz = vx * sinO + vz * cosO;\n\t\t\t\tconst ry = vy * cosPhi - rz * sinPhi;\n\t\t\t\tconst d = Math.max(0.2, baseDist + (vy * sinPhi + rz * cosPhi) * 0.45);\n\t\t\t\tconst px = cx + (rx / d) * scale * 5.6;\n\t\t\t\tconst py = cy - (ry / d) * scale * 5.6;\n",
+  "token_estimate": 81,
+  "created_at": 1794331101176
+}

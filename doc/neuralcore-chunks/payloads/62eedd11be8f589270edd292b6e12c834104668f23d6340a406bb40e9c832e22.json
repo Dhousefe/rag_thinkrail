@@ -1,0 +1,13 @@
+{
+  "id": "62eedd11be8f589270edd292b6e12c834104668f23d6340a406bb40e9c832e22",
+  "text": "\t\tconst startIdx = vertexOffset;\n\t\tconst [cr, cg, cb, ca] = item.color;\n\t\tfor (let i = 0; i < segments; i++) {\n\t\t\tconst theta = (i / segments) * Math.PI * 2;\n\t\t\tconst c = Math.cos(theta) * item.r;\n\t\t\tconst s = Math.sin(theta) * item.r;\n\n\t\t\tlet x = 0;",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+    "kind": "variable",
+    "name": "c",
+    "start_line": 131,
+    "end_line": 131,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

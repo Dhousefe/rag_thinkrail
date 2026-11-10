@@ -1,0 +1,12 @@
+{
+  "id": "c830532027d0a8c3ce375f155a9f8bea535c2e4048237b6260cc4c95998cb28b",
+  "file": "apps\\web\\src\\panels\\neural-core\\components\\searchBox.test.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\components\\searchBox.test.ts",
+  "kind": "variable",
+  "name": "content",
+  "start_line": 94,
+  "end_line": 94,
+  "content": "\t\tconst query = \"camera dragging\";\n\t\tconst terms = query.toLowerCase().split(/\\s+/).filter(Boolean);\n\t\tconst filtered = chunks.filter((c) => {\n\t\t\tconst name = (c.qualifiedName || \"\").toLowerCase();\n\t\t\tconst content = (c.content || \"\").toLowerCase();\n\t\t\tconst path = (c.path || \"\").toLowerCase();\n\t\t\treturn terms.every((t) => name.includes(t) || content.includes(t) || path.includes(t));\n\t\t});",
+  "token_estimate": 98,
+  "created_at": 1794331100947
+}

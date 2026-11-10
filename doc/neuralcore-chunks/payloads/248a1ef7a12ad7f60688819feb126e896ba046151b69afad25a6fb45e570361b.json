@@ -1,0 +1,13 @@
+{
+  "id": "248a1ef7a12ad7f60688819feb126e896ba046151b69afad25a6fb45e570361b",
+  "text": "\t\tselectedNodeIndex !== null && selectedNodeIndex >= 0 && selectedNodeIndex < nodes.length;\n\n\t// 1. Gera nós com poliedros específicos por tipo de arquivo\n\tfor (let i = 0; i < nodes.length; i++) {\n\t\tconst n = nodes[i];\n\t\tif (!n) continue;\n\t\tconst [cx, cy, cz] = n.position;\n\t\tconst isSelected = hasActiveSelection && i === selectedNodeIndex;",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+    "kind": "variable",
+    "name": "n",
+    "start_line": 844,
+    "end_line": 844,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

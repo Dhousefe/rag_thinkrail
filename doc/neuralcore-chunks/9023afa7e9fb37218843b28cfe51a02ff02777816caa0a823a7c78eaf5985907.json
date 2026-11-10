@@ -1,0 +1,12 @@
+{
+  "id": "9023afa7e9fb37218843b28cfe51a02ff02777816caa0a823a7c78eaf5985907",
+  "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "kind": "variable",
+  "name": "edgeIndices",
+  "start_line": 834,
+  "end_line": 834,
+  "content": "\tshowPcbLines: boolean = true,\n\tanimTime: number = 0,\n): GeometryMeshData {\n\tconst vertexFloats: number[] = [];\n\tconst edgeIndices: number[] = [];\n\tlet vOffset = 0;\n\n\t// Calcula relações e dependências caso haja polígono selecionado",
+  "token_estimate": 58,
+  "created_at": 1794331101035
+}

@@ -1,0 +1,13 @@
+{
+  "id": "49f16e1fd376f73f19a2e4487f27bc7436734ff45f87aa0fd2c726175c2d8340",
+  "text": "\t\t}\n\t\tthis.device.queue.writeBuffer(this.vectorIBuffer, 0, this.vectorMesh.indices as any);\n\t}\n\n\tasync init(): Promise<boolean> {\n\t\tif (\"gpu\" in navigator) {\n\t\t\ttry {\n\t\t\t\tconst adapter = await (navigator as any).gpu.requestAdapter();\n\t\t\t\tif (adapter) {\n\t\t\t\t\tthis.device = await adapter.requestDevice();\n\t\t\t\t\tthis.context = this.canvas.getContext(\"webgpu\") as unknown as GPUCanvasContext;\n\t\t\t\t\tconst format = (navigator as any).gpu.getPreferredCanvasFormat();\n\t\t\t\t\tthis.context.configure({\n\t\t\t\t\t\tdevice: this.device!,\n\t\t\t\t\t\tformat,\n\t\t\t\t\t\talphaMode: \"premultiplied\",\n\t\t\t\t\t});\n\t\t\t\t\tawait this.setupWebGpuPipelines(format);\n\t\t\t\t\tthis.isWebGpuSupported = true;\n\t\t\t\t\treturn true;\n\t\t\t\t}\n\t\t\t} catch (err) {\n\t\t\t\tconsole.warn(\n\t\t\t\t\t\"[NeuralCoreEngine] WebGPU indisponível, usando fallback geométrico Canvas2D:\",\n\t\t\t\t\terr,\n\t\t\t\t);\n\t\t\t}\n\t\t}\n\n\t\tthis.ctx2d = this.canvas.getContext(\"2d\");\n\t\treturn false;\n\t}\n\n\tprivate async setupWebGpuPipelines(format: GPUTextureFormat) {\n\t\tif (!this.device) return;",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+    "kind": "method",
+    "name": "NeuralCoreEngine.init",
+    "start_line": 340,
+    "end_line": 367,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

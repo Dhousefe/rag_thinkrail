@@ -1,0 +1,12 @@
+{
+  "id": "178e102101bebbb301d206a3ba208fc6b20e8215f31281b5685781c34d697f1d",
+  "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "kind": "variable",
+  "name": "startIdx",
+  "start_line": 127,
+  "end_line": 127,
+  "content": "\t\t{ axis: \"xz\", r: radii[2], color: [1.0, 0.75, 0.0, 0.8] }, // Yaw ring (Ouro/Âmbar)\n\t];\n\n\tfor (const item of axes) {\n\t\tconst startIdx = vertexOffset;\n\t\tconst [cr, cg, cb, ca] = item.color;\n\t\tfor (let i = 0; i < segments; i++) {\n\t\t\tconst theta = (i / segments) * Math.PI * 2;",
+  "token_estimate": 69,
+  "created_at": 1794331100985
+}

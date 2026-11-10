@@ -1,0 +1,13 @@
+{
+  "id": "c1870b809785b3daafc22ee8dc8224dd6d8600042e46cb782ccdbc60101084cc",
+  "text": "\tlet vOffset = 0;\n\n\t// Calcula relações e dependências caso haja polígono selecionado\n\tconst relations = computeNodeRelations(selectedNodeIndex, nodes, edges);\n\tconst hasActiveSelection =\n\t\tselectedNodeIndex !== null && selectedNodeIndex >= 0 && selectedNodeIndex < nodes.length;\n\n\t// 1. Gera nós com poliedros específicos por tipo de arquivo\n\tfor (let i = 0; i < nodes.length; i++) {",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+    "kind": "variable",
+    "name": "hasActiveSelection",
+    "start_line": 839,
+    "end_line": 840,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

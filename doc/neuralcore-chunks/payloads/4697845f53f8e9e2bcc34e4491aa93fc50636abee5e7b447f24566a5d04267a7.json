@@ -1,0 +1,13 @@
+{
+  "id": "4697845f53f8e9e2bcc34e4491aa93fc50636abee5e7b447f24566a5d04267a7",
+  "text": "\n\t\t\t\t// Indicador direcional de fluxo na chegada ao nó vizinho (Micro-flecha ou anel direcional 3D)\n\t\t\t\tconst arrBase = vOffset;\n\t\t\t\tconst arrSize = 0.018;\n\t\t\t\tconst arrPulse = 0.5 + Math.sin(animTime * 8.0) * 0.5;\n\t\t\t\tconst arrAlpha = Math.max(0.4, arrPulse);\n\n\t\t\t\t// Losango indicador de ponta no nó conectado",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+    "kind": "variable",
+    "name": "arrPulse",
+    "start_line": 1339,
+    "end_line": 1339,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

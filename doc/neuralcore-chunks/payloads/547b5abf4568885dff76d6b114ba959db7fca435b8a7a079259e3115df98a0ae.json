@@ -1,0 +1,13 @@
+{
+  "id": "547b5abf4568885dff76d6b114ba959db7fca435b8a7a079259e3115df98a0ae",
+  "text": "\tlabel: string;\n\tcolor: string;\n\ticon: RemixiconComponentType;\n} {\n\tconst k = (kind || \"\").toLowerCase();\n\tif (k.includes(\"class\") || k.includes(\"struct\") || k.includes(\"impl\")) {\n\t\treturn { label: \"class\", color: \"bg-primary text-text-on-primary\", icon: RiNodeTree };\n\t}",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreSearchBox.tsx",
+    "kind": "variable",
+    "name": "k",
+    "start_line": 35,
+    "end_line": 35,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

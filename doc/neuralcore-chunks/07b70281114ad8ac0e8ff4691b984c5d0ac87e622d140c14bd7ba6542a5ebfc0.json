@@ -1,0 +1,12 @@
+{
+  "id": "07b70281114ad8ac0e8ff4691b984c5d0ac87e622d140c14bd7ba6542a5ebfc0",
+  "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "kind": "variable",
+  "name": "allProjectedNodes",
+  "start_line": 863,
+  "end_line": 863,
+  "content": "\t\tconst cursorRadiusPx = 135;\n\t\tconst cursor = this.cursorScreenCoord;\n\n\t\t// 1. Projeção de todos os nós visíveis na tela para uso na repulsão magnética\n\t\tconst allProjectedNodes: Array<{ index: number; px: number; py: number; depth: number }> = [];\n\n\t\tfor (let i = 0; i < this.vectorNodes.length; i++) {\n\t\t\tconst node = this.vectorNodes[i]!;",
+  "token_estimate": 86,
+  "created_at": 1794331101146
+}

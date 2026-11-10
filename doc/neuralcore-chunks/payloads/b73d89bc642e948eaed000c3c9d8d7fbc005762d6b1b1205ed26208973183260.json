@@ -1,0 +1,13 @@
+{
+  "id": "b73d89bc642e948eaed000c3c9d8d7fbc005762d6b1b1205ed26208973183260",
+  "text": "\t\t}> = [];\n\n\t\tfor (const proj of allProjectedNodes) {\n\t\t\tconst i = proj.index;\n\t\t\tconst node = this.vectorNodes[i]!;\n\t\t\tconst isSelected = hasActiveSelection && i === this.selectedNodeIndex;\n\t\t\tconst isRelated = Boolean(relations?.directNeighbors.has(i));\n\t\t\tconst isUnrelated = hasActiveSelection && !isSelected && !isRelated;",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+    "kind": "variable",
+    "name": "node",
+    "start_line": 911,
+    "end_line": 911,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

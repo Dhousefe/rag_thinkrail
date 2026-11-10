@@ -1,0 +1,13 @@
+{
+  "id": "f3a1ca8bbd10c9878b7dd4f0be3c6e943b32df994d5dc5d40a73d099839c1e63",
+  "text": "\t});\n\n\tif (fileCandidates.length > 0) {\n\t\t// Prioridade 1: nó com chunkKind == \"class\"\n\t\tconst classNode = fileCandidates.find(\n\t\t\t(n) => (n.chunkKind || \"\").toLowerCase() === \"class\",\n\t\t);\n\t\tif (classNode) return classNode;\n\n\t\t// Prioridade 2: nó cujo qualifiedName bate com a classe pivô",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\resolvePivotNode.ts",
+    "kind": "variable",
+    "name": "classNode",
+    "start_line": 32,
+    "end_line": 34,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

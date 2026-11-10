@@ -1,0 +1,12 @@
+{
+  "id": "f100ad9b2609136d677a7f2b80df5c965d5137b1a7eaec6dd40107e543e48e60",
+  "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "kind": "variable",
+  "name": "subMod",
+  "start_line": 445,
+  "end_line": 445,
+  "content": "\n\t// Se for prefixado por projeto (ex: hermes-3-0:core ou cindy:packages/server)\n\tif (modName.includes(\":\")) {\n\t\tconst parts = modName.split(\":\");\n\t\tconst subMod = parts.slice(1).join(\":\");\n\t\tif (MODULE_COLORS[subMod]) {\n\t\t\treturn MODULE_COLORS[subMod]!;\n\t\t}",
+  "token_estimate": 65,
+  "created_at": 1794331101012
+}

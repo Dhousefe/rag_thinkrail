@@ -1,0 +1,13 @@
+{
+  "id": "fc8a184f85e6706ee3c530745d3793350b5e00cabefac9c57bb32a7c5c70bff1",
+  "text": "\t\t\t\t\tanimProgress: Math.min(1.0, elapsed / this.searchAnimDurationMs),\n\t\t\t\t}\n\t\t\t: null;\n\n\t\tconst animTime = overrideAnimTime !== undefined ? overrideAnimTime : now / 1000;\n\n\t\tthis.vectorMesh = createVectorConstellationWireframe(\n\t\t\tfilteredNodes,",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+    "kind": "variable",
+    "name": "animTime",
+    "start_line": 281,
+    "end_line": 281,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "id": "bc5f44f37110ac9609ac8a3e0c4800c44d9945d26d81796a8a9e3c74093799d7",
+  "text": "\t\tthis.showPcbLines = show;\n\t\tthis.rebuildVectorMesh();\n\t}\n\n\tpublic togglePcbLines(show?: boolean): boolean {\n\t\tthis.showPcbLines = show !== undefined ? show : !this.showPcbLines;\n\t\tthis.rebuildVectorMesh();\n\t\treturn this.showPcbLines;\n\t}\n\n\tpublic toggleGimbalRings(show?: boolean) {\n\t\tthis.showGimbalRings = show !== undefined ? show : !this.showGimbalRings;",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+    "kind": "method",
+    "name": "NeuralCoreEngine.togglePcbLines",
+    "start_line": 151,
+    "end_line": 155,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

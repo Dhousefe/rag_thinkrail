@@ -1,0 +1,12 @@
+{
+  "id": "3168238475afaa5a5dfeb5569ddafb22afe36764cb1464734bf2cc004b028380",
+  "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "kind": "variable",
+  "name": "sy",
+  "start_line": 719,
+  "end_line": 719,
+  "content": "\t\tconst out = new Float32Array(16);\n\t\tconst cx = Math.cos(ax);\n\t\tconst sx = Math.sin(ax);\n\t\tconst cy = Math.cos(ay);\n\t\tconst sy = Math.sin(ay);\n\n\t\tout[0] = cy;\n\t\tout[2] = sy;",
+  "token_estimate": 44,
+  "created_at": 1794331101132
+}

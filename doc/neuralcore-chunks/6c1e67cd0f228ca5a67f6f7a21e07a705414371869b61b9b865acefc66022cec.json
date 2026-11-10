@@ -1,0 +1,12 @@
+{
+  "id": "6c1e67cd0f228ca5a67f6f7a21e07a705414371869b61b9b865acefc66022cec",
+  "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "kind": "variable",
+  "name": "edgeIndices",
+  "start_line": 212,
+  "end_line": 212,
+  "content": "\n// 5. Gerador da Stella Octangula (Merkaba / Dois Tetraedros Sagrados Entrelaçados)\nexport function createMerkabaWireframe(scale = 1.2): GeometryMeshData {\n\tconst vertexFloats: number[] = [];\n\tconst edgeIndices: number[] = [];\n\n\t// Tetraedro 1 (Vértices dourados/âmbar com energia ascendente)\n\tconst t1: [number, number, number][] = [",
+  "token_estimate": 84,
+  "created_at": 1794331100993
+}

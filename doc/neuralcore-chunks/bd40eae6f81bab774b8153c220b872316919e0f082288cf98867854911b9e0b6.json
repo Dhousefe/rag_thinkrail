@@ -1,0 +1,12 @@
+{
+  "id": "bd40eae6f81bab774b8153c220b872316919e0f082288cf98867854911b9e0b6",
+  "file": "apps\\web\\src\\panels\\neural-core\\shaders.wgsl.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\shaders.wgsl.ts",
+  "kind": "variable",
+  "name": "GEOMETRY_RENDER_WGSL",
+  "start_line": 1,
+  "end_line": 46,
+  "content": "",
+  "token_estimate": 0,
+  "created_at": 1794331101204
+}

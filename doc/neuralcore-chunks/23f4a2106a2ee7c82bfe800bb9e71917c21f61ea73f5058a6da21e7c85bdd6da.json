@@ -1,0 +1,12 @@
+{
+  "id": "23f4a2106a2ee7c82bfe800bb9e71917c21f61ea73f5058a6da21e7c85bdd6da",
+  "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "kind": "variable",
+  "name": "isRelated",
+  "start_line": 913,
+  "end_line": 913,
+  "content": "\t\tfor (const proj of allProjectedNodes) {\n\t\t\tconst i = proj.index;\n\t\t\tconst node = this.vectorNodes[i]!;\n\t\t\tconst isSelected = hasActiveSelection && i === this.selectedNodeIndex;\n\t\t\tconst isRelated = Boolean(relations?.directNeighbors.has(i));\n\t\t\tconst isUnrelated = hasActiveSelection && !isSelected && !isRelated;\n\n\t\t\t// Se houver seleção ativa, suprime nós não relacionados",
+  "token_estimate": 94,
+  "created_at": 1794331101151
+}

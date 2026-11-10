@@ -1,0 +1,12 @@
+{
+  "id": "020f2a76ddd3e44294848aa60df35e52b286c9c0b07764dce9b737861726ce86",
+  "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "kind": "variable",
+  "name": "cx",
+  "start_line": 1051,
+  "end_line": 1051,
+  "content": "\t\tctx.fillStyle = \"black\";\n\t\tctx.fillRect(0, 0, w, h);\n\t\tctx.globalAlpha = 1.0;\n\n\t\tconst cx = w / 2;\n\t\tconst cy = h / 2;\n\t\tconst scale = Math.min(w, h) * 0.22;\n",
+  "token_estimate": 40,
+  "created_at": 1794331101162
+}

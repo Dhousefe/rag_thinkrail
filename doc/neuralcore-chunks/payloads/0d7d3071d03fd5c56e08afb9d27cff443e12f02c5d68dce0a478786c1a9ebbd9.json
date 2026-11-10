@@ -1,0 +1,13 @@
+{
+  "id": "0d7d3071d03fd5c56e08afb9d27cff443e12f02c5d68dce0a478786c1a9ebbd9",
+  "text": "\t\t\t// Checa se está dentro do raio seguro a partir do cursor\n\t\t\tlet isWithinCursorRadius = false;\n\t\t\tif (cursor) {\n\t\t\t\tconst cdx = proj.px - cursor.x;\n\t\t\t\tconst cdy = proj.py - cursor.y;\n\t\t\t\tconst distCursor = Math.sqrt(cdx * cdx + cdy * cdy);\n\t\t\t\tif (distCursor <= cursorRadiusPx) {\n\t\t\t\t\tisWithinCursorRadius = true;",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+    "kind": "variable",
+    "name": "cdy",
+    "start_line": 937,
+    "end_line": 937,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

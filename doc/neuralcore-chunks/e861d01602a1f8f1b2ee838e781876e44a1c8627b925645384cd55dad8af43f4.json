@@ -1,0 +1,12 @@
+{
+  "id": "e861d01602a1f8f1b2ee838e781876e44a1c8627b925645384cd55dad8af43f4",
+  "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "kind": "variable",
+  "name": "shortHash",
+  "start_line": 684,
+  "end_line": 684,
+  "content": "\tconst part2 = toHex(h3) + toHex(h4);\n\tconst part3 = toHex(h1 ^ h3) + toHex(h2 ^ h4);\n\tconst part4 = toHex(h1 + h2) + toHex(h3 + h4);\n\tconst fingerprintHash = `${part1}${part2}${part3}${part4}`.toLowerCase();\n\tconst shortHash = fingerprintHash.substring(0, 10).toUpperCase();\n\n\tconst totalRelations = edges.length;\n\tconst maxPossibleEdges = totalNodes > 1 ? (totalNodes * (totalNodes - 1)) / 2 : 1;",
+  "token_estimate": 100,
+  "created_at": 1794331101025
+}

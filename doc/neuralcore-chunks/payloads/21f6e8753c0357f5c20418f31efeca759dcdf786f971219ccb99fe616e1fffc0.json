@@ -1,0 +1,13 @@
+{
+  "id": "21f6e8753c0357f5c20418f31efeca759dcdf786f971219ccb99fe616e1fffc0",
+  "text": "\t\t\tconst z = (majorRadius + minorRadius * cv) * su;\n\n\t\t\t// Gradiente espectral de vórtice (Ciano a Violeta)\n\t\t\tconst t = i / radarRings;\n\t\t\tconst r = 0.2 + 0.6 * Math.sin(t * Math.PI);\n\t\t\tconst g = 0.8 * Math.cos(t * Math.PI * 0.5);\n\t\t\tconst b = 1.0;\n\t\t\tvertexFloats.push(x, y, z, r, g, b, 0.75);",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+    "kind": "variable",
+    "name": "r",
+    "start_line": 299,
+    "end_line": 299,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

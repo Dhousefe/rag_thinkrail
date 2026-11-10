@@ -1,0 +1,12 @@
+{
+  "id": "3f552c6a5b566c5d7f1685a36a17ea36825e6cbb0ad28dcff9a1cc81236cdcc9",
+  "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "kind": "variable",
+  "name": "n2",
+  "start_line": 1144,
+  "end_line": 1144,
+  "content": "\tif (showPcbLines) {\n\t\tfor (const edge of edges) {\n\t\t\tif (edge.source >= nodes.length || edge.target >= nodes.length) continue;\n\t\t\tconst n1 = nodes[edge.source];\n\t\t\tconst n2 = nodes[edge.target];\n\t\t\tif (!n1 || !n2) continue;\n\n\t\t\tconst isConnectedToSelected =",
+  "token_estimate": 65,
+  "created_at": 1794331101059
+}

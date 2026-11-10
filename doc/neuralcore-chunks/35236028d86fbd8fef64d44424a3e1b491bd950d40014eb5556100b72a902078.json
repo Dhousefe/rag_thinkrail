@@ -1,0 +1,12 @@
+{
+  "id": "35236028d86fbd8fef64d44424a3e1b491bd950d40014eb5556100b72a902078",
+  "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "kind": "variable",
+  "name": "dx",
+  "start_line": 1005,
+  "end_line": 1005,
+  "content": "\t\tfor (const item of selectedCandidates) {\n\t\t\tfor (const otherProj of allProjectedNodes) {\n\t\t\t\tif (otherProj.index === item.index) continue;\n\n\t\t\t\tconst dx = item.x - otherProj.px;\n\t\t\t\tconst dy = item.y - otherProj.py;\n\t\t\t\tconst dist = Math.sqrt(dx * dx + dy * dy);\n",
+  "token_estimate": 67,
+  "created_at": 1794331101158
+}

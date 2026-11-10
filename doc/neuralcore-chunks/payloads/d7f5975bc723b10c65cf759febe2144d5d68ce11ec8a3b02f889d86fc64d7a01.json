@@ -1,0 +1,13 @@
+{
+  "id": "d7f5975bc723b10c65cf759febe2144d5d68ce11ec8a3b02f889d86fc64d7a01",
+  "text": "",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\semanticFingerprint.test.ts",
+    "kind": "file",
+    "name": "semanticFingerprint.test.ts",
+    "start_line": 1,
+    "end_line": 206,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

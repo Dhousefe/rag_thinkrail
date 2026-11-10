@@ -1,0 +1,12 @@
+{
+  "id": "fe2bf833c9f92189b8d842b03d678021e7d8e0cd714307c5595add7906f7924b",
+  "file": "apps\\web\\src\\panels\\neural-core\\useNeuralCoreState.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\useNeuralCoreState.ts",
+  "kind": "variable",
+  "name": "activeChatTool",
+  "start_line": 47,
+  "end_line": 47,
+  "content": "\t\t\t\t}\n\t\t\t}\n\t\t}\n\n\t\tlet activeChatTool: \"read\" | \"edit\" | \"write\" | \"ast\" | \"rag\" | undefined;\n\t\tlet activeChatFilePath: string | undefined;\n\t\tlet activeChatPivotClass: string | undefined;\n",
+  "token_estimate": 47,
+  "created_at": 1794331101214
+}

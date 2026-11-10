@@ -1,0 +1,12 @@
+{
+  "id": "6792845c875b42ffac1e22b9cea9428f49745f2a68ee275d8321395f93c94345",
+  "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "kind": "function",
+  "name": "createToolNodeSatellites",
+  "start_line": 167,
+  "end_line": 207,
+  "content": "\t};\n}\n\n// 4. Gerador de Feixes e Satélites de Ferramentas / MCP\nexport function createToolNodeSatellites(count = 6, orbitRadius = 2.4): GeometryMeshData {\n\tconst vertexFloats: number[] = [];\n\tconst edgeIndices: number[] = [];\n\tlet vOffset = 0;\n\n\tfor (let i = 0; i < count; i++) {\n\t\tconst angle = (i / count) * Math.PI * 2;\n\t\tconst cx = Math.cos(angle) * orbitRadius;\n\t\tconst cy = Math.sin(angle * 2) * 0.4;\n\t\tconst cz = Math.sin(angle) * orbitRadius;\n\n\t\t// Pequeno octaedro satélite\n\t\tconst s = 0.12;\n\t\tconst base = vOffset;\n\t\tconst pts: [number, number, number][] = [\n\t\t\t[cx, cy + s, cz],\n\t\t\t[cx, cy - s, cz],\n\t\t\t[cx + s, cy, cz],\n\t\t\t[cx - s, cy, cz],\n\t\t\t[cx, cy, cz + s],\n\t\t\t[cx, cy, cz - s],\n\t\t];\n\n\t\tfor (const [px, py, pz] of pts) {\n\t\t\tvertexFloats.push(px, py, pz, 0.0, 1.0, 0.6, 0.9);\n\t\t\tvOffset++;\n\t\t}\n\n\t\t// Conexões internas do octaedro\n\t\tconst octEdges = [0, 2, 0, 3, 0, 4, 0, 5, 1, 2, 1, 3, 1, 4, 1, 5, 2, 4, 4, 3, 3, 5, 5, 2];\n\t\tfor (const e of octEdges) {\n\t\t\tedgeIndices.push(base + e);\n\t\t}\n\t}\n\n\treturn {\n\t\tvertices: new Float32Array(vertexFloats),\n\t\tindices: new Uint16Array(edgeIndices),\n\t\tcount: edgeIndices.length,\n\t};\n}\n\n// 5. Gerador da Stella Octangula (Merkaba / Dois Tetraedros Sagrados Entrelaçados)\nexport function createMerkabaWireframe(scale = 1.2): GeometryMeshData {",
+  "token_estimate": 324,
+  "created_at": 1794331100988
+}

@@ -1,0 +1,12 @@
+{
+  "id": "008e6066bd1d38546d70817a11240876a5b2e3bc6eea53329ec42a6b5e264d58",
+  "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "kind": "method",
+  "name": "NeuralCoreEngine.setHighlightedNode",
+  "start_line": 248,
+  "end_line": 253,
+  "content": "\t\t}\n\t\tthis.rebuildVectorMesh();\n\t}\n\n\tpublic setHighlightedNode(index: number | null) {\n\t\tif (this.highlightedNodeIndex !== index) {\n\t\t\tthis.highlightedNodeIndex = index;\n\t\t\tthis.rebuildVectorMesh();\n\t\t}\n\t}\n\n\tpublic setSelectedNode(index: number | null) {\n\t\tif (this.selectedNodeIndex !== index) {",
+  "token_estimate": 74,
+  "created_at": 1794331101098
+}

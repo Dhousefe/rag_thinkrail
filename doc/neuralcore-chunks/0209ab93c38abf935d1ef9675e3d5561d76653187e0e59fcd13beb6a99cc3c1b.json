@@ -1,0 +1,12 @@
+{
+  "id": "0209ab93c38abf935d1ef9675e3d5561d76653187e0e59fcd13beb6a99cc3c1b",
+  "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "kind": "variable",
+  "name": "vy",
+  "start_line": 770,
+  "end_line": 770,
+  "content": "\t\t\t\tcontinue;\n\t\t\t}\n\t\t\tconst [vx0, vy0, vz0] = node.position;\n\t\t\tconst vx = vx0 - tx0;\n\t\t\tconst vy = vy0 - ty0;\n\t\t\tconst vz = vz0 - tz0;\n\n\t\t\t// Projeção da rotação orbital da câmera",
+  "token_estimate": 45,
+  "created_at": 1794331101137
+}

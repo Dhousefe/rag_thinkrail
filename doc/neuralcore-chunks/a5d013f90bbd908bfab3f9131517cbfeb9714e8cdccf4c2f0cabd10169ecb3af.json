@@ -1,0 +1,12 @@
+{
+  "id": "a5d013f90bbd908bfab3f9131517cbfeb9714e8cdccf4c2f0cabd10169ecb3af",
+  "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "kind": "method",
+  "name": "NeuralCoreEngine.triggerMcpSearchTarget",
+  "start_line": 178,
+  "end_line": 186,
+  "content": "\t/**\n\t * Aciona o alvo procurado pelo MCP/Chat, disparando animação de vida gradativa\n\t * no polígono (respeitando a rotação dinâmica a menos que autoPause seja solicitado).\n\t */\n\tpublic triggerMcpSearchTarget(nodeId: string | null, autoPause = false) {\n\t\tthis.searchingNodeId = nodeId;\n\t\tthis.searchAnimStartTime = performance.now();\n\t\tif (nodeId && autoPause) {\n\t\t\tthis.isPaused = true;\n\t\t\tthis.onPauseChange?.(true);\n\t\t}\n\t\tthis.rebuildVectorMesh();\n\t}\n\n\tpublic setVisibleModules(modules: string[]) {\n\t\tthis.visibleModules = new Set(modules);",
+  "token_estimate": 136,
+  "created_at": 1794331101097
+}

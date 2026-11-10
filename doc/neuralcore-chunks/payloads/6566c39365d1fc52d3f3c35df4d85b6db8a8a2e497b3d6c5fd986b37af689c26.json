@@ -1,0 +1,13 @@
+{
+  "id": "6566c39365d1fc52d3f3c35df4d85b6db8a8a2e497b3d6c5fd986b37af689c26",
+  "text": "\t\t}\n\n\t\t// Extrai query/símbolo se for ferramenta RAG do Hermes ou Cindy\n\t\tif (activeToolName) {\n\t\t\tconst lower = activeToolName.toLowerCase();\n\t\t\tif (\n\t\t\t\tlower.includes(\"code_search\") ||\n\t\t\t\tlower.includes(\"ast_predict\") ||",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\useNeuralCoreState.ts",
+    "kind": "variable",
+    "name": "lower",
+    "start_line": 95,
+    "end_line": 95,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "id": "58884eaa6708560b1c775811836e90d2474a8634c285e4143258b2092755a8e4",
+  "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "kind": "method",
+  "name": "NeuralCoreEngine.toggleGimbalRings",
+  "start_line": 157,
+  "end_line": 159,
+  "content": "\t\tthis.rebuildVectorMesh();\n\t\treturn this.showPcbLines;\n\t}\n\n\tpublic toggleGimbalRings(show?: boolean) {\n\t\tthis.showGimbalRings = show !== undefined ? show : !this.showGimbalRings;\n\t}\n\n\tpublic togglePause(paused?: boolean) {\n\t\tthis.isPaused = paused !== undefined ? paused : !this.isPaused;",
+  "token_estimate": 73,
+  "created_at": 1794331101096
+}

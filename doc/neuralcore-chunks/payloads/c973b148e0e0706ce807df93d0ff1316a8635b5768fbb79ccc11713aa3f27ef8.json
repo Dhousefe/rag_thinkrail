@@ -1,0 +1,13 @@
+{
+  "id": "c973b148e0e0706ce807df93d0ff1316a8635b5768fbb79ccc11713aa3f27ef8",
+  "text": "\t\t\trelationKind?: \"CALLER\" | \"IMPORT\" | \"TYPE\" | \"DEPENDENCY\" | undefined;\n\t\t}> = [];\n\n\t\tfor (const proj of allProjectedNodes) {\n\t\t\tconst i = proj.index;\n\t\t\tconst node = this.vectorNodes[i]!;\n\t\t\tconst isSelected = hasActiveSelection && i === this.selectedNodeIndex;\n\t\t\tconst isRelated = Boolean(relations?.directNeighbors.has(i));",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+    "kind": "variable",
+    "name": "i",
+    "start_line": 910,
+    "end_line": 910,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

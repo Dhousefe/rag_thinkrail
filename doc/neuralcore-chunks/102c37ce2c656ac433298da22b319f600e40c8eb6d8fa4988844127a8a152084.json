@@ -1,0 +1,12 @@
+{
+  "id": "102c37ce2c656ac433298da22b319f600e40c8eb6d8fa4988844127a8a152084",
+  "file": "apps\\web\\src\\panels\\neural-core\\resolvePivotNode.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\resolvePivotNode.ts",
+  "kind": "variable",
+  "name": "qn",
+  "start_line": 40,
+  "end_line": 40,
+  "content": "\n\t\t// Prioridade 2: nó cujo qualifiedName bate com a classe pivô\n\t\tif (targetClassName) {\n\t\t\tconst nameMatch = fileCandidates.find((n) => {\n\t\t\t\tconst qn = (n.qualifiedName || \"\").toLowerCase();\n\t\t\t\treturn qn === targetClassName || qn.endsWith(`.${targetClassName}`) || qn.endsWith(`::${targetClassName}`);\n\t\t\t});\n\t\t\tif (nameMatch) return nameMatch;",
+  "token_estimate": 87,
+  "created_at": 1794331101193
+}

@@ -1,0 +1,13 @@
+{
+  "id": "03477798ab94bc3866c0d7d2f5bba2f88cb74a06d6dc90475f1a544ba1d27282",
+  "text": "\t\t\t\t\tconst steps = 3; // Subdivisão fina para propagação do feixe de pulso\n\n\t\t\t\t\tfor (let st = 0; st < steps; st++) {\n\t\t\t\t\t\tconst u1 = (seg * steps + st) / (totalSegments * steps);\n\t\t\t\t\t\tconst u2 = (seg * steps + st + 1) / (totalSegments * steps);\n\n\t\t\t\t\t\tconst x1 = pStart[0] + (pEnd[0] - pStart[0]) * (st / steps);\n\t\t\t\t\t\tconst y1 = pStart[1] + (pEnd[1] - pStart[1]) * (st / steps);",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+    "kind": "variable",
+    "name": "u2",
+    "start_line": 1312,
+    "end_line": 1312,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "id": "5da88cfc2e90ecc9b729e96fdc8da8a405b40871f2e6fa927e3c1de50f819b0e",
+  "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "kind": "variable",
+  "name": "hasActiveSelection",
+  "start_line": 850,
+  "end_line": 853,
+  "content": "\t\tconst sinPhi = Math.sin(this.cameraOrbit.phi);\n\t\tconst baseDist = Math.max(1.0, this.cameraOrbit.distance);\n\t\tconst [tx0, ty0, tz0] = this.cameraOrbit.target || [0, 0, 0];\n\n\t\tconst hasActiveSelection =\n\t\t\tthis.selectedNodeIndex !== null &&\n\t\t\tthis.selectedNodeIndex >= 0 &&\n\t\t\tthis.selectedNodeIndex < this.vectorNodes.length;\n\t\tconst relations = hasActiveSelection\n\t\t\t? computeNodeRelations(this.selectedNodeIndex, this.vectorNodes, this.vectorEdges)\n\t\t\t: null;",
+  "token_estimate": 116,
+  "created_at": 1794331101144
+}

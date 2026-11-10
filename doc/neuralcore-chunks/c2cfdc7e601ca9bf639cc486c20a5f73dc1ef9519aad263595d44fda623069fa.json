@@ -1,0 +1,12 @@
+{
+  "id": "c2cfdc7e601ca9bf639cc486c20a5f73dc1ef9519aad263595d44fda623069fa",
+  "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "kind": "variable",
+  "name": "uniformData",
+  "start_line": 555,
+  "end_line": 555,
+  "content": "\t\t}\n\n\t\tconst model = this.createRotationMatrix(this.angleRotation, this.angleRingRoll * 0.5);\n\n\t\tconst uniformData = new Float32Array(40);\n\t\tuniformData.set(viewProj, 0);\n\t\tuniformData.set(model, 16);\n\t\tuniformData.set(tint, 32);",
+  "token_estimate": 58,
+  "created_at": 1794331101118
+}

@@ -1,0 +1,13 @@
+{
+  "id": "baa6713369b9c9470b01a224b833956fc8b013ab6688ed1b077f02bab58cc17e",
+  "text": "\t\tconst dirZ = eyeZ - tz0;\n\t\tconst zLen = Math.hypot(dirX, dirY, dirZ) || 1;\n\t\tconst z0 = dirX / zLen;\n\t\tconst z1 = dirY / zLen;\n\t\tconst z2 = dirZ / zLen;\n\n\t\t// Vetor Up de referência com proteção contra singularidade de Gimbal Lock em vista zenital (|phi| -> pi/2)\n\t\tlet upX = 0;",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+    "kind": "variable",
+    "name": "z2",
+    "start_line": 647,
+    "end_line": 647,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

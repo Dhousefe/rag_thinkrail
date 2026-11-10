@@ -1,0 +1,13 @@
+{
+  "id": "87ec548da5ffbd0c53c63b2efa7b7130ebfb2c70be5ecdb879691c37e71f2e71",
+  "text": "\tpublic panRight(step = 120) {\n\t\tthis.panBy(-step, 0);\n\t}\n\n\tpublic panUp(step = 120) {\n\t\tthis.panBy(0, step);\n\t}\n\n\tpublic panDown(step = 120) {\n\t\tthis.panBy(0, -step);",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\cameraController.ts",
+    "kind": "method",
+    "name": "OrbitCameraController.panUp",
+    "start_line": 146,
+    "end_line": 148,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

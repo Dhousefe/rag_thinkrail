@@ -1,0 +1,12 @@
+{
+  "id": "997dde4234144ad53051d94d48b2d89b4cc396d0b9611a63b16886b8bdebaa67",
+  "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "kind": "variable",
+  "name": "uniqueAdditions",
+  "start_line": 206,
+  "end_line": 206,
+  "content": "\t */\n\tpublic appendVectorGraphData(newNodes: VectorNodeInput[], newEdges: VectorEdgeInput[]) {\n\t\tif (!newNodes || newNodes.length === 0) return;\n\t\tconst existingIds = new Set(this.vectorNodes.map((n) => n.id || n.path));\n\t\tconst uniqueAdditions: VectorNodeInput[] = [];\n\t\tfor (const node of newNodes) {\n\t\t\tconst key = node.id || node.path;\n\t\t\tif (!existingIds.has(key)) {",
+  "token_estimate": 93,
+  "created_at": 1794331101106
+}

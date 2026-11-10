@@ -1,0 +1,12 @@
+{
+  "id": "6bc608a32aa228d41248f9df61f6894d15bd1ad150720359fa9ce6dcce37b096",
+  "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "kind": "variable",
+  "name": "xLen",
+  "start_line": 664,
+  "end_line": 664,
+  "content": "\t\t// Vetor X = normalize(cross(up, Z))\n\t\tconst x0_raw = upY * z2 - upZ * z1;\n\t\tconst x1_raw = upZ * z0 - upX * z2;\n\t\tconst x2_raw = upX * z1 - upY * z0;\n\t\tconst xLen = Math.hypot(x0_raw, x1_raw, x2_raw) || 1;\n\t\tconst x0 = x0_raw / xLen;\n\t\tconst x1 = x1_raw / xLen;\n\t\tconst x2 = x2_raw / xLen;",
+  "token_estimate": 73,
+  "created_at": 1794331101125
+}

@@ -1,0 +1,12 @@
+{
+  "id": "b1998b9504d415d1abcbf4c3e513c801adfcf6a7570153e8b74bcc503feec878",
+  "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "kind": "variable",
+  "name": "alpha",
+  "start_line": 1161,
+  "end_line": 1161,
+  "content": "\t\t\t// em 4 camadas discretas de cobre baseadas no hash dos nós e no tipo de relação.\n\t\t\tconst pairHash = Math.abs((edge.source * 31 + edge.target * 17) % 4);\n\t\t\tconst layerOffset = pairHash * 0.018; // Camadas L1 a L4 (0.000, 0.018, 0.036, 0.054)\n\t\t\tconst traceY = Math.max(p1[1], p2[1]) + 0.038 + layerOffset;\n\t\t\tlet alpha = Math.min(0.75, Math.max(0.18, edge.similarity * 0.85));\n\n\t\t\t// Cores de trilha metálica condutora (Ouro/Cobre e Turquesa)\n\t\t\tconst isCrossProject =",
+  "token_estimate": 119,
+  "created_at": 1794331101061
+}

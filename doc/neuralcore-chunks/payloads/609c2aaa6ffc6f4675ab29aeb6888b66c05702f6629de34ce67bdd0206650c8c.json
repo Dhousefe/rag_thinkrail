@@ -1,0 +1,13 @@
+{
+  "id": "609c2aaa6ffc6f4675ab29aeb6888b66c05702f6629de34ce67bdd0206650c8c",
+  "text": "\n\tprivate async setupWebGpuPipelines(format: GPUTextureFormat) {\n\t\tif (!this.device) return;\n\n\t\tconst renderModule = this.device.createShaderModule({\n\t\t\tcode: GEOMETRY_RENDER_WGSL,\n\t\t});\n\n\t\tthis.renderPipeline = this.device.createRenderPipeline({\n\t\t\tlayout: \"auto\",",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+    "kind": "variable",
+    "name": "renderModule",
+    "start_line": 372,
+    "end_line": 374,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

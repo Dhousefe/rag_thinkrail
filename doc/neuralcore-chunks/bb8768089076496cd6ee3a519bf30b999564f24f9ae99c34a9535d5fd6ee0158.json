@@ -1,0 +1,12 @@
+{
+  "id": "bb8768089076496cd6ee3a519bf30b999564f24f9ae99c34a9535d5fd6ee0158",
+  "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "kind": "variable",
+  "name": "trColR",
+  "start_line": 1168,
+  "end_line": 1168,
+  "content": "\t\t\tconst isCrossProject =\n\t\t\t\tn1.module.includes(\":\") &&\n\t\t\t\tn2.module.includes(\":\") &&\n\t\t\t\tn1.module.split(\":\")[0] !== n2.module.split(\":\")[0];\n\t\t\tlet trColR = isCrossProject ? 1.0 : 0.15;\n\t\t\tlet trColG = isCrossProject ? 0.75 : 0.85;\n\t\t\tlet trColB = isCrossProject ? 0.2 : 0.95;\n",
+  "token_estimate": 71,
+  "created_at": 1794331101062
+}

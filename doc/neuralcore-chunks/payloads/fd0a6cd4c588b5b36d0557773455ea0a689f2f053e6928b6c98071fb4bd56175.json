@@ -1,0 +1,13 @@
+{
+  "id": "fd0a6cd4c588b5b36d0557773455ea0a689f2f053e6928b6c98071fb4bd56175",
+  "text": "\t\t\t\t\t\t\t\tfilteredNodes.map((n, idx) => {\n\t\t\t\t\t\t\t\t\tconst modStyle = getModuleClasses(n.module);\n\t\t\t\t\t\t\t\t\tconst badge = getSymbolKindBadge(n.chunkKind);\n\t\t\t\t\t\t\t\t\tconst IconComp = badge.icon;\n\t\t\t\t\t\t\t\t\tconst isCurrent = idx === selectedIndex;\n\t\t\t\t\t\t\t\t\tconst qLower = query.toLowerCase().trim();\n\t\t\t\t\t\t\t\t\tconst matchedMethods = (n.methods || []).filter(\n\t\t\t\t\t\t\t\t\t\t(m) =>",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreSearchBox.tsx",
+    "kind": "variable",
+    "name": "isCurrent",
+    "start_line": 301,
+    "end_line": 301,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

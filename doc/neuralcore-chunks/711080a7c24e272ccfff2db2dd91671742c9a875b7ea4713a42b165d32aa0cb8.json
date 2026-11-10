@@ -1,0 +1,12 @@
+{
+  "id": "711080a7c24e272ccfff2db2dd91671742c9a875b7ea4713a42b165d32aa0cb8",
+  "file": "apps\\web\\src\\panels\\neural-core\\semanticFingerprint.test.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\semanticFingerprint.test.ts",
+  "kind": "variable",
+  "name": "colorTsx",
+  "start_line": 58,
+  "end_line": 58,
+  "content": "\t});\n\n\tdescribe(\"Caso de Uso 2: Paleta Cromática Dedicada por Tipo de Arquivo\", () => {\n\t\tit(\"atribui cores exclusivas e contrastantes para cada formato\", () => {\n\t\t\tconst colorTsx = resolveFileTypeColor(\"App.tsx\");\n\t\t\tconst colorTs = resolveFileTypeColor(\"math.ts\");\n\t\t\tconst colorMd = resolveFileTypeColor(\"README.md\");\n\t\t\tconst colorJson = resolveFileTypeColor(\"data.json\");",
+  "token_estimate": 95,
+  "created_at": 1794331101198
+}

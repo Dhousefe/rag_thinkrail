@@ -1,0 +1,13 @@
+{
+  "id": "83491efd0f97b1e7f79195ea18eebd9a6c3b91d3887df5c7cd3442209d3f9103",
+  "text": "\t\t\t\t\t);\n\t\t\t\t\tvOffset++;\n\t\t\t\t}\n\t\t\t}\n\t\t\tconst prismEdges = [0, 1, 1, 2, 2, 0, 3, 4, 4, 5, 5, 3, 0, 3, 1, 4, 2, 5];\n\t\t\tfor (const e of prismEdges) edgeIndices.push(base + e);\n\t\t} else if (polyKind === \"hex_bipyramid\") {\n\t\t\t// Bipirâmide Hexagonal (JSON/Configs): 8 vértices, 18 arestas",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+    "kind": "variable",
+    "name": "prismEdges",
+    "start_line": 963,
+    "end_line": 963,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "id": "19af47bb4b439b71f18b4406a32374fec2b6e30e7a6671c8da8b562d8973a36c",
+  "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "kind": "variable",
+  "name": "icoEdges",
+  "start_line": 1059,
+  "end_line": 1063,
+  "content": "\t\t\tfor (const [vx, vy, vz] of icoRaw) {\n\t\t\t\tvertexFloats.push(cx + vx, cy + vy, cz + vz, colR, colG, colB, colA);\n\t\t\t\tvOffset++;\n\t\t\t}\n\t\t\tconst icoEdges = [\n\t\t\t\t0, 11, 0, 5, 0, 1, 0, 7, 0, 10, 3, 9, 3, 4, 3, 2, 3, 6, 3, 8, 1, 5, 5, 9, 9, 4, 4, 2, 2,\n\t\t\t\t10, 10, 7, 7, 8, 8, 1, 1, 9, 4, 6, 2, 6, 6, 8, 7, 10, 5, 11, 11, 2, 11, 10, 11, 4, 11, 9,\n\t\t\t\t5, 1, 7, 8,\n\t\t\t];\n\t\t\tfor (const e of icoEdges) edgeIndices.push(base + e);\n\t\t} else {\n\t\t\t// Octaedro Padrão (TypeScript .ts / Kotlin / Java): 6 vértices, 12 arestas",
+  "token_estimate": 128,
+  "created_at": 1794331101053
+}

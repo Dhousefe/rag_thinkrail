@@ -1,0 +1,12 @@
+{
+  "id": "94bd5aea4ca8f3c655ddb44734e1a3ee79ced0634d4eb5c731ae80f795677142",
+  "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "kind": "variable",
+  "name": "otherQName",
+  "start_line": 783,
+  "end_line": 783,
+  "content": "\t\t\totherNormRel\n\t\t\t\t.split(\"/\")\n\t\t\t\t.pop()\n\t\t\t\t?.replace(/\\.[^.]+$/, \"\") || \"\";\n\t\tconst otherQName = (other.qualifiedName || otherBaseName).toLowerCase();\n\n\t\t// Relação de import no arquivo\n\t\tconst isImported =",
+  "token_estimate": 53,
+  "created_at": 1794331101031
+}

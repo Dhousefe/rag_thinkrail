@@ -1,0 +1,12 @@
+{
+  "id": "f9adc6e0d9572252968c552c2cb898843b8f2e9e372a6d4e3f9f540d51f9c0ff",
+  "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "kind": "variable",
+  "name": "FILE_TYPE_COLORS",
+  "start_line": 498,
+  "end_line": 519,
+  "content": "\t| \"diamond\"\n\t| \"star_octahedron\"\n\t| \"icosahedron\";\n\nexport const FILE_TYPE_COLORS: Record<string, [number, number, number, number]> = {\n\ttsx: [0.0, 0.88, 1.0, 0.95], // React TSX -> Ciano Elétrico\n\tts: [0.18, 0.58, 1.0, 0.95], // TypeScript -> Azul Safira\n\tjsx: [1.0, 0.78, 0.12, 0.95], // React JSX -> Ouro Solar\n\tjs: [0.95, 0.72, 0.15, 0.95], // JavaScript -> Âmbar Dourado\n\tmd: [0.78, 0.38, 1.0, 0.9], // Markdown / Docs -> Magenta Cósmico\n\tjson: [0.12, 0.95, 0.58, 0.92], // JSON Configs -> Verde Esmeralda Neon\n\tyaml: [0.12, 0.95, 0.58, 0.92], // YAML -> Verde Esmeralda Neon\n\tyml: [0.12, 0.95, 0.58, 0.92], // YML -> Verde Esmeralda Neon\n\ttoml: [0.12, 0.95, 0.58, 0.92], // TOML -> Verde Esmeralda Neon\n\tsh: [1.0, 0.48, 0.12, 0.92], // Shell Scripts -> Laranja Cobre\n\tbat: [1.0, 0.48, 0.12, 0.92], // Batch Scripts -> Laranja Cobre\n\tps1: [1.0, 0.48, 0.12, 0.92], // PowerShell -> Laranja Cobre\n\tcmd: [1.0, 0.48, 0.12, 0.92], // Windows CMD -> Laranja Cobre\n\tcss: [1.0, 0.28, 0.68, 0.92], // CSS Styles -> Rosa Neon Fluorescente\n\tscss: [1.0, 0.28, 0.68, 0.92], // SCSS Styles -> Rosa Neon Fluorescente\n\tless: [1.0, 0.28, 0.68, 0.92], // LESS Styles -> Rosa Neon Fluorescente\n\tcontracts: [1.0, 0.88, 0.18, 0.98], // Contratos / DTOs -> Ouro Incandescente\n\tdts: [1.0, 0.88, 0.18, 0.98], // Type Definitions -> Ouro Incandescente\n\tjava: [0.9, 0.4, 0.2, 0.9], // Java -> Bronze Intenso\n\tkt: [0.65, 0.35, 1.0, 0.9], // Kotlin -> Púrpura\n};\n\n/** Detecta tipo de polígono conforme a extensão do arquivo */\nexport function getPolygonKindForFile(pathOrExt?: string): PolygonKind {",
+  "token_estimate": 395,
+  "created_at": 1794331101015
+}

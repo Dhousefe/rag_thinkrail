@@ -1,0 +1,12 @@
+{
+  "id": "a553310b420a343b42659a18d630a7247ed9d322fcd9601400de94de07cdb64e",
+  "file": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreChunksView.tsx",
+  "path": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreChunksView.tsx",
+  "kind": "variable",
+  "name": "content",
+  "start_line": 67,
+  "end_line": 67,
+  "content": "\t\t\tconst terms = q.split(/\\s+/).filter(Boolean);\n\t\t\tlist = list.filter((c) => {\n\t\t\t\tconst name = (c.qualifiedName || c.relPath || \"\").toLowerCase();\n\t\t\t\tconst sig = (c.signature || \"\").toLowerCase();\n\t\t\t\tconst content = (c.content || \"\").toLowerCase();\n\t\t\t\tconst kind = (c.chunkKind || \"\").toLowerCase();\n\t\t\t\treturn terms.every(\n\t\t\t\t\t(term) =>",
+  "token_estimate": 86,
+  "created_at": 1794331100908
+}

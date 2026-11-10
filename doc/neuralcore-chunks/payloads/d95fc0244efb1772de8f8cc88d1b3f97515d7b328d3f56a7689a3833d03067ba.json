@@ -1,0 +1,13 @@
+{
+  "id": "d95fc0244efb1772de8f8cc88d1b3f97515d7b328d3f56a7689a3833d03067ba",
+  "text": "\t}> {\n\t\tif (!this.showVectorConstellation || this.vectorNodes.length === 0) return [];\n\n\t\tconst w = this.canvas.clientWidth || this.canvas.width;\n\t\tconst h = this.canvas.clientHeight || this.canvas.height;\n\t\tconst cx = w / 2;\n\t\tconst cy = h / 2;\n\t\tconst scale = Math.min(w, h) * 0.22;",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+    "kind": "variable",
+    "name": "h",
+    "start_line": 838,
+    "end_line": 838,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

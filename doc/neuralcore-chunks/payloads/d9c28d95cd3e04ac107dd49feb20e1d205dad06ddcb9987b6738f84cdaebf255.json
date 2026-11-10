@@ -1,0 +1,13 @@
+{
+  "id": "d9c28d95cd3e04ac107dd49feb20e1d205dad06ddcb9987b6738f84cdaebf255",
+  "text": "\t\t\t\t(edge.source === selectedNodeIndex || edge.target === selectedNodeIndex);\n\t\t\tconst isEdgeUnrelated = hasActiveSelection && !isConnectedToSelected;\n\n\t\t\tconst p1 = n1.position;\n\t\t\tconst p2 = n2.position;\n\n\t\t\t// Camada de elevação da trilha (PCB Copper Trace Layer) com separação Multi-Camada (Multi-Layer PCB)\n\t\t\t// Para evitar cruzamento e sobreposição feia no mesmo plano Y, escalonamos a altura da trilha",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+    "kind": "variable",
+    "name": "p2",
+    "start_line": 1153,
+    "end_line": 1153,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

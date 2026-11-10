@@ -1,0 +1,13 @@
+{
+  "id": "6c8839acc962e2e22b49260df16e68c3b619b77a8ef09c5a8ad4532fc14ee0b1",
+  "text": "\t\t\t\tn1.module.includes(\":\") &&\n\t\t\t\tn2.module.includes(\":\") &&\n\t\t\t\tn1.module.split(\":\")[0] !== n2.module.split(\":\")[0];\n\t\t\tlet trColR = isCrossProject ? 1.0 : 0.15;\n\t\t\tlet trColG = isCrossProject ? 0.75 : 0.85;\n\t\t\tlet trColB = isCrossProject ? 0.2 : 0.95;\n\n\t\t\tif (isConnectedToSelected) {",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+    "kind": "variable",
+    "name": "trColG",
+    "start_line": 1169,
+    "end_line": 1169,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

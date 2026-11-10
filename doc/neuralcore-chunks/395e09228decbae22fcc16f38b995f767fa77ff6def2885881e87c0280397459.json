@@ -1,0 +1,12 @@
+{
+  "id": "395e09228decbae22fcc16f38b995f767fa77ff6def2885881e87c0280397459",
+  "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "kind": "variable",
+  "name": "totalM",
+  "start_line": 1168,
+  "end_line": 1168,
+  "content": "\t\t\t\tctx.fill();\n\n\t\t\t\t// 3.1 Desenho dos métodos filhos em sub-órbita no Canvas2D\n\t\t\t\tif (node.methods && node.methods.length > 0) {\n\t\t\t\t\tconst totalM = node.methods.length;\n\t\t\t\t\tfor (let mIdx = 0; mIdx < totalM; mIdx++) {\n\t\t\t\t\t\tconst m = node.methods[mIdx]!;\n\t\t\t\t\t\tconst mAngle = m.orbitAngle ?? (mIdx / totalM) * Math.PI * 2;",
+  "token_estimate": 82,
+  "created_at": 1794331101179
+}

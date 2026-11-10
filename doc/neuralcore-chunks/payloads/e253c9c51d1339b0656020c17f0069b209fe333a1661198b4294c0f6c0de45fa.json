@@ -1,0 +1,13 @@
+{
+  "id": "e253c9c51d1339b0656020c17f0069b209fe333a1661198b4294c0f6c0de45fa",
+  "text": "\t\t\t{ passive: false },\n\t\t);\n\t}\n\n\tpublic wasJustDragging(thresholdMs = 250): boolean {\n\t\treturn (\n\t\t\tDate.now() - this.lastDragEndTime < thresholdMs ||\n\t\t\t(this.isDragging && this.totalDragDistance > 4)\n\t\t);\n\t}\n\n\tpublic panBy(deltaX: number, deltaY: number) {\n\t\tthis.flyTarget = null;",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\cameraController.ts",
+    "kind": "method",
+    "name": "OrbitCameraController.wasJustDragging",
+    "start_line": 112,
+    "end_line": 117,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

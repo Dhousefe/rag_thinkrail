@@ -1,0 +1,12 @@
+{
+  "id": "dd0e06a207d9641e6eb72a531f0bcc9c2b09fe0d4bca130b6e671f77106aca6a",
+  "file": "apps\\web\\src\\panels\\neural-core\\useNeuralCoreState.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\useNeuralCoreState.ts",
+  "kind": "variable",
+  "name": "runningCallKeys",
+  "start_line": 25,
+  "end_line": 25,
+  "content": "\t\tlet activeRagToolName: string | undefined;\n\t\tlet isRagSearching = false;\n\t\tlet toolArgs: any;\n\n\t\tconst runningCallKeys = Object.keys(activeCalls);\n\t\tif (runningCallKeys.length > 0) {\n\t\t\tconst firstKey = runningCallKeys[0];\n\t\t\tif (firstKey && activeCalls[firstKey]) {",
+  "token_estimate": 67,
+  "created_at": 1794331101213
+}

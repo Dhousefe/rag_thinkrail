@@ -1,0 +1,13 @@
+{
+  "id": "86bc6a44b939c99d3fa967a59046d5a7dd11e387ff2ccfb7d344de66227e5f63",
+  "text": "\t\t\timportNeighbors.add(i);\n\t\t}\n\n\t\t// Relação de chamadas entre métodos e assinaturas\n\t\tconst isMethodLinked = (selectedNode.methods || []).some((m) => {\n\t\t\tconst mName = m.name.toLowerCase();\n\t\t\tconst mSig = (m.signature || \"\").toLowerCase();\n\t\t\treturn (\n\t\t\t\tmSig.includes(otherBaseName) ||\n\t\t\t\t(other.methods || []).some((om) => {\n\t\t\t\t\tconst omName = om.name.toLowerCase();\n\t\t\t\t\treturn mSig.includes(omName) || (om.signature || \"\").toLowerCase().includes(mName);\n\t\t\t\t})\n\t\t\t);\n\t\t});\n\n\t\tif (isMethodLinked) {\n\t\t\tdirectNeighbors.add(i);",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+    "kind": "variable",
+    "name": "isMethodLinked",
+    "start_line": 802,
+    "end_line": 812,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

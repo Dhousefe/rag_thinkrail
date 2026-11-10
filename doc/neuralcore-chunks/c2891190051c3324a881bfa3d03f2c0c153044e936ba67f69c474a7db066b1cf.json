@@ -1,0 +1,12 @@
+{
+  "id": "c2891190051c3324a881bfa3d03f2c0c153044e936ba67f69c474a7db066b1cf",
+  "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "kind": "variable",
+  "name": "cv",
+  "start_line": 290,
+  "end_line": 290,
+  "content": "\t\tconst su = Math.sin(u);\n\n\t\tfor (let j = 0; j < tubeSegments; j++) {\n\t\t\tconst v = (j / tubeSegments) * Math.PI * 2;\n\t\t\tconst cv = Math.cos(v);\n\t\t\tconst sv = Math.sin(v);\n\n\t\t\tconst x = (majorRadius + minorRadius * cv) * cu;",
+  "token_estimate": 56,
+  "created_at": 1794331100998
+}

@@ -1,0 +1,12 @@
+{
+  "id": "dbf07b5f96d403a907609fdc1bf47114c6df7773572914e24521e99c117e99c0",
+  "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "kind": "variable",
+  "name": "cosPhi",
+  "start_line": 1066,
+  "end_line": 1066,
+  "content": "\t\t\tctx.strokeStyle = this.telemetry.activity === \"thinking\" ? \"magenta\" : \"cyan\";\n\n\t\t\tconst cosO = Math.cos(this.cameraOrbit.theta);\n\t\t\tconst sinO = Math.sin(this.cameraOrbit.theta);\n\t\t\tconst cosPhi = Math.cos(this.cameraOrbit.phi);\n\t\t\tconst sinPhi = Math.sin(this.cameraOrbit.phi);\n\n\t\t\tconst vertexCount = m.vertices.length / 7;",
+  "token_estimate": 83,
+  "created_at": 1794331101166
+}

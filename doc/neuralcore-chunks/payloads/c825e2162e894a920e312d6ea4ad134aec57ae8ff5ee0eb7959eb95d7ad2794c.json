@@ -1,0 +1,13 @@
+{
+  "id": "c825e2162e894a920e312d6ea4ad134aec57ae8ff5ee0eb7959eb95d7ad2794c",
+  "text": "\n\t\t// Usa as dimensões CSS reais do canvas para coincidir exatamente com os ponteiros do mouse\n\t\tconst w = this.canvas.clientWidth || this.canvas.width;\n\t\tconst h = this.canvas.clientHeight || this.canvas.height;\n\t\tconst cx = w / 2;\n\t\tconst cy = h / 2;\n\t\tconst scale = Math.min(w, h) * 0.22;\n",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+    "kind": "variable",
+    "name": "cx",
+    "start_line": 748,
+    "end_line": 748,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

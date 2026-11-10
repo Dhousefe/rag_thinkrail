@@ -1,0 +1,12 @@
+{
+  "id": "84b8684608fe85397c9b8e11b6c4064ffd083f0387fc9fa7ddcbc2c5f60e2b11",
+  "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "kind": "variable",
+  "name": "phi",
+  "start_line": 325,
+  "end_line": 325,
+  "content": "}\n\n// 7. Gerador do Dodecaedro Pentagonal Sagrado\nexport function createDodecahedronWireframe(radius = 1.15): GeometryMeshData {\n\tconst phi = (1.0 + Math.sqrt(5.0)) / 2.0;\n\tconst invPhi = 1.0 / phi;\n\n\tconst rawVertices: [number, number, number][] = [",
+  "token_estimate": 63,
+  "created_at": 1794331101003
+}

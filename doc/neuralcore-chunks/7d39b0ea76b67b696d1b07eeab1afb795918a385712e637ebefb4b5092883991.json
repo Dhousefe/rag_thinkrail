@@ -1,0 +1,12 @@
+{
+  "id": "7d39b0ea76b67b696d1b07eeab1afb795918a385712e637ebefb4b5092883991",
+  "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "kind": "variable",
+  "name": "y",
+  "start_line": 34,
+  "end_line": 34,
+  "content": "\tfor (const [px0, py0, pz0, pw0] of v4) {\n\t\t// Rotação no plano XW\n\t\tconst x = px0 * cosA - pw0 * sinA;\n\t\tconst w = px0 * sinA + pw0 * cosA;\n\t\tconst y = py0;\n\t\tconst z = pz0;\n\n\t\t// Projeção perspectiva 4D -> 3D",
+  "token_estimate": 53,
+  "created_at": 1794331100976
+}

@@ -1,0 +1,12 @@
+{
+  "id": "674080cc33cf9238a138f942fa24570621b441e9378c698ad380136f9c1f354b",
+  "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "kind": "variable",
+  "name": "p",
+  "start_line": 868,
+  "end_line": 868,
+  "content": "\t\t\t// Polígonos sem relação direta: escala equilibrada sem sumir da tela\n\t\t\ts *= 0.65;\n\t\t} else if (isSearchingTarget && searchingAnim) {\n\t\t\t// Animação de vida gradativa em 2 segundos (pulso orgânico, expansão e breathing)\n\t\t\tconst p = Math.max(0, Math.min(1, searchingAnim.animProgress));\n\t\t\tconst lifePulse = 1.0 + Math.sin(p * Math.PI * 4) * 0.45 * (1.0 - p * 0.35);\n\t\t\ts *= 2.2 * lifePulse;\n\t\t} else if (isMatched) {",
+  "token_estimate": 106,
+  "created_at": 1794331101039
+}

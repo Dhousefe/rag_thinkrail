@@ -1,0 +1,13 @@
+{
+  "id": "934eb9f12e85f26916be834c3604be40d4865a791606ae2ea5fdc0a8d88bde84",
+  "text": "\t\t\t\t\tconst overlap = minSafeLabelDist - safeD;\n\t\t\t\t\tconst repulseStrength = overlap / minSafeLabelDist;\n\n\t\t\t\t\tconst nx = dx / safeD;\n\t\t\t\t\tconst ny = dy < 0 ? dy / safeD : -0.85;\n\n\t\t\t\t\titem.x += nx * repulseStrength * 16;\n\t\t\t\t\titem.y += ny * repulseStrength * 20;",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+    "kind": "variable",
+    "name": "ny",
+    "start_line": 1015,
+    "end_line": 1015,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

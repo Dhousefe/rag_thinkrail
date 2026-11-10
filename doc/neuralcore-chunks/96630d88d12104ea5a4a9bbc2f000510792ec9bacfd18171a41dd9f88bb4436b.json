@@ -1,0 +1,12 @@
+{
+  "id": "96630d88d12104ea5a4a9bbc2f000510792ec9bacfd18171a41dd9f88bb4436b",
+  "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "kind": "variable",
+  "name": "totalElements",
+  "start_line": 520,
+  "end_line": 520,
+  "content": "\t\t\tif (now - this.fpsTimer >= 1000) {\n\t\t\t\tthis.currentFps = Math.round((this.frameCounter * 1000) / (now - this.fpsTimer));\n\t\t\t\tthis.frameCounter = 0;\n\t\t\t\tthis.fpsTimer = now;\n\t\t\t\tlet totalElements = this.primaryMesh.count + this.satelliteMesh.count;\n\t\t\t\tif (this.showGimbalRings) totalElements += this.gimbalMesh.count;\n\t\t\t\tif (this.showVectorConstellation && this.vectorMesh) totalElements += this.vectorMesh.count;\n\t\t\t\tthis.onFrameMetrics?.(this.currentFps, totalElements);",
+  "token_estimate": 119,
+  "created_at": 1794331101115
+}

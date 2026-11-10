@@ -1,0 +1,12 @@
+{
+  "id": "cd2eb5bf84a244c29504d277c23fcadda19cb0ac5b02f04c4d52b9711eed6498",
+  "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "kind": "variable",
+  "name": "r",
+  "start_line": 946,
+  "end_line": 946,
+  "content": "\t\t\tconst tetEdges = [0, 1, 0, 2, 0, 3, 1, 2, 2, 3, 3, 1];\n\t\t\tfor (const e of tetEdges) edgeIndices.push(base + e);\n\t\t} else if (polyKind === \"prism\") {\n\t\t\t// Prisma Triangular (Scripts/Shell): 6 vértices, 9 arestas\n\t\t\tconst r = s * 1.1;\n\t\t\tconst h = s * 1.2;\n\t\t\tfor (let tri = -1; tri <= 1; tri += 2) {\n\t\t\t\tfor (let a = 0; a < 3; a++) {",
+  "token_estimate": 84,
+  "created_at": 1794331101044
+}

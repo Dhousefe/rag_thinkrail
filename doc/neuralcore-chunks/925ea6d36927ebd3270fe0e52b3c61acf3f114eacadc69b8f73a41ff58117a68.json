@@ -1,0 +1,12 @@
+{
+  "id": "925ea6d36927ebd3270fe0e52b3c61acf3f114eacadc69b8f73a41ff58117a68",
+  "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "kind": "variable",
+  "name": "rawVertices",
+  "start_line": 328,
+  "end_line": 353,
+  "content": "export function createDodecahedronWireframe(radius = 1.15): GeometryMeshData {\n\tconst phi = (1.0 + Math.sqrt(5.0)) / 2.0;\n\tconst invPhi = 1.0 / phi;\n\n\tconst rawVertices: [number, number, number][] = [\n\t\t// 8 vértices do cubo unitário (+-1, +-1, +-1)\n\t\t[-1, -1, -1],\n\t\t[-1, -1, 1],\n\t\t[-1, 1, -1],\n\t\t[-1, 1, 1],\n\t\t[1, -1, -1],\n\t\t[1, -1, 1],\n\t\t[1, 1, -1],\n\t\t[1, 1, 1],\n\t\t// 4 vértices (0, +-invPhi, +-phi)\n\t\t[0, -invPhi, -phi],\n\t\t[0, -invPhi, phi],\n\t\t[0, invPhi, -phi],\n\t\t[0, invPhi, phi],\n\t\t// 4 vértices (+-invPhi, +-phi, 0)\n\t\t[-invPhi, -phi, 0],\n\t\t[-invPhi, phi, 0],\n\t\t[invPhi, -phi, 0],\n\t\t[invPhi, phi, 0],\n\t\t// 4 vértices (+-phi, 0, +-invPhi)\n\t\t[-phi, 0, -invPhi],\n\t\t[-phi, 0, invPhi],\n\t\t[phi, 0, -invPhi],\n\t\t[phi, 0, invPhi],\n\t];\n\n\tconst vertexFloats: number[] = [];\n\tfor (const [vx, vy, vz] of rawVertices) {",
+  "token_estimate": 203,
+  "created_at": 1794331101004
+}

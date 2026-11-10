@@ -1,0 +1,13 @@
+{
+  "id": "cf42cf803cc59201c7425fc05b503f0e9a8e911ef38c67b9284567dda08e90bf",
+  "text": "\tconst vertexFloats: number[] = [];\n\tfor (const [vx, vy, vz] of rawVertices) {\n\t\tconst len = Math.sqrt(vx * vx + vy * vy + vz * vz || 1);\n\t\tconst x = (vx / len) * radius;\n\t\tconst y = (vy / len) * radius;\n\t\tconst z = (vz / len) * radius;\n\t\tvertexFloats.push(x, y, z, 0.3, 1.0, 0.7, 0.88); // Esmeralda / Jade Geométrico\n\t}",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+    "kind": "variable",
+    "name": "y",
+    "start_line": 359,
+    "end_line": 359,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

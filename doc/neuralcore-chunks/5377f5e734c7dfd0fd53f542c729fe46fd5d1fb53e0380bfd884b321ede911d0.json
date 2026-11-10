@@ -1,0 +1,12 @@
+{
+  "id": "5377f5e734c7dfd0fd53f542c729fe46fd5d1fb53e0380bfd884b321ede911d0",
+  "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "kind": "variable",
+  "name": "cy",
+  "start_line": 1052,
+  "end_line": 1052,
+  "content": "\t\tctx.fillRect(0, 0, w, h);\n\t\tctx.globalAlpha = 1.0;\n\n\t\tconst cx = w / 2;\n\t\tconst cy = h / 2;\n\t\tconst scale = Math.min(w, h) * 0.22;\n\n\t\tconst baseDist = Math.max(1.0, this.cameraOrbit.distance);",
+  "token_estimate": 49,
+  "created_at": 1794331101162
+}

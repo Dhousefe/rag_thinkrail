@@ -1,0 +1,13 @@
+{
+  "id": "4eeb646e1a4c98f5c3f29c86bd706b0e45e8f12254bc1569e19a8ce25bc3f2af",
+  "text": "\t\t\tthis.uploadVectorMesh();\n\t\t}\n\t}\n\n\tprivate uploadPrimaryMesh() {\n\t\tif (!this.device) return;\n\t\tif (!this.primaryVBuffer || this.primaryVBuffer.size < this.primaryMesh.vertices.byteLength) {\n\t\t\tthis.primaryVBuffer?.destroy();\n\t\t\tthis.primaryVBuffer = this.device.createBuffer({\n\t\t\t\tsize: Math.max(65536, this.primaryMesh.vertices.byteLength),\n\t\t\t\tusage: GPU_BUFFER_USAGE.VERTEX | GPU_BUFFER_USAGE.COPY_DST,\n\t\t\t});\n\t\t}\n\t\tthis.device.queue.writeBuffer(this.primaryVBuffer, 0, this.primaryMesh.vertices as any);\n\n\t\tif (!this.primaryIBuffer || this.primaryIBuffer.size < this.primaryMesh.indices.byteLength) {\n\t\t\tthis.primaryIBuffer?.destroy();\n\t\t\tthis.primaryIBuffer = this.device.createBuffer({\n\t\t\t\tsize: Math.max(32768, this.primaryMesh.indices.byteLength),\n\t\t\t\tusage: GPU_BUFFER_USAGE.INDEX | GPU_BUFFER_USAGE.COPY_DST,\n\t\t\t});\n\t\t}\n\t\tthis.device.queue.writeBuffer(this.primaryIBuffer, 0, this.primaryMesh.indices as any);\n\t}\n\n\tprivate uploadVectorMesh() {\n\t\tif (!this.device || !this.vectorMesh) return;",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+    "kind": "method",
+    "name": "NeuralCoreEngine.uploadPrimaryMesh",
+    "start_line": 298,
+    "end_line": 317,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

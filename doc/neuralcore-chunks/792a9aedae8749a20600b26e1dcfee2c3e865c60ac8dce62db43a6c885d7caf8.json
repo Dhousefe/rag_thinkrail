@@ -1,0 +1,12 @@
+{
+  "id": "792a9aedae8749a20600b26e1dcfee2c3e865c60ac8dce62db43a6c885d7caf8",
+  "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "kind": "variable",
+  "name": "isWithinCursorRadius",
+  "start_line": 934,
+  "end_line": 934,
+  "content": "\t\t\t\telse relationKind = \"DEPENDENCY\";\n\t\t\t}\n\n\t\t\t// Checa se está dentro do raio seguro a partir do cursor\n\t\t\tlet isWithinCursorRadius = false;\n\t\t\tif (cursor) {\n\t\t\t\tconst cdx = proj.px - cursor.x;\n\t\t\t\tconst cdy = proj.py - cursor.y;",
+  "token_estimate": 58,
+  "created_at": 1794331101154
+}

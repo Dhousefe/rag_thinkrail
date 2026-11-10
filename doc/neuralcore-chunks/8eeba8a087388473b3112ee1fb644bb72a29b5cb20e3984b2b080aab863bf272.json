@@ -1,0 +1,12 @@
+{
+  "id": "8eeba8a087388473b3112ee1fb644bb72a29b5cb20e3984b2b080aab863bf272",
+  "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "kind": "variable",
+  "name": "isMotionActive",
+  "start_line": 484,
+  "end_line": 487,
+  "content": "\t\t\t// Executa interpolações antes do frame (ex: Fly-to da câmera)\n\t\t\tthis.onBeforeRenderFrame?.();\n\n\t\t\t// O Neural Core só se move quando houver busca RAG ou atividade de ferramenta do agente\n\t\t\tconst isMotionActive =\n\t\t\t\tthis.isRagActive ||\n\t\t\t\tthis.telemetry.activity === \"tool_exec\" ||\n\t\t\t\tthis.telemetry.activity === \"thinking\";\n\n\t\t\tconst targetSpeed = isMotionActive ? 1.0 + this.telemetry.intensity * 2.5 : 0.0;\n\t\t\tthis.currentMotionSpeed += (targetSpeed - this.currentMotionSpeed) * Math.min(1.0, dt * 5.0);",
+  "token_estimate": 129,
+  "created_at": 1794331101114
+}

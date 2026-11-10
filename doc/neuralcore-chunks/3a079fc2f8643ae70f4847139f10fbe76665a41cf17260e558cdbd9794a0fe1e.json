@@ -1,0 +1,12 @@
+{
+  "id": "3a079fc2f8643ae70f4847139f10fbe76665a41cf17260e558cdbd9794a0fe1e",
+  "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "kind": "variable",
+  "name": "mAngle",
+  "start_line": 1089,
+  "end_line": 1089,
+  "content": "\t\t\tconst totalM = n.methods.length;\n\t\t\tfor (let mIdx = 0; mIdx < totalM; mIdx++) {\n\t\t\t\tconst m = n.methods[mIdx];\n\t\t\t\tif (!m) continue;\n\t\t\t\tconst mAngle = m.orbitAngle ?? (mIdx / totalM) * Math.PI * 2;\n\t\t\t\tconst mRadius = m.orbitRadius ?? 0.16;\n\n\t\t\t\tconst mx = cx + Math.cos(mAngle) * mRadius;",
+  "token_estimate": 74,
+  "created_at": 1794331101055
+}

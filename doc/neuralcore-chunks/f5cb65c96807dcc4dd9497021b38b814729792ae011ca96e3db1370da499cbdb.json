@@ -1,0 +1,12 @@
+{
+  "id": "f5cb65c96807dcc4dd9497021b38b814729792ae011ca96e3db1370da499cbdb",
+  "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "kind": "variable",
+  "name": "col",
+  "start_line": 877,
+  "end_line": 877,
+  "content": "\t\t} else if (isHighlight) {\n\t\t\ts *= 1.7; // Destaque nítido ao passar o mouse\n\t\t}\n\n\t\tlet col: [number, number, number, number];\n\t\tif (isSelected) {\n\t\t\t// Nó selecionado: Ouro elétrico vibrante com 100% de opacidade\n\t\t\tcol = [1.0, 0.9, 0.1, 1.0];",
+  "token_estimate": 62,
+  "created_at": 1794331101039
+}

@@ -1,0 +1,13 @@
+{
+  "id": "d842aea1ee743877584eb1ccaf5438ee60f576d5266de5b21b5e466b97ae643d",
+  "text": "\t\t\tthis.rebuildVectorMesh(performance.now() / 1000);\n\t\t}\n\t}\n\n\tprivate rebuildVectorMesh(overrideAnimTime?: number) {\n\t\tif (this.vectorNodes.length === 0) {\n\t\t\tthis.vectorMesh = null;\n\t\t\treturn;\n\t\t}\n\t\tconst filteredNodes =\n\t\t\tthis.visibleModules.size > 0\n\t\t\t\t? this.vectorNodes.filter((n) => this.visibleModules.has(n.module))\n\t\t\t\t: this.vectorNodes;\n\n\t\tconst now = performance.now();\n\t\tconst elapsed = now - this.searchAnimStartTime;\n\t\tconst searchingAnim = this.searchingNodeId\n\t\t\t? {\n\t\t\t\t\tnodeId: this.searchingNodeId,\n\t\t\t\t\tanimProgress: Math.min(1.0, elapsed / this.searchAnimDurationMs),\n\t\t\t\t}\n\t\t\t: null;\n\n\t\tconst animTime = overrideAnimTime !== undefined ? overrideAnimTime : now / 1000;\n\n\t\tthis.vectorMesh = createVectorConstellationWireframe(\n\t\t\tfilteredNodes,\n\t\t\tthis.vectorEdges,\n\t\t\tthis.highlightedNodeIndex,\n\t\t\tthis.activeSearchQuery,\n\t\t\tsearchingAnim,\n\t\t\tthis.selectedNodeIndex,\n\t\t\tthis.showPcbLines,\n\t\t\tanimTime,\n\t\t);\n\t\tif (this.device) {\n\t\t\tthis.uploadVectorMesh();\n\t\t}\n\t}\n\n\tprivate uploadPrimaryMesh() {\n\t\tif (!this.device) return;",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+    "kind": "method",
+    "name": "NeuralCoreEngine.rebuildVectorMesh",
+    "start_line": 262,
+    "end_line": 296,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

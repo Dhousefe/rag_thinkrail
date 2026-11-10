@@ -1,0 +1,12 @@
+{
+  "id": "c7162c5cca1f23c86dadd061fd191e5272b05ce1ccef4b2ace934fc235918a1b",
+  "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "kind": "method",
+  "name": "NeuralCoreEngine.setVectorGraphData",
+  "start_line": 193,
+  "end_line": 197,
+  "content": "\t\tthis.visibleModules = new Set(modules);\n\t\tthis.rebuildVectorMesh();\n\t}\n\n\tpublic setVectorGraphData(nodes: VectorNodeInput[], edges: VectorEdgeInput[]) {\n\t\tthis.vectorNodes = nodes;\n\t\tthis.vectorEdges = edges;\n\t\tthis.rebuildVectorMesh();\n\t}\n\n\t/**\n\t * Adiciona progressivamente novos nós e arestas sem resetar a cena",
+  "token_estimate": 79,
+  "created_at": 1794331101097
+}

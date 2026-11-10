@@ -1,0 +1,13 @@
+{
+  "id": "2358100205b398ae41969a9adca3bbeea0b2a4f7b7b6183c19abbad27bf834c2",
+  "text": "\tconst part1 = toHex(h1) + toHex(h2);\n\tconst part2 = toHex(h3) + toHex(h4);\n\tconst part3 = toHex(h1 ^ h3) + toHex(h2 ^ h4);\n\tconst part4 = toHex(h1 + h2) + toHex(h3 + h4);\n\tconst fingerprintHash = `${part1}${part2}${part3}${part4}`.toLowerCase();\n\tconst shortHash = fingerprintHash.substring(0, 10).toUpperCase();\n\n\tconst totalRelations = edges.length;",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+    "kind": "variable",
+    "name": "fingerprintHash",
+    "start_line": 683,
+    "end_line": 683,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

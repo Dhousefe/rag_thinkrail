@@ -1,0 +1,13 @@
+{
+  "id": "52bc0f8b4176cc8dcf5e1efbe0388a95bf3d616bbcf0be2e3e2c93b5b505e3d0",
+  "text": "\t\tconst x0_raw = upY * z2 - upZ * z1;\n\t\tconst x1_raw = upZ * z0 - upX * z2;\n\t\tconst x2_raw = upX * z1 - upY * z0;\n\t\tconst xLen = Math.hypot(x0_raw, x1_raw, x2_raw) || 1;\n\t\tconst x0 = x0_raw / xLen;\n\t\tconst x1 = x1_raw / xLen;\n\t\tconst x2 = x2_raw / xLen;\n",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+    "kind": "variable",
+    "name": "x0",
+    "start_line": 665,
+    "end_line": 665,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

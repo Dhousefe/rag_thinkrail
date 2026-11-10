@@ -1,0 +1,13 @@
+{
+  "id": "809d3e9e2991fae88ad8222250d32b56c4090a3c7dceea12cdc72153150688ba",
+  "text": "\t\t\t\tconst [mColR, mColG, mColB, mColA]: [number, number, number, number] = isMatched\n\t\t\t\t\t? [1.0, 0.9, 0.2, 0.95]\n\t\t\t\t\t: [colR, colG, colB, 0.75];\n\n\t\t\t\tconst mPts: [number, number, number][] = [\n\t\t\t\t\t[mx, my + ms, mz],\n\t\t\t\t\t[mx, my - ms, mz],\n\t\t\t\t\t[mx + ms, my, mz],\n\t\t\t\t\t[mx - ms, my, mz],\n\t\t\t\t\t[mx, my, mz + ms],\n\t\t\t\t\t[mx, my, mz - ms],\n\t\t\t\t];\n\t\t\t\tfor (const [ptX, ptY, ptZ] of mPts) {\n\t\t\t\t\tvertexFloats.push(ptX, ptY, ptZ, mColR, mColG, mColB, mColA);\n\t\t\t\t\tvOffset++;",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+    "kind": "variable",
+    "name": "mPts",
+    "start_line": 1103,
+    "end_line": 1110,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

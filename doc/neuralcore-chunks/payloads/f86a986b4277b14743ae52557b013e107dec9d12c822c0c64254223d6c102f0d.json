@@ -1,0 +1,13 @@
+{
+  "id": "f86a986b4277b14743ae52557b013e107dec9d12c822c0c64254223d6c102f0d",
+  "text": "\t\t\t\tconst y = m.vertices[off + 1]!;\n\t\t\t\tconst z = m.vertices[off + 2]!;\n\n\t\t\t\tconst rx = x * cosO - z * sinO;\n\t\t\t\tconst rz = x * sinO + z * cosO;\n\t\t\t\tconst ry = y * cosPhi - rz * sinPhi;\n\t\t\t\tconst d = Math.max(0.2, baseDist + (y * sinPhi + rz * cosPhi) * 0.45);\n",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+    "kind": "variable",
+    "name": "rz",
+    "start_line": 1078,
+    "end_line": 1078,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

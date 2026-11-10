@@ -1,0 +1,12 @@
+{
+  "id": "3f854fc35e147a5d958738a9fb1dbdba8d102507e8754ed4687a75f62c899eca",
+  "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "kind": "variable",
+  "name": "h",
+  "start_line": 1044,
+  "end_line": 1044,
+  "content": "\tprivate renderGeometricCanvas2D() {\n\t\tif (!this.ctx2d) return;\n\t\tconst ctx = this.ctx2d;\n\t\tconst w = this.canvas.width;\n\t\tconst h = this.canvas.height;\n\n\t\tctx.globalAlpha = 0.25;\n\t\tctx.fillStyle = \"black\";",
+  "token_estimate": 52,
+  "created_at": 1794331101161
+}

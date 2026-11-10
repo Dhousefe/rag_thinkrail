@@ -1,0 +1,12 @@
+{
+  "id": "553f2e1838eefc875892e164ff34b42de0992a45c22e4072667ad315c8126655",
+  "file": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreNodeOverview.tsx",
+  "path": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreNodeOverview.tsx",
+  "kind": "variable",
+  "name": "handleCopySnippet",
+  "start_line": 24,
+  "end_line": 29,
+  "content": "\tonFocusNeighbor,\n\tonSelectMethodQuery,\n\tgetModuleClasses,\n}: NeuralCoreNodeOverviewProps) {\n\tconst handleCopySnippet = () => {\n\t\tif (activeNode.contentSnippet) {\n\t\t\tvoid navigator.clipboard.writeText(activeNode.contentSnippet);\n\t\t\ttoast.success(\"Snippet copiado\", activeNode.qualifiedName || activeNode.relPath);\n\t\t}\n\t};\n\n\treturn (\n\t\t<div className=\"flex flex-col gap-6 min-h-0\">",
+  "token_estimate": 95,
+  "created_at": 1794331100918
+}

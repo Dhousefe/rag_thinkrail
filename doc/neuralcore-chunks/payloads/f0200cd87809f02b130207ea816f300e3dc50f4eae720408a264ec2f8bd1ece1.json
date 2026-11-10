@@ -1,0 +1,13 @@
+{
+  "id": "f0200cd87809f02b130207ea816f300e3dc50f4eae720408a264ec2f8bd1ece1",
+  "text": "\tradii: [number, number, number],\n\tsegments = 48,\n): GeometryMeshData {\n\tconst vertexFloats: number[] = [];\n\tconst edgeIndices: number[] = [];\n\tlet vertexOffset = 0;\n\n\tconst axes: Array<{",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+    "kind": "variable",
+    "name": "edgeIndices",
+    "start_line": 113,
+    "end_line": 113,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

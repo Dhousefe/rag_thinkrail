@@ -1,0 +1,12 @@
+{
+  "id": "a41121f001a3fc9a0b7c5e7c682e70fb0ef4c5271d495961378bac14d139cdab",
+  "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "kind": "variable",
+  "name": "sinO",
+  "start_line": 753,
+  "end_line": 753,
+  "content": "\t\tconst cy = h / 2;\n\t\tconst scale = Math.min(w, h) * 0.22;\n\n\t\tconst cosO = Math.cos(this.cameraOrbit.theta);\n\t\tconst sinO = Math.sin(this.cameraOrbit.theta);\n\t\tconst cosPhi = Math.cos(this.cameraOrbit.phi);\n\t\tconst sinPhi = Math.sin(this.cameraOrbit.phi);\n",
+  "token_estimate": 64,
+  "created_at": 1794331101135
+}

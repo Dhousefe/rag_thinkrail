@@ -1,0 +1,13 @@
+{
+  "id": "695a9254c6cdd1c02ed85eb4f98e01464e743f86055bab3ab06f5578a68ba46e",
+  "text": "}\n\n// 1. Gerador do Hipercubo 4D (Tesseract rotativo projetado em 3D)\nexport function createTesseractWireframe(scale = 1.0, angle4D = 0.0): GeometryMeshData {\n\tconst v4: [number, number, number, number][] = [];\n\tfor (let x = -1; x <= 1; x += 2) {\n\t\tfor (let y = -1; y <= 1; y += 2) {\n\t\t\tfor (let z = -1; z <= 1; z += 2) {",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+    "kind": "variable",
+    "name": "v4",
+    "start_line": 13,
+    "end_line": 13,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

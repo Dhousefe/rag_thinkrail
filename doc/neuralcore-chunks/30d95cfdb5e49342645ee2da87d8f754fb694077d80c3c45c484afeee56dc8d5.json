@@ -1,0 +1,12 @@
+{
+  "id": "30d95cfdb5e49342645ee2da87d8f754fb694077d80c3c45c484afeee56dc8d5",
+  "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "kind": "variable",
+  "name": "MODULE_COLORS",
+  "start_line": 427,
+  "end_line": 435,
+  "content": "\tsimilarity: number;\n\tkind?: HermesEdgeKind | undefined;\n}\n\nconst MODULE_COLORS: Record<string, [number, number, number, number]> = {\n\t\"apps/web\": [0.0, 0.85, 1.0, 0.9], // Ciano brilhante\n\t\"packages/server\": [0.8, 0.3, 1.0, 0.9], // Magenta\n\tcontracts: [1.0, 0.75, 0.0, 0.95], // Ouro\n\t\"packages/ui\": [0.1, 1.0, 0.6, 0.9], // Esmeralda\n\tscripts: [1.0, 0.4, 0.4, 0.85], // Coral\n\textensions: [0.4, 0.6, 1.0, 0.85], // Safira\n\tcore: [0.9, 0.9, 1.0, 0.8], // Prata\n};\n\n/** Resolve cor do módulo com suporte a particionamento multi-projeto (slug:mod) */\nexport function resolveModuleColor(modName?: string): [number, number, number, number] {",
+  "token_estimate": 160,
+  "created_at": 1794331101011
+}

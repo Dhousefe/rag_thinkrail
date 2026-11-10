@@ -1,0 +1,12 @@
+{
+  "id": "cdcd34143a31f7b606f7409efaf2c1a81896c75052bfff4fcc6c5f0c478c8d6e",
+  "file": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreChunksView.tsx",
+  "path": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreChunksView.tsx",
+  "kind": "variable",
+  "name": "k",
+  "start_line": 22,
+  "end_line": 22,
+  "content": "\ntype ChunkFilterCategory = \"all\" | \"methods\" | \"vars\" | \"types\";\n\nfunction getChunkKindMeta(kind?: string): { label: string; badgeClass: string; icon: any } {\n\tconst k = (kind || \"\").toLowerCase();\n\tif (k.includes(\"class\") || k.includes(\"struct\") || k.includes(\"impl\")) {\n\t\treturn { label: \"class\", badgeClass: \"bg-primary text-text-on-primary\", icon: RiNodeTree };\n\t}",
+  "token_estimate": 93,
+  "created_at": 1794331100903
+}

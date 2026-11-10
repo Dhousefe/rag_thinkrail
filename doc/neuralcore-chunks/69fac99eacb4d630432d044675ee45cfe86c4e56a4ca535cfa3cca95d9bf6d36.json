@@ -1,0 +1,12 @@
+{
+  "id": "69fac99eacb4d630432d044675ee45cfe86c4e56a4ca535cfa3cca95d9bf6d36",
+  "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "kind": "variable",
+  "name": "part1",
+  "start_line": 679,
+  "end_line": 679,
+  "content": "\t\t}\n\t}\n\n\tconst toHex = (n: number) => (n >>> 0).toString(16).padStart(8, \"0\");\n\tconst part1 = toHex(h1) + toHex(h2);\n\tconst part2 = toHex(h3) + toHex(h4);\n\tconst part3 = toHex(h1 ^ h3) + toHex(h2 ^ h4);\n\tconst part4 = toHex(h1 + h2) + toHex(h3 + h4);",
+  "token_estimate": 63,
+  "created_at": 1794331101022
+}

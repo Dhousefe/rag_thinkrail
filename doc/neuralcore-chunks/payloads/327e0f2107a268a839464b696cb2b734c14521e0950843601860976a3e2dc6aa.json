@@ -1,0 +1,13 @@
+{
+  "id": "327e0f2107a268a839464b696cb2b734c14521e0950843601860976a3e2dc6aa",
+  "text": "\tlet h2 = 0x41c64e6d;\n\tlet h3 = 0x9e3779b9;\n\tlet h4 = 0x85ebca6b;\n\n\tconst sortedNodes = [...nodes].sort((a, b) => (a.id || \"\").localeCompare(b.id || \"\"));\n\tfor (const n of sortedNodes) {\n\t\tconst str = `${n.id}:${n.module}:${n.methods?.length || 0}:${n.position.map((v) => v.toFixed(3)).join(\",\")}`;\n\t\tfor (let i = 0; i < str.length; i++) {",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+    "kind": "variable",
+    "name": "sortedNodes",
+    "start_line": 657,
+    "end_line": 657,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

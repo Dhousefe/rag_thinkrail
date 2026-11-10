@@ -1,0 +1,13 @@
+{
+  "id": "7e434b9290c2447be07255d0d77f2fd7e2d4f0131ae5321971820803b09f11cb",
+  "text": "\tcore: [0.9, 0.9, 1.0, 0.8], // Prata\n};\n\n/** Resolve cor do módulo com suporte a particionamento multi-projeto (slug:mod) */\nexport function resolveModuleColor(modName?: string): [number, number, number, number] {\n\tif (!modName) return MODULE_COLORS.core ?? [0.9, 0.9, 1.0, 0.8];\n\tif (MODULE_COLORS[modName]) return MODULE_COLORS[modName]!;\n\n\t// Se for prefixado por projeto (ex: hermes-3-0:core ou cindy:packages/server)\n\tif (modName.includes(\":\")) {\n\t\tconst parts = modName.split(\":\");\n\t\tconst subMod = parts.slice(1).join(\":\");\n\t\tif (MODULE_COLORS[subMod]) {\n\t\t\treturn MODULE_COLORS[subMod]!;\n\t\t}\n\t}\n\n\t// Hash determinístico para projetos externos\n\tlet hash = 0;\n\tfor (let i = 0; i < modName.length; i++) {\n\t\thash = (hash << 5) - hash + modName.charCodeAt(i);\n\t\thash |= 0;\n\t}\n\tconst hue = Math.abs(hash % 360);\n\t// Converte HSV para RGB básico para cor viva\n\tconst h = hue / 60;\n\tconst c = 0.85;\n\tconst x = c * (1 - Math.abs((h % 2) - 1));\n\tlet r = 0;\n\tlet g = 0;\n\tlet b = 0;\n\tif (h < 1) {\n\t\tr = c;\n\t\tg = x;\n\t} else if (h < 2) {\n\t\tr = x;\n\t\tg = c;\n\t} else if (h < 3) {\n\t\tg = c;\n\t\tb = x;\n\t} else if (h < 4) {\n\t\tg = x;\n\t\tb = c;\n\t} else if (h < 5) {\n\t\tr = x;\n\t\tb = c;\n\t} else {\n\t\tr = c;\n\t\tb = x;\n\t}\n\treturn [r + 0.15, g + 0.15, b + 0.15, 0.88];\n}\n\n/** Paleta cromática e tipos geométricos dedicados por extensão de arquivo */\nexport type PolygonKind =",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+    "kind": "function",
+    "name": "resolveModuleColor",
+    "start_line": 438,
+    "end_line": 485,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

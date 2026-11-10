@@ -1,0 +1,13 @@
+{
+  "id": "843dfae2c15af820964bced208b8bed685ddac63cd7e6e1442cb82adbdcf1916",
+  "text": "\t\t\t\t\t| undefined;\n\t\t\t\tif (rawTarget && typeof rawTarget === \"string\") {\n\t\t\t\t\tconst cleanTarget = rawTarget.trim();\n\t\t\t\t\tif (cleanTarget.includes(\"/\") || cleanTarget.includes(\"\\\\\")) {\n\t\t\t\t\t\tconst norm = cleanTarget.replace(/\\\\/g, \"/\");\n\t\t\t\t\t\tactiveChatFilePath = activeChatFilePath || norm;\n\t\t\t\t\t\tconst fileName = norm.split(\"/\").pop() || \"\";\n\t\t\t\t\t\tactiveChatPivotClass = fileName.replace(/\\.[^.]+$/, \"\");",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\useNeuralCoreState.ts",
+    "kind": "variable",
+    "name": "norm",
+    "start_line": 82,
+    "end_line": 82,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

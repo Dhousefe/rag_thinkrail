@@ -1,0 +1,13 @@
+{
+  "id": "f543569699611c64db1d30adaa5fc484217e35f46322640d11385c60980e2261",
+  "text": "import type { NeuralActivityState, NeuralTelemetryState } from \"./types\";\n\nexport function useNeuralCoreState() {\n\tconst activeWorkspace = useAppStore(selectActiveWorkspace);\n\tconst mcpMetrics = useAppStore((s) => s.mcpTelemetry.metrics);\n\tconst activeCalls = useAppStore((s) => s.mcpTelemetry.activeCalls);\n\tconst connectionStatus = useAppStore((s) => s.status);\n",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\useNeuralCoreState.ts",
+    "kind": "variable",
+    "name": "mcpMetrics",
+    "start_line": 7,
+    "end_line": 7,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

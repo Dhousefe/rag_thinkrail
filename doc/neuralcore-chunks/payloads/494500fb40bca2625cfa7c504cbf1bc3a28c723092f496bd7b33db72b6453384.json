@@ -1,0 +1,13 @@
+{
+  "id": "494500fb40bca2625cfa7c504cbf1bc3a28c723092f496bd7b33db72b6453384",
+  "text": "\t\t\t}\n\t\t\treturn;\n\t\t}\n\n\t\tconst totalItems = searchDropdownTab === \"nodes\" ? filteredNodes.length : filteredChunks.length;\n\t\tif (totalItems === 0) return;\n\n\t\tif (e.key === \"ArrowDown\") {",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreSearchBox.tsx",
+    "kind": "variable",
+    "name": "totalItems",
+    "start_line": 162,
+    "end_line": 162,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

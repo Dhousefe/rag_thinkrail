@@ -1,0 +1,13 @@
+{
+  "id": "38b8ee6b7c287d004afb6816126dc52450e6f79dd3879a07c5042b9e595cb1c8",
+  "text": "\t// 32 Arestas conectando os vértices que diferem em exatamente 1 bit\n\tconst edgeIndices: number[] = [];\n\tfor (let i = 0; i < 16; i++) {\n\t\tfor (let bit = 0; bit < 4; bit++) {\n\t\t\tconst j = i ^ (1 << bit);\n\t\t\tif (i < j) {\n\t\t\t\tedgeIndices.push(i, j);\n\t\t\t}",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+    "kind": "variable",
+    "name": "j",
+    "start_line": 51,
+    "end_line": 51,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "id": "e2cf99b1f859536275fa0329742207d50e594875f9e5892176463e4a3cd78181",
+  "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "kind": "variable",
+  "name": "routeOrder",
+  "start_line": 1210,
+  "end_line": 1210,
+  "content": "\n\t\t\t// Roteamento Ortogonal com Alternância de Eixos (Anti-Colisão Manhattan):\n\t\t\t// Trilha ímpar desvia primeiro em X, trilha par desvia primeiro em Z.\n\t\t\t// Isso divide o tráfego espacial pela metade, impedindo linhas colineares cruzadas.\n\t\t\tconst routeOrder = (edge.source + edge.target) % 2 === 0;\n\t\t\tconst midX = p1[0] + (p2[0] - p1[0]) * (0.45 + (pairHash % 3) * 0.05);\n\t\t\tconst midZ = p1[2] + (p2[2] - p1[2]) * (0.45 + (pairHash % 3) * 0.05);\n",
+  "token_estimate": 113,
+  "created_at": 1794331101063
+}

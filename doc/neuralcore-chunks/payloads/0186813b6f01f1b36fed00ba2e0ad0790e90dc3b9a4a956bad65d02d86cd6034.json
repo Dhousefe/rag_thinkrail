@@ -1,0 +1,13 @@
+{
+  "id": "0186813b6f01f1b36fed00ba2e0ad0790e90dc3b9a4a956bad65d02d86cd6034",
+  "text": "\t\tconst y = py0;\n\t\tconst z = pz0;\n\n\t\t// Projeção perspectiva 4D -> 3D\n\t\tconst perspective = 1.0 / (projDistance - w * 0.6);\n\t\tconst px = x * perspective * scale;\n\t\tconst py = y * perspective * scale;\n\t\tconst pz = z * perspective * scale;",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+    "kind": "variable",
+    "name": "perspective",
+    "start_line": 38,
+    "end_line": 38,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

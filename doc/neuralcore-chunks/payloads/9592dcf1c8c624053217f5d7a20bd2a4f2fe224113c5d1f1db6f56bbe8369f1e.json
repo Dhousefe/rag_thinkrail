@@ -1,0 +1,13 @@
+{
+  "id": "9592dcf1c8c624053217f5d7a20bd2a4f2fe224113c5d1f1db6f56bbe8369f1e",
+  "text": "\t\t\t\t}\n\n\t\t\t\t// Altura de camada Y dedicada por relação para NUNCA cruzar no espaço 3D\n\t\t\t\tconst layerElevation = 0.048 + (neighborOrder % 12) * 0.024;\n\t\t\t\tconst routeY = Math.max(sy, ny) + layerElevation;\n\t\t\t\tneighborOrder++;\n\n\t\t\t\t// Roteamento ortogonal Manhattan em 4 segmentos livres de colisão",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+    "kind": "variable",
+    "name": "routeY",
+    "start_line": 1291,
+    "end_line": 1291,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

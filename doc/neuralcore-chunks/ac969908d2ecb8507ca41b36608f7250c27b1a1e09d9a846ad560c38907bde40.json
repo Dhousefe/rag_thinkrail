@@ -1,0 +1,12 @@
+{
+  "id": "ac969908d2ecb8507ca41b36608f7250c27b1a1e09d9a846ad560c38907bde40",
+  "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "kind": "variable",
+  "name": "ry",
+  "start_line": 877,
+  "end_line": 877,
+  "content": "\t\t\tconst vz = vz0 - tz0;\n\n\t\t\tconst rx = vx * cosO - vz * sinO;\n\t\t\tconst rz = vx * sinO + vz * cosO;\n\t\t\tconst ry = vy * cosPhi - rz * sinPhi;\n\t\t\tconst depth = Math.max(0.2, baseDist + (vy * sinPhi + rz * cosPhi) * 0.45);\n\n\t\t\tconst px = cx + (rx / depth) * scale * 5.6;",
+  "token_estimate": 67,
+  "created_at": 1794331101148
+}

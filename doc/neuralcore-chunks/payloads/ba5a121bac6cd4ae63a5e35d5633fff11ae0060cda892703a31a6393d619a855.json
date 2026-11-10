@@ -1,0 +1,13 @@
+{
+  "id": "ba5a121bac6cd4ae63a5e35d5633fff11ae0060cda892703a31a6393d619a855",
+  "text": "\n\t\t// Projeção perspectiva 4D -> 3D\n\t\tconst perspective = 1.0 / (projDistance - w * 0.6);\n\t\tconst px = x * perspective * scale;\n\t\tconst py = y * perspective * scale;\n\t\tconst pz = z * perspective * scale;\n\n\t\t// Posição + Cor RGBA (Ciano / Azul Elétrico)",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+    "kind": "variable",
+    "name": "py",
+    "start_line": 40,
+    "end_line": 40,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

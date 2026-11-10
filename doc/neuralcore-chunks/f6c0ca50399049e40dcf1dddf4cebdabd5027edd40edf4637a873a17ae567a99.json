@@ -1,0 +1,12 @@
+{
+  "id": "f6c0ca50399049e40dcf1dddf4cebdabd5027edd40edf4637a873a17ae567a99",
+  "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "kind": "variable",
+  "name": "px",
+  "start_line": 39,
+  "end_line": 39,
+  "content": "\t\tconst z = pz0;\n\n\t\t// Projeção perspectiva 4D -> 3D\n\t\tconst perspective = 1.0 / (projDistance - w * 0.6);\n\t\tconst px = x * perspective * scale;\n\t\tconst py = y * perspective * scale;\n\t\tconst pz = z * perspective * scale;\n",
+  "token_estimate": 56,
+  "created_at": 1794331100977
+}

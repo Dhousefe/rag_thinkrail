@@ -1,0 +1,12 @@
+{
+  "id": "954e39b0946bb695423b86286d3805a3e7a768c472c563dfa5be537f2411ace3",
+  "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "kind": "variable",
+  "name": "t1Edges",
+  "start_line": 234,
+  "end_line": 234,
+  "content": "\t\t);\n\t}\n\n\t// Arestas do Tetraedro 1\n\tconst t1Edges = [0, 1, 0, 2, 0, 3, 1, 2, 2, 3, 3, 1];\n\tedgeIndices.push(...t1Edges);\n\n\t// Tetraedro 2 (Invertido, Ciano/Azul elétrico com energia descendente)",
+  "token_estimate": 49,
+  "created_at": 1794331100994
+}

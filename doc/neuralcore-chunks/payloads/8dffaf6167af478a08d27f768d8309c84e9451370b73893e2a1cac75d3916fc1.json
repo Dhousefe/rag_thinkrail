@@ -1,0 +1,13 @@
+{
+  "id": "8dffaf6167af478a08d27f768d8309c84e9451370b73893e2a1cac75d3916fc1",
+  "text": "\t\t\t\tconfigurable: true,\n\t\t\t});\n\t\t}\n\n\t\tconst controller = new OrbitCameraController(canvasMock);\n\t\texpect(controller.wasJustDragging()).toBe(false);\n\n\t\t// Simula mousedown",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\cameraController.test.ts",
+    "kind": "variable",
+    "name": "controller",
+    "start_line": 28,
+    "end_line": 28,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

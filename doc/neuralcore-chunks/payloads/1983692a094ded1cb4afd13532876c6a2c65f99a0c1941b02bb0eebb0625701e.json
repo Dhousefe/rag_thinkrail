@@ -1,0 +1,13 @@
+{
+  "id": "1983692a094ded1cb4afd13532876c6a2c65f99a0c1941b02bb0eebb0625701e",
+  "text": "\t\tconst sinO = Math.sin(this.cameraOrbit.theta);\n\t\tconst cosPhi = Math.cos(this.cameraOrbit.phi);\n\t\tconst sinPhi = Math.sin(this.cameraOrbit.phi);\n\n\t\tconst baseDist = Math.max(1.0, this.cameraOrbit.distance);\n\t\tconst [tx0, ty0, tz0] = this.cameraOrbit.target || [0, 0, 0];\n\n\t\t// Candidatos dentro da tolerância do ponteiro",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+    "kind": "variable",
+    "name": "baseDist",
+    "start_line": 757,
+    "end_line": 757,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "id": "af4716336fa45831e942748014c9f80b86333594342f5505269b2ce69eb8f8d4",
+  "text": "\tpublic toggleGimbalRings(show?: boolean) {\n\t\tthis.showGimbalRings = show !== undefined ? show : !this.showGimbalRings;\n\t}\n\n\tpublic togglePause(paused?: boolean) {\n\t\tthis.isPaused = paused !== undefined ? paused : !this.isPaused;\n\t\tthis.onPauseChange?.(this.isPaused);\n\t}\n\n\tpublic setCursorScreenCoord(x: number | null, y: number | null) {\n\t\tif (x === null || y === null) {",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+    "kind": "method",
+    "name": "NeuralCoreEngine.togglePause",
+    "start_line": 161,
+    "end_line": 164,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

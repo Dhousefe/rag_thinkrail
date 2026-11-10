@@ -1,0 +1,12 @@
+{
+  "id": "cfaa29e7e10ec52d73b52f4370c28981638312f8da83f853f99173f3766cfb23",
+  "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "kind": "variable",
+  "name": "y2",
+  "start_line": 1319,
+  "end_line": 1319,
+  "content": "\t\t\t\t\t\tconst y1 = pStart[1] + (pEnd[1] - pStart[1]) * (st / steps);\n\t\t\t\t\t\tconst z1 = pStart[2] + (pEnd[2] - pStart[2]) * (st / steps);\n\n\t\t\t\t\t\tconst x2 = pStart[0] + (pEnd[0] - pStart[0]) * ((st + 1) / steps);\n\t\t\t\t\t\tconst y2 = pStart[1] + (pEnd[1] - pStart[1]) * ((st + 1) / steps);\n\t\t\t\t\t\tconst z2 = pStart[2] + (pEnd[2] - pStart[2]) * ((st + 1) / steps);\n\n\t\t\t\t\t\t// Onda senoidal viajante no tempo animTime mostrando a direção do fluxo de dependência",
+  "token_estimate": 112,
+  "created_at": 1794331101073
+}

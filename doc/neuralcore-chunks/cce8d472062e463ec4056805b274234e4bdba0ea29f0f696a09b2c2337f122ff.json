@@ -1,0 +1,12 @@
+{
+  "id": "cce8d472062e463ec4056805b274234e4bdba0ea29f0f696a09b2c2337f122ff",
+  "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "kind": "variable",
+  "name": "str",
+  "start_line": 659,
+  "end_line": 659,
+  "content": "\tlet h4 = 0x85ebca6b;\n\n\tconst sortedNodes = [...nodes].sort((a, b) => (a.id || \"\").localeCompare(b.id || \"\"));\n\tfor (const n of sortedNodes) {\n\t\tconst str = `${n.id}:${n.module}:${n.methods?.length || 0}:${n.position.map((v) => v.toFixed(3)).join(\",\")}`;\n\t\tfor (let i = 0; i < str.length; i++) {\n\t\t\tconst c = str.charCodeAt(i);\n\t\t\th1 = Math.imul(h1 ^ c, 2654435761);",
+  "token_estimate": 92,
+  "created_at": 1794331101021
+}

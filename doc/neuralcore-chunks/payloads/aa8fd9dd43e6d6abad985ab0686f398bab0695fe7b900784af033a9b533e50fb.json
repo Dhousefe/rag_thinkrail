@@ -1,0 +1,13 @@
+{
+  "id": "aa8fd9dd43e6d6abad985ab0686f398bab0695fe7b900784af033a9b533e50fb",
+  "text": "",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\useNeuralCoreState.ts",
+    "kind": "file",
+    "name": "useNeuralCoreState.ts",
+    "start_line": 1,
+    "end_line": 160,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

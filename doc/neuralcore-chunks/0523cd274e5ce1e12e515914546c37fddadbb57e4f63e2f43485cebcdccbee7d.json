@@ -1,0 +1,12 @@
+{
+  "id": "0523cd274e5ce1e12e515914546c37fddadbb57e4f63e2f43485cebcdccbee7d",
+  "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "kind": "variable",
+  "name": "typeDistribution",
+  "start_line": 635,
+  "end_line": 635,
+  "content": "\t\t};\n\t}\n\n\t// 1. Distribuição de tipos de arquivo\n\tconst typeDistribution: Record<string, number> = {};\n\tfor (const n of nodes) {\n\t\tconst kind = getPolygonKindForFile(n.fileExtension || n.relPath || n.path);\n\t\ttypeDistribution[kind] = (typeDistribution[kind] || 0) + 1;",
+  "token_estimate": 67,
+  "created_at": 1794331101017
+}

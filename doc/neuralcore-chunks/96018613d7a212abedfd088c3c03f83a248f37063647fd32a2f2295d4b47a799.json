@@ -1,0 +1,12 @@
+{
+  "id": "96018613d7a212abedfd088c3c03f83a248f37063647fd32a2f2295d4b47a799",
+  "file": "apps\\web\\src\\panels\\neural-core\\semanticFingerprint.test.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\semanticFingerprint.test.ts",
+  "kind": "variable",
+  "name": "rels",
+  "start_line": 176,
+  "end_line": 176,
+  "content": "\t\t\t{ source: 0, target: 2, kind: \"imports\" as const, similarity: 0.8 },\n\t\t];\n\n\t\tit(\"identifica vizinhos e tipos de relação na seleção do nó\", () => {\n\t\t\tconst rels = computeNodeRelations(0, nodes, edges);\n\t\t\texpect(rels.directNeighbors.has(1)).toBe(true);\n\t\t\texpect(rels.directNeighbors.has(2)).toBe(true);\n\t\t\texpect(rels.callNeighbors.has(1)).toBe(true);",
+  "token_estimate": 89,
+  "created_at": 1794331101203
+}

@@ -1,0 +1,12 @@
+{
+  "id": "a188104cfc438c552068a05b55a8c0cf0efe81aeb2798cac573545305a1e1158",
+  "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "kind": "variable",
+  "name": "viewProj",
+  "start_line": 542,
+  "end_line": 542,
+  "content": "\tprivate renderWebGpu(time: number) {\n\t\tif (!this.device || !this.context || !this.renderPipeline) return;\n\n\t\tconst aspect = this.canvas.width / (this.canvas.height || 1);\n\t\tconst viewProj = this.calculateViewProjMatrix(aspect);\n\n\t\tlet tint = [0.0, 0.85, 1.0, 1.0];\n\t\tif (this.telemetry.activity === \"thinking\") {",
+  "token_estimate": 79,
+  "created_at": 1794331101116
+}

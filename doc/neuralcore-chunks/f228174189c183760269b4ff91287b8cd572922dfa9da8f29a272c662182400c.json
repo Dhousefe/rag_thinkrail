@@ -1,0 +1,12 @@
+{
+  "id": "f228174189c183760269b4ff91287b8cd572922dfa9da8f29a272c662182400c",
+  "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "kind": "variable",
+  "name": "phi",
+  "start_line": 67,
+  "end_line": 67,
+  "content": "}\n\n// 2. Gerador do Icosaedro Geodésico Sagrado\nexport function createIcosahedronWireframe(radius = 1.0): GeometryMeshData {\n\tconst phi = (1.0 + Math.sqrt(5.0)) / 2.0;\n\tconst a = 1.0;\n\tconst b = 1.0 / phi;\n",
+  "token_estimate": 52,
+  "created_at": 1794331100979
+}

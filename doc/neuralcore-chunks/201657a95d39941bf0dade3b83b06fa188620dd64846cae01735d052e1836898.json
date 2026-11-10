@@ -1,0 +1,12 @@
+{
+  "id": "201657a95d39941bf0dade3b83b06fa188620dd64846cae01735d052e1836898",
+  "file": "apps\\web\\src\\panels\\neural-core\\components\\searchBox.test.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\components\\searchBox.test.ts",
+  "kind": "variable",
+  "name": "path",
+  "start_line": 95,
+  "end_line": 95,
+  "content": "\t\tconst terms = query.toLowerCase().split(/\\s+/).filter(Boolean);\n\t\tconst filtered = chunks.filter((c) => {\n\t\t\tconst name = (c.qualifiedName || \"\").toLowerCase();\n\t\t\tconst content = (c.content || \"\").toLowerCase();\n\t\t\tconst path = (c.path || \"\").toLowerCase();\n\t\t\treturn terms.every((t) => name.includes(t) || content.includes(t) || path.includes(t));\n\t\t});\n",
+  "token_estimate": 90,
+  "created_at": 1794331100947
+}

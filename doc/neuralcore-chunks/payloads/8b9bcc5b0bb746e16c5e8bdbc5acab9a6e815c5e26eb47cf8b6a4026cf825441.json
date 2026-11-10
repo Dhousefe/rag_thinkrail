@@ -1,0 +1,13 @@
+{
+  "id": "8b9bcc5b0bb746e16c5e8bdbc5acab9a6e815c5e26eb47cf8b6a4026cf825441",
+  "text": "\t\t}\n\n\t\t// Ordena por prioridade e limita ao máximo de rótulos permitidos (expandido quando há nós relacionados)\n\t\tcandidateLabels.sort((a, b) => b.importanceScore - a.importanceScore);\n\t\tconst effectiveMax = hasActiveSelection ? Math.max(maxLabels, 32) : maxLabels;\n\t\tconst selectedCandidates = candidateLabels.slice(0, effectiveMax);\n\n\t\t// 3. Aplicação do MAGNETISMO DE MESMA POLARIDADE (Repulsão Coulombiana Suave):",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+    "kind": "variable",
+    "name": "effectiveMax",
+    "start_line": 992,
+    "end_line": 992,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

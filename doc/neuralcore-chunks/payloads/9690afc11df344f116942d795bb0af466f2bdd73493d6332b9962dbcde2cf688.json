@@ -1,0 +1,13 @@
+{
+  "id": "9690afc11df344f116942d795bb0af466f2bdd73493d6332b9962dbcde2cf688",
+  "text": "\tconst threshold = minDist * 1.15;\n\n\tfor (let i = 0; i < rawVertices.length; i++) {\n\t\tconst vxi = vertexFloats[i * 7] ?? 0;\n\t\tconst vyi = vertexFloats[i * 7 + 1] ?? 0;\n\t\tconst vzi = vertexFloats[i * 7 + 2] ?? 0;\n\t\tfor (let j = i + 1; j < rawVertices.length; j++) {\n\t\t\tconst vxj = vertexFloats[j * 7] ?? 0;",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+    "kind": "variable",
+    "name": "vyi",
+    "start_line": 371,
+    "end_line": 371,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

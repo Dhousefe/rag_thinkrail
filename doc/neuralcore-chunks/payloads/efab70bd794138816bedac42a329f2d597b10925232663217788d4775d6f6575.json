@@ -1,0 +1,13 @@
+{
+  "id": "efab70bd794138816bedac42a329f2d597b10925232663217788d4775d6f6575",
+  "text": "\t\t} else if (this.telemetry.activity === \"error\") {\n\t\t\ttint = [1.0, 0.15, 0.25, 1.0];\n\t\t}\n\n\t\tconst model = this.createRotationMatrix(this.angleRotation, this.angleRingRoll * 0.5);\n\n\t\tconst uniformData = new Float32Array(40);\n\t\tuniformData.set(viewProj, 0);",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+    "kind": "variable",
+    "name": "model",
+    "start_line": 553,
+    "end_line": 553,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

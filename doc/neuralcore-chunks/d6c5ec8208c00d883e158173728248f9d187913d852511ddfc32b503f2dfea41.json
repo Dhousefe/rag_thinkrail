@@ -1,0 +1,12 @@
+{
+  "id": "d6c5ec8208c00d883e158173728248f9d187913d852511ddfc32b503f2dfea41",
+  "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "kind": "variable",
+  "name": "otherNormRel",
+  "start_line": 777,
+  "end_line": 777,
+  "content": "\t\tif (i === selectedIndex) continue;\n\t\tconst other = nodes[i];\n\t\tif (!other) continue;\n\n\t\tconst otherNormRel = (other.relPath || other.path || \"\").toLowerCase();\n\t\tconst otherBaseName =\n\t\t\totherNormRel\n\t\t\t\t.split(\"/\")",
+  "token_estimate": 55,
+  "created_at": 1794331101030
+}

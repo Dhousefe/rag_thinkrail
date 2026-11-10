@@ -1,0 +1,13 @@
+{
+  "id": "a1fa79d99222203e14dd0d03b1dcd7a23620fa102747d5306277458f17d2d47f",
+  "text": "\t\t\tconst vyj = vertexFloats[j * 7 + 1] ?? 0;\n\t\t\tconst vzj = vertexFloats[j * 7 + 2] ?? 0;\n\t\t\tconst dx = vxi - vxj;\n\t\t\tconst dy = vyi - vyj;\n\t\t\tconst dz = vzi - vzj;\n\t\t\tconst dist = Math.sqrt(dx * dx + dy * dy + dz * dz);\n\t\t\tif (dist < threshold) {\n\t\t\t\tedgeIndices.push(i, j);",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+    "kind": "variable",
+    "name": "dz",
+    "start_line": 379,
+    "end_line": 379,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "id": "ee4620a4e524ca9e0adc9ced29b25969e3cb51c8a217caf0ceb575aeec29f4f1",
+  "text": "\n\tconst vertexFloats: number[] = [];\n\tfor (const [vx, vy, vz] of rawVertices) {\n\t\tconst len = Math.sqrt(vx * vx + vy * vy + vz * vz || 1);\n\t\tconst x = (vx / len) * radius;\n\t\tconst y = (vy / len) * radius;\n\t\tconst z = (vz / len) * radius;\n\t\tvertexFloats.push(x, y, z, 0.7, 0.3, 1.0, 0.85); // Magenta neural",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+    "kind": "variable",
+    "name": "x",
+    "start_line": 89,
+    "end_line": 89,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

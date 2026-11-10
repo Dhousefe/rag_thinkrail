@@ -1,0 +1,13 @@
+{
+  "id": "6dafd6016d1fbdc12197e72c6291f59dda4f1cfee7501d5e34c4d8d08b250922",
+  "text": "\t\t\treturn;\n\t\t}\n\n\t\tlet minX = Infinity, maxX = -Infinity;\n\t\tlet minY = Infinity, maxY = -Infinity;\n\t\tlet minZ = Infinity, maxZ = -Infinity;\n\n\t\tfor (const [x, y, z] of positions) {",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\cameraController.ts",
+    "kind": "variable",
+    "name": "maxY",
+    "start_line": 292,
+    "end_line": 292,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

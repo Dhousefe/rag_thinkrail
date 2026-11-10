@@ -1,0 +1,13 @@
+{
+  "id": "68f4fa231e1c09583dcf55f7ba898df01104b98d99faf846d2f5998b3ec445f4",
+  "text": "\tconst t1Edges = [0, 1, 0, 2, 0, 3, 1, 2, 2, 3, 3, 1];\n\tedgeIndices.push(...t1Edges);\n\n\t// Tetraedro 2 (Invertido, Ciano/Azul elétrico com energia descendente)\n\tconst t2: [number, number, number][] = [\n\t\t[-1, -1, -1],\n\t\t[-1, 1, 1],\n\t\t[1, -1, 1],\n\t\t[1, 1, -1],\n\t];\n\tfor (const [vx, vy, vz] of t2) {\n\t\tvertexFloats.push(\n\t\t\tvx * scale * 0.8,",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+    "kind": "variable",
+    "name": "t2",
+    "start_line": 238,
+    "end_line": 243,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

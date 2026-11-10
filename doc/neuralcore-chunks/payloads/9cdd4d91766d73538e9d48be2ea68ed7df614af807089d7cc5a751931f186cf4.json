@@ -1,0 +1,13 @@
+{
+  "id": "9cdd4d91766d73538e9d48be2ea68ed7df614af807089d7cc5a751931f186cf4",
+  "text": "\tconst filteredChunks = useMemo(() => {\n\t\tlet list = chunks;\n\t\tif (activeFilter === \"methods\") {\n\t\t\tlist = list.filter((c) => {\n\t\t\t\tconst k = (c.chunkKind || \"\").toLowerCase();\n\t\t\t\treturn k.includes(\"func\") || k.includes(\"method\");\n\t\t\t});\n\t\t} else if (activeFilter === \"vars\") {",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreChunksView.tsx",
+    "kind": "variable",
+    "name": "k",
+    "start_line": 46,
+    "end_line": 46,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

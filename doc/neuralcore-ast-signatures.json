@@ -1,0 +1,80 @@
+{
+  "files": [
+    {
+      "path": "apps\\web\\src\\panels\\neural-core\\cameraController.test.ts",
+      "exports": []
+    },
+    {
+      "path": "apps\\web\\src\\panels\\neural-core\\cameraController.ts",
+      "exports": []
+    },
+    {
+      "path": "apps\\web\\src\\panels\\neural-core\\components\\index.ts",
+      "exports": []
+    },
+    {
+      "path": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreChunksView.tsx",
+      "exports": []
+    },
+    {
+      "path": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreFingerprintCard.tsx",
+      "exports": []
+    },
+    {
+      "path": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreNodeOverview.tsx",
+      "exports": []
+    },
+    {
+      "path": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreSearchBox.tsx",
+      "exports": []
+    },
+    {
+      "path": "apps\\web\\src\\panels\\neural-core\\components\\searchBox.test.ts",
+      "exports": []
+    },
+    {
+      "path": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "exports": [
+        {
+          "name": "FILE_TYPE_COLORS",
+          "kind": "variable",
+          "type": "Record<string, [number, number, number, number]>"
+        }
+      ]
+    },
+    {
+      "path": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "exports": []
+    },
+    {
+      "path": "apps\\web\\src\\panels\\neural-core\\resolvePivotNode.test.ts",
+      "exports": []
+    },
+    {
+      "path": "apps\\web\\src\\panels\\neural-core\\resolvePivotNode.ts",
+      "exports": []
+    },
+    {
+      "path": "apps\\web\\src\\panels\\neural-core\\semanticFingerprint.test.ts",
+      "exports": []
+    },
+    {
+      "path": "apps\\web\\src\\panels\\neural-core\\shaders.wgsl.ts",
+      "exports": [
+        {
+          "name": "GEOMETRY_RENDER_WGSL",
+          "kind": "variable",
+          "type": null
+        }
+      ]
+    },
+    {
+      "path": "apps\\web\\src\\panels\\neural-core\\types.ts",
+      "exports": []
+    },
+    {
+      "path": "apps\\web\\src\\panels\\neural-core\\useNeuralCoreState.ts",
+      "exports": []
+    }
+  ]
+}

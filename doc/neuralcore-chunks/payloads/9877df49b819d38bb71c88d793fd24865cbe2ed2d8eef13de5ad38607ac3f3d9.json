@@ -1,0 +1,13 @@
+{
+  "id": "9877df49b819d38bb71c88d793fd24865cbe2ed2d8eef13de5ad38607ac3f3d9",
+  "text": "\n\t\t\t// Camada de elevação da trilha (PCB Copper Trace Layer) com separação Multi-Camada (Multi-Layer PCB)\n\t\t\t// Para evitar cruzamento e sobreposição feia no mesmo plano Y, escalonamos a altura da trilha\n\t\t\t// em 4 camadas discretas de cobre baseadas no hash dos nós e no tipo de relação.\n\t\t\tconst pairHash = Math.abs((edge.source * 31 + edge.target * 17) % 4);\n\t\t\tconst layerOffset = pairHash * 0.018; // Camadas L1 a L4 (0.000, 0.018, 0.036, 0.054)\n\t\t\tconst traceY = Math.max(p1[1], p2[1]) + 0.038 + layerOffset;\n\t\t\tlet alpha = Math.min(0.75, Math.max(0.18, edge.similarity * 0.85));",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+    "kind": "variable",
+    "name": "pairHash",
+    "start_line": 1158,
+    "end_line": 1158,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

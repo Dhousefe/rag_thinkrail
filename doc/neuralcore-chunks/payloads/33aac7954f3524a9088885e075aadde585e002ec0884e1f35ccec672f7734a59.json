@@ -1,0 +1,13 @@
+{
+  "id": "33aac7954f3524a9088885e075aadde585e002ec0884e1f35ccec672f7734a59",
+  "text": "\n\tlet integrityStatus: \"VERIFIED_AUTHENTIC\" | \"HIGH_DENSITY\" | \"BALANCED\" = \"VERIFIED_AUTHENTIC\";\n\tif (density > 0.4) integrityStatus = \"HIGH_DENSITY\";\n\n\tconst auditBadge = `FINGERPRINT-${shortHash}`;\n\n\treturn {\n\t\tfingerprintHash,",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+    "kind": "variable",
+    "name": "auditBadge",
+    "start_line": 693,
+    "end_line": 693,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

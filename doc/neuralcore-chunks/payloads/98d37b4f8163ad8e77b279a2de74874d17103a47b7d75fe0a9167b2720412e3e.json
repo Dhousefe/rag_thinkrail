@@ -1,0 +1,13 @@
+{
+  "id": "98d37b4f8163ad8e77b279a2de74874d17103a47b7d75fe0a9167b2720412e3e",
+  "text": "\n\t// 1. Coleta todos os nós cujo path ou relPath corresponde ao arquivo\n\tconst fileCandidates = vectorNodes.filter((node) => {\n\t\tconst p = (node.path || \"\").replace(/\\\\/g, \"/\").toLowerCase();\n\t\tconst rel = (node.relPath || \"\").replace(/\\\\/g, \"/\").toLowerCase();\n\t\treturn (\n\t\t\t(cleanPath && (p.endsWith(cleanPath) || rel.endsWith(cleanPath))) ||\n\t\t\t(cleanPath && (cleanPath.endsWith(rel) || cleanPath.endsWith(p))) ||",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\resolvePivotNode.ts",
+    "kind": "variable",
+    "name": "rel",
+    "start_line": 22,
+    "end_line": 22,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

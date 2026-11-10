@@ -1,0 +1,13 @@
+{
+  "id": "08f3c545fd840e252e5dfa06e6b937f884fb95a241726301e05462995117d5db",
+  "text": "\n\t\t// Ordena por prioridade e limita ao máximo de rótulos permitidos (expandido quando há nós relacionados)\n\t\tcandidateLabels.sort((a, b) => b.importanceScore - a.importanceScore);\n\t\tconst effectiveMax = hasActiveSelection ? Math.max(maxLabels, 32) : maxLabels;\n\t\tconst selectedCandidates = candidateLabels.slice(0, effectiveMax);\n\n\t\t// 3. Aplicação do MAGNETISMO DE MESMA POLARIDADE (Repulsão Coulombiana Suave):\n\t\t// Garante que o rótulo NUNCA fique sobreposto em cima de outro polígono vizinho.",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+    "kind": "variable",
+    "name": "selectedCandidates",
+    "start_line": 993,
+    "end_line": 993,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

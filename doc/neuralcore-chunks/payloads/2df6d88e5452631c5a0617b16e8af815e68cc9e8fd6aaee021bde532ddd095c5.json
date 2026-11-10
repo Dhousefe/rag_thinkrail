@@ -1,0 +1,13 @@
+{
+  "id": "2df6d88e5452631c5a0617b16e8af815e68cc9e8fd6aaee021bde532ddd095c5",
+  "text": "\t\t\t\tedgeIndices.push(base + 4 + e);\n\t\t\t}\n\t\t} else if (polyKind === \"icosahedron\") {\n\t\t\t// Icosaedro Geodésico (Contratos e Definições de Tipos): 12 vértices, 30 arestas\n\t\t\tconst phi = (1.0 + Math.sqrt(5.0)) / 2.0;\n\t\t\tconst a = s * 0.9;\n\t\t\tconst b = a / phi;\n\t\t\tconst icoRaw: [number, number, number][] = [",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+    "kind": "variable",
+    "name": "phi",
+    "start_line": 1038,
+    "end_line": 1038,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

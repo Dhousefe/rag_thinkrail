@@ -1,0 +1,13 @@
+{
+  "id": "63a1efb24776d8c93e4d27facafb8f8dd4460f758a166b36766abf9dd7670fbc",
+  "text": "\t\t\t\t}\n\t\t\t}\n\t\t}\n\n\t\tconst isBash =\n\t\t\tactiveToolName?.toLowerCase().includes(\"bash\") ||\n\t\t\tactiveToolName?.toLowerCase().includes(\"shell\");\n\t\tif (isBash) {\n\t\t\tactivity = \"bash_exec\";\n\t\t}",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\useNeuralCoreState.ts",
+    "kind": "variable",
+    "name": "isBash",
+    "start_line": 118,
+    "end_line": 120,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

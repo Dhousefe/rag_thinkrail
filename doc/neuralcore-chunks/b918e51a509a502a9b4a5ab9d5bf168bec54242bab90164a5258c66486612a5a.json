@@ -1,0 +1,12 @@
+{
+  "id": "b918e51a509a502a9b4a5ab9d5bf168bec54242bab90164a5258c66486612a5a",
+  "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "kind": "method",
+  "name": "NeuralCoreEngine.setRagSearch",
+  "start_line": 224,
+  "end_line": 246,
+  "content": "\t\t\tthis.rebuildVectorMesh();\n\t\t}\n\t}\n\n\tpublic setRagSearch(query: string | null) {\n\t\tthis.activeSearchQuery = query && query.trim().length > 0 ? query.trim() : null;\n\t\tthis.isRagActive = Boolean(this.activeSearchQuery);\n\t\tif (this.isRagActive) {\n\t\t\tthis.telemetry.shockwavePulse = 1.0;\n\t\t}\n\t\tconst q = (this.activeSearchQuery || \"\").toLowerCase();\n\t\tfor (const n of this.vectorNodes) {\n\t\t\tif (!q) {\n\t\t\t\tn.isMatchedBySearch = false;\n\t\t\t} else {\n\t\t\t\tconst p = (n.path || \"\").toLowerCase();\n\t\t\t\tconst qn = (n.relPath || \"\").toLowerCase();\n\t\t\t\tconst id = (n.id || \"\").toLowerCase();\n\t\t\t\tconst hasMatchingMethod = (n.methods || []).some(\n\t\t\t\t\t(m) => m.name.toLowerCase().includes(q) || (m.signature || \"\").toLowerCase().includes(q),\n\t\t\t\t);\n\t\t\t\tn.isMatchedBySearch =\n\t\t\t\t\tp.includes(q) || qn.includes(q) || id.includes(q) || hasMatchingMethod;\n\t\t\t}\n\t\t}\n\t\tthis.rebuildVectorMesh();\n\t}\n\n\tpublic setHighlightedNode(index: number | null) {\n\t\tif (this.highlightedNodeIndex !== index) {",
+  "token_estimate": 244,
+  "created_at": 1794331101098
+}

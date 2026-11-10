@@ -1,0 +1,13 @@
+{
+  "id": "feb32be82bc67deb47d5f92b1b5da47a7c8b2ebd9dab68db533214191cd0badd",
+  "text": "\tit(\"encontra nós pelo nome do método contido\", () => {\n\t\tconst q = \"wasJustDragging\";\n\t\tconst matches = mockNodes.filter((n) => {\n\t\t\tconst qn = (n.qualifiedName || \"\").toLowerCase();\n\t\t\tconst hasMethod = (n.methods || []).some(\n\t\t\t\t(m) =>\n\t\t\t\t\tm.name.toLowerCase().includes(q.toLowerCase()) ||\n\t\t\t\t\t(m.signature || \"\").toLowerCase().includes(q.toLowerCase()),\n\t\t\t);\n\t\t\treturn qn.includes(q.toLowerCase()) || hasMethod;\n\t\t});\n",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\components\\searchBox.test.ts",
+    "kind": "variable",
+    "name": "hasMethod",
+    "start_line": 56,
+    "end_line": 60,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

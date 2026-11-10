@@ -1,0 +1,13 @@
+{
+  "id": "f2ec23c2968059f7133d86132b0606f27be433e60cb49a763b9d0895f23f8b78",
+  "text": "\t\t// Projeção perspectiva WebGPU (NDC z in [0, 1]) com frustum amplo e estável\n\t\tconst fov = Math.PI / 4;\n\t\tconst near = 0.05;\n\t\tconst far = 2000.0;\n\t\tconst f = 1.0 / Math.tan(fov / 2);\n\t\tconst rangeInv = 1.0 / (near - far);\n\n\t\t// Termos exatos da linha 2 da matriz de projeção P (sem distorção de -z0)",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+    "kind": "variable",
+    "name": "f",
+    "start_line": 683,
+    "end_line": 683,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

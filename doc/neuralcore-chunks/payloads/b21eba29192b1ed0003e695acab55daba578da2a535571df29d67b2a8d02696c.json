@@ -1,0 +1,13 @@
+{
+  "id": "b21eba29192b1ed0003e695acab55daba578da2a535571df29d67b2a8d02696c",
+  "text": "\t\t\tif (!isHovered && !isSelected && !isRelated && !isSearchingTarget && !isWithinCursorRadius) {\n\t\t\t\tcontinue;\n\t\t\t}\n\n\t\t\tlet score = methodsCount;\n\t\t\tif (isSelected) score += 6000;\n\t\t\tif (isHovered) score += 5000;\n\t\t\tif (isSearchingTarget) score += 3000;",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+    "kind": "variable",
+    "name": "score",
+    "start_line": 954,
+    "end_line": 954,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

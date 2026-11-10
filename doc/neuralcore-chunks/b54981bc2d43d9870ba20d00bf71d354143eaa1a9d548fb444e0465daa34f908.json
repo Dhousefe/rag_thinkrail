@@ -1,0 +1,12 @@
+{
+  "id": "b54981bc2d43d9870ba20d00bf71d354143eaa1a9d548fb444e0465daa34f908",
+  "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "kind": "variable",
+  "name": "angle",
+  "start_line": 950,
+  "end_line": 950,
+  "content": "\t\t\tconst r = s * 1.1;\n\t\t\tconst h = s * 1.2;\n\t\t\tfor (let tri = -1; tri <= 1; tri += 2) {\n\t\t\t\tfor (let a = 0; a < 3; a++) {\n\t\t\t\t\tconst angle = (a / 3) * Math.PI * 2;\n\t\t\t\t\tvertexFloats.push(\n\t\t\t\t\t\tcx + Math.cos(angle) * r,\n\t\t\t\t\t\tcy + tri * h,",
+  "token_estimate": 60,
+  "created_at": 1794331101045
+}

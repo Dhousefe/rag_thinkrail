@@ -1,0 +1,13 @@
+{
+  "id": "9cc428d0a24f5410cedcae9139bf0b56b48f5899decdfb4c8b61f7cbc18dfc20",
+  "text": "export function createGimbalRingsWireframe(\n\tradii: [number, number, number],\n\tsegments = 48,\n): GeometryMeshData {\n\tconst vertexFloats: number[] = [];\n\tconst edgeIndices: number[] = [];\n\tlet vertexOffset = 0;\n",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+    "kind": "variable",
+    "name": "vertexFloats",
+    "start_line": 112,
+    "end_line": 112,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

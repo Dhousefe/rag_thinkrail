@@ -1,0 +1,12 @@
+{
+  "id": "d834bddcd57ae44164b97680ab4c81436a700f833d54819f1329ef9c60ca3b11",
+  "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "kind": "variable",
+  "name": "vOffset",
+  "start_line": 170,
+  "end_line": 170,
+  "content": "// 4. Gerador de Feixes e Satélites de Ferramentas / MCP\nexport function createToolNodeSatellites(count = 6, orbitRadius = 2.4): GeometryMeshData {\n\tconst vertexFloats: number[] = [];\n\tconst edgeIndices: number[] = [];\n\tlet vOffset = 0;\n\n\tfor (let i = 0; i < count; i++) {\n\t\tconst angle = (i / count) * Math.PI * 2;",
+  "token_estimate": 79,
+  "created_at": 1794331100989
+}

@@ -1,0 +1,13 @@
+{
+  "id": "9b0dff2dadfa547911a77161edcab4ffdaab975d7247af2f8dfe283dcb95ca32",
+  "text": "\t\tlet toolArgs: any;\n\n\t\tconst runningCallKeys = Object.keys(activeCalls);\n\t\tif (runningCallKeys.length > 0) {\n\t\t\tconst firstKey = runningCallKeys[0];\n\t\t\tif (firstKey && activeCalls[firstKey]) {\n\t\t\t\tactivity = \"tool_exec\";\n\t\t\t\tintensity = 1.0;",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\useNeuralCoreState.ts",
+    "kind": "variable",
+    "name": "firstKey",
+    "start_line": 27,
+    "end_line": 27,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

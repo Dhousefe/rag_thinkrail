@@ -1,0 +1,12 @@
+{
+  "id": "e8ff2e5f75a31fff97359ad71b2567cfa300ea1c9bd5725beed3827a99489a95",
+  "file": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreChunksView.tsx",
+  "path": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreChunksView.tsx",
+  "kind": "variable",
+  "name": "q",
+  "start_line": 62,
+  "end_line": 62,
+  "content": "\t\t\t});\n\t\t}\n\n\t\tif (searchQuery.trim().length > 0) {\n\t\t\tconst q = searchQuery.toLowerCase().trim();\n\t\t\tconst terms = q.split(/\\s+/).filter(Boolean);\n\t\t\tlist = list.filter((c) => {\n\t\t\t\tconst name = (c.qualifiedName || c.relPath || \"\").toLowerCase();",
+  "token_estimate": 62,
+  "created_at": 1794331100906
+}

@@ -1,0 +1,13 @@
+{
+  "id": "8541f2c43f8204aa43377f417c08ff5263b6d54dfcef7d1cb223bd14309e904d",
+  "text": "\t\t\t\tvOffset++;\n\t\t\t}\n\t\t\tfor (let k = 0; k < 6; k++) {\n\t\t\t\tconst eq = 2 + k;\n\t\t\t\tconst nextEq = 2 + ((k + 1) % 6);\n\t\t\t\tedgeIndices.push(base + 0, base + eq); // Ápice sup -> eq\n\t\t\t\tedgeIndices.push(base + 1, base + eq); // Ápice inf -> eq\n\t\t\t\tedgeIndices.push(base + eq, base + nextEq); // Anel equatorial",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+    "kind": "variable",
+    "name": "nextEq",
+    "start_line": 989,
+    "end_line": 989,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

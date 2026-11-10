@@ -1,0 +1,12 @@
+{
+  "id": "0ef62e31afd72c74a92b3171b2deb07afd917c42912894315bacae4a9855f575",
+  "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "kind": "variable",
+  "name": "otherBaseName",
+  "start_line": 778,
+  "end_line": 782,
+  "content": "\t\tconst other = nodes[i];\n\t\tif (!other) continue;\n\n\t\tconst otherNormRel = (other.relPath || other.path || \"\").toLowerCase();\n\t\tconst otherBaseName =\n\t\t\totherNormRel\n\t\t\t\t.split(\"/\")\n\t\t\t\t.pop()\n\t\t\t\t?.replace(/\\.[^.]+$/, \"\") || \"\";\n\t\tconst otherQName = (other.qualifiedName || otherBaseName).toLowerCase();\n\n\t\t// Relação de import no arquivo",
+  "token_estimate": 85,
+  "created_at": 1794331101031
+}

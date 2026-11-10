@@ -1,0 +1,13 @@
+{
+  "id": "df97ffce51c026569a7fe2833c883da6e38088c757e6e01391c84e442f760134",
+  "text": "",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreFingerprintCard.tsx",
+    "kind": "file",
+    "name": "NeuralCoreFingerprintCard.tsx",
+    "start_line": 1,
+    "end_line": 136,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

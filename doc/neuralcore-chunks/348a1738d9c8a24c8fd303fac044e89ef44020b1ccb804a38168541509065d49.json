@@ -1,0 +1,12 @@
+{
+  "id": "348a1738d9c8a24c8fd303fac044e89ef44020b1ccb804a38168541509065d49",
+  "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "kind": "variable",
+  "name": "tint",
+  "start_line": 544,
+  "end_line": 544,
+  "content": "\n\t\tconst aspect = this.canvas.width / (this.canvas.height || 1);\n\t\tconst viewProj = this.calculateViewProjMatrix(aspect);\n\n\t\tlet tint = [0.0, 0.85, 1.0, 1.0];\n\t\tif (this.telemetry.activity === \"thinking\") {\n\t\t\ttint = [0.75, 0.2, 1.0, 1.0];\n\t\t} else if (this.telemetry.activity === \"tool_exec\") {",
+  "token_estimate": 74,
+  "created_at": 1794331101116
+}

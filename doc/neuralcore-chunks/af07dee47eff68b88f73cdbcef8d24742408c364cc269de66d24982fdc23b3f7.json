@@ -1,0 +1,12 @@
+{
+  "id": "af07dee47eff68b88f73cdbcef8d24742408c364cc269de66d24982fdc23b3f7",
+  "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "kind": "variable",
+  "name": "ry",
+  "start_line": 776,
+  "end_line": 776,
+  "content": "\n\t\t\t// Projeção da rotação orbital da câmera\n\t\t\tconst rx = vx * cosO - vz * sinO;\n\t\t\tconst rz = vx * sinO + vz * cosO;\n\t\t\tconst ry = vy * cosPhi - rz * sinPhi;\n\t\t\tconst depth = Math.max(0.2, baseDist + (vy * sinPhi + rz * cosPhi) * 0.45);\n\n\t\t\tconst px = cx + (rx / depth) * scale * 5.6;",
+  "token_estimate": 72,
+  "created_at": 1794331101138
+}

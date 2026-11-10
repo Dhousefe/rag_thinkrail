@@ -1,0 +1,12 @@
+{
+  "id": "763b7099d3f0886e88c23f5c119a28b349a80ca3369d0edee596ba48c752a746",
+  "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "kind": "variable",
+  "name": "clean",
+  "start_line": 524,
+  "end_line": 524,
+  "content": "\n/** Detecta tipo de polígono conforme a extensão do arquivo */\nexport function getPolygonKindForFile(pathOrExt?: string): PolygonKind {\n\tif (!pathOrExt) return \"octahedron\";\n\tconst clean = pathOrExt.toLowerCase();\n\tif (clean.endsWith(\".d.ts\") || clean === \"dts\" || clean.includes(\"contracts\")) {\n\t\treturn \"icosahedron\"; // Contratos e Definições de Tipos -> Icosaedro Sagrado\n\t}",
+  "token_estimate": 95,
+  "created_at": 1794331101016
+}

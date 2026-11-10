@@ -1,0 +1,12 @@
+{
+  "id": "74b7edde59abfad977a145a3e4ce474a67018a670bc291a4acb2120bb5f8e60a",
+  "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "kind": "variable",
+  "name": "fov",
+  "start_line": 680,
+  "end_line": 680,
+  "content": "\t\tconst ty = -(y0 * eyeX + y1 * eyeY + y2 * eyeZ);\n\t\tconst tz = -(z0 * eyeX + z1 * eyeY + z2 * eyeZ);\n\n\t\t// Projeção perspectiva WebGPU (NDC z in [0, 1]) com frustum amplo e estável\n\t\tconst fov = Math.PI / 4;\n\t\tconst near = 0.05;\n\t\tconst far = 2000.0;\n\t\tconst f = 1.0 / Math.tan(fov / 2);",
+  "token_estimate": 72,
+  "created_at": 1794331101128
+}

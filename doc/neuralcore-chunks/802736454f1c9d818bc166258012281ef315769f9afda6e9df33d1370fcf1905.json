@@ -1,0 +1,12 @@
+{
+  "id": "802736454f1c9d818bc166258012281ef315769f9afda6e9df33d1370fcf1905",
+  "file": "apps\\web\\src\\panels\\neural-core\\resolvePivotNode.test.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\resolvePivotNode.test.ts",
+  "kind": "variable",
+  "name": "result",
+  "start_line": 43,
+  "end_line": 43,
+  "content": "\t\t},\n\t];\n\n\tit(\"prioritizes class chunkKind when multiple nodes belong to the same file\", () => {\n\t\tconst result = resolvePivotNode(\"apps/web/src/panels/neural-core/neuralEngine.ts\", mockNodes);\n\t\texpect(result?.id).toBe(\"node-2\");\n\t\texpect(result?.qualifiedName).toBe(\"NeuralCoreEngine\");\n\t});",
+  "token_estimate": 74,
+  "created_at": 1794331101186
+}

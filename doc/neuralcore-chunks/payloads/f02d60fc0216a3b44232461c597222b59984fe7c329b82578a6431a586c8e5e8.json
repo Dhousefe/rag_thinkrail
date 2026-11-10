@@ -1,0 +1,13 @@
+{
+  "id": "f02d60fc0216a3b44232461c597222b59984fe7c329b82578a6431a586c8e5e8",
+  "text": "\t\t});\n\n\t\twindow.addEventListener(\"mousemove\", (e) => {\n\t\t\tif (!this.isDragging) return;\n\t\t\tconst dx = e.clientX - this.lastMouseX;\n\t\t\tconst dy = e.clientY - this.lastMouseY;\n\t\t\tthis.totalDragDistance += Math.hypot(dx, dy);\n\t\t\tthis.lastMouseX = e.clientX;",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\cameraController.ts",
+    "kind": "variable",
+    "name": "dx",
+    "start_line": 61,
+    "end_line": 61,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

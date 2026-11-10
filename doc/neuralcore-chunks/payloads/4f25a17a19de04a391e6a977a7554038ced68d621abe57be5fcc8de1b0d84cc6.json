@@ -1,0 +1,13 @@
+{
+  "id": "4f25a17a19de04a391e6a977a7554038ced68d621abe57be5fcc8de1b0d84cc6",
+  "text": "\t\t\tconst [sx, sy, sz] = selNode.position;\n\t\t\tlet neighborOrder = 0;\n\n\t\t\tfor (const neighborIdx of relations.directNeighbors) {\n\t\t\t\tconst neighbor = nodes[neighborIdx];\n\t\t\t\tif (!neighbor) continue;\n\t\t\t\tconst [nx, ny, nz] = neighbor.position;\n",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+    "kind": "variable",
+    "name": "neighbor",
+    "start_line": 1275,
+    "end_line": 1275,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

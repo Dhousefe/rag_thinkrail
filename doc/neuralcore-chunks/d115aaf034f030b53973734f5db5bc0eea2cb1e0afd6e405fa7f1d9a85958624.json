@@ -1,0 +1,12 @@
+{
+  "id": "d115aaf034f030b53973734f5db5bc0eea2cb1e0afd6e405fa7f1d9a85958624",
+  "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "kind": "variable",
+  "name": "g",
+  "start_line": 300,
+  "end_line": 300,
+  "content": "\n\t\t\t// Gradiente espectral de vórtice (Ciano a Violeta)\n\t\t\tconst t = i / radarRings;\n\t\t\tconst r = 0.2 + 0.6 * Math.sin(t * Math.PI);\n\t\t\tconst g = 0.8 * Math.cos(t * Math.PI * 0.5);\n\t\t\tconst b = 1.0;\n\t\t\tvertexFloats.push(x, y, z, r, g, b, 0.75);\n",
+  "token_estimate": 62,
+  "created_at": 1794331101001
+}

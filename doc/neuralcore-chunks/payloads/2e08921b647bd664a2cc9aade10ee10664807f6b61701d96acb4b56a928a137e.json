@@ -1,0 +1,13 @@
+{
+  "id": "2e08921b647bd664a2cc9aade10ee10664807f6b61701d96acb4b56a928a137e",
+  "text": "\t\t\t\t\t\tconst mz = vz + Math.sin(mAngle) * mRadius;\n\n\t\t\t\t\t\tconst mrx = mx * cosO - mz * sinO;\n\t\t\t\t\t\tconst mrz = mx * sinO + mz * cosO;\n\t\t\t\t\t\tconst mry = my * cosPhi - mrz * sinPhi;\n\t\t\t\t\t\tconst md = Math.max(0.2, baseDist + (my * sinPhi + mrz * cosPhi) * 0.45);\n\t\t\t\t\t\tconst mpx = cx + (mrx / md) * scale * 5.6;\n\t\t\t\t\t\tconst mpy = cy - (mry / md) * scale * 5.6;",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+    "kind": "variable",
+    "name": "mry",
+    "start_line": 1180,
+    "end_line": 1180,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

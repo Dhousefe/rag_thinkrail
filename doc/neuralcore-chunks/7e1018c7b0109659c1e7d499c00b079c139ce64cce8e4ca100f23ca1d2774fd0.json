@@ -1,0 +1,12 @@
+{
+  "id": "7e1018c7b0109659c1e7d499c00b079c139ce64cce8e4ca100f23ca1d2774fd0",
+  "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "kind": "variable",
+  "name": "sinPhi",
+  "start_line": 1100,
+  "end_line": 1100,
+  "content": "\n\t\tconst cosO = Math.cos(this.cameraOrbit.theta);\n\t\tconst sinO = Math.sin(this.cameraOrbit.theta);\n\t\tconst cosPhi = Math.cos(this.cameraOrbit.phi);\n\t\tconst sinPhi = Math.sin(this.cameraOrbit.phi);\n\n\t\t// 2. Anéis Cardânicos (apenas se habilitado)\n\t\tif (this.showGimbalRings) {",
+  "token_estimate": 69,
+  "created_at": 1794331101173
+}

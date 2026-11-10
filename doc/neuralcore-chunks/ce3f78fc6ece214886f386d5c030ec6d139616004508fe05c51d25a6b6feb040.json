@@ -1,0 +1,12 @@
+{
+  "id": "ce3f78fc6ece214886f386d5c030ec6d139616004508fe05c51d25a6b6feb040",
+  "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "kind": "variable",
+  "name": "relationKind",
+  "start_line": 925,
+  "end_line": 925,
+  "content": "\t\t\tconst isSearchingTarget = this.searchingNodeId === node.id;\n\t\t\tconst methodsCount = node.methods?.length || 0;\n\n\t\t\t// Determina a tag de relação para classes conectadas ao nó selecionado\n\t\t\tlet relationKind: \"CALLER\" | \"IMPORT\" | \"TYPE\" | \"DEPENDENCY\" | undefined;\n\t\t\tif (isRelated && relations) {\n\t\t\t\tif (relations.callNeighbors.has(i)) relationKind = \"CALLER\";\n\t\t\t\telse if (relations.importNeighbors.has(i)) relationKind = \"IMPORT\";",
+  "token_estimate": 110,
+  "created_at": 1794331101153
+}

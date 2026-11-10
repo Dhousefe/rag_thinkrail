@@ -1,0 +1,12 @@
+{
+  "id": "05082d18d5bb23127c53c150bcb4292cddb3a24ebf94aece12d7443bb3038b07",
+  "file": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreChunksView.tsx",
+  "path": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreChunksView.tsx",
+  "kind": "variable",
+  "name": "meta",
+  "start_line": 156,
+  "end_line": 156,
+  "content": "\t\t\t\t\t\tNenhum chunk corresponde aos filtros selecionados.\n\t\t\t\t\t</div>\n\t\t\t\t) : (\n\t\t\t\t\tfilteredChunks.map((c, idx) => {\n\t\t\t\t\t\tconst meta = getChunkKindMeta(c.chunkKind);\n\t\t\t\t\t\tconst MetaIcon = meta.icon;\n\t\t\t\t\t\treturn (\n\t\t\t\t\t\t\t<div",
+  "token_estimate": 57,
+  "created_at": 1794331100909
+}

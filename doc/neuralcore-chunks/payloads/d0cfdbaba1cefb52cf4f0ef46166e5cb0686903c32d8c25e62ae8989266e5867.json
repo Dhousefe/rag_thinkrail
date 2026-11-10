@@ -1,0 +1,13 @@
+{
+  "id": "d0cfdbaba1cefb52cf4f0ef46166e5cb0686903c32d8c25e62ae8989266e5867",
+  "text": "\t\t\tconst q = searchQuery.toLowerCase().trim();\n\t\t\tconst terms = q.split(/\\s+/).filter(Boolean);\n\t\t\tlist = list.filter((c) => {\n\t\t\t\tconst name = (c.qualifiedName || c.relPath || \"\").toLowerCase();\n\t\t\t\tconst sig = (c.signature || \"\").toLowerCase();\n\t\t\t\tconst content = (c.content || \"\").toLowerCase();\n\t\t\t\tconst kind = (c.chunkKind || \"\").toLowerCase();\n\t\t\t\treturn terms.every(",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreChunksView.tsx",
+    "kind": "variable",
+    "name": "sig",
+    "start_line": 66,
+    "end_line": 66,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

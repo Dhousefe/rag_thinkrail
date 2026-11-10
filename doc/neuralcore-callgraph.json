@@ -1,0 +1,4668 @@
+{
+  "nodes": [
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\cameraController.test.ts::<module>",
+      "name": "<module>",
+      "file": "apps\\web\\src\\panels\\neural-core\\cameraController.test.ts",
+      "kind": "module"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\cameraController.test.ts::canvasListeners",
+      "name": "canvasListeners",
+      "file": "apps\\web\\src\\panels\\neural-core\\cameraController.test.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\cameraController.test.ts::canvasMock",
+      "name": "canvasMock",
+      "file": "apps\\web\\src\\panels\\neural-core\\cameraController.test.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\cameraController.test.ts::windowListeners",
+      "name": "windowListeners",
+      "file": "apps\\web\\src\\panels\\neural-core\\cameraController.test.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\cameraController.test.ts::controller",
+      "name": "controller",
+      "file": "apps\\web\\src\\panels\\neural-core\\cameraController.test.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\cameraController.test.ts::mockPositions",
+      "name": "mockPositions",
+      "file": "apps\\web\\src\\panels\\neural-core\\cameraController.test.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\cameraController.ts::<module>",
+      "name": "<module>",
+      "file": "apps\\web\\src\\panels\\neural-core\\cameraController.ts",
+      "kind": "module"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\cameraController.ts::OrbitCameraController",
+      "name": "OrbitCameraController",
+      "file": "apps\\web\\src\\panels\\neural-core\\cameraController.ts",
+      "kind": "class"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\cameraController.ts::dx",
+      "name": "dx",
+      "file": "apps\\web\\src\\panels\\neural-core\\cameraController.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\cameraController.ts::dy",
+      "name": "dy",
+      "file": "apps\\web\\src\\panels\\neural-core\\cameraController.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\cameraController.ts::panFactor",
+      "name": "panFactor",
+      "file": "apps\\web\\src\\panels\\neural-core\\cameraController.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\cameraController.ts::rightX",
+      "name": "rightX",
+      "file": "apps\\web\\src\\panels\\neural-core\\cameraController.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\cameraController.ts::rightZ",
+      "name": "rightZ",
+      "file": "apps\\web\\src\\panels\\neural-core\\cameraController.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\cameraController.ts::upX",
+      "name": "upX",
+      "file": "apps\\web\\src\\panels\\neural-core\\cameraController.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\cameraController.ts::upY",
+      "name": "upY",
+      "file": "apps\\web\\src\\panels\\neural-core\\cameraController.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\cameraController.ts::upZ",
+      "name": "upZ",
+      "file": "apps\\web\\src\\panels\\neural-core\\cameraController.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\cameraController.ts::zoomStep",
+      "name": "zoomStep",
+      "file": "apps\\web\\src\\panels\\neural-core\\cameraController.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\cameraController.ts::diffT",
+      "name": "diffT",
+      "file": "apps\\web\\src\\panels\\neural-core\\cameraController.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\cameraController.ts::diffP",
+      "name": "diffP",
+      "file": "apps\\web\\src\\panels\\neural-core\\cameraController.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\cameraController.ts::diffD",
+      "name": "diffD",
+      "file": "apps\\web\\src\\panels\\neural-core\\cameraController.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\cameraController.ts::diffTx",
+      "name": "diffTx",
+      "file": "apps\\web\\src\\panels\\neural-core\\cameraController.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\cameraController.ts::diffTy",
+      "name": "diffTy",
+      "file": "apps\\web\\src\\panels\\neural-core\\cameraController.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\cameraController.ts::diffTz",
+      "name": "diffTz",
+      "file": "apps\\web\\src\\panels\\neural-core\\cameraController.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\cameraController.ts::isClose",
+      "name": "isClose",
+      "file": "apps\\web\\src\\panels\\neural-core\\cameraController.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\cameraController.ts::minX",
+      "name": "minX",
+      "file": "apps\\web\\src\\panels\\neural-core\\cameraController.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\cameraController.ts::maxX",
+      "name": "maxX",
+      "file": "apps\\web\\src\\panels\\neural-core\\cameraController.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\cameraController.ts::minY",
+      "name": "minY",
+      "file": "apps\\web\\src\\panels\\neural-core\\cameraController.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\cameraController.ts::maxY",
+      "name": "maxY",
+      "file": "apps\\web\\src\\panels\\neural-core\\cameraController.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\cameraController.ts::minZ",
+      "name": "minZ",
+      "file": "apps\\web\\src\\panels\\neural-core\\cameraController.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\cameraController.ts::maxZ",
+      "name": "maxZ",
+      "file": "apps\\web\\src\\panels\\neural-core\\cameraController.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\cameraController.ts::centerX",
+      "name": "centerX",
+      "file": "apps\\web\\src\\panels\\neural-core\\cameraController.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\cameraController.ts::centerY",
+      "name": "centerY",
+      "file": "apps\\web\\src\\panels\\neural-core\\cameraController.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\cameraController.ts::centerZ",
+      "name": "centerZ",
+      "file": "apps\\web\\src\\panels\\neural-core\\cameraController.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\cameraController.ts::maxRadius",
+      "name": "maxRadius",
+      "file": "apps\\web\\src\\panels\\neural-core\\cameraController.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\cameraController.ts::r",
+      "name": "r",
+      "file": "apps\\web\\src\\panels\\neural-core\\cameraController.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\cameraController.ts::fitDist",
+      "name": "fitDist",
+      "file": "apps\\web\\src\\panels\\neural-core\\cameraController.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\components\\index.ts::<module>",
+      "name": "<module>",
+      "file": "apps\\web\\src\\panels\\neural-core\\components\\index.ts",
+      "kind": "module"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreChunksView.tsx::<module>",
+      "name": "<module>",
+      "file": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreChunksView.tsx",
+      "kind": "module"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreChunksView.tsx::getChunkKindMeta",
+      "name": "getChunkKindMeta",
+      "file": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreChunksView.tsx",
+      "kind": "function"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreChunksView.tsx::k",
+      "name": "k",
+      "file": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreChunksView.tsx",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreChunksView.tsx::NeuralCoreChunksView",
+      "name": "NeuralCoreChunksView",
+      "file": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreChunksView.tsx",
+      "kind": "function"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreChunksView.tsx::filteredChunks",
+      "name": "filteredChunks",
+      "file": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreChunksView.tsx",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreChunksView.tsx::list",
+      "name": "list",
+      "file": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreChunksView.tsx",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreChunksView.tsx::q",
+      "name": "q",
+      "file": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreChunksView.tsx",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreChunksView.tsx::terms",
+      "name": "terms",
+      "file": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreChunksView.tsx",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreChunksView.tsx::name",
+      "name": "name",
+      "file": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreChunksView.tsx",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreChunksView.tsx::sig",
+      "name": "sig",
+      "file": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreChunksView.tsx",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreChunksView.tsx::content",
+      "name": "content",
+      "file": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreChunksView.tsx",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreChunksView.tsx::kind",
+      "name": "kind",
+      "file": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreChunksView.tsx",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreChunksView.tsx::handleCopyChunk",
+      "name": "handleCopyChunk",
+      "file": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreChunksView.tsx",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreChunksView.tsx::meta",
+      "name": "meta",
+      "file": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreChunksView.tsx",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreChunksView.tsx::MetaIcon",
+      "name": "MetaIcon",
+      "file": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreChunksView.tsx",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreFingerprintCard.tsx::<module>",
+      "name": "<module>",
+      "file": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreFingerprintCard.tsx",
+      "kind": "module"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreFingerprintCard.tsx::NeuralCoreFingerprintCard",
+      "name": "NeuralCoreFingerprintCard",
+      "file": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreFingerprintCard.tsx",
+      "kind": "function"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreFingerprintCard.tsx::handleCopyHash",
+      "name": "handleCopyHash",
+      "file": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreFingerprintCard.tsx",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreNodeOverview.tsx::<module>",
+      "name": "<module>",
+      "file": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreNodeOverview.tsx",
+      "kind": "module"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreNodeOverview.tsx::NeuralCoreNodeOverview",
+      "name": "NeuralCoreNodeOverview",
+      "file": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreNodeOverview.tsx",
+      "kind": "function"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreNodeOverview.tsx::handleCopySnippet",
+      "name": "handleCopySnippet",
+      "file": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreNodeOverview.tsx",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreNodeOverview.tsx::nbStyle",
+      "name": "nbStyle",
+      "file": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreNodeOverview.tsx",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreSearchBox.tsx::<module>",
+      "name": "<module>",
+      "file": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreSearchBox.tsx",
+      "kind": "module"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreSearchBox.tsx::getSymbolKindBadge",
+      "name": "getSymbolKindBadge",
+      "file": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreSearchBox.tsx",
+      "kind": "function"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreSearchBox.tsx::k",
+      "name": "k",
+      "file": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreSearchBox.tsx",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreSearchBox.tsx::NeuralCoreSearchBox",
+      "name": "NeuralCoreSearchBox",
+      "file": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreSearchBox.tsx",
+      "kind": "function"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreSearchBox.tsx::listContainerRef",
+      "name": "listContainerRef",
+      "file": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreSearchBox.tsx",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreSearchBox.tsx::containerRef",
+      "name": "containerRef",
+      "file": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreSearchBox.tsx",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreSearchBox.tsx::handleClickOutside",
+      "name": "handleClickOutside",
+      "file": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreSearchBox.tsx",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreSearchBox.tsx::filteredNodes",
+      "name": "filteredNodes",
+      "file": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreSearchBox.tsx",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreSearchBox.tsx::filteredChunks",
+      "name": "filteredChunks",
+      "file": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreSearchBox.tsx",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreSearchBox.tsx::handleKeyDown",
+      "name": "handleKeyDown",
+      "file": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreSearchBox.tsx",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreSearchBox.tsx::totalItems",
+      "name": "totalItems",
+      "file": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreSearchBox.tsx",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreSearchBox.tsx::item",
+      "name": "item",
+      "file": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreSearchBox.tsx",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreSearchBox.tsx::chunk",
+      "name": "chunk",
+      "file": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreSearchBox.tsx",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreSearchBox.tsx::modStyle",
+      "name": "modStyle",
+      "file": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreSearchBox.tsx",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreSearchBox.tsx::badge",
+      "name": "badge",
+      "file": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreSearchBox.tsx",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreSearchBox.tsx::IconComp",
+      "name": "IconComp",
+      "file": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreSearchBox.tsx",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreSearchBox.tsx::isCurrent",
+      "name": "isCurrent",
+      "file": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreSearchBox.tsx",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreSearchBox.tsx::qLower",
+      "name": "qLower",
+      "file": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreSearchBox.tsx",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreSearchBox.tsx::matchedMethods",
+      "name": "matchedMethods",
+      "file": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreSearchBox.tsx",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\components\\searchBox.test.ts::<module>",
+      "name": "<module>",
+      "file": "apps\\web\\src\\panels\\neural-core\\components\\searchBox.test.ts",
+      "kind": "module"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\components\\searchBox.test.ts::mockNodes",
+      "name": "mockNodes",
+      "file": "apps\\web\\src\\panels\\neural-core\\components\\searchBox.test.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\components\\searchBox.test.ts::q",
+      "name": "q",
+      "file": "apps\\web\\src\\panels\\neural-core\\components\\searchBox.test.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\components\\searchBox.test.ts::matches",
+      "name": "matches",
+      "file": "apps\\web\\src\\panels\\neural-core\\components\\searchBox.test.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\components\\searchBox.test.ts::qn",
+      "name": "qn",
+      "file": "apps\\web\\src\\panels\\neural-core\\components\\searchBox.test.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\components\\searchBox.test.ts::hasMethod",
+      "name": "hasMethod",
+      "file": "apps\\web\\src\\panels\\neural-core\\components\\searchBox.test.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\components\\searchBox.test.ts::chunks",
+      "name": "chunks",
+      "file": "apps\\web\\src\\panels\\neural-core\\components\\searchBox.test.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\components\\searchBox.test.ts::query",
+      "name": "query",
+      "file": "apps\\web\\src\\panels\\neural-core\\components\\searchBox.test.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\components\\searchBox.test.ts::terms",
+      "name": "terms",
+      "file": "apps\\web\\src\\panels\\neural-core\\components\\searchBox.test.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\components\\searchBox.test.ts::filtered",
+      "name": "filtered",
+      "file": "apps\\web\\src\\panels\\neural-core\\components\\searchBox.test.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\components\\searchBox.test.ts::name",
+      "name": "name",
+      "file": "apps\\web\\src\\panels\\neural-core\\components\\searchBox.test.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\components\\searchBox.test.ts::content",
+      "name": "content",
+      "file": "apps\\web\\src\\panels\\neural-core\\components\\searchBox.test.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\components\\searchBox.test.ts::path",
+      "name": "path",
+      "file": "apps\\web\\src\\panels\\neural-core\\components\\searchBox.test.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::<module>",
+      "name": "<module>",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "module"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::createTesseractWireframe",
+      "name": "createTesseractWireframe",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "function"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::v4",
+      "name": "v4",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::cosA",
+      "name": "cosA",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::sinA",
+      "name": "sinA",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::projDistance",
+      "name": "projDistance",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::vertexFloats",
+      "name": "vertexFloats",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::x",
+      "name": "x",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::w",
+      "name": "w",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::y",
+      "name": "y",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::z",
+      "name": "z",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::perspective",
+      "name": "perspective",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::px",
+      "name": "px",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::py",
+      "name": "py",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::pz",
+      "name": "pz",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::edgeIndices",
+      "name": "edgeIndices",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::j",
+      "name": "j",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::createIcosahedronWireframe",
+      "name": "createIcosahedronWireframe",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "function"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::phi",
+      "name": "phi",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::a",
+      "name": "a",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::b",
+      "name": "b",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::rawVertices",
+      "name": "rawVertices",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::len",
+      "name": "len",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::indices",
+      "name": "indices",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::createGimbalRingsWireframe",
+      "name": "createGimbalRingsWireframe",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "function"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::vertexOffset",
+      "name": "vertexOffset",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::axes",
+      "name": "axes",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::startIdx",
+      "name": "startIdx",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::theta",
+      "name": "theta",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::c",
+      "name": "c",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::s",
+      "name": "s",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::next",
+      "name": "next",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::createToolNodeSatellites",
+      "name": "createToolNodeSatellites",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "function"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::vOffset",
+      "name": "vOffset",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::angle",
+      "name": "angle",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::cx",
+      "name": "cx",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::cy",
+      "name": "cy",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::cz",
+      "name": "cz",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::base",
+      "name": "base",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::pts",
+      "name": "pts",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::octEdges",
+      "name": "octEdges",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::createMerkabaWireframe",
+      "name": "createMerkabaWireframe",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "function"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::t1",
+      "name": "t1",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::t1Edges",
+      "name": "t1Edges",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::t2",
+      "name": "t2",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::harmEdges",
+      "name": "harmEdges",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::createTorusWireframe",
+      "name": "createTorusWireframe",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "function"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::u",
+      "name": "u",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::cu",
+      "name": "cu",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::su",
+      "name": "su",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::v",
+      "name": "v",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::cv",
+      "name": "cv",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::sv",
+      "name": "sv",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::t",
+      "name": "t",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::r",
+      "name": "r",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::g",
+      "name": "g",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::nextLong",
+      "name": "nextLong",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::nextRing",
+      "name": "nextRing",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::createDodecahedronWireframe",
+      "name": "createDodecahedronWireframe",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "function"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::invPhi",
+      "name": "invPhi",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::minDist",
+      "name": "minDist",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::threshold",
+      "name": "threshold",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::vxi",
+      "name": "vxi",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::vyi",
+      "name": "vyi",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::vzi",
+      "name": "vzi",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::vxj",
+      "name": "vxj",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::vyj",
+      "name": "vyj",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::vzj",
+      "name": "vzj",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::dx",
+      "name": "dx",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::dy",
+      "name": "dy",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::dz",
+      "name": "dz",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::dist",
+      "name": "dist",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::MODULE_COLORS",
+      "name": "MODULE_COLORS",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::resolveModuleColor",
+      "name": "resolveModuleColor",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "function"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::parts",
+      "name": "parts",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::subMod",
+      "name": "subMod",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::hash",
+      "name": "hash",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::hue",
+      "name": "hue",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::h",
+      "name": "h",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::FILE_TYPE_COLORS",
+      "name": "FILE_TYPE_COLORS",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::getPolygonKindForFile",
+      "name": "getPolygonKindForFile",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "function"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::clean",
+      "name": "clean",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::resolveFileTypeColor",
+      "name": "resolveFileTypeColor",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "function"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::computeSemanticFingerprint",
+      "name": "computeSemanticFingerprint",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "function"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::typeDistribution",
+      "name": "typeDistribution",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::kind",
+      "name": "kind",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::entropy",
+      "name": "entropy",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::totalNodes",
+      "name": "totalNodes",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::p",
+      "name": "p",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::h1",
+      "name": "h1",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::h2",
+      "name": "h2",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::h3",
+      "name": "h3",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::h4",
+      "name": "h4",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::sortedNodes",
+      "name": "sortedNodes",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::str",
+      "name": "str",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::eStr",
+      "name": "eStr",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::toHex",
+      "name": "toHex",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::part1",
+      "name": "part1",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::part2",
+      "name": "part2",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::part3",
+      "name": "part3",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::part4",
+      "name": "part4",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::fingerprintHash",
+      "name": "fingerprintHash",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::shortHash",
+      "name": "shortHash",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::totalRelations",
+      "name": "totalRelations",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::maxPossibleEdges",
+      "name": "maxPossibleEdges",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::density",
+      "name": "density",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::integrityStatus",
+      "name": "integrityStatus",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::auditBadge",
+      "name": "auditBadge",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::computeNodeRelations",
+      "name": "computeNodeRelations",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "function"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::directNeighbors",
+      "name": "directNeighbors",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::callNeighbors",
+      "name": "callNeighbors",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::typeNeighbors",
+      "name": "typeNeighbors",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::importNeighbors",
+      "name": "importNeighbors",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::selectedNode",
+      "name": "selectedNode",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::selectedNormRel",
+      "name": "selectedNormRel",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::selectedBaseName",
+      "name": "selectedBaseName",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::selectedQName",
+      "name": "selectedQName",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::otherIdx",
+      "name": "otherIdx",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::other",
+      "name": "other",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::otherNormRel",
+      "name": "otherNormRel",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::otherBaseName",
+      "name": "otherBaseName",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::otherQName",
+      "name": "otherQName",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::isImported",
+      "name": "isImported",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::impLower",
+      "name": "impLower",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::isMethodLinked",
+      "name": "isMethodLinked",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::mName",
+      "name": "mName",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::mSig",
+      "name": "mSig",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::omName",
+      "name": "omName",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::createVectorConstellationWireframe",
+      "name": "createVectorConstellationWireframe",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "function"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::relations",
+      "name": "relations",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::hasActiveSelection",
+      "name": "hasActiveSelection",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::n",
+      "name": "n",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::isSelected",
+      "name": "isSelected",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::isRelated",
+      "name": "isRelated",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::isUnrelated",
+      "name": "isUnrelated",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::isHighlight",
+      "name": "isHighlight",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::isMatched",
+      "name": "isMatched",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::isSearchingTarget",
+      "name": "isSearchingTarget",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::lifePulse",
+      "name": "lifePulse",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::col",
+      "name": "col",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::baseMod",
+      "name": "baseMod",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::polyKind",
+      "name": "polyKind",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::d",
+      "name": "d",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::cubeEdges",
+      "name": "cubeEdges",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::tPts",
+      "name": "tPts",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::tetEdges",
+      "name": "tetEdges",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::prismEdges",
+      "name": "prismEdges",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::ang",
+      "name": "ang",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::eq",
+      "name": "eq",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::nextEq",
+      "name": "nextEq",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::dEdges",
+      "name": "dEdges",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::icoRaw",
+      "name": "icoRaw",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::icoEdges",
+      "name": "icoEdges",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::totalM",
+      "name": "totalM",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::m",
+      "name": "m",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::mAngle",
+      "name": "mAngle",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::mRadius",
+      "name": "mRadius",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::mx",
+      "name": "mx",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::my",
+      "name": "my",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::mz",
+      "name": "mz",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::ms",
+      "name": "ms",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::mBase",
+      "name": "mBase",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::mPts",
+      "name": "mPts",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::mOctEdges",
+      "name": "mOctEdges",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::lineStart",
+      "name": "lineStart",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::bStart",
+      "name": "bStart",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::n1",
+      "name": "n1",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::n2",
+      "name": "n2",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::isConnectedToSelected",
+      "name": "isConnectedToSelected",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::isEdgeUnrelated",
+      "name": "isEdgeUnrelated",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::p1",
+      "name": "p1",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::p2",
+      "name": "p2",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::pairHash",
+      "name": "pairHash",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::layerOffset",
+      "name": "layerOffset",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::traceY",
+      "name": "traceY",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::alpha",
+      "name": "alpha",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::isCrossProject",
+      "name": "isCrossProject",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::trColR",
+      "name": "trColR",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::trColG",
+      "name": "trColG",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::trColB",
+      "name": "trColB",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::routeOrder",
+      "name": "routeOrder",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::midX",
+      "name": "midX",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::midZ",
+      "name": "midZ",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::tracePts",
+      "name": "tracePts",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::baseIdx",
+      "name": "baseIdx",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::viaR",
+      "name": "viaR",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::viaBase",
+      "name": "viaBase",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::selNode",
+      "name": "selNode",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::neighborOrder",
+      "name": "neighborOrder",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::neighbor",
+      "name": "neighbor",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::rCol",
+      "name": "rCol",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::layerElevation",
+      "name": "layerElevation",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::routeY",
+      "name": "routeY",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::waypoints",
+      "name": "waypoints",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::totalSegments",
+      "name": "totalSegments",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::pStart",
+      "name": "pStart",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::pEnd",
+      "name": "pEnd",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::steps",
+      "name": "steps",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::u1",
+      "name": "u1",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::u2",
+      "name": "u2",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::x1",
+      "name": "x1",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::y1",
+      "name": "y1",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::z1",
+      "name": "z1",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::x2",
+      "name": "x2",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::y2",
+      "name": "y2",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::z2",
+      "name": "z2",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::wave1",
+      "name": "wave1",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::wave2",
+      "name": "wave2",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::alpha1",
+      "name": "alpha1",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::alpha2",
+      "name": "alpha2",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::lIdx",
+      "name": "lIdx",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::arrBase",
+      "name": "arrBase",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::arrSize",
+      "name": "arrSize",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::arrPulse",
+      "name": "arrPulse",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\geometry.ts::arrAlpha",
+      "name": "arrAlpha",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::<module>",
+      "name": "<module>",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "module"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::GPU_BUFFER_USAGE",
+      "name": "GPU_BUFFER_USAGE",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::NeuralCoreEngine",
+      "name": "NeuralCoreEngine",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "class"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::existingIds",
+      "name": "existingIds",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::uniqueAdditions",
+      "name": "uniqueAdditions",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::key",
+      "name": "key",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::q",
+      "name": "q",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::p",
+      "name": "p",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::qn",
+      "name": "qn",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::id",
+      "name": "id",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::hasMatchingMethod",
+      "name": "hasMatchingMethod",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::filteredNodes",
+      "name": "filteredNodes",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::now",
+      "name": "now",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::elapsed",
+      "name": "elapsed",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::searchingAnim",
+      "name": "searchingAnim",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::animTime",
+      "name": "animTime",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::adapter",
+      "name": "adapter",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::format",
+      "name": "format",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::renderModule",
+      "name": "renderModule",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::loop",
+      "name": "loop",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::dt",
+      "name": "dt",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::isMotionActive",
+      "name": "isMotionActive",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::targetSpeed",
+      "name": "targetSpeed",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::totalElements",
+      "name": "totalElements",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::aspect",
+      "name": "aspect",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::viewProj",
+      "name": "viewProj",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::tint",
+      "name": "tint",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::model",
+      "name": "model",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::uniformData",
+      "name": "uniformData",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::commandEncoder",
+      "name": "commandEncoder",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::textureView",
+      "name": "textureView",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::renderPass",
+      "name": "renderPass",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::tx0",
+      "name": "tx0",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::ty0",
+      "name": "ty0",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::tz0",
+      "name": "tz0",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::eyeX",
+      "name": "eyeX",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::eyeY",
+      "name": "eyeY",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::eyeZ",
+      "name": "eyeZ",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::dirX",
+      "name": "dirX",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::dirY",
+      "name": "dirY",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::dirZ",
+      "name": "dirZ",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::zLen",
+      "name": "zLen",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::z0",
+      "name": "z0",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::z1",
+      "name": "z1",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::z2",
+      "name": "z2",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::upX",
+      "name": "upX",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::upY",
+      "name": "upY",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::upZ",
+      "name": "upZ",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::x0_raw",
+      "name": "x0_raw",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::x1_raw",
+      "name": "x1_raw",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::x2_raw",
+      "name": "x2_raw",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::xLen",
+      "name": "xLen",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::x0",
+      "name": "x0",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::x1",
+      "name": "x1",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::x2",
+      "name": "x2",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::y0",
+      "name": "y0",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::y1",
+      "name": "y1",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::y2",
+      "name": "y2",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::tx",
+      "name": "tx",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::ty",
+      "name": "ty",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::tz",
+      "name": "tz",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::fov",
+      "name": "fov",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::near",
+      "name": "near",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::far",
+      "name": "far",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::f",
+      "name": "f",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::rangeInv",
+      "name": "rangeInv",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::p22",
+      "name": "p22",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::p23",
+      "name": "p23",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::out",
+      "name": "out",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::cx",
+      "name": "cx",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::sx",
+      "name": "sx",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::cy",
+      "name": "cy",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::sy",
+      "name": "sy",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::w",
+      "name": "w",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::h",
+      "name": "h",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::scale",
+      "name": "scale",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::cosO",
+      "name": "cosO",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::sinO",
+      "name": "sinO",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::cosPhi",
+      "name": "cosPhi",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::sinPhi",
+      "name": "sinPhi",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::baseDist",
+      "name": "baseDist",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::candidates",
+      "name": "candidates",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::node",
+      "name": "node",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::vx",
+      "name": "vx",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::vy",
+      "name": "vy",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::vz",
+      "name": "vz",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::rx",
+      "name": "rx",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::rz",
+      "name": "rz",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::ry",
+      "name": "ry",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::depth",
+      "name": "depth",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::px",
+      "name": "px",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::py",
+      "name": "py",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::dx",
+      "name": "dx",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::dy",
+      "name": "dy",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::d",
+      "name": "d",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::approxNodeRadiusPx",
+      "name": "approxNodeRadiusPx",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::dynamicTolerance",
+      "name": "dynamicTolerance",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::depthDiff",
+      "name": "depthDiff",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::hasActiveSelection",
+      "name": "hasActiveSelection",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::relations",
+      "name": "relations",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::cursorRadiusPx",
+      "name": "cursorRadiusPx",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::cursor",
+      "name": "cursor",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::allProjectedNodes",
+      "name": "allProjectedNodes",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::candidateLabels",
+      "name": "candidateLabels",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::i",
+      "name": "i",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::isSelected",
+      "name": "isSelected",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::isRelated",
+      "name": "isRelated",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::isUnrelated",
+      "name": "isUnrelated",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::isHovered",
+      "name": "isHovered",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::isMatched",
+      "name": "isMatched",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::isSearchingTarget",
+      "name": "isSearchingTarget",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::methodsCount",
+      "name": "methodsCount",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::relationKind",
+      "name": "relationKind",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::isWithinCursorRadius",
+      "name": "isWithinCursorRadius",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::cdx",
+      "name": "cdx",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::cdy",
+      "name": "cdy",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::distCursor",
+      "name": "distCursor",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::score",
+      "name": "score",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::nameParts",
+      "name": "nameParts",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::cleanLabel",
+      "name": "cleanLabel",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::initialLabelX",
+      "name": "initialLabelX",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::initialLabelY",
+      "name": "initialLabelY",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::effectiveMax",
+      "name": "effectiveMax",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::selectedCandidates",
+      "name": "selectedCandidates",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::minSafeLabelDist",
+      "name": "minSafeLabelDist",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::dist",
+      "name": "dist",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::safeD",
+      "name": "safeD",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::overlap",
+      "name": "overlap",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::repulseStrength",
+      "name": "repulseStrength",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::nx",
+      "name": "nx",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::ny",
+      "name": "ny",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::ctx",
+      "name": "ctx",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::zoomFactor",
+      "name": "zoomFactor",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::m",
+      "name": "m",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::vertexCount",
+      "name": "vertexCount",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::projectedPts",
+      "name": "projectedPts",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::off",
+      "name": "off",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::x",
+      "name": "x",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::y",
+      "name": "y",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::z",
+      "name": "z",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::p1",
+      "name": "p1",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::p2",
+      "name": "p2",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::isHighlight",
+      "name": "isHighlight",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::ptSize",
+      "name": "ptSize",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::totalM",
+      "name": "totalM",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::mAngle",
+      "name": "mAngle",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::mRadius",
+      "name": "mRadius",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::mx",
+      "name": "mx",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::my",
+      "name": "my",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::mz",
+      "name": "mz",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::mrx",
+      "name": "mrx",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::mrz",
+      "name": "mrz",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::mry",
+      "name": "mry",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::md",
+      "name": "md",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::mpx",
+      "name": "mpx",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::mpy",
+      "name": "mpy",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\resolvePivotNode.test.ts::<module>",
+      "name": "<module>",
+      "file": "apps\\web\\src\\panels\\neural-core\\resolvePivotNode.test.ts",
+      "kind": "module"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\resolvePivotNode.test.ts::mockNodes",
+      "name": "mockNodes",
+      "file": "apps\\web\\src\\panels\\neural-core\\resolvePivotNode.test.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\resolvePivotNode.test.ts::result",
+      "name": "result",
+      "file": "apps\\web\\src\\panels\\neural-core\\resolvePivotNode.test.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\resolvePivotNode.ts::<module>",
+      "name": "<module>",
+      "file": "apps\\web\\src\\panels\\neural-core\\resolvePivotNode.ts",
+      "kind": "module"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\resolvePivotNode.ts::resolvePivotNode",
+      "name": "resolvePivotNode",
+      "file": "apps\\web\\src\\panels\\neural-core\\resolvePivotNode.ts",
+      "kind": "function"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\resolvePivotNode.ts::cleanPath",
+      "name": "cleanPath",
+      "file": "apps\\web\\src\\panels\\neural-core\\resolvePivotNode.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\resolvePivotNode.ts::fileName",
+      "name": "fileName",
+      "file": "apps\\web\\src\\panels\\neural-core\\resolvePivotNode.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\resolvePivotNode.ts::baseName",
+      "name": "baseName",
+      "file": "apps\\web\\src\\panels\\neural-core\\resolvePivotNode.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\resolvePivotNode.ts::targetClassName",
+      "name": "targetClassName",
+      "file": "apps\\web\\src\\panels\\neural-core\\resolvePivotNode.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\resolvePivotNode.ts::fileCandidates",
+      "name": "fileCandidates",
+      "file": "apps\\web\\src\\panels\\neural-core\\resolvePivotNode.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\resolvePivotNode.ts::p",
+      "name": "p",
+      "file": "apps\\web\\src\\panels\\neural-core\\resolvePivotNode.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\resolvePivotNode.ts::rel",
+      "name": "rel",
+      "file": "apps\\web\\src\\panels\\neural-core\\resolvePivotNode.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\resolvePivotNode.ts::classNode",
+      "name": "classNode",
+      "file": "apps\\web\\src\\panels\\neural-core\\resolvePivotNode.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\resolvePivotNode.ts::nameMatch",
+      "name": "nameMatch",
+      "file": "apps\\web\\src\\panels\\neural-core\\resolvePivotNode.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\resolvePivotNode.ts::qn",
+      "name": "qn",
+      "file": "apps\\web\\src\\panels\\neural-core\\resolvePivotNode.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\semanticFingerprint.test.ts::<module>",
+      "name": "<module>",
+      "file": "apps\\web\\src\\panels\\neural-core\\semanticFingerprint.test.ts",
+      "kind": "module"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\semanticFingerprint.test.ts::colorTsx",
+      "name": "colorTsx",
+      "file": "apps\\web\\src\\panels\\neural-core\\semanticFingerprint.test.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\semanticFingerprint.test.ts::colorTs",
+      "name": "colorTs",
+      "file": "apps\\web\\src\\panels\\neural-core\\semanticFingerprint.test.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\semanticFingerprint.test.ts::colorMd",
+      "name": "colorMd",
+      "file": "apps\\web\\src\\panels\\neural-core\\semanticFingerprint.test.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\semanticFingerprint.test.ts::colorJson",
+      "name": "colorJson",
+      "file": "apps\\web\\src\\panels\\neural-core\\semanticFingerprint.test.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\semanticFingerprint.test.ts::colorCss",
+      "name": "colorCss",
+      "file": "apps\\web\\src\\panels\\neural-core\\semanticFingerprint.test.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\semanticFingerprint.test.ts::mockNodes",
+      "name": "mockNodes",
+      "file": "apps\\web\\src\\panels\\neural-core\\semanticFingerprint.test.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\semanticFingerprint.test.ts::mockEdges",
+      "name": "mockEdges",
+      "file": "apps\\web\\src\\panels\\neural-core\\semanticFingerprint.test.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\semanticFingerprint.test.ts::fp1",
+      "name": "fp1",
+      "file": "apps\\web\\src\\panels\\neural-core\\semanticFingerprint.test.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\semanticFingerprint.test.ts::fp2",
+      "name": "fp2",
+      "file": "apps\\web\\src\\panels\\neural-core\\semanticFingerprint.test.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\semanticFingerprint.test.ts::fpOriginal",
+      "name": "fpOriginal",
+      "file": "apps\\web\\src\\panels\\neural-core\\semanticFingerprint.test.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\semanticFingerprint.test.ts::tamperedNodes",
+      "name": "tamperedNodes",
+      "file": "apps\\web\\src\\panels\\neural-core\\semanticFingerprint.test.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\semanticFingerprint.test.ts::fpTampered",
+      "name": "fpTampered",
+      "file": "apps\\web\\src\\panels\\neural-core\\semanticFingerprint.test.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\semanticFingerprint.test.ts::nodes",
+      "name": "nodes",
+      "file": "apps\\web\\src\\panels\\neural-core\\semanticFingerprint.test.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\semanticFingerprint.test.ts::edges",
+      "name": "edges",
+      "file": "apps\\web\\src\\panels\\neural-core\\semanticFingerprint.test.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\semanticFingerprint.test.ts::rels",
+      "name": "rels",
+      "file": "apps\\web\\src\\panels\\neural-core\\semanticFingerprint.test.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\semanticFingerprint.test.ts::mesh",
+      "name": "mesh",
+      "file": "apps\\web\\src\\panels\\neural-core\\semanticFingerprint.test.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\shaders.wgsl.ts::<module>",
+      "name": "<module>",
+      "file": "apps\\web\\src\\panels\\neural-core\\shaders.wgsl.ts",
+      "kind": "module"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\shaders.wgsl.ts::GEOMETRY_RENDER_WGSL",
+      "name": "GEOMETRY_RENDER_WGSL",
+      "file": "apps\\web\\src\\panels\\neural-core\\shaders.wgsl.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\types.ts::<module>",
+      "name": "<module>",
+      "file": "apps\\web\\src\\panels\\neural-core\\types.ts",
+      "kind": "module"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\useNeuralCoreState.ts::<module>",
+      "name": "<module>",
+      "file": "apps\\web\\src\\panels\\neural-core\\useNeuralCoreState.ts",
+      "kind": "module"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\useNeuralCoreState.ts::useNeuralCoreState",
+      "name": "useNeuralCoreState",
+      "file": "apps\\web\\src\\panels\\neural-core\\useNeuralCoreState.ts",
+      "kind": "function"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\useNeuralCoreState.ts::activeWorkspace",
+      "name": "activeWorkspace",
+      "file": "apps\\web\\src\\panels\\neural-core\\useNeuralCoreState.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\useNeuralCoreState.ts::mcpMetrics",
+      "name": "mcpMetrics",
+      "file": "apps\\web\\src\\panels\\neural-core\\useNeuralCoreState.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\useNeuralCoreState.ts::activeCalls",
+      "name": "activeCalls",
+      "file": "apps\\web\\src\\panels\\neural-core\\useNeuralCoreState.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\useNeuralCoreState.ts::connectionStatus",
+      "name": "connectionStatus",
+      "file": "apps\\web\\src\\panels\\neural-core\\useNeuralCoreState.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\useNeuralCoreState.ts::lastMetricCountRef",
+      "name": "lastMetricCountRef",
+      "file": "apps\\web\\src\\panels\\neural-core\\useNeuralCoreState.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\useNeuralCoreState.ts::state",
+      "name": "state",
+      "file": "apps\\web\\src\\panels\\neural-core\\useNeuralCoreState.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\useNeuralCoreState.ts::activity",
+      "name": "activity",
+      "file": "apps\\web\\src\\panels\\neural-core\\useNeuralCoreState.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\useNeuralCoreState.ts::intensity",
+      "name": "intensity",
+      "file": "apps\\web\\src\\panels\\neural-core\\useNeuralCoreState.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\useNeuralCoreState.ts::activeToolName",
+      "name": "activeToolName",
+      "file": "apps\\web\\src\\panels\\neural-core\\useNeuralCoreState.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\useNeuralCoreState.ts::activeRagQuery",
+      "name": "activeRagQuery",
+      "file": "apps\\web\\src\\panels\\neural-core\\useNeuralCoreState.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\useNeuralCoreState.ts::activeRagToolName",
+      "name": "activeRagToolName",
+      "file": "apps\\web\\src\\panels\\neural-core\\useNeuralCoreState.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\useNeuralCoreState.ts::isRagSearching",
+      "name": "isRagSearching",
+      "file": "apps\\web\\src\\panels\\neural-core\\useNeuralCoreState.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\useNeuralCoreState.ts::toolArgs",
+      "name": "toolArgs",
+      "file": "apps\\web\\src\\panels\\neural-core\\useNeuralCoreState.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\useNeuralCoreState.ts::runningCallKeys",
+      "name": "runningCallKeys",
+      "file": "apps\\web\\src\\panels\\neural-core\\useNeuralCoreState.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\useNeuralCoreState.ts::firstKey",
+      "name": "firstKey",
+      "file": "apps\\web\\src\\panels\\neural-core\\useNeuralCoreState.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\useNeuralCoreState.ts::latest",
+      "name": "latest",
+      "file": "apps\\web\\src\\panels\\neural-core\\useNeuralCoreState.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\useNeuralCoreState.ts::age",
+      "name": "age",
+      "file": "apps\\web\\src\\panels\\neural-core\\useNeuralCoreState.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\useNeuralCoreState.ts::activeChatTool",
+      "name": "activeChatTool",
+      "file": "apps\\web\\src\\panels\\neural-core\\useNeuralCoreState.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\useNeuralCoreState.ts::activeChatFilePath",
+      "name": "activeChatFilePath",
+      "file": "apps\\web\\src\\panels\\neural-core\\useNeuralCoreState.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\useNeuralCoreState.ts::activeChatPivotClass",
+      "name": "activeChatPivotClass",
+      "file": "apps\\web\\src\\panels\\neural-core\\useNeuralCoreState.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\useNeuralCoreState.ts::toolLower",
+      "name": "toolLower",
+      "file": "apps\\web\\src\\panels\\neural-core\\useNeuralCoreState.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\useNeuralCoreState.ts::rawPath",
+      "name": "rawPath",
+      "file": "apps\\web\\src\\panels\\neural-core\\useNeuralCoreState.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\useNeuralCoreState.ts::fileName",
+      "name": "fileName",
+      "file": "apps\\web\\src\\panels\\neural-core\\useNeuralCoreState.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\useNeuralCoreState.ts::rawTarget",
+      "name": "rawTarget",
+      "file": "apps\\web\\src\\panels\\neural-core\\useNeuralCoreState.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\useNeuralCoreState.ts::cleanTarget",
+      "name": "cleanTarget",
+      "file": "apps\\web\\src\\panels\\neural-core\\useNeuralCoreState.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\useNeuralCoreState.ts::norm",
+      "name": "norm",
+      "file": "apps\\web\\src\\panels\\neural-core\\useNeuralCoreState.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\useNeuralCoreState.ts::lower",
+      "name": "lower",
+      "file": "apps\\web\\src\\panels\\neural-core\\useNeuralCoreState.ts",
+      "kind": "variable"
+    },
+    {
+      "id": "apps\\web\\src\\panels\\neural-core\\useNeuralCoreState.ts::isBash",
+      "name": "isBash",
+      "file": "apps\\web\\src\\panels\\neural-core\\useNeuralCoreState.ts",
+      "kind": "variable"
+    }
+  ],
+  "edges": [
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\cameraController.test.ts::<module>",
+      "to": "describe"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\cameraController.test.ts::<fn>",
+      "to": "it"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\cameraController.test.ts::<fn>",
+      "to": "push"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\cameraController.test.ts::<fn>",
+      "to": "defineProperty"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\cameraController.test.ts::<fn>",
+      "to": "toBe"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\cameraController.test.ts::<fn>",
+      "to": "expect"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\cameraController.test.ts::<fn>",
+      "to": "wasJustDragging"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\cameraController.test.ts::<fn>",
+      "to": "fn"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\cameraController.test.ts::<fn>",
+      "to": "fitBounds"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\cameraController.test.ts::<fn>",
+      "to": "toBeGreaterThanOrEqual"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\cameraController.test.ts::<fn>",
+      "to": "isFinite"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\cameraController.ts::OrbitCameraController",
+      "to": "attachEvents"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\cameraController.ts::attachEvents",
+      "to": "addEventListener"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\cameraController.ts::<fn>",
+      "to": "preventDefault"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\cameraController.ts::<fn>",
+      "to": "hypot"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\cameraController.ts::<fn>",
+      "to": "max"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\cameraController.ts::<fn>",
+      "to": "cos"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\cameraController.ts::<fn>",
+      "to": "sin"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\cameraController.ts::<fn>",
+      "to": "min"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\cameraController.ts::<fn>",
+      "to": "onUpdate"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\cameraController.ts::<fn>",
+      "to": "now"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\cameraController.ts::wasJustDragging",
+      "to": "now"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\cameraController.ts::panBy",
+      "to": "max"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\cameraController.ts::panBy",
+      "to": "cos"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\cameraController.ts::panBy",
+      "to": "sin"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\cameraController.ts::panBy",
+      "to": "onUpdate"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\cameraController.ts::panLeft",
+      "to": "panBy"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\cameraController.ts::panRight",
+      "to": "panBy"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\cameraController.ts::panUp",
+      "to": "panBy"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\cameraController.ts::panDown",
+      "to": "panBy"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\cameraController.ts::setPcbTopView",
+      "to": "max"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\cameraController.ts::setPcbTopView",
+      "to": "onUpdate"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\cameraController.ts::zoomIn",
+      "to": "max"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\cameraController.ts::zoomIn",
+      "to": "onUpdate"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\cameraController.ts::zoomOut",
+      "to": "min"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\cameraController.ts::zoomOut",
+      "to": "onUpdate"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\cameraController.ts::focusPosition",
+      "to": "max"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\cameraController.ts::focusPosition",
+      "to": "min"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\cameraController.ts::updateTween",
+      "to": "abs"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\cameraController.ts::updateTween",
+      "to": "onUpdate"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\cameraController.ts::restoreCameraSnapshot",
+      "to": "onUpdate"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\cameraController.ts::reset",
+      "to": "onUpdate"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\cameraController.ts::fitBounds",
+      "to": "reset"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\cameraController.ts::fitBounds",
+      "to": "hypot"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\cameraController.ts::fitBounds",
+      "to": "max"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\cameraController.ts::fitBounds",
+      "to": "min"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\cameraController.ts::fitBounds",
+      "to": "onUpdate"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreChunksView.tsx::getChunkKindMeta",
+      "to": "toLowerCase"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreChunksView.tsx::getChunkKindMeta",
+      "to": "includes"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreChunksView.tsx::NeuralCoreChunksView",
+      "to": "useState"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreChunksView.tsx::NeuralCoreChunksView",
+      "to": "useMemo"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreChunksView.tsx::<fn>",
+      "to": "filter"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreChunksView.tsx::<fn>",
+      "to": "toLowerCase"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreChunksView.tsx::<fn>",
+      "to": "includes"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreChunksView.tsx::<fn>",
+      "to": "trim"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreChunksView.tsx::<fn>",
+      "to": "split"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreChunksView.tsx::<fn>",
+      "to": "every"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreChunksView.tsx::<fn>",
+      "to": "writeText"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreChunksView.tsx::<fn>",
+      "to": "success"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreChunksView.tsx::NeuralCoreChunksView",
+      "to": "map"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreChunksView.tsx::<fn>",
+      "to": "setActiveFilter"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreChunksView.tsx::<fn>",
+      "to": "setSearchQuery"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreChunksView.tsx::<fn>",
+      "to": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreChunksView.tsx::getChunkKindMeta"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreChunksView.tsx::<fn>",
+      "to": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreChunksView.tsx::handleCopyChunk"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreFingerprintCard.tsx::NeuralCoreFingerprintCard",
+      "to": "useState"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreFingerprintCard.tsx::<fn>",
+      "to": "writeText"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreFingerprintCard.tsx::<fn>",
+      "to": "setCopied"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreFingerprintCard.tsx::<fn>",
+      "to": "success"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreFingerprintCard.tsx::<fn>",
+      "to": "setTimeout"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreFingerprintCard.tsx::NeuralCoreFingerprintCard",
+      "to": "keys"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreFingerprintCard.tsx::NeuralCoreFingerprintCard",
+      "to": "map"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreFingerprintCard.tsx::NeuralCoreFingerprintCard",
+      "to": "entries"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreNodeOverview.tsx::<fn>",
+      "to": "writeText"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreNodeOverview.tsx::<fn>",
+      "to": "success"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreNodeOverview.tsx::NeuralCoreNodeOverview",
+      "to": "map"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreNodeOverview.tsx::<fn>",
+      "to": "getModuleClasses"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreNodeOverview.tsx::<fn>",
+      "to": "onFocusNeighbor"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreNodeOverview.tsx::<fn>",
+      "to": "onSelectMethodQuery"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreSearchBox.tsx::getSymbolKindBadge",
+      "to": "toLowerCase"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreSearchBox.tsx::getSymbolKindBadge",
+      "to": "includes"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreSearchBox.tsx::NeuralCoreSearchBox",
+      "to": "useState"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreSearchBox.tsx::NeuralCoreSearchBox",
+      "to": "useRef"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreSearchBox.tsx::NeuralCoreSearchBox",
+      "to": "useEffect"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreSearchBox.tsx::<fn>",
+      "to": "contains"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreSearchBox.tsx::<fn>",
+      "to": "setIsSearchOpen"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreSearchBox.tsx::<fn>",
+      "to": "addEventListener"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreSearchBox.tsx::<fn>",
+      "to": "removeEventListener"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreSearchBox.tsx::NeuralCoreSearchBox",
+      "to": "useMemo"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreSearchBox.tsx::<fn>",
+      "to": "filter"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreSearchBox.tsx::<fn>",
+      "to": "toLowerCase"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreSearchBox.tsx::<fn>",
+      "to": "includes"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreSearchBox.tsx::<fn>",
+      "to": "setSelectedIndex"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreSearchBox.tsx::<fn>",
+      "to": "preventDefault"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreSearchBox.tsx::<fn>",
+      "to": "onSelectNode"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreSearchBox.tsx::<fn>",
+      "to": "onSelectChunk"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreSearchBox.tsx::<fn>",
+      "to": "onQueryChange"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreSearchBox.tsx::NeuralCoreSearchBox",
+      "to": "trim"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreSearchBox.tsx::<fn>",
+      "to": "setSearchDropdownTab"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreSearchBox.tsx::NeuralCoreSearchBox",
+      "to": "map"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreSearchBox.tsx::<fn>",
+      "to": "setCategoryFilter"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreSearchBox.tsx::<fn>",
+      "to": "getModuleClasses"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreSearchBox.tsx::<fn>",
+      "to": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreSearchBox.tsx::getSymbolKindBadge"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreSearchBox.tsx::<fn>",
+      "to": "trim"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreSearchBox.tsx::<fn>",
+      "to": "map"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreSearchBox.tsx::<fn>",
+      "to": "slice"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\components\\searchBox.test.ts::<module>",
+      "to": "describe"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\components\\searchBox.test.ts::<fn>",
+      "to": "it"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\components\\searchBox.test.ts::<fn>",
+      "to": "filter"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\components\\searchBox.test.ts::<fn>",
+      "to": "toLowerCase"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\components\\searchBox.test.ts::<fn>",
+      "to": "some"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\components\\searchBox.test.ts::<fn>",
+      "to": "includes"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\components\\searchBox.test.ts::<fn>",
+      "to": "toBe"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\components\\searchBox.test.ts::<fn>",
+      "to": "expect"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\components\\searchBox.test.ts::<fn>",
+      "to": "split"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\components\\searchBox.test.ts::<fn>",
+      "to": "every"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\geometry.ts::createTesseractWireframe",
+      "to": "push"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\geometry.ts::createTesseractWireframe",
+      "to": "cos"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\geometry.ts::createTesseractWireframe",
+      "to": "sin"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\geometry.ts::createIcosahedronWireframe",
+      "to": "sqrt"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\geometry.ts::createIcosahedronWireframe",
+      "to": "push"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\geometry.ts::createGimbalRingsWireframe",
+      "to": "cos"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\geometry.ts::createGimbalRingsWireframe",
+      "to": "sin"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\geometry.ts::createGimbalRingsWireframe",
+      "to": "push"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\geometry.ts::createToolNodeSatellites",
+      "to": "cos"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\geometry.ts::createToolNodeSatellites",
+      "to": "sin"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\geometry.ts::createToolNodeSatellites",
+      "to": "push"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\geometry.ts::createMerkabaWireframe",
+      "to": "push"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\geometry.ts::createTorusWireframe",
+      "to": "cos"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\geometry.ts::createTorusWireframe",
+      "to": "sin"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\geometry.ts::createTorusWireframe",
+      "to": "push"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\geometry.ts::createDodecahedronWireframe",
+      "to": "sqrt"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\geometry.ts::createDodecahedronWireframe",
+      "to": "push"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\geometry.ts::resolveModuleColor",
+      "to": "includes"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\geometry.ts::resolveModuleColor",
+      "to": "split"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\geometry.ts::resolveModuleColor",
+      "to": "join"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\geometry.ts::resolveModuleColor",
+      "to": "slice"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\geometry.ts::resolveModuleColor",
+      "to": "charCodeAt"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\geometry.ts::resolveModuleColor",
+      "to": "abs"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\geometry.ts::getPolygonKindForFile",
+      "to": "toLowerCase"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\geometry.ts::getPolygonKindForFile",
+      "to": "endsWith"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\geometry.ts::getPolygonKindForFile",
+      "to": "includes"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\geometry.ts::resolveFileTypeColor",
+      "to": "toLowerCase"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\geometry.ts::resolveFileTypeColor",
+      "to": "endsWith"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\geometry.ts::resolveFileTypeColor",
+      "to": "includes"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\geometry.ts::resolveFileTypeColor",
+      "to": "entries"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\geometry.ts::resolveFileTypeColor",
+      "to": "apps\\web\\src\\panels\\neural-core\\geometry.ts::resolveModuleColor"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\geometry.ts::computeSemanticFingerprint",
+      "to": "apps\\web\\src\\panels\\neural-core\\geometry.ts::getPolygonKindForFile"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\geometry.ts::computeSemanticFingerprint",
+      "to": "values"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\geometry.ts::computeSemanticFingerprint",
+      "to": "log2"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\geometry.ts::computeSemanticFingerprint",
+      "to": "sort"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\geometry.ts::<fn>",
+      "to": "localeCompare"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\geometry.ts::computeSemanticFingerprint",
+      "to": "join"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\geometry.ts::computeSemanticFingerprint",
+      "to": "map"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\geometry.ts::<fn>",
+      "to": "toFixed"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\geometry.ts::computeSemanticFingerprint",
+      "to": "charCodeAt"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\geometry.ts::computeSemanticFingerprint",
+      "to": "imul"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\geometry.ts::computeSemanticFingerprint",
+      "to": "toFixed"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\geometry.ts::<fn>",
+      "to": "padStart"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\geometry.ts::<fn>",
+      "to": "toString"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\geometry.ts::computeSemanticFingerprint",
+      "to": "apps\\web\\src\\panels\\neural-core\\geometry.ts::toHex"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\geometry.ts::computeSemanticFingerprint",
+      "to": "toLowerCase"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\geometry.ts::computeSemanticFingerprint",
+      "to": "toUpperCase"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\geometry.ts::computeSemanticFingerprint",
+      "to": "substring"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\geometry.ts::computeSemanticFingerprint",
+      "to": "min"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\geometry.ts::computeSemanticFingerprint",
+      "to": "Number"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\geometry.ts::computeNodeRelations",
+      "to": "toLowerCase"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\geometry.ts::computeNodeRelations",
+      "to": "replace"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\geometry.ts::computeNodeRelations",
+      "to": "pop"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\geometry.ts::computeNodeRelations",
+      "to": "split"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\geometry.ts::computeNodeRelations",
+      "to": "add"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\geometry.ts::computeNodeRelations",
+      "to": "some"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\geometry.ts::<fn>",
+      "to": "toLowerCase"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\geometry.ts::<fn>",
+      "to": "includes"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\geometry.ts::<fn>",
+      "to": "some"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\geometry.ts::createVectorConstellationWireframe",
+      "to": "apps\\web\\src\\panels\\neural-core\\geometry.ts::computeNodeRelations"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\geometry.ts::createVectorConstellationWireframe",
+      "to": "has"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\geometry.ts::createVectorConstellationWireframe",
+      "to": "Boolean"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\geometry.ts::createVectorConstellationWireframe",
+      "to": "max"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\geometry.ts::createVectorConstellationWireframe",
+      "to": "min"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\geometry.ts::createVectorConstellationWireframe",
+      "to": "sin"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\geometry.ts::createVectorConstellationWireframe",
+      "to": "apps\\web\\src\\panels\\neural-core\\geometry.ts::resolveFileTypeColor"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\geometry.ts::createVectorConstellationWireframe",
+      "to": "apps\\web\\src\\panels\\neural-core\\geometry.ts::getPolygonKindForFile"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\geometry.ts::createVectorConstellationWireframe",
+      "to": "push"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\geometry.ts::createVectorConstellationWireframe",
+      "to": "cos"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\geometry.ts::createVectorConstellationWireframe",
+      "to": "sqrt"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\geometry.ts::createVectorConstellationWireframe",
+      "to": "abs"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\geometry.ts::createVectorConstellationWireframe",
+      "to": "includes"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\geometry.ts::createVectorConstellationWireframe",
+      "to": "split"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::NeuralCoreEngine",
+      "to": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::now"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::NeuralCoreEngine",
+      "to": "generatePrimaryMesh"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::NeuralCoreEngine",
+      "to": "apps\\web\\src\\panels\\neural-core\\geometry.ts::createGimbalRingsWireframe"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::NeuralCoreEngine",
+      "to": "apps\\web\\src\\panels\\neural-core\\geometry.ts::createToolNodeSatellites"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::generatePrimaryMesh",
+      "to": "apps\\web\\src\\panels\\neural-core\\geometry.ts::createTesseractWireframe"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::generatePrimaryMesh",
+      "to": "apps\\web\\src\\panels\\neural-core\\geometry.ts::createIcosahedronWireframe"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::generatePrimaryMesh",
+      "to": "apps\\web\\src\\panels\\neural-core\\geometry.ts::createMerkabaWireframe"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::generatePrimaryMesh",
+      "to": "apps\\web\\src\\panels\\neural-core\\geometry.ts::createTorusWireframe"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::generatePrimaryMesh",
+      "to": "apps\\web\\src\\panels\\neural-core\\geometry.ts::createDodecahedronWireframe"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::setShape",
+      "to": "generatePrimaryMesh"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::setShape",
+      "to": "uploadPrimaryMesh"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::setShowPcbLines",
+      "to": "rebuildVectorMesh"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::togglePcbLines",
+      "to": "rebuildVectorMesh"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::togglePause",
+      "to": "onPauseChange"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::triggerMcpSearchTarget",
+      "to": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::now"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::triggerMcpSearchTarget",
+      "to": "onPauseChange"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::triggerMcpSearchTarget",
+      "to": "rebuildVectorMesh"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::setVisibleModules",
+      "to": "rebuildVectorMesh"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::setVectorGraphData",
+      "to": "rebuildVectorMesh"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::appendVectorGraphData",
+      "to": "map"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::appendVectorGraphData",
+      "to": "has"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::appendVectorGraphData",
+      "to": "add"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::appendVectorGraphData",
+      "to": "push"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::appendVectorGraphData",
+      "to": "rebuildVectorMesh"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::setRagSearch",
+      "to": "trim"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::setRagSearch",
+      "to": "Boolean"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::setRagSearch",
+      "to": "toLowerCase"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::setRagSearch",
+      "to": "some"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::<fn>",
+      "to": "includes"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::<fn>",
+      "to": "toLowerCase"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::setRagSearch",
+      "to": "includes"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::setRagSearch",
+      "to": "rebuildVectorMesh"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::setHighlightedNode",
+      "to": "rebuildVectorMesh"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::setSelectedNode",
+      "to": "rebuildVectorMesh"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::setSelectedNode",
+      "to": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::now"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::rebuildVectorMesh",
+      "to": "filter"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::<fn>",
+      "to": "has"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::rebuildVectorMesh",
+      "to": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::now"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::rebuildVectorMesh",
+      "to": "min"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::rebuildVectorMesh",
+      "to": "apps\\web\\src\\panels\\neural-core\\geometry.ts::createVectorConstellationWireframe"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::rebuildVectorMesh",
+      "to": "uploadVectorMesh"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::uploadPrimaryMesh",
+      "to": "destroy"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::uploadPrimaryMesh",
+      "to": "createBuffer"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::uploadPrimaryMesh",
+      "to": "max"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::uploadPrimaryMesh",
+      "to": "writeBuffer"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::uploadVectorMesh",
+      "to": "destroy"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::uploadVectorMesh",
+      "to": "createBuffer"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::uploadVectorMesh",
+      "to": "max"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::uploadVectorMesh",
+      "to": "writeBuffer"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::init",
+      "to": "requestAdapter"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::init",
+      "to": "requestDevice"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::init",
+      "to": "getContext"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::init",
+      "to": "getPreferredCanvasFormat"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::init",
+      "to": "configure"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::init",
+      "to": "setupWebGpuPipelines"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::init",
+      "to": "warn"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::setupWebGpuPipelines",
+      "to": "createShaderModule"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::setupWebGpuPipelines",
+      "to": "createRenderPipeline"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::setupWebGpuPipelines",
+      "to": "uploadPrimaryMesh"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::setupWebGpuPipelines",
+      "to": "createBuffer"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::setupWebGpuPipelines",
+      "to": "writeBuffer"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::setupWebGpuPipelines",
+      "to": "createBindGroup"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::setupWebGpuPipelines",
+      "to": "getBindGroupLayout"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::setActivity",
+      "to": "min"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::setActivity",
+      "to": "max"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::start",
+      "to": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::now"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::<fn>",
+      "to": "min"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::<fn>",
+      "to": "onBeforeRenderFrame"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::<fn>",
+      "to": "rebuildVectorMesh"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::<fn>",
+      "to": "round"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::<fn>",
+      "to": "onFrameMetrics"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::<fn>",
+      "to": "renderWebGpu"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::<fn>",
+      "to": "renderGeometricCanvas2D"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::<fn>",
+      "to": "requestAnimationFrame"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::start",
+      "to": "requestAnimationFrame"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::renderWebGpu",
+      "to": "calculateViewProjMatrix"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::renderWebGpu",
+      "to": "createRotationMatrix"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::renderWebGpu",
+      "to": "set"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::renderWebGpu",
+      "to": "writeBuffer"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::renderWebGpu",
+      "to": "apps\\web\\src\\panels\\neural-core\\geometry.ts::createTesseractWireframe"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::renderWebGpu",
+      "to": "createCommandEncoder"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::renderWebGpu",
+      "to": "createView"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::renderWebGpu",
+      "to": "getCurrentTexture"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::renderWebGpu",
+      "to": "beginRenderPass"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::renderWebGpu",
+      "to": "setPipeline"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::renderWebGpu",
+      "to": "setBindGroup"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::renderWebGpu",
+      "to": "setVertexBuffer"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::renderWebGpu",
+      "to": "setIndexBuffer"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::renderWebGpu",
+      "to": "drawIndexed"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::renderWebGpu",
+      "to": "end"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::renderWebGpu",
+      "to": "submit"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::renderWebGpu",
+      "to": "finish"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::calculateViewProjMatrix",
+      "to": "cos"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::calculateViewProjMatrix",
+      "to": "sin"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::calculateViewProjMatrix",
+      "to": "hypot"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::calculateViewProjMatrix",
+      "to": "abs"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::calculateViewProjMatrix",
+      "to": "tan"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::createRotationMatrix",
+      "to": "cos"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::createRotationMatrix",
+      "to": "sin"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::findNodeUnderScreenCoord",
+      "to": "min"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::findNodeUnderScreenCoord",
+      "to": "cos"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::findNodeUnderScreenCoord",
+      "to": "sin"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::findNodeUnderScreenCoord",
+      "to": "max"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::findNodeUnderScreenCoord",
+      "to": "has"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::findNodeUnderScreenCoord",
+      "to": "sqrt"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::findNodeUnderScreenCoord",
+      "to": "push"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::findNodeUnderScreenCoord",
+      "to": "sort"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::<fn>",
+      "to": "abs"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::getProjectedNodeLabels",
+      "to": "min"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::getProjectedNodeLabels",
+      "to": "cos"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::getProjectedNodeLabels",
+      "to": "sin"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::getProjectedNodeLabels",
+      "to": "max"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::getProjectedNodeLabels",
+      "to": "apps\\web\\src\\panels\\neural-core\\geometry.ts::computeNodeRelations"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::getProjectedNodeLabels",
+      "to": "has"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::getProjectedNodeLabels",
+      "to": "push"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::getProjectedNodeLabels",
+      "to": "Boolean"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::getProjectedNodeLabels",
+      "to": "sqrt"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::getProjectedNodeLabels",
+      "to": "split"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::getProjectedNodeLabels",
+      "to": "sort"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::getProjectedNodeLabels",
+      "to": "slice"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::getProjectedNodeLabels",
+      "to": "map"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::renderGeometricCanvas2D",
+      "to": "fillRect"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::renderGeometricCanvas2D",
+      "to": "min"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::renderGeometricCanvas2D",
+      "to": "max"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::renderGeometricCanvas2D",
+      "to": "generatePrimaryMesh"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::renderGeometricCanvas2D",
+      "to": "cos"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::renderGeometricCanvas2D",
+      "to": "sin"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::renderGeometricCanvas2D",
+      "to": "push"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::renderGeometricCanvas2D",
+      "to": "beginPath"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::renderGeometricCanvas2D",
+      "to": "moveTo"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::renderGeometricCanvas2D",
+      "to": "lineTo"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::renderGeometricCanvas2D",
+      "to": "stroke"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::renderGeometricCanvas2D",
+      "to": "ellipse"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::renderGeometricCanvas2D",
+      "to": "Boolean"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::renderGeometricCanvas2D",
+      "to": "arc"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::renderGeometricCanvas2D",
+      "to": "fill"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::stop",
+      "to": "cancelAnimationFrame"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\resolvePivotNode.test.ts::<module>",
+      "to": "describe"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\resolvePivotNode.test.ts::<fn>",
+      "to": "it"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\resolvePivotNode.test.ts::<fn>",
+      "to": "resolvePivotNode"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\resolvePivotNode.test.ts::<fn>",
+      "to": "toBe"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\resolvePivotNode.test.ts::<fn>",
+      "to": "expect"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\resolvePivotNode.test.ts::<fn>",
+      "to": "toBeNull"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\resolvePivotNode.ts::resolvePivotNode",
+      "to": "trim"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\resolvePivotNode.ts::resolvePivotNode",
+      "to": "toLowerCase"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\resolvePivotNode.ts::resolvePivotNode",
+      "to": "replace"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\resolvePivotNode.ts::resolvePivotNode",
+      "to": "pop"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\resolvePivotNode.ts::resolvePivotNode",
+      "to": "split"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\resolvePivotNode.ts::resolvePivotNode",
+      "to": "filter"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\resolvePivotNode.ts::<fn>",
+      "to": "toLowerCase"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\resolvePivotNode.ts::<fn>",
+      "to": "replace"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\resolvePivotNode.ts::<fn>",
+      "to": "endsWith"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\resolvePivotNode.ts::resolvePivotNode",
+      "to": "find"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\semanticFingerprint.test.ts::<module>",
+      "to": "describe"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\semanticFingerprint.test.ts::<fn>",
+      "to": "describe"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\semanticFingerprint.test.ts::<fn>",
+      "to": "it"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\semanticFingerprint.test.ts::<fn>",
+      "to": "toBe"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\semanticFingerprint.test.ts::<fn>",
+      "to": "expect"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\semanticFingerprint.test.ts::<fn>",
+      "to": "apps\\web\\src\\panels\\neural-core\\geometry.ts::getPolygonKindForFile"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\semanticFingerprint.test.ts::<fn>",
+      "to": "apps\\web\\src\\panels\\neural-core\\geometry.ts::resolveFileTypeColor"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\semanticFingerprint.test.ts::<fn>",
+      "to": "toEqual"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\semanticFingerprint.test.ts::<fn>",
+      "to": "apps\\web\\src\\panels\\neural-core\\geometry.ts::computeSemanticFingerprint"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\semanticFingerprint.test.ts::<fn>",
+      "to": "toHaveLength"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\semanticFingerprint.test.ts::<fn>",
+      "to": "toBeGreaterThan"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\semanticFingerprint.test.ts::<fn>",
+      "to": "toContain"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\semanticFingerprint.test.ts::<fn>",
+      "to": "apps\\web\\src\\panels\\neural-core\\geometry.ts::computeNodeRelations"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\semanticFingerprint.test.ts::<fn>",
+      "to": "has"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\semanticFingerprint.test.ts::<fn>",
+      "to": "apps\\web\\src\\panels\\neural-core\\geometry.ts::createVectorConstellationWireframe"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\semanticFingerprint.test.ts::<fn>",
+      "to": "min"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\semanticFingerprint.test.ts::<fn>",
+      "to": "isNaN"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\useNeuralCoreState.ts::useNeuralCoreState",
+      "to": "useAppStore"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\useNeuralCoreState.ts::useNeuralCoreState",
+      "to": "useRef"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\useNeuralCoreState.ts::useNeuralCoreState",
+      "to": "useState"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\useNeuralCoreState.ts::useNeuralCoreState",
+      "to": "useMemo"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\useNeuralCoreState.ts::<fn>",
+      "to": "keys"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\useNeuralCoreState.ts::<fn>",
+      "to": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts::now"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\useNeuralCoreState.ts::<fn>",
+      "to": "max"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\useNeuralCoreState.ts::<fn>",
+      "to": "trim"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\useNeuralCoreState.ts::<fn>",
+      "to": "toLowerCase"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\useNeuralCoreState.ts::<fn>",
+      "to": "endsWith"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\useNeuralCoreState.ts::<fn>",
+      "to": "includes"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\useNeuralCoreState.ts::<fn>",
+      "to": "replace"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\useNeuralCoreState.ts::<fn>",
+      "to": "pop"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\useNeuralCoreState.ts::<fn>",
+      "to": "split"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\useNeuralCoreState.ts::<fn>",
+      "to": "test"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\useNeuralCoreState.ts::useNeuralCoreState",
+      "to": "useEffect"
+    },
+    {
+      "from": "apps\\web\\src\\panels\\neural-core\\useNeuralCoreState.ts::<fn>",
+      "to": "setPulseKey"
+    }
+  ]
+}

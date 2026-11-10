@@ -1,0 +1,12 @@
+{
+  "id": "bf3e96bf5d934b1def6a83d803e7c3be46d5fe09fdc0b30497dc18f281fbb03b",
+  "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "kind": "variable",
+  "name": "pEnd",
+  "start_line": 1307,
+  "end_line": 1307,
+  "content": "\t\t\t\t// Desenha a linha subdividida em segmentos com onda de pulso viajante (fluxo direcional)\n\t\t\t\tconst totalSegments = waypoints.length - 1;\n\t\t\t\tfor (let seg = 0; seg < totalSegments; seg++) {\n\t\t\t\t\tconst pStart = waypoints[seg]!;\n\t\t\t\t\tconst pEnd = waypoints[seg + 1]!;\n\t\t\t\t\tconst steps = 3; // Subdivisão fina para propagação do feixe de pulso\n\n\t\t\t\t\tfor (let st = 0; st < steps; st++) {",
+  "token_estimate": 97,
+  "created_at": 1794331101070
+}

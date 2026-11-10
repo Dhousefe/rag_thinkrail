@@ -1,0 +1,13 @@
+{
+  "id": "94901a6ff27c51612c5d651bef7950c315971cb7ce267ea510c964d4909dc695",
+  "text": "\n\t\t\tconst isHovered = i === this.highlightedNodeIndex;\n\t\t\tconst isMatched = Boolean(node.isMatchedBySearch);\n\t\t\tconst isSearchingTarget = this.searchingNodeId === node.id;\n\t\t\tconst methodsCount = node.methods?.length || 0;\n\n\t\t\t// Determina a tag de relação para classes conectadas ao nó selecionado\n\t\t\tlet relationKind: \"CALLER\" | \"IMPORT\" | \"TYPE\" | \"DEPENDENCY\" | undefined;",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+    "kind": "variable",
+    "name": "methodsCount",
+    "start_line": 922,
+    "end_line": 922,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

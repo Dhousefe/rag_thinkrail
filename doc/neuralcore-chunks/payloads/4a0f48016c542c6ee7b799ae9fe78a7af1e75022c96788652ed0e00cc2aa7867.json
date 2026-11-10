@@ -1,0 +1,13 @@
+{
+  "id": "4a0f48016c542c6ee7b799ae9fe78a7af1e75022c96788652ed0e00cc2aa7867",
+  "text": "\n\t\tconst cosO = Math.cos(this.cameraOrbit.theta);\n\t\tconst sinO = Math.sin(this.cameraOrbit.theta);\n\t\tconst cosPhi = Math.cos(this.cameraOrbit.phi);\n\t\tconst sinPhi = Math.sin(this.cameraOrbit.phi);\n\n\t\tconst baseDist = Math.max(1.0, this.cameraOrbit.distance);\n\t\tconst [tx0, ty0, tz0] = this.cameraOrbit.target || [0, 0, 0];",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+    "kind": "variable",
+    "name": "sinPhi",
+    "start_line": 755,
+    "end_line": 755,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

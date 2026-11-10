@@ -1,0 +1,12 @@
+{
+  "id": "4ec00a31525367cefbcdd6b41154ef03e73a4953ac6e88b0df56b94e805a9e49",
+  "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "kind": "variable",
+  "name": "tracePts",
+  "start_line": 1215,
+  "end_line": 1231,
+  "content": "\t\t\tconst midX = p1[0] + (p2[0] - p1[0]) * (0.45 + (pairHash % 3) * 0.05);\n\t\t\tconst midZ = p1[2] + (p2[2] - p1[2]) * (0.45 + (pairHash % 3) * 0.05);\n\n\t\t\t// Segmentos da trilha PCB com vias anti-transfixação:\n\t\t\tconst tracePts: [number, number, number][] = routeOrder\n\t\t\t\t? [\n\t\t\t\t\t\t[p1[0], p1[1], p1[2]],\n\t\t\t\t\t\t[p1[0], traceY, p1[2]],\n\t\t\t\t\t\t[midX, traceY, p1[2]],\n\t\t\t\t\t\t[midX, traceY, p2[2]],\n\t\t\t\t\t\t[p2[0], traceY, p2[2]],\n\t\t\t\t\t\t[p2[0], p2[1], p2[2]],\n\t\t\t\t\t]\n\t\t\t\t: [\n\t\t\t\t\t\t[p1[0], p1[1], p1[2]],\n\t\t\t\t\t\t[p1[0], traceY, p1[2]],\n\t\t\t\t\t\t[p1[0], traceY, midZ],\n\t\t\t\t\t\t[p2[0], traceY, midZ],\n\t\t\t\t\t\t[p2[0], traceY, p2[2]],\n\t\t\t\t\t\t[p2[0], p2[1], p2[2]],\n\t\t\t\t\t];\n\n\t\t\tconst baseIdx = vOffset;\n\t\t\tfor (const [tx, ty, tz] of tracePts) {",
+  "token_estimate": 180,
+  "created_at": 1794331101065
+}

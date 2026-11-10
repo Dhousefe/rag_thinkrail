@@ -1,0 +1,12 @@
+{
+  "id": "0548d4f4deef8e7b28adf1691d3f65c0149caf133edd4ab2eb18d09e3853ab91",
+  "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "kind": "variable",
+  "name": "integrityStatus",
+  "start_line": 690,
+  "end_line": 690,
+  "content": "\tconst totalRelations = edges.length;\n\tconst maxPossibleEdges = totalNodes > 1 ? (totalNodes * (totalNodes - 1)) / 2 : 1;\n\tconst density = Math.min(1.0, totalRelations / maxPossibleEdges);\n\n\tlet integrityStatus: \"VERIFIED_AUTHENTIC\" | \"HIGH_DENSITY\" | \"BALANCED\" = \"VERIFIED_AUTHENTIC\";\n\tif (density > 0.4) integrityStatus = \"HIGH_DENSITY\";\n\n\tconst auditBadge = `FINGERPRINT-${shortHash}`;",
+  "token_estimate": 98,
+  "created_at": 1794331101026
+}

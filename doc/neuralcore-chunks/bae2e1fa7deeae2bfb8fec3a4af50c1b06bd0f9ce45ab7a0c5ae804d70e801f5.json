@@ -1,0 +1,12 @@
+{
+  "id": "bae2e1fa7deeae2bfb8fec3a4af50c1b06bd0f9ce45ab7a0c5ae804d70e801f5",
+  "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "kind": "variable",
+  "name": "waypoints",
+  "start_line": 1295,
+  "end_line": 1301,
+  "content": "\t\t\t\tconst routeY = Math.max(sy, ny) + layerElevation;\n\t\t\t\tneighborOrder++;\n\n\t\t\t\t// Roteamento ortogonal Manhattan em 4 segmentos livres de colisão\n\t\t\t\tconst waypoints: [number, number, number][] = [\n\t\t\t\t\t[sx, sy, sz], // Origem: Polígono selecionado\n\t\t\t\t\t[sx, routeY, sz], // Elevação vertical na camada de cobre dedicada\n\t\t\t\t\t[nx, routeY, sz], // Trânsito no plano X\n\t\t\t\t\t[nx, routeY, nz], // Trânsito no plano Z\n\t\t\t\t\t[nx, ny, nz], // Conexão vertical ao nó relacionado\n\t\t\t\t];\n\n\t\t\t\t// Desenha a linha subdividida em segmentos com onda de pulso viajante (fluxo direcional)\n\t\t\t\tconst totalSegments = waypoints.length - 1;",
+  "token_estimate": 155,
+  "created_at": 1794331101069
+}

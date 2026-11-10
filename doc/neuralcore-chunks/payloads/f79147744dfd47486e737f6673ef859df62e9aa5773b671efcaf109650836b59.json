@@ -1,0 +1,13 @@
+{
+  "id": "f79147744dfd47486e737f6673ef859df62e9aa5773b671efcaf109650836b59",
+  "text": "\t\t\t\tif (!neighbor) continue;\n\t\t\t\tconst [nx, ny, nz] = neighbor.position;\n\n\t\t\t\t// Cores distintas dos polígonos: Neon de alto contraste para linhas de dependência e fluxo\n\t\t\t\tlet rCol: [number, number, number] = [1.0, 0.65, 0.0]; // Ouro Solar (k-NN)\n\t\t\t\tif (relations.callNeighbors.has(neighborIdx)) {\n\t\t\t\t\trCol = [0.2, 1.0, 0.1]; // Verde Fluorescente (Chamadas de Métodos / Callers / Callees)\n\t\t\t\t} else if (relations.importNeighbors.has(neighborIdx)) {",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+    "kind": "variable",
+    "name": "rCol",
+    "start_line": 1280,
+    "end_line": 1280,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

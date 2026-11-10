@@ -1,0 +1,12 @@
+{
+  "id": "e5226a266988cbcace090cb4cc4a9b1a0c4348a5ebfe0e83a54c3b492a74b914",
+  "file": "apps\\web\\src\\panels\\neural-core\\cameraController.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\cameraController.ts",
+  "kind": "variable",
+  "name": "isClose",
+  "start_line": 200,
+  "end_line": 206,
+  "content": "\t\tconst diffTx = this.flyTarget.targetX - this.target[0];\n\t\tconst diffTy = this.flyTarget.targetY - this.target[1];\n\t\tconst diffTz = this.flyTarget.targetZ - this.target[2];\n\n\t\tconst isClose =\n\t\t\tMath.abs(diffT) < 0.005 &&\n\t\t\tMath.abs(diffP) < 0.005 &&\n\t\t\tMath.abs(diffD) < 0.01 &&\n\t\t\tMath.abs(diffTx) < 0.005 &&\n\t\t\tMath.abs(diffTy) < 0.005 &&\n\t\t\tMath.abs(diffTz) < 0.005;\n\n\t\tif (isClose) {\n\t\t\tthis.theta = this.flyTarget.theta;",
+  "token_estimate": 107,
+  "created_at": 1794331100886
+}

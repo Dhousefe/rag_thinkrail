@@ -1,0 +1,13 @@
+{
+  "id": "e6932138f083b3baf653149a5fb2f50dbc4214c0a55f8eb5aaa285fb2389bca8",
+  "text": "\t\tconst [cr, cg, cb, ca] = item.color;\n\t\tfor (let i = 0; i < segments; i++) {\n\t\t\tconst theta = (i / segments) * Math.PI * 2;\n\t\t\tconst c = Math.cos(theta) * item.r;\n\t\t\tconst s = Math.sin(theta) * item.r;\n\n\t\t\tlet x = 0;\n\t\t\tlet y = 0;",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+    "kind": "variable",
+    "name": "s",
+    "start_line": 132,
+    "end_line": 132,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

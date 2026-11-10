@@ -1,0 +1,13 @@
+{
+  "id": "49d338755c78e0c991edd5ea9a361c196bb8d71e05fff5edf514a57119a04044",
+  "text": "\t\t\t\t\t\tconst mrz = mx * sinO + mz * cosO;\n\t\t\t\t\t\tconst mry = my * cosPhi - mrz * sinPhi;\n\t\t\t\t\t\tconst md = Math.max(0.2, baseDist + (my * sinPhi + mrz * cosPhi) * 0.45);\n\t\t\t\t\t\tconst mpx = cx + (mrx / md) * scale * 5.6;\n\t\t\t\t\t\tconst mpy = cy - (mry / md) * scale * 5.6;\n\n\t\t\t\t\t\t// Linha radial\n\t\t\t\t\t\tctx.strokeStyle = \"cyan\";",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+    "kind": "variable",
+    "name": "mpy",
+    "start_line": 1183,
+    "end_line": 1183,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

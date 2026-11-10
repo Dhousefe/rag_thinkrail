@@ -1,0 +1,13 @@
+{
+  "id": "231418442fac73ceb1da548e1e3ff7adfeb2af5bed8899b5446c29e8f9cdfeb1",
+  "text": "\tconst shortHash = fingerprintHash.substring(0, 10).toUpperCase();\n\n\tconst totalRelations = edges.length;\n\tconst maxPossibleEdges = totalNodes > 1 ? (totalNodes * (totalNodes - 1)) / 2 : 1;\n\tconst density = Math.min(1.0, totalRelations / maxPossibleEdges);\n\n\tlet integrityStatus: \"VERIFIED_AUTHENTIC\" | \"HIGH_DENSITY\" | \"BALANCED\" = \"VERIFIED_AUTHENTIC\";\n\tif (density > 0.4) integrityStatus = \"HIGH_DENSITY\";",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+    "kind": "variable",
+    "name": "density",
+    "start_line": 688,
+    "end_line": 688,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "id": "b089f155860afa5d6b0baeb975cd40b436099152d52208822a9ee67bae9b8e9e",
+  "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "kind": "variable",
+  "name": "mAngle",
+  "start_line": 1171,
+  "end_line": 1171,
+  "content": "\t\t\t\tif (node.methods && node.methods.length > 0) {\n\t\t\t\t\tconst totalM = node.methods.length;\n\t\t\t\t\tfor (let mIdx = 0; mIdx < totalM; mIdx++) {\n\t\t\t\t\t\tconst m = node.methods[mIdx]!;\n\t\t\t\t\t\tconst mAngle = m.orbitAngle ?? (mIdx / totalM) * Math.PI * 2;\n\t\t\t\t\t\tconst mRadius = m.orbitRadius ?? 0.16;\n\n\t\t\t\t\t\tconst mx = vx + Math.cos(mAngle) * mRadius;",
+  "token_estimate": 86,
+  "created_at": 1794331101180
+}

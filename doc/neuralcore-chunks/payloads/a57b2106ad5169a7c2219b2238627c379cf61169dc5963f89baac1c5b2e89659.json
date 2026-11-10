@@ -1,0 +1,13 @@
+{
+  "id": "a57b2106ad5169a7c2219b2238627c379cf61169dc5963f89baac1c5b2e89659",
+  "text": "\n\t// 30 Arestas que conectam vértices com distância pentagonal áurea mínima\n\tconst edgeIndices: number[] = [];\n\tconst minDist = (2.0 / phi) * (radius / Math.sqrt(3));\n\tconst threshold = minDist * 1.15;\n\n\tfor (let i = 0; i < rawVertices.length; i++) {\n\t\tconst vxi = vertexFloats[i * 7] ?? 0;",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+    "kind": "variable",
+    "name": "threshold",
+    "start_line": 367,
+    "end_line": 367,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

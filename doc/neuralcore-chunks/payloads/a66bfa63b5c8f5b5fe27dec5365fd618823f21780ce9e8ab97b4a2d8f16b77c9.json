@@ -1,0 +1,13 @@
+{
+  "id": "a66bfa63b5c8f5b5fe27dec5365fd618823f21780ce9e8ab97b4a2d8f16b77c9",
+  "text": "\tselectedNodeIndex: number | null = null,\n\tshowPcbLines: boolean = true,\n\tanimTime: number = 0,\n): GeometryMeshData {\n\tconst vertexFloats: number[] = [];\n\tconst edgeIndices: number[] = [];\n\tlet vOffset = 0;\n",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+    "kind": "variable",
+    "name": "vertexFloats",
+    "start_line": 833,
+    "end_line": 833,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

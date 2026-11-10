@@ -1,0 +1,12 @@
+{
+  "id": "14e01f419f69716e136b4d11cc5e6f1c91a9baa7c62698a7eca54fdc74a9412f",
+  "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "kind": "function",
+  "name": "createTorusWireframe",
+  "start_line": 273,
+  "end_line": 321,
+  "content": "\t};\n}\n\n// 6. Gerador do Torus de Vórtice Harmônico (Torus Wireframe)\nexport function createTorusWireframe(\n\tmajorRadius = 1.4,\n\tminorRadius = 0.5,\n\tradarRings = 24,\n\ttubeSegments = 16,\n): GeometryMeshData {\n\tconst vertexFloats: number[] = [];\n\tconst edgeIndices: number[] = [];\n\tlet vOffset = 0;\n\n\tfor (let i = 0; i < radarRings; i++) {\n\t\tconst u = (i / radarRings) * Math.PI * 2;\n\t\tconst cu = Math.cos(u);\n\t\tconst su = Math.sin(u);\n\n\t\tfor (let j = 0; j < tubeSegments; j++) {\n\t\t\tconst v = (j / tubeSegments) * Math.PI * 2;\n\t\t\tconst cv = Math.cos(v);\n\t\t\tconst sv = Math.sin(v);\n\n\t\t\tconst x = (majorRadius + minorRadius * cv) * cu;\n\t\t\tconst y = minorRadius * sv;\n\t\t\tconst z = (majorRadius + minorRadius * cv) * su;\n\n\t\t\t// Gradiente espectral de vórtice (Ciano a Violeta)\n\t\t\tconst t = i / radarRings;\n\t\t\tconst r = 0.2 + 0.6 * Math.sin(t * Math.PI);\n\t\t\tconst g = 0.8 * Math.cos(t * Math.PI * 0.5);\n\t\t\tconst b = 1.0;\n\t\t\tvertexFloats.push(x, y, z, r, g, b, 0.75);\n\n\t\t\t// Aresta longitudinal (ao redor do tubo)\n\t\t\tconst nextLong = i * tubeSegments + ((j + 1) % tubeSegments);\n\t\t\tedgeIndices.push(vOffset, nextLong);\n\n\t\t\t// Aresta circular (ao redor do anel principal)\n\t\t\tconst nextRing = ((i + 1) % radarRings) * tubeSegments + j;\n\t\t\tedgeIndices.push(vOffset, nextRing);\n\n\t\t\tvOffset++;\n\t\t}\n\t}\n\n\treturn {\n\t\tvertices: new Float32Array(vertexFloats),\n\t\tindices: new Uint16Array(edgeIndices),\n\t\tcount: edgeIndices.length,\n\t};\n}\n\n// 7. Gerador do Dodecaedro Pentagonal Sagrado\nexport function createDodecahedronWireframe(radius = 1.15): GeometryMeshData {",
+  "token_estimate": 386,
+  "created_at": 1794331100995
+}

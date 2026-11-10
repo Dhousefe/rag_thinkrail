@@ -326,7 +326,8 @@ export function useWorkspaceChatCatalogReconciliation(
 				const autoOpenAlreadyAttempted = !claimAutoOpenAttempt(workspaceId, connectionGeneration);
 				const toOpen: typeof summaries = [];
 				const toHistory: typeof summaries = [];
-				for (const summary of [...summaries].sort((a, b) => b.updatedAt - a.updatedAt)) {
+				const sortedByRecency = [...summaries].sort((a, b) => b.updatedAt - a.updatedAt);
+				for (const summary of sortedByRecency) {
 					if (summary.sessionId === handledRouteSessionId || placed.has(summary.sessionId))
 						continue;
 					if (
@@ -340,7 +341,21 @@ export function useWorkspaceChatCatalogReconciliation(
 						toHistory.push(summary);
 					}
 				}
+				const newestSummary = sortedByRecency[0];
+				const newestIsPlaced = newestSummary && placed.has(newestSummary.sessionId);
 				if (
+					handledRouteSessionId === null &&
+					!autoOpenAlreadyAttempted &&
+					toOpen.length === 0 &&
+					newestSummary &&
+					!newestIsPlaced
+				) {
+					const newestIdx = toHistory.findIndex((s) => s.sessionId === newestSummary.sessionId);
+					if (newestIdx !== -1) {
+						const [removed] = toHistory.splice(newestIdx, 1);
+						if (removed) toOpen.push(removed);
+					}
+				} else if (
 					handledRouteSessionId === null &&
 					!autoOpenAlreadyAttempted &&
 					placed.size === 0 &&

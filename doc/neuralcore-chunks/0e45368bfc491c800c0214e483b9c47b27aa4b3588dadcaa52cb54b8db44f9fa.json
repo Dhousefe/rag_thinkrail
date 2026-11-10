@@ -1,0 +1,12 @@
+{
+  "id": "0e45368bfc491c800c0214e483b9c47b27aa4b3588dadcaa52cb54b8db44f9fa",
+  "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "kind": "method",
+  "name": "NeuralCoreEngine.setShape",
+  "start_line": 134,
+  "end_line": 140,
+  "content": "\t\t\t\treturn createTesseractWireframe(1.2, 0);\n\t\t}\n\t}\n\n\tpublic setShape(shape: GeometryShapeType) {\n\t\tthis.activeShape = shape;\n\t\tthis.primaryMesh = this.generatePrimaryMesh(shape, this.angleRotation);\n\t\tif (this.device && this.primaryVBuffer && this.primaryIBuffer) {\n\t\t\tthis.uploadPrimaryMesh();\n\t\t}\n\t}\n\n\tpublic toggleVectorConstellation(show?: boolean) {\n\t\tthis.showVectorConstellation = show !== undefined ? show : !this.showVectorConstellation;",
+  "token_estimate": 112,
+  "created_at": 1794331101094
+}

@@ -1,0 +1,13 @@
+{
+  "id": "498112a3872c4ca5cd5347a0654d2dff58faba2d8f0a147df7f3323b76ccc456",
+  "text": "\t\tselectedNormRel\n\t\t\t.split(\"/\")\n\t\t\t.pop()\n\t\t\t?.replace(/\\.[^.]+$/, \"\") || \"\";\n\tconst selectedQName = (selectedNode.qualifiedName || selectedBaseName).toLowerCase();\n\n\t// 1. Mapeamento via arestas k-NN / dependências existentes\n\tfor (const edge of edges) {",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+    "kind": "variable",
+    "name": "selectedQName",
+    "start_line": 745,
+    "end_line": 745,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

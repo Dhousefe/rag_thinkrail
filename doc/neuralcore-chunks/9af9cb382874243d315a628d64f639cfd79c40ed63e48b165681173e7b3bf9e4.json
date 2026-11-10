@@ -1,0 +1,12 @@
+{
+  "id": "9af9cb382874243d315a628d64f639cfd79c40ed63e48b165681173e7b3bf9e4",
+  "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "kind": "variable",
+  "name": "adapter",
+  "start_line": 343,
+  "end_line": 343,
+  "content": "\n\tasync init(): Promise<boolean> {\n\t\tif (\"gpu\" in navigator) {\n\t\t\ttry {\n\t\t\t\tconst adapter = await (navigator as any).gpu.requestAdapter();\n\t\t\t\tif (adapter) {\n\t\t\t\t\tthis.device = await adapter.requestDevice();\n\t\t\t\t\tthis.context = this.canvas.getContext(\"webgpu\") as unknown as GPUCanvasContext;",
+  "token_estimate": 73,
+  "created_at": 1794331101111
+}

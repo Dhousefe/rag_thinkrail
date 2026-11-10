@@ -1,0 +1,12 @@
+{
+  "id": "b628ea6805e1d1ba39410bce06093e217563745b0e339924ec71e3540c7cee68",
+  "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "kind": "variable",
+  "name": "selNode",
+  "start_line": 1269,
+  "end_line": 1269,
+  "content": "\t// 3. Linhas de Relacionamento de Dependências com Pulso Animado e Fluxo Direcional (Anti-Cruzamento)\n\t// Quando um polígono é selecionado, conecta todas as classes/arquivos relacionados (chamadas, imports, interfaces).\n\t// Utiliza canais discretos de altura Y e desvios ortogonais para que NUNCA se cruzem no espaço 3D.\n\tif (hasActiveSelection && selectedNodeIndex !== null) {\n\t\tconst selNode = nodes[selectedNodeIndex];\n\t\tif (selNode) {\n\t\t\tconst [sx, sy, sz] = selNode.position;\n\t\t\tlet neighborOrder = 0;",
+  "token_estimate": 127,
+  "created_at": 1794331101066
+}

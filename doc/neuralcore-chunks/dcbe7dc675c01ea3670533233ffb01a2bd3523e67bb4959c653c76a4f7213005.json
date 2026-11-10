@@ -1,0 +1,12 @@
+{
+  "id": "dcbe7dc675c01ea3670533233ffb01a2bd3523e67bb4959c653c76a4f7213005",
+  "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "kind": "variable",
+  "name": "eyeZ",
+  "start_line": 638,
+  "end_line": 638,
+  "content": "\t\tconst tz0 = target ? target[2] : 0;\n\n\t\tconst eyeX = tx0 + distance * Math.cos(phi) * Math.sin(theta);\n\t\tconst eyeY = ty0 + distance * Math.sin(phi);\n\t\tconst eyeZ = tz0 + distance * Math.cos(phi) * Math.cos(theta);\n\n\t\t// Vetor Z (forward/depth da câmera apontando para trás da direção de visão - Right Handed)\n\t\tconst dirX = eyeX - tx0;",
+  "token_estimate": 85,
+  "created_at": 1794331101121
+}

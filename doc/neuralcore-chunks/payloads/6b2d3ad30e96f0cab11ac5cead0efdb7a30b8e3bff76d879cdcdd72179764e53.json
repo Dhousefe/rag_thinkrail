@@ -1,0 +1,13 @@
+{
+  "id": "6b2d3ad30e96f0cab11ac5cead0efdb7a30b8e3bff76d879cdcdd72179764e53",
+  "text": "}\n\ntype SymbolCategoryFilter = \"all\" | \"class\" | \"function\" | \"variable\" | \"type\";\n\nfunction getSymbolKindBadge(kind?: string): {\n\tlabel: string;\n\tcolor: string;\n\ticon: RemixiconComponentType;\n} {\n\tconst k = (kind || \"\").toLowerCase();\n\tif (k.includes(\"class\") || k.includes(\"struct\") || k.includes(\"impl\")) {\n\t\treturn { label: \"class\", color: \"bg-primary text-text-on-primary\", icon: RiNodeTree };\n\t}\n\tif (k.includes(\"func\") || k.includes(\"method\") || k.includes(\"handler\")) {\n\t\treturn {\n\t\t\tlabel: \"fn\",\n\t\t\tcolor: \"bg-feedback-info text-container-workspace-bg\",\n\t\t\ticon: RiFunctionLine,\n\t\t};\n\t}\n\tif (k.includes(\"const\") || k.includes(\"var\") || k.includes(\"let\") || k.includes(\"field\")) {\n\t\treturn {\n\t\t\tlabel: \"var\",\n\t\t\tcolor: \"bg-feedback-warning text-container-workspace-bg\",\n\t\t\ticon: RiInputField,\n\t\t};\n\t}\n\tif (k.includes(\"type\") || k.includes(\"interface\") || k.includes(\"enum\")) {\n\t\treturn {\n\t\t\tlabel: \"type\",\n\t\t\tcolor: \"bg-feedback-success text-container-workspace-bg\",\n\t\t\ticon: RiCodeSSlashLine,\n\t\t};\n\t}\n\treturn { label: \"file\", color: \"bg-control-bg text-text-muted\", icon: RiFileCodeLine };\n}\n\nexport function NeuralCoreSearchBox({\n\tquery,",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreSearchBox.tsx",
+    "kind": "function",
+    "name": "getSymbolKindBadge",
+    "start_line": 30,
+    "end_line": 61,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

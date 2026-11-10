@@ -1,0 +1,12 @@
+{
+  "id": "d330607ecd7151ab0d6f1b4c6b1ac1865127c7bd51e5d741938cbafa5ed12c35",
+  "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "kind": "variable",
+  "name": "s",
+  "start_line": 856,
+  "end_line": 856,
+  "content": "\t\tconst isMatched = Boolean(n.isMatchedBySearch);\n\t\tconst isSearchingTarget = Boolean(searchingAnim && searchingAnim.nodeId === n.id);\n\n\t\t// Tamanho base reduzido e harmonioso para visual limpo sem sobreposição\n\t\tlet s = 0.024;\n\t\tif (isSelected) {\n\t\t\t// Polígono Selecionado: aumento nítido (2.4x)\n\t\t\ts *= 2.4;",
+  "token_estimate": 78,
+  "created_at": 1794331101038
+}

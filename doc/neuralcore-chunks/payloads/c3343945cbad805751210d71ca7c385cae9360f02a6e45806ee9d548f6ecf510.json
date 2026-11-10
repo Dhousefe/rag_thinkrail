@@ -1,0 +1,13 @@
+{
+  "id": "c3343945cbad805751210d71ca7c385cae9360f02a6e45806ee9d548f6ecf510",
+  "text": "\tconst vertexFloats: number[] = [];\n\tconst edgeIndices: number[] = [];\n\n\t// Tetraedro 1 (Vértices dourados/âmbar com energia ascendente)\n\tconst t1: [number, number, number][] = [\n\t\t[1, 1, 1],\n\t\t[1, -1, -1],\n\t\t[-1, 1, -1],\n\t\t[-1, -1, 1],\n\t];\n\tfor (const [vx, vy, vz] of t1) {\n\t\tvertexFloats.push(\n\t\t\tvx * scale * 0.8,",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+    "kind": "variable",
+    "name": "t1",
+    "start_line": 215,
+    "end_line": 220,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

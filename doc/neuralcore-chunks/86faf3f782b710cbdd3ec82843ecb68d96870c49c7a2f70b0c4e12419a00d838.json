@@ -1,0 +1,12 @@
+{
+  "id": "86faf3f782b710cbdd3ec82843ecb68d96870c49c7a2f70b0c4e12419a00d838",
+  "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "kind": "variable",
+  "name": "d",
+  "start_line": 784,
+  "end_line": 784,
+  "content": "\t\t\tconst py = cy - (ry / depth) * scale * 5.6;\n\n\t\t\tconst dx = screenX - px;\n\t\t\tconst dy = screenY - py;\n\t\t\tconst d = Math.sqrt(dx * dx + dy * dy);\n\n\t\t\t// Raio aparente do polígono 3D projetado na tela:\n\t\t\t// Um nó comum tem tamanho s=0.024 a 0.057. Em tela isso corresponde a ~14-30px.",
+  "token_estimate": 72,
+  "created_at": 1794331101140
+}

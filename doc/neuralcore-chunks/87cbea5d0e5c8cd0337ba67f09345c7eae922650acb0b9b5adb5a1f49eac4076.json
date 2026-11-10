@@ -1,0 +1,12 @@
+{
+  "id": "87cbea5d0e5c8cd0337ba67f09345c7eae922650acb0b9b5adb5a1f49eac4076",
+  "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "kind": "variable",
+  "name": "tx",
+  "start_line": 675,
+  "end_line": 675,
+  "content": "\t\tconst y1 = z2 * x0 - z0 * x2;\n\t\tconst y2 = z0 * x1 - z1 * x0;\n\n\t\t// Componentes de translação da visão V: -dot(axis, eye)\n\t\tconst tx = -(x0 * eyeX + x1 * eyeY + x2 * eyeZ);\n\t\tconst ty = -(y0 * eyeX + y1 * eyeY + y2 * eyeZ);\n\t\tconst tz = -(z0 * eyeX + z1 * eyeY + z2 * eyeZ);\n",
+  "token_estimate": 70,
+  "created_at": 1794331101127
+}

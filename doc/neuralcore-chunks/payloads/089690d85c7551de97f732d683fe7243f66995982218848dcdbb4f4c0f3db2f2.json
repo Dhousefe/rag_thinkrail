@@ -1,0 +1,13 @@
+{
+  "id": "089690d85c7551de97f732d683fe7243f66995982218848dcdbb4f4c0f3db2f2",
+  "text": "\t\t\tconst s = Math.sin(theta) * item.r;\n\n\t\t\tlet x = 0;\n\t\t\tlet y = 0;\n\t\t\tlet z = 0;\n\t\t\tif (item.axis === \"xy\") {\n\t\t\t\tx = c;\n\t\t\t\ty = s;",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+    "kind": "variable",
+    "name": "z",
+    "start_line": 136,
+    "end_line": 136,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

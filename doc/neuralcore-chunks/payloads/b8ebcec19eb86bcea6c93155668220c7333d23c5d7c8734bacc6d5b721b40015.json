@@ -1,0 +1,13 @@
+{
+  "id": "b8ebcec19eb86bcea6c93155668220c7333d23c5d7c8734bacc6d5b721b40015",
+  "text": "\t\t\t}\n\t\t\tconst [vx0, vy0, vz0] = node.position;\n\t\t\tconst vx = vx0 - tx0;\n\t\t\tconst vy = vy0 - ty0;\n\t\t\tconst vz = vz0 - tz0;\n\n\t\t\tconst rx = vx * cosO - vz * sinO;\n\t\t\tconst rz = vx * sinO + vz * cosO;",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+    "kind": "variable",
+    "name": "vz",
+    "start_line": 873,
+    "end_line": 873,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "id": "7ac2600f48777bae4989bc794314ac27a7db50eabde5b2e716bd7089b87da417",
+  "file": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreSearchBox.tsx",
+  "path": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreSearchBox.tsx",
+  "kind": "variable",
+  "name": "handleKeyDown",
+  "start_line": 154,
+  "end_line": 190,
+  "content": "\t\tsetSelectedIndex(0);\n\t}, [query, categoryFilter, searchDropdownTab]);\n\n\t// Navegação por teclado: ArrowUp, ArrowDown, Enter e Escape\n\tconst handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {\n\t\tif (!isSearchOpen) {\n\t\t\tif (e.key === \"ArrowDown\" || e.key === \"Enter\") {\n\t\t\t\tsetIsSearchOpen(true);\n\t\t\t}\n\t\t\treturn;\n\t\t}\n\n\t\tconst totalItems = searchDropdownTab === \"nodes\" ? filteredNodes.length : filteredChunks.length;\n\t\tif (totalItems === 0) return;\n\n\t\tif (e.key === \"ArrowDown\") {\n\t\t\te.preventDefault();\n\t\t\tsetSelectedIndex((prev) => (prev + 1) % totalItems);\n\t\t} else if (e.key === \"ArrowUp\") {\n\t\t\te.preventDefault();\n\t\t\tsetSelectedIndex((prev) => (prev - 1 + totalItems) % totalItems);\n\t\t} else if (e.key === \"Enter\") {\n\t\t\te.preventDefault();\n\t\t\tif (searchDropdownTab === \"nodes\") {\n\t\t\t\tconst item = filteredNodes[selectedIndex];\n\t\t\t\tif (item) {\n\t\t\t\t\tonSelectNode(item);\n\t\t\t\t\tsetIsSearchOpen(false);\n\t\t\t\t}\n\t\t\t} else {\n\t\t\t\tconst chunk = filteredChunks[selectedIndex];\n\t\t\t\tif (chunk) {\n\t\t\t\t\tonSelectChunk(chunk);\n\t\t\t\t\tsetIsSearchOpen(false);\n\t\t\t\t}\n\t\t\t}\n\t\t} else if (e.key === \"Escape\") {\n\t\t\te.preventDefault();\n\t\t\tsetIsSearchOpen(false);\n\t\t}\n\t};\n\n\treturn (\n\t\t<div ref={containerRef} className=\"relative flex-1 min-w-[260px] max-w-[460px]\">",
+  "token_estimate": 313,
+  "created_at": 1794331100933
+}

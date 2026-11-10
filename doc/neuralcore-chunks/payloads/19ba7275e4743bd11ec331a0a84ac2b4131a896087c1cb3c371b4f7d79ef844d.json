@@ -1,0 +1,13 @@
+{
+  "id": "19ba7275e4743bd11ec331a0a84ac2b4131a896087c1cb3c371b4f7d79ef844d",
+  "text": "\t\texpect(result?.id).toBe(\"node-2\");\n\t});\n\n\tit(\"returns null for non-matching files\", () => {\n\t\tconst result = resolvePivotNode(\"nonexistent/file.ts\", mockNodes);\n\t\texpect(result).toBeNull();\n\t});\n});",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\resolvePivotNode.test.ts",
+    "kind": "variable",
+    "name": "result",
+    "start_line": 59,
+    "end_line": 59,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

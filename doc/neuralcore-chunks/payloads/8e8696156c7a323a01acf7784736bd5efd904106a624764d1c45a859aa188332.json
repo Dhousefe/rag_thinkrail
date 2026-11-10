@@ -1,0 +1,13 @@
+{
+  "id": "8e8696156c7a323a01acf7784736bd5efd904106a624764d1c45a859aa188332",
+  "text": "",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\components\\index.ts",
+    "kind": "file",
+    "name": "index.ts",
+    "start_line": 1,
+    "end_line": 5,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

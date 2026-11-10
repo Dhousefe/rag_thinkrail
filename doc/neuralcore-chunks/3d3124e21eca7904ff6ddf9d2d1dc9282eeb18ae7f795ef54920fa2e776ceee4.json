@@ -1,0 +1,12 @@
+{
+  "id": "3d3124e21eca7904ff6ddf9d2d1dc9282eeb18ae7f795ef54920fa2e776ceee4",
+  "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "kind": "variable",
+  "name": "dx",
+  "start_line": 782,
+  "end_line": 782,
+  "content": "\n\t\t\tconst px = cx + (rx / depth) * scale * 5.6;\n\t\t\tconst py = cy - (ry / depth) * scale * 5.6;\n\n\t\t\tconst dx = screenX - px;\n\t\t\tconst dy = screenY - py;\n\t\t\tconst d = Math.sqrt(dx * dx + dy * dy);\n",
+  "token_estimate": 49,
+  "created_at": 1794331101139
+}

@@ -1,0 +1,13 @@
+{
+  "id": "5e5960931aebdbdcae03daa585ed9119716607baf11e81292c4609b800875614",
+  "text": "",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+    "kind": "file",
+    "name": "neuralEngine.ts",
+    "start_line": 1,
+    "end_line": 1212,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

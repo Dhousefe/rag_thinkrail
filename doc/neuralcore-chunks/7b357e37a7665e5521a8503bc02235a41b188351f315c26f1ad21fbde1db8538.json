@@ -1,0 +1,12 @@
+{
+  "id": "7b357e37a7665e5521a8503bc02235a41b188351f315c26f1ad21fbde1db8538",
+  "file": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreSearchBox.tsx",
+  "path": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreSearchBox.tsx",
+  "kind": "variable",
+  "name": "filteredNodes",
+  "start_line": 95,
+  "end_line": 132,
+  "content": "\t\t};\n\t}, [isSearchOpen]);\n\n\t// Filtra itens com base na faceta selecionada\n\tconst filteredNodes = useMemo(() => {\n\t\tif (categoryFilter === \"all\") return searchMatches;\n\t\treturn searchMatches.filter((n) => {\n\t\t\tconst k = (n.chunkKind || \"\").toLowerCase();\n\t\t\tif (categoryFilter === \"class\") {\n\t\t\t\treturn (\n\t\t\t\t\tk.includes(\"class\") || k.includes(\"struct\") || k.includes(\"impl\") || k.includes(\"model\")\n\t\t\t\t);\n\t\t\t}\n\t\t\tif (categoryFilter === \"function\") {\n\t\t\t\treturn (\n\t\t\t\t\tk.includes(\"func\") ||\n\t\t\t\t\tk.includes(\"method\") ||\n\t\t\t\t\tk.includes(\"handler\") ||\n\t\t\t\t\tk.includes(\"action\") ||\n\t\t\t\t\t(n.methods && n.methods.length > 0)\n\t\t\t\t);\n\t\t\t}\n\t\t\tif (categoryFilter === \"variable\") {\n\t\t\t\treturn (\n\t\t\t\t\tk.includes(\"const\") ||\n\t\t\t\t\tk.includes(\"var\") ||\n\t\t\t\t\tk.includes(\"field\") ||\n\t\t\t\t\tk.includes(\"prop\") ||\n\t\t\t\t\tk.includes(\"state\")\n\t\t\t\t);\n\t\t\t}\n\t\t\tif (categoryFilter === \"type\") {\n\t\t\t\treturn (\n\t\t\t\t\tk.includes(\"type\") ||\n\t\t\t\t\tk.includes(\"interface\") ||\n\t\t\t\t\tk.includes(\"enum\") ||\n\t\t\t\t\tk.includes(\"schema\")\n\t\t\t\t);\n\t\t\t}\n\t\t\treturn true;\n\t\t});\n\t}, [searchMatches, categoryFilter]);\n\n\tconst filteredChunks = useMemo(() => {\n\t\tif (categoryFilter === \"all\") return searchChunks;",
+  "token_estimate": 290,
+  "created_at": 1794331100932
+}

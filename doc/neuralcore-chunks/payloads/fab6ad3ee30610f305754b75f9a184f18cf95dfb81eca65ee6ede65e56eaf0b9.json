@@ -1,0 +1,13 @@
+{
+  "id": "fab6ad3ee30610f305754b75f9a184f18cf95dfb81eca65ee6ede65e56eaf0b9",
+  "text": "\t\t// 3. Aplicação do MAGNETISMO DE MESMA POLARIDADE (Repulsão Coulombiana Suave):\n\t\t// Garante que o rótulo NUNCA fique sobreposto em cima de outro polígono vizinho.\n\t\t// Quando um polígono vizinho estiver muito próximo da área do rótulo, repele suavemente\n\t\t// o rótulo para cima e diagonal livre.\n\t\tconst minSafeLabelDist = 32;\n\n\t\tfor (const item of selectedCandidates) {\n\t\t\tfor (const otherProj of allProjectedNodes) {",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+    "kind": "variable",
+    "name": "minSafeLabelDist",
+    "start_line": 999,
+    "end_line": 999,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "id": "1798df4a1dfa0e8a710b16cccb4f2c4f777d5ddb87acf9797b8d122b0372d625",
+  "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "kind": "variable",
+  "name": "pts",
+  "start_line": 181,
+  "end_line": 188,
+  "content": "\n\t\t// Pequeno octaedro satélite\n\t\tconst s = 0.12;\n\t\tconst base = vOffset;\n\t\tconst pts: [number, number, number][] = [\n\t\t\t[cx, cy + s, cz],\n\t\t\t[cx, cy - s, cz],\n\t\t\t[cx + s, cy, cz],\n\t\t\t[cx - s, cy, cz],\n\t\t\t[cx, cy, cz + s],\n\t\t\t[cx, cy, cz - s],\n\t\t];\n\n\t\tfor (const [px, py, pz] of pts) {\n\t\t\tvertexFloats.push(px, py, pz, 0.0, 1.0, 0.6, 0.9);",
+  "token_estimate": 85,
+  "created_at": 1794331100991
+}

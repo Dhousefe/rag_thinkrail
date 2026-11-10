@@ -1,0 +1,12 @@
+{
+  "id": "a2f5db28c0400d925e4aa10203d57d6efb10efbf9977dd4081609e06abfc6a1d",
+  "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "kind": "variable",
+  "name": "baseMod",
+  "start_line": 894,
+  "end_line": 894,
+  "content": "\t\t\t\tcol = [0.4, 0.9, 1.0, 0.9]; // Azul safira para conexões k-NN próximas\n\t\t\t}\n\t\t} else if (isUnrelated) {\n\t\t\t// Outros polígonos não relacionados mantêm definição geométrica visível sem poluir\n\t\t\tconst baseMod = resolveFileTypeColor(n.fileExtension || n.relPath || n.path, n.module);\n\t\t\tcol = [baseMod[0] * 0.65, baseMod[1] * 0.65, baseMod[2] * 0.65, 0.22];\n\t\t} else if (isSearchingTarget && searchingAnim) {\n\t\t\t// Transição de cor gradativa: do ciano vibrante ao magenta e ouro esmeralda vivo",
+  "token_estimate": 124,
+  "created_at": 1794331101039
+}

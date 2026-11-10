@@ -1,0 +1,13 @@
+{
+  "id": "1b005a7acf6b8e4226b6be8a667ab435d2c9c2d1f570f17579c4400f9a078945",
+  "text": "\t\t});\n\t});\n\n\tdescribe(\"Caso de Uso 3: Auditor Anti-Plágio de Impressão Digital Semântica\", () => {\n\t\tconst mockNodes = [\n\t\t\t{\n\t\t\t\tid: \"apps/web/src/panels/NeuralCorePanel.tsx\",\n\t\t\t\tpath: \"apps/web/src/panels/NeuralCorePanel.tsx\",\n\t\t\t\tmodule: \"apps/web\",\n\t\t\t\tfileExtension: \"tsx\",\n\t\t\t\tposition: [0.1, 0.2, 0.3] as [number, number, number],\n\t\t\t\tmethods: [{ id: \"m1\", name: \"render\" }, { id: \"m2\", name: \"handleFocus\" }],\n\t\t\t},\n\t\t\t{\n\t\t\t\tid: \"apps/web/src/panels/neural-core/neuralEngine.ts\",\n\t\t\t\tpath: \"apps/web/src/panels/neural-core/neuralEngine.ts\",\n\t\t\t\tmodule: \"apps/web\",\n\t\t\t\tfileExtension: \"ts\",\n\t\t\t\tposition: [0.4, 0.5, 0.6] as [number, number, number],\n\t\t\t\tmethods: [{ id: \"m3\", name: \"init\" }, { id: \"m4\", name: \"renderWebGpu\" }],\n\t\t\t},\n\t\t\t{\n\t\t\t\tid: \"packages/contracts/src/index.ts\",\n\t\t\t\tpath: \"packages/contracts/src/index.ts\",\n\t\t\t\tmodule: \"contracts\",\n\t\t\t\tfileExtension: \"ts\",\n\t\t\t\tposition: [0.8, 0.2, -0.4] as [number, number, number],\n\t\t\t},\n\t\t];\n\n\t\tconst mockEdges = [\n\t\t\t{",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\semanticFingerprint.test.ts",
+    "kind": "variable",
+    "name": "mockNodes",
+    "start_line": 76,
+    "end_line": 100,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

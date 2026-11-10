@@ -1,0 +1,12 @@
+{
+  "id": "118bc67a45a3c44de7ace8c910969b8a598d207e50544330bc95248ece882a3e",
+  "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "kind": "variable",
+  "name": "tetEdges",
+  "start_line": 1031,
+  "end_line": 1031,
+  "content": "\t\t\tfor (const [ptX, ptY, ptZ] of [...t1, ...t2]) {\n\t\t\t\tvertexFloats.push(ptX, ptY, ptZ, colR, colG, colB, colA);\n\t\t\t\tvOffset++;\n\t\t\t}\n\t\t\tconst tetEdges = [0, 1, 0, 2, 0, 3, 1, 2, 2, 3, 3, 1];\n\t\t\tfor (const e of tetEdges) {\n\t\t\t\tedgeIndices.push(base + e);\n\t\t\t\tedgeIndices.push(base + 4 + e);",
+  "token_estimate": 73,
+  "created_at": 1794331101051
+}

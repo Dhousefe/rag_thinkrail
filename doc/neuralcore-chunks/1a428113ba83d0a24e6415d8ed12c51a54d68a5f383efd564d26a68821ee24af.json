@@ -1,0 +1,12 @@
+{
+  "id": "1a428113ba83d0a24e6415d8ed12c51a54d68a5f383efd564d26a68821ee24af",
+  "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "kind": "variable",
+  "name": "scale",
+  "start_line": 750,
+  "end_line": 750,
+  "content": "\t\tconst w = this.canvas.clientWidth || this.canvas.width;\n\t\tconst h = this.canvas.clientHeight || this.canvas.height;\n\t\tconst cx = w / 2;\n\t\tconst cy = h / 2;\n\t\tconst scale = Math.min(w, h) * 0.22;\n\n\t\tconst cosO = Math.cos(this.cameraOrbit.theta);\n\t\tconst sinO = Math.sin(this.cameraOrbit.theta);",
+  "token_estimate": 74,
+  "created_at": 1794331101134
+}

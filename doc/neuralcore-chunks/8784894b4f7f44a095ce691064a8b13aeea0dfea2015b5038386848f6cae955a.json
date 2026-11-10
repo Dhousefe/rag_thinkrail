@@ -1,0 +1,12 @@
+{
+  "id": "8784894b4f7f44a095ce691064a8b13aeea0dfea2015b5038386848f6cae955a",
+  "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "kind": "variable",
+  "name": "cdx",
+  "start_line": 936,
+  "end_line": 936,
+  "content": "\n\t\t\t// Checa se está dentro do raio seguro a partir do cursor\n\t\t\tlet isWithinCursorRadius = false;\n\t\t\tif (cursor) {\n\t\t\t\tconst cdx = proj.px - cursor.x;\n\t\t\t\tconst cdy = proj.py - cursor.y;\n\t\t\t\tconst distCursor = Math.sqrt(cdx * cdx + cdy * cdy);\n\t\t\t\tif (distCursor <= cursorRadiusPx) {",
+  "token_estimate": 71,
+  "created_at": 1794331101154
+}

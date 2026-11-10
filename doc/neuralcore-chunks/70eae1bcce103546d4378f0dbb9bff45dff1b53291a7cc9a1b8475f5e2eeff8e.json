@@ -1,0 +1,12 @@
+{
+  "id": "70eae1bcce103546d4378f0dbb9bff45dff1b53291a7cc9a1b8475f5e2eeff8e",
+  "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "kind": "variable",
+  "name": "targetSpeed",
+  "start_line": 489,
+  "end_line": 489,
+  "content": "\t\t\t\tthis.isRagActive ||\n\t\t\t\tthis.telemetry.activity === \"tool_exec\" ||\n\t\t\t\tthis.telemetry.activity === \"thinking\";\n\n\t\t\tconst targetSpeed = isMotionActive ? 1.0 + this.telemetry.intensity * 2.5 : 0.0;\n\t\t\tthis.currentMotionSpeed += (targetSpeed - this.currentMotionSpeed) * Math.min(1.0, dt * 5.0);\n\n\t\t\t// Se houver polígono sendo buscado no MCP, anima gradativamente frame a frame por 2 segundos",
+  "token_estimate": 99,
+  "created_at": 1794331101114
+}

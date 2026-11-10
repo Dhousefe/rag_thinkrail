@@ -1,0 +1,12 @@
+{
+  "id": "b48da30a6929767563c34a4d7b46697fd3a50bfb6e0fb8a04fa5ee1df466e7ff",
+  "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "kind": "variable",
+  "name": "dt",
+  "start_line": 477,
+  "end_line": 477,
+  "content": "\t\tthis.frameCounter = 0;\n\n\t\tconst loop = (now: number) => {\n\t\t\tif (!this.isRunning) return;\n\t\t\tconst dt = Math.min((now - this.lastTime) / 1000, 0.05);\n\t\t\tthis.lastTime = now;\n\n\t\t\t// Executa interpolações antes do frame (ex: Fly-to da câmera)",
+  "token_estimate": 61,
+  "created_at": 1794331101113
+}

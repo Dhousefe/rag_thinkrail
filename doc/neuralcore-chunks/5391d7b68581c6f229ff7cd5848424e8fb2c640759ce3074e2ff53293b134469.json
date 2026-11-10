@@ -1,0 +1,12 @@
+{
+  "id": "5391d7b68581c6f229ff7cd5848424e8fb2c640759ce3074e2ff53293b134469",
+  "file": "apps\\web\\src\\panels\\neural-core\\useNeuralCoreState.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\useNeuralCoreState.ts",
+  "kind": "variable",
+  "name": "activeRagQuery",
+  "start_line": 20,
+  "end_line": 20,
+  "content": "\tconst state: NeuralTelemetryState = useMemo(() => {\n\t\tlet activity: NeuralActivityState = \"idle\";\n\t\tlet intensity = 0.0;\n\t\tlet activeToolName: string | undefined;\n\t\tlet activeRagQuery: string | undefined;\n\t\tlet activeRagToolName: string | undefined;\n\t\tlet isRagSearching = false;\n\t\tlet toolArgs: any;",
+  "token_estimate": 76,
+  "created_at": 1794331101211
+}

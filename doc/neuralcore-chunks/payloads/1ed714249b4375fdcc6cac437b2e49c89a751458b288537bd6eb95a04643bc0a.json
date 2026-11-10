@@ -1,0 +1,13 @@
+{
+  "id": "1ed714249b4375fdcc6cac437b2e49c89a751458b288537bd6eb95a04643bc0a",
+  "text": "\t\t\tthis.lastMouseY = e.clientY;\n\n\t\t\tif (this.dragMode === \"pan\") {\n\t\t\t\t// Pan 3D: translada o target ao longo dos vetores de câmera (Right e Up)\n\t\t\t\tconst panFactor = Math.max(0.001, this.distance * 0.0016);\n\n\t\t\t\t// Vetor Right da câmera\n\t\t\t\tconst rightX = Math.cos(this.theta);",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\cameraController.ts",
+    "kind": "variable",
+    "name": "panFactor",
+    "start_line": 69,
+    "end_line": 69,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

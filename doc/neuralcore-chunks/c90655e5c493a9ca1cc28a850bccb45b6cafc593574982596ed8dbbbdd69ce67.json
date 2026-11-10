@@ -1,0 +1,12 @@
+{
+  "id": "c90655e5c493a9ca1cc28a850bccb45b6cafc593574982596ed8dbbbdd69ce67",
+  "file": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreSearchBox.tsx",
+  "path": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreSearchBox.tsx",
+  "kind": "variable",
+  "name": "chunk",
+  "start_line": 180,
+  "end_line": 180,
+  "content": "\t\t\t\t\tonSelectNode(item);\n\t\t\t\t\tsetIsSearchOpen(false);\n\t\t\t\t}\n\t\t\t} else {\n\t\t\t\tconst chunk = filteredChunks[selectedIndex];\n\t\t\t\tif (chunk) {\n\t\t\t\t\tonSelectChunk(chunk);\n\t\t\t\t\tsetIsSearchOpen(false);",
+  "token_estimate": 49,
+  "created_at": 1794331100934
+}

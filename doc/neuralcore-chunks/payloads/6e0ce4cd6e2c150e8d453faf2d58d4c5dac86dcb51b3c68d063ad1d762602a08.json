@@ -1,0 +1,13 @@
+{
+  "id": "6e0ce4cd6e2c150e8d453faf2d58d4c5dac86dcb51b3c68d063ad1d762602a08",
+  "text": "\n// 7. Gerador do Dodecaedro Pentagonal Sagrado\nexport function createDodecahedronWireframe(radius = 1.15): GeometryMeshData {\n\tconst phi = (1.0 + Math.sqrt(5.0)) / 2.0;\n\tconst invPhi = 1.0 / phi;\n\n\tconst rawVertices: [number, number, number][] = [\n\t\t// 8 vértices do cubo unitário (+-1, +-1, +-1)",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+    "kind": "variable",
+    "name": "invPhi",
+    "start_line": 326,
+    "end_line": 326,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "id": "37c6a649db964bbae4d6c845c9451e4baf9a2dda92523ac7fd11d3614369841f",
+  "text": "\t\t}\n\n\t\tconst cosO = Math.cos(this.cameraOrbit.theta);\n\t\tconst sinO = Math.sin(this.cameraOrbit.theta);\n\t\tconst cosPhi = Math.cos(this.cameraOrbit.phi);\n\t\tconst sinPhi = Math.sin(this.cameraOrbit.phi);\n\n\t\t// 2. Anéis Cardânicos (apenas se habilitado)",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+    "kind": "variable",
+    "name": "cosPhi",
+    "start_line": 1099,
+    "end_line": 1099,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

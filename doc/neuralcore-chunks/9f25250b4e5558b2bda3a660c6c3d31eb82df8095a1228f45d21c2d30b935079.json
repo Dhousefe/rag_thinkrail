@@ -1,0 +1,12 @@
+{
+  "id": "9f25250b4e5558b2bda3a660c6c3d31eb82df8095a1228f45d21c2d30b935079",
+  "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "kind": "variable",
+  "name": "base",
+  "start_line": 180,
+  "end_line": 180,
+  "content": "\t\tconst cz = Math.sin(angle) * orbitRadius;\n\n\t\t// Pequeno octaedro satélite\n\t\tconst s = 0.12;\n\t\tconst base = vOffset;\n\t\tconst pts: [number, number, number][] = [\n\t\t\t[cx, cy + s, cz],\n\t\t\t[cx, cy - s, cz],",
+  "token_estimate": 51,
+  "created_at": 1794331100991
+}

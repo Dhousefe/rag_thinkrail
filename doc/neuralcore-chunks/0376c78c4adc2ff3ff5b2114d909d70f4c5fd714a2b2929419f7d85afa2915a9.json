@@ -1,0 +1,12 @@
+{
+  "id": "0376c78c4adc2ff3ff5b2114d909d70f4c5fd714a2b2929419f7d85afa2915a9",
+  "file": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreSearchBox.tsx",
+  "path": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreSearchBox.tsx",
+  "kind": "variable",
+  "name": "handleClickOutside",
+  "start_line": 83,
+  "end_line": 87,
+  "content": "\n\t// Fecha o dropdown se o usuário clicar fora do componente\n\tuseEffect(() => {\n\t\tif (!isSearchOpen) return;\n\t\tconst handleClickOutside = (e: MouseEvent | TouchEvent) => {\n\t\t\tif (containerRef.current && !containerRef.current.contains(e.target as Node)) {\n\t\t\t\tsetIsSearchOpen(false);\n\t\t\t}\n\t\t};\n\t\tdocument.addEventListener(\"mousedown\", handleClickOutside);\n\t\treturn () => {\n\t\t\tdocument.removeEventListener(\"mousedown\", handleClickOutside);",
+  "token_estimate": 110,
+  "created_at": 1794331100932
+}

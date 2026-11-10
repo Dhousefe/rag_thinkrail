@@ -99,7 +99,6 @@ export function useAutoPlanSummary(workspaceId: string, sessionId: string): void
 			if (event.sessionId !== sessionId) return;
 			if (shouldRefreshTodos(event.event)) void check();
 		});
-		void check();
 		return () => {
 			cancelled = true;
 			unsub();

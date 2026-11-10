@@ -1,0 +1,13 @@
+{
+  "id": "9762937f6dadf0abef89d314f736ef7f2c15814e1652b569643ea0a68f0715a1",
+  "text": "import { OrbitCameraController } from \"./cameraController\";\n\ndescribe(\"OrbitCameraController drag protection\", () => {\n\tit(\"identifica quando houve arraste da câmera (wasJustDragging)\", () => {\n\t\tconst canvasListeners: Record<string, ((e: unknown) => void)[]> = {};\n\t\tconst canvasMock = {\n\t\t\taddEventListener: (type: string, fn: (e: unknown) => void) => {\n\t\t\t\tcanvasListeners[type] = canvasListeners[type] || [];",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\cameraController.test.ts",
+    "kind": "variable",
+    "name": "canvasListeners",
+    "start_line": 6,
+    "end_line": 6,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

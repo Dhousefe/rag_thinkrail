@@ -1,0 +1,12 @@
+{
+  "id": "8c611623bf3f9aeb1dfd0c6b98ad66e8a1cea1b2559cb249b268d43de88e081c",
+  "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "kind": "function",
+  "name": "getPolygonKindForFile",
+  "start_line": 522,
+  "end_line": 578,
+  "content": "\tkt: [0.65, 0.35, 1.0, 0.9], // Kotlin -> Púrpura\n};\n\n/** Detecta tipo de polígono conforme a extensão do arquivo */\nexport function getPolygonKindForFile(pathOrExt?: string): PolygonKind {\n\tif (!pathOrExt) return \"octahedron\";\n\tconst clean = pathOrExt.toLowerCase();\n\tif (clean.endsWith(\".d.ts\") || clean === \"dts\" || clean.includes(\"contracts\")) {\n\t\treturn \"icosahedron\"; // Contratos e Definições de Tipos -> Icosaedro Sagrado\n\t}\n\tif (clean.endsWith(\".tsx\") || clean === \"tsx\") {\n\t\treturn \"cube\"; // React TSX -> Hipercubo 3D\n\t}\n\tif (clean.endsWith(\".ts\") || clean === \"ts\") {\n\t\treturn \"octahedron\"; // TypeScript -> Octaedro de 8 Faces\n\t}\n\tif (clean.endsWith(\".jsx\") || clean.endsWith(\".js\") || clean === \"jsx\" || clean === \"js\") {\n\t\treturn \"prism\"; // JavaScript -> Prisma Triangular\n\t}\n\tif (\n\t\tclean.endsWith(\".md\") ||\n\t\tclean.endsWith(\".txt\") ||\n\t\tclean.endsWith(\".doc\") ||\n\t\tclean === \"md\" ||\n\t\tclean === \"txt\"\n\t) {\n\t\treturn \"tetrahedron\"; // Docs / Markdown -> Tetraedro de 4 Faces\n\t}\n\tif (\n\t\tclean.endsWith(\".json\") ||\n\t\tclean.endsWith(\".yaml\") ||\n\t\tclean.endsWith(\".yml\") ||\n\t\tclean.endsWith(\".toml\") ||\n\t\tclean.endsWith(\".xml\") ||\n\t\tclean === \"json\" ||\n\t\tclean === \"yaml\" ||\n\t\tclean === \"yml\"\n\t) {\n\t\treturn \"hex_bipyramid\"; // Configurações -> Bipirâmide Hexagonal\n\t}\n\tif (\n\t\tclean.endsWith(\".bat\") ||\n\t\tclean.endsWith(\".sh\") ||\n\t\tclean.endsWith(\".ps1\") ||\n\t\tclean.endsWith(\".cmd\") ||\n\t\tclean === \"sh\" ||\n\t\tclean === \"bat\"\n\t) {\n\t\treturn \"diamond\"; // Scripts / Shell -> Diamante Duplo Alongado\n\t}\n\tif (\n\t\tclean.endsWith(\".css\") ||\n\t\tclean.endsWith(\".scss\") ||\n\t\tclean.endsWith(\".less\") ||\n\t\tclean === \"css\" ||\n\t\tclean === \"scss\"\n\t) {\n\t\treturn \"star_octahedron\"; // Estilos / CSS -> Octaedro Estrelado / Merkaba\n\t}\n\treturn \"octahedron\";\n}\n\n/** Retorna cor única para o tipo de arquivo, com fallback para cor do módulo */\nexport function resolveFileTypeColor(",
+  "token_estimate": 468,
+  "created_at": 1794331101015
+}

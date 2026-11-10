@@ -1,0 +1,13 @@
+{
+  "id": "22d3bfcbf73080ec54097e648e83d5c8f15b9a40d08976a118647aae754f2190",
+  "text": "\t\tconst baseDist = Math.max(1.0, this.cameraOrbit.distance);\n\t\tconst [tx0, ty0, tz0] = this.cameraOrbit.target || [0, 0, 0];\n\n\t\t// Candidatos dentro da tolerância do ponteiro\n\t\tconst candidates: Array<{ index: number; distance2D: number; depth: number }> = [];\n\n\t\tfor (let i = 0; i < this.vectorNodes.length; i++) {\n\t\t\tconst node = this.vectorNodes[i]!;",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+    "kind": "variable",
+    "name": "candidates",
+    "start_line": 761,
+    "end_line": 761,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

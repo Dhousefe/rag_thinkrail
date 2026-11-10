@@ -1,0 +1,12 @@
+{
+  "id": "5dca11084b4833833fa66f32fb5a2817928bc947ecaa917d844d3dfba17a126a",
+  "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "kind": "variable",
+  "name": "len",
+  "start_line": 88,
+  "end_line": 88,
+  "content": "\t];\n\n\tconst vertexFloats: number[] = [];\n\tfor (const [vx, vy, vz] of rawVertices) {\n\t\tconst len = Math.sqrt(vx * vx + vy * vy + vz * vz || 1);\n\t\tconst x = (vx / len) * radius;\n\t\tconst y = (vy / len) * radius;\n\t\tconst z = (vz / len) * radius;",
+  "token_estimate": 61,
+  "created_at": 1794331100981
+}

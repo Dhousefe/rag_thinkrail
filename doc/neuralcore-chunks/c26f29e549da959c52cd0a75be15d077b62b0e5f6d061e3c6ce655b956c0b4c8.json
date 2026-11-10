@@ -1,0 +1,12 @@
+{
+  "id": "c26f29e549da959c52cd0a75be15d077b62b0e5f6d061e3c6ce655b956c0b4c8",
+  "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "kind": "variable",
+  "name": "clean",
+  "start_line": 586,
+  "end_line": 586,
+  "content": "\tpathOrExt?: string,\n\tmoduleName?: string,\n): [number, number, number, number] {\n\tif (pathOrExt) {\n\t\tconst clean = pathOrExt.toLowerCase();\n\t\tif (clean.endsWith(\".d.ts\") || clean.includes(\"contracts\")) {\n\t\t\treturn FILE_TYPE_COLORS.contracts!;\n\t\t}",
+  "token_estimate": 62,
+  "created_at": 1794331101017
+}

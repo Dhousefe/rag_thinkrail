@@ -1,0 +1,13 @@
+{
+  "id": "9b9345f1fb91710acedc98e688da70735e63b130fb7d42ff75c42d1d5a969537",
+  "text": "}\n\ntype ChunkFilterCategory = \"all\" | \"methods\" | \"vars\" | \"types\";\n\nfunction getChunkKindMeta(kind?: string): { label: string; badgeClass: string; icon: any } {\n\tconst k = (kind || \"\").toLowerCase();\n\tif (k.includes(\"class\") || k.includes(\"struct\") || k.includes(\"impl\")) {\n\t\treturn { label: \"class\", badgeClass: \"bg-primary text-text-on-primary\", icon: RiNodeTree };\n\t}\n\tif (k.includes(\"func\") || k.includes(\"method\") || k.includes(\"handler\")) {\n\t\treturn { label: \"fn\", badgeClass: \"bg-feedback-info text-container-workspace-bg\", icon: RiFunctionLine };\n\t}\n\tif (k.includes(\"const\") || k.includes(\"var\") || k.includes(\"let\") || k.includes(\"field\")) {\n\t\treturn { label: \"var\", badgeClass: \"bg-feedback-warning text-container-workspace-bg\", icon: RiInputField };\n\t}\n\tif (k.includes(\"type\") || k.includes(\"interface\") || k.includes(\"enum\")) {\n\t\treturn { label: \"type\", badgeClass: \"bg-feedback-success text-container-workspace-bg\", icon: RiCodeSSlashLine };\n\t}\n\treturn { label: kind || \"chunk\", badgeClass: \"bg-control-bg text-text-muted\", icon: RiCodeSSlashLine };\n}\n\nexport function NeuralCoreChunksView({ chunks, isLoading }: NeuralCoreChunksViewProps) {\n\tconst [activeFilter, setActiveFilter] = useState<ChunkFilterCategory>(\"all\");",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreChunksView.tsx",
+    "kind": "function",
+    "name": "getChunkKindMeta",
+    "start_line": 21,
+    "end_line": 36,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

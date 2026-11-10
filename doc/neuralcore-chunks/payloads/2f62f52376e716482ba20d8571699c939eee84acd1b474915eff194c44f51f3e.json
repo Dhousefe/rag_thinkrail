@@ -1,0 +1,13 @@
+{
+  "id": "2f62f52376e716482ba20d8571699c939eee84acd1b474915eff194c44f51f3e",
+  "text": "\t\t\tconst b = 1.0;\n\t\t\tvertexFloats.push(x, y, z, r, g, b, 0.75);\n\n\t\t\t// Aresta longitudinal (ao redor do tubo)\n\t\t\tconst nextLong = i * tubeSegments + ((j + 1) % tubeSegments);\n\t\t\tedgeIndices.push(vOffset, nextLong);\n\n\t\t\t// Aresta circular (ao redor do anel principal)",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+    "kind": "variable",
+    "name": "nextLong",
+    "start_line": 305,
+    "end_line": 305,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "id": "df6d2f5af51cb163a47288439edd33b12de3d4f1644adcd71b09badcb56d1022",
+  "file": "apps\\web\\src\\panels\\neural-core\\useNeuralCoreState.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\useNeuralCoreState.ts",
+  "kind": "variable",
+  "name": "intensity",
+  "start_line": 18,
+  "end_line": 18,
+  "content": "\t// Detecta atividade geral do ThinkRail\n\t// Detecta atividade geral do ThinkRail e consultas RAG do Hermes MCP\n\tconst state: NeuralTelemetryState = useMemo(() => {\n\t\tlet activity: NeuralActivityState = \"idle\";\n\t\tlet intensity = 0.0;\n\t\tlet activeToolName: string | undefined;\n\t\tlet activeRagQuery: string | undefined;\n\t\tlet activeRagToolName: string | undefined;",
+  "token_estimate": 91,
+  "created_at": 1794331101211
+}

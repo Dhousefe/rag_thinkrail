@@ -1,0 +1,13 @@
+{
+  "id": "9b6247f2d044129b9e950729d36a055dbe2bb0afc926de9ded98911a0f7da48c",
+  "text": "",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\cameraController.test.ts",
+    "kind": "file",
+    "name": "cameraController.test.ts",
+    "start_line": 1,
+    "end_line": 73,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

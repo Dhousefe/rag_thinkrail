@@ -1,0 +1,12 @@
+{
+  "id": "ca4f1eb744379ff066461279efdd777877e67eae4169a92dbdd77daac98eed71",
+  "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "kind": "function",
+  "name": "resolveFileTypeColor",
+  "start_line": 581,
+  "end_line": 597,
+  "content": "\treturn \"octahedron\";\n}\n\n/** Retorna cor única para o tipo de arquivo, com fallback para cor do módulo */\nexport function resolveFileTypeColor(\n\tpathOrExt?: string,\n\tmoduleName?: string,\n): [number, number, number, number] {\n\tif (pathOrExt) {\n\t\tconst clean = pathOrExt.toLowerCase();\n\t\tif (clean.endsWith(\".d.ts\") || clean.includes(\"contracts\")) {\n\t\t\treturn FILE_TYPE_COLORS.contracts!;\n\t\t}\n\t\tfor (const [ext, color] of Object.entries(FILE_TYPE_COLORS)) {\n\t\t\tif (clean.endsWith(`.${ext}`) || clean === ext) {\n\t\t\t\treturn color;\n\t\t\t}\n\t\t}\n\t}\n\treturn resolveModuleColor(moduleName);\n}\n\n/** Interface de auditoria anti-plágio de impressão digital semântica */\nexport interface SemanticFingerprintInfo {",
+  "token_estimate": 175,
+  "created_at": 1794331101016
+}

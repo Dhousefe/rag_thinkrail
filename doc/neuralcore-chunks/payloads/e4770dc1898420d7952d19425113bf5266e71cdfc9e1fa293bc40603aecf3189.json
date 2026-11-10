@@ -1,0 +1,13 @@
+{
+  "id": "e4770dc1898420d7952d19425113bf5266e71cdfc9e1fa293bc40603aecf3189",
+  "text": "\t\t}\n\t}\n\n\t// 3. Hash determinístico baseado em nós, métodos, coordenadas vetoriais e arestas\n\tlet h1 = 0xdeadbeef;\n\tlet h2 = 0x41c64e6d;\n\tlet h3 = 0x9e3779b9;\n\tlet h4 = 0x85ebca6b;",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+    "kind": "variable",
+    "name": "h1",
+    "start_line": 652,
+    "end_line": 652,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

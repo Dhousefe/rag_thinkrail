@@ -1,0 +1,13 @@
+{
+  "id": "a9a6dd8be5bfc3441c9fbbcb814a8af12b068063297f373566c6879c8dfbc3f1",
+  "text": "\t\t\t(this.isDragging && this.totalDragDistance > 4)\n\t\t);\n\t}\n\n\tpublic panBy(deltaX: number, deltaY: number) {\n\t\tthis.flyTarget = null;\n\t\tconst panFactor = Math.max(0.001, this.distance * 0.0022);\n\n\t\t// Vetor Right da câmera no plano horizontal\n\t\tconst rightX = Math.cos(this.theta);\n\t\tconst rightZ = -Math.sin(this.theta);\n\n\t\t// Vetor Up da câmera\n\t\tconst upX = -Math.sin(this.phi) * Math.sin(this.theta);\n\t\tconst upY = Math.cos(this.phi);\n\t\tconst upZ = -Math.sin(this.phi) * Math.cos(this.theta);\n\n\t\tthis.target[0] -= (rightX * deltaX - upX * deltaY) * panFactor;\n\t\tthis.target[1] -= (-upY * deltaY) * panFactor;\n\t\tthis.target[2] -= (rightZ * deltaX - upZ * deltaY) * panFactor;\n\t\tthis.onUpdate?.();\n\t}\n\n\tpublic panLeft(step = 120) {\n\t\tthis.panBy(step, 0);",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\cameraController.ts",
+    "kind": "method",
+    "name": "OrbitCameraController.panBy",
+    "start_line": 119,
+    "end_line": 136,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

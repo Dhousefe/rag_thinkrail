@@ -1,0 +1,12 @@
+{
+  "id": "7d3c2824662c5c60d42f0f68ca4e478cf8cda404c0f903cd80045e769f3c60c3",
+  "file": "apps\\web\\src\\panels\\neural-core\\useNeuralCoreState.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\useNeuralCoreState.ts",
+  "kind": "variable",
+  "name": "activeChatFilePath",
+  "start_line": 48,
+  "end_line": 48,
+  "content": "\t\t\t}\n\t\t}\n\n\t\tlet activeChatTool: \"read\" | \"edit\" | \"write\" | \"ast\" | \"rag\" | undefined;\n\t\tlet activeChatFilePath: string | undefined;\n\t\tlet activeChatPivotClass: string | undefined;\n\n\t\t// Extrai ferramentas de código do chat (read, edit, write, ast, rag) e identifica o arquivo/classe pivô",
+  "token_estimate": 72,
+  "created_at": 1794331101214
+}

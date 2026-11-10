@@ -1,0 +1,12 @@
+{
+  "id": "5d4451b6bf8f220740fa521bd5c5df826d36bf92cef573bcdd8919a6786fc5a2",
+  "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "kind": "variable",
+  "name": "z",
+  "start_line": 35,
+  "end_line": 35,
+  "content": "\t\t// Rotação no plano XW\n\t\tconst x = px0 * cosA - pw0 * sinA;\n\t\tconst w = px0 * sinA + pw0 * cosA;\n\t\tconst y = py0;\n\t\tconst z = pz0;\n\n\t\t// Projeção perspectiva 4D -> 3D\n\t\tconst perspective = 1.0 / (projDistance - w * 0.6);",
+  "token_estimate": 56,
+  "created_at": 1794331100976
+}

@@ -1,0 +1,12 @@
+{
+  "id": "1b0c86e7a4e61370fa5311f3021093b77006eac73ea83e857eee134dd43283b4",
+  "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "kind": "variable",
+  "name": "y2",
+  "start_line": 672,
+  "end_line": 672,
+  "content": "\n\t\t// Vetor Y = cross(Z, X) (sempre ortogonal e normalizado)\n\t\tconst y0 = z1 * x2 - z2 * x1;\n\t\tconst y1 = z2 * x0 - z0 * x2;\n\t\tconst y2 = z0 * x1 - z1 * x0;\n\n\t\t// Componentes de translação da visão V: -dot(axis, eye)\n\t\tconst tx = -(x0 * eyeX + x1 * eyeY + x2 * eyeZ);",
+  "token_estimate": 67,
+  "created_at": 1794331101127
+}

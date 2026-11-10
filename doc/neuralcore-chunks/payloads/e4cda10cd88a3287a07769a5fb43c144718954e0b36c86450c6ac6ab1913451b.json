@@ -1,0 +1,13 @@
+{
+  "id": "e4cda10cd88a3287a07769a5fb43c144718954e0b36c86450c6ac6ab1913451b",
+  "text": "\t/**\n\t * Enquadra perfeitamente todos os nós informados dentro do campo de visão da câmera,\n\t * calculando o centro do bounding box e a distância de enquadramento ideal.\n\t */\n\tpublic fitBounds(positions: Array<[number, number, number]>, margin = 1.6) {\n\t\tif (!positions || positions.length === 0) {\n\t\t\tthis.reset();\n\t\t\treturn;\n\t\t}\n\n\t\tlet minX = Infinity, maxX = -Infinity;\n\t\tlet minY = Infinity, maxY = -Infinity;\n\t\tlet minZ = Infinity, maxZ = -Infinity;\n\n\t\tfor (const [x, y, z] of positions) {\n\t\t\tif (x < minX) minX = x;\n\t\t\tif (x > maxX) maxX = x;\n\t\t\tif (y < minY) minY = y;\n\t\t\tif (y > maxY) maxY = y;\n\t\t\tif (z < minZ) minZ = z;\n\t\t\tif (z > maxZ) maxZ = z;\n\t\t}\n\n\t\tconst centerX = (minX + maxX) / 2;\n\t\tconst centerY = (minY + maxY) / 2;\n\t\tconst centerZ = (minZ + maxZ) / 2;\n\n\t\t// Calcula o raio máximo a partir do centro\n\t\tlet maxRadius = 0.5;\n\t\tfor (const [x, y, z] of positions) {\n\t\t\tconst r = Math.hypot(x - centerX, y - centerY, z - centerZ);\n\t\t\tif (r > maxRadius) maxRadius = r;\n\t\t}\n\n\t\t// Com FOV de 45 deg (~0.785 rad), distância = raio / tan(FOV / 2) * margem\n\t\tconst fitDist = Math.max(2.8, Math.min(50.0, maxRadius * 2.4 * margin));\n\n\t\tthis.flyTarget = {\n\t\t\ttargetX: centerX,\n\t\t\ttargetY: centerY,\n\t\t\ttargetZ: centerZ,\n\t\t\ttheta: this.theta,\n\t\t\tphi: Math.max(0.35, Math.min(0.65, this.phi)),\n\t\t\tdistance: fitDist,\n\t\t};\n\t\tthis.onUpdate?.();\n\t}\n}\n",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\cameraController.ts",
+    "kind": "method",
+    "name": "OrbitCameraController.fitBounds",
+    "start_line": 285,
+    "end_line": 327,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

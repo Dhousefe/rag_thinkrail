@@ -1,0 +1,12 @@
+{
+  "id": "9543710a63437d2f0b9aea6914eabfe3dc32d681d49279c569db18ed307dd76e",
+  "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "kind": "variable",
+  "name": "cy",
+  "start_line": 175,
+  "end_line": 175,
+  "content": "\n\tfor (let i = 0; i < count; i++) {\n\t\tconst angle = (i / count) * Math.PI * 2;\n\t\tconst cx = Math.cos(angle) * orbitRadius;\n\t\tconst cy = Math.sin(angle * 2) * 0.4;\n\t\tconst cz = Math.sin(angle) * orbitRadius;\n\n\t\t// Pequeno octaedro satélite",
+  "token_estimate": 60,
+  "created_at": 1794331100990
+}

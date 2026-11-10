@@ -1,0 +1,12 @@
+{
+  "id": "5673a74e5b12cbc05bf67801f8003a6f17c3b7aafa4e3228bb0f29eaab8f8a56",
+  "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "kind": "variable",
+  "name": "cy",
+  "start_line": 749,
+  "end_line": 749,
+  "content": "\t\t// Usa as dimensões CSS reais do canvas para coincidir exatamente com os ponteiros do mouse\n\t\tconst w = this.canvas.clientWidth || this.canvas.width;\n\t\tconst h = this.canvas.clientHeight || this.canvas.height;\n\t\tconst cx = w / 2;\n\t\tconst cy = h / 2;\n\t\tconst scale = Math.min(w, h) * 0.22;\n\n\t\tconst cosO = Math.cos(this.cameraOrbit.theta);",
+  "token_estimate": 85,
+  "created_at": 1794331101134
+}

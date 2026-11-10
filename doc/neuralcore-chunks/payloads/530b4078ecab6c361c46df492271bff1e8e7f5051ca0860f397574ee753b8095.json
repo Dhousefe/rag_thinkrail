@@ -1,0 +1,13 @@
+{
+  "id": "530b4078ecab6c361c46df492271bff1e8e7f5051ca0860f397574ee753b8095",
+  "text": "\t\t// 1. Projeção de todos os nós visíveis na tela para uso na repulsão magnética\n\t\tconst allProjectedNodes: Array<{ index: number; px: number; py: number; depth: number }> = [];\n\n\t\tfor (let i = 0; i < this.vectorNodes.length; i++) {\n\t\t\tconst node = this.vectorNodes[i]!;\n\t\t\tif (this.visibleModules.size > 0 && !this.visibleModules.has(node.module)) {\n\t\t\t\tcontinue;\n\t\t\t}",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+    "kind": "variable",
+    "name": "node",
+    "start_line": 866,
+    "end_line": 866,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

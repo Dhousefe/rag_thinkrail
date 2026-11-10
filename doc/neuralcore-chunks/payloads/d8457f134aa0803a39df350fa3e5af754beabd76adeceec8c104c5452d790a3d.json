@@ -1,0 +1,13 @@
+{
+  "id": "d8457f134aa0803a39df350fa3e5af754beabd76adeceec8c104c5452d790a3d",
+  "text": "\t\t\tfor (const [ptX, ptY, ptZ] of tPts) {\n\t\t\t\tvertexFloats.push(ptX, ptY, ptZ, colR, colG, colB, colA);\n\t\t\t\tvOffset++;\n\t\t\t}\n\t\t\tconst tetEdges = [0, 1, 0, 2, 0, 3, 1, 2, 2, 3, 3, 1];\n\t\t\tfor (const e of tetEdges) edgeIndices.push(base + e);\n\t\t} else if (polyKind === \"prism\") {\n\t\t\t// Prisma Triangular (Scripts/Shell): 6 vértices, 9 arestas",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+    "kind": "variable",
+    "name": "tetEdges",
+    "start_line": 942,
+    "end_line": 942,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

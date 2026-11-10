@@ -1,0 +1,13 @@
+{
+  "id": "e6c62167251427d65ad1375f2472c4cfc0b741e6f39c4356b3b3c564bc433015",
+  "text": "\tconst targetClassName = (fallbackClassName || baseName).toLowerCase().trim();\n\n\t// 1. Coleta todos os nós cujo path ou relPath corresponde ao arquivo\n\tconst fileCandidates = vectorNodes.filter((node) => {\n\t\tconst p = (node.path || \"\").replace(/\\\\/g, \"/\").toLowerCase();\n\t\tconst rel = (node.relPath || \"\").replace(/\\\\/g, \"/\").toLowerCase();\n\t\treturn (\n\t\t\t(cleanPath && (p.endsWith(cleanPath) || rel.endsWith(cleanPath))) ||",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\resolvePivotNode.ts",
+    "kind": "variable",
+    "name": "p",
+    "start_line": 21,
+    "end_line": 21,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

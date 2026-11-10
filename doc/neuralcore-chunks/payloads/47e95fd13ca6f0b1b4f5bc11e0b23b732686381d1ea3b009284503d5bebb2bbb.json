@@ -1,0 +1,13 @@
+{
+  "id": "47e95fd13ca6f0b1b4f5bc11e0b23b732686381d1ea3b009284503d5bebb2bbb",
+  "text": "\n\t\t\tconst cosO = Math.cos(this.cameraOrbit.theta);\n\t\t\tconst sinO = Math.sin(this.cameraOrbit.theta);\n\t\t\tconst cosPhi = Math.cos(this.cameraOrbit.phi);\n\t\t\tconst sinPhi = Math.sin(this.cameraOrbit.phi);\n\n\t\t\tconst vertexCount = m.vertices.length / 7;\n\t\t\tconst projectedPts: Array<[number, number]> = [];",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+    "kind": "variable",
+    "name": "sinPhi",
+    "start_line": 1067,
+    "end_line": 1067,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

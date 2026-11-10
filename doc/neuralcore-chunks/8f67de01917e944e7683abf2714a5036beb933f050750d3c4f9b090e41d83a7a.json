@@ -1,0 +1,12 @@
+{
+  "id": "8f67de01917e944e7683abf2714a5036beb933f050750d3c4f9b090e41d83a7a",
+  "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "kind": "variable",
+  "name": "q",
+  "start_line": 230,
+  "end_line": 230,
+  "content": "\t\tthis.isRagActive = Boolean(this.activeSearchQuery);\n\t\tif (this.isRagActive) {\n\t\t\tthis.telemetry.shockwavePulse = 1.0;\n\t\t}\n\t\tconst q = (this.activeSearchQuery || \"\").toLowerCase();\n\t\tfor (const n of this.vectorNodes) {\n\t\t\tif (!q) {\n\t\t\t\tn.isMatchedBySearch = false;",
+  "token_estimate": 67,
+  "created_at": 1794331101107
+}

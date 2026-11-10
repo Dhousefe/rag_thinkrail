@@ -1,0 +1,12 @@
+{
+  "id": "867b5439f3230e8479346173d6efb453e7349ce180995b53c6fb6e8036652f12",
+  "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "kind": "variable",
+  "name": "vertexFloats",
+  "start_line": 279,
+  "end_line": 279,
+  "content": "\tminorRadius = 0.5,\n\tradarRings = 24,\n\ttubeSegments = 16,\n): GeometryMeshData {\n\tconst vertexFloats: number[] = [];\n\tconst edgeIndices: number[] = [];\n\tlet vOffset = 0;\n",
+  "token_estimate": 43,
+  "created_at": 1794331100995
+}

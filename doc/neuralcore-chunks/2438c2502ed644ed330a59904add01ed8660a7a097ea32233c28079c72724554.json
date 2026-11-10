@@ -1,0 +1,12 @@
+{
+  "id": "2438c2502ed644ed330a59904add01ed8660a7a097ea32233c28079c72724554",
+  "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "kind": "variable",
+  "name": "cx",
+  "start_line": 839,
+  "end_line": 839,
+  "content": "\t\tif (!this.showVectorConstellation || this.vectorNodes.length === 0) return [];\n\n\t\tconst w = this.canvas.clientWidth || this.canvas.width;\n\t\tconst h = this.canvas.clientHeight || this.canvas.height;\n\t\tconst cx = w / 2;\n\t\tconst cy = h / 2;\n\t\tconst scale = Math.min(w, h) * 0.22;\n",
+  "token_estimate": 70,
+  "created_at": 1794331101142
+}

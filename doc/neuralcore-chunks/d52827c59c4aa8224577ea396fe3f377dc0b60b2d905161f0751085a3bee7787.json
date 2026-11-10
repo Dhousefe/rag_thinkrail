@@ -1,0 +1,12 @@
+{
+  "id": "d52827c59c4aa8224577ea396fe3f377dc0b60b2d905161f0751085a3bee7787",
+  "file": "apps\\web\\src\\panels\\neural-core\\cameraController.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\cameraController.ts",
+  "kind": "variable",
+  "name": "diffTz",
+  "start_line": 198,
+  "end_line": 198,
+  "content": "\t\tconst diffP = this.flyTarget.phi - this.phi;\n\t\tconst diffD = this.flyTarget.distance - this.distance;\n\t\tconst diffTx = this.flyTarget.targetX - this.target[0];\n\t\tconst diffTy = this.flyTarget.targetY - this.target[1];\n\t\tconst diffTz = this.flyTarget.targetZ - this.target[2];\n\n\t\tconst isClose =\n\t\t\tMath.abs(diffT) < 0.005 &&",
+  "token_estimate": 82,
+  "created_at": 1794331100885
+}

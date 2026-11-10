@@ -1,0 +1,13 @@
+{
+  "id": "26c17d9d684343bb1fea5b94531a683d4eac08bdfee20c475501035aa3779c75",
+  "text": "\t\t\t\t?.replace(/\\.[^.]+$/, \"\") || \"\";\n\t\tconst otherQName = (other.qualifiedName || otherBaseName).toLowerCase();\n\n\t\t// Relação de import no arquivo\n\t\tconst isImported =\n\t\t\t(selectedNode.imports || []).some((imp) => {\n\t\t\t\tconst impLower = imp.toLowerCase();\n\t\t\t\treturn impLower.includes(otherBaseName) || impLower.includes(otherQName);\n\t\t\t}) ||\n\t\t\t(other.imports || []).some((imp) => {\n\t\t\t\tconst impLower = imp.toLowerCase();\n\t\t\t\treturn impLower.includes(selectedBaseName) || impLower.includes(selectedQName);\n\t\t\t});\n\n\t\tif (isImported) {\n\t\t\tdirectNeighbors.add(i);",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+    "kind": "variable",
+    "name": "isImported",
+    "start_line": 786,
+    "end_line": 794,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

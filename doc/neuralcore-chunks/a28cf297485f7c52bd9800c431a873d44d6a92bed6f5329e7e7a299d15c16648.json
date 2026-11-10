@@ -1,0 +1,12 @@
+{
+  "id": "a28cf297485f7c52bd9800c431a873d44d6a92bed6f5329e7e7a299d15c16648",
+  "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "kind": "variable",
+  "name": "depthDiff",
+  "start_line": 805,
+  "end_line": 805,
+  "content": "\n\t\t// Ordenação por profundidade da câmera (o mais à frente tem prioridade total)\n\t\t// e desempate secundário pela menor distância ao centro do cursor\n\t\tcandidates.sort((a, b) => {\n\t\t\tconst depthDiff = a.depth - b.depth;\n\t\t\t// Se a diferença de profundidade for perceptível (> 0.12), o mais frontal vence sempre\n\t\t\tif (Math.abs(depthDiff) > 0.12) {\n\t\t\t\treturn depthDiff;",
+  "token_estimate": 93,
+  "created_at": 1794331101141
+}

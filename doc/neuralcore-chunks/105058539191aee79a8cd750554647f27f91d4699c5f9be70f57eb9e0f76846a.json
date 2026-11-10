@@ -1,0 +1,12 @@
+{
+  "id": "105058539191aee79a8cd750554647f27f91d4699c5f9be70f57eb9e0f76846a",
+  "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "kind": "variable",
+  "name": "vOffset",
+  "start_line": 835,
+  "end_line": 835,
+  "content": "\tanimTime: number = 0,\n): GeometryMeshData {\n\tconst vertexFloats: number[] = [];\n\tconst edgeIndices: number[] = [];\n\tlet vOffset = 0;\n\n\t// Calcula relações e dependências caso haja polígono selecionado\n\tconst relations = computeNodeRelations(selectedNodeIndex, nodes, edges);",
+  "token_estimate": 69,
+  "created_at": 1794331101035
+}

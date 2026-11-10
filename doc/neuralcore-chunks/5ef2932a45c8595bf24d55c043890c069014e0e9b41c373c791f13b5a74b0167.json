@@ -1,0 +1,12 @@
+{
+  "id": "5ef2932a45c8595bf24d55c043890c069014e0e9b41c373c791f13b5a74b0167",
+  "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "kind": "variable",
+  "name": "rz",
+  "start_line": 775,
+  "end_line": 775,
+  "content": "\t\t\tconst vz = vz0 - tz0;\n\n\t\t\t// Projeção da rotação orbital da câmera\n\t\t\tconst rx = vx * cosO - vz * sinO;\n\t\t\tconst rz = vx * sinO + vz * cosO;\n\t\t\tconst ry = vy * cosPhi - rz * sinPhi;\n\t\t\tconst depth = Math.max(0.2, baseDist + (vy * sinPhi + rz * cosPhi) * 0.45);\n",
+  "token_estimate": 66,
+  "created_at": 1794331101138
+}

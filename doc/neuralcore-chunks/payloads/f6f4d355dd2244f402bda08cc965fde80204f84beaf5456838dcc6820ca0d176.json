@@ -1,0 +1,13 @@
+{
+  "id": "f6f4d355dd2244f402bda08cc965fde80204f84beaf5456838dcc6820ca0d176",
+  "text": "\tconst vertexFloats: number[] = [];\n\tfor (const [px0, py0, pz0, pw0] of v4) {\n\t\t// Rotação no plano XW\n\t\tconst x = px0 * cosA - pw0 * sinA;\n\t\tconst w = px0 * sinA + pw0 * cosA;\n\t\tconst y = py0;\n\t\tconst z = pz0;\n",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+    "kind": "variable",
+    "name": "w",
+    "start_line": 33,
+    "end_line": 33,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "id": "a58029e1018732d16c1bf8b0d08647c2c9da5e4f45d8f9194cd6e39379ab6149",
+  "text": "\t\t});\n\n\t\tit(\"detecta adulteração ou mutação de código modificando a impressão digital\", () => {\n\t\t\tconst fpOriginal = computeSemanticFingerprint(mockNodes, mockEdges);\n\t\t\tconst tamperedNodes = [\n\t\t\t\t{\n\t\t\t\t\t...mockNodes[0]!,\n\t\t\t\t\tmethods: [{ id: \"m1\", name: \"plagiarizedMethod\" }],\n\t\t\t\t},\n\t\t\t\tmockNodes[1]!,\n\t\t\t\tmockNodes[2]!,\n\t\t\t];\n\t\t\tconst fpTampered = computeSemanticFingerprint(tamperedNodes, mockEdges);\n\n\t\t\texpect(fpTampered.fingerprintHash).not.toBe(fpOriginal.fingerprintHash);",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\semanticFingerprint.test.ts",
+    "kind": "variable",
+    "name": "tamperedNodes",
+    "start_line": 132,
+    "end_line": 139,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

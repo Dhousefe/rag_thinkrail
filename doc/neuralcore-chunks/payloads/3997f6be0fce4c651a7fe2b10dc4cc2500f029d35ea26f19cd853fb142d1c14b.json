@@ -1,0 +1,13 @@
+{
+  "id": "3997f6be0fce4c651a7fe2b10dc4cc2500f029d35ea26f19cd853fb142d1c14b",
+  "text": "\tconst mcpMetrics = useAppStore((s) => s.mcpTelemetry.metrics);\n\tconst activeCalls = useAppStore((s) => s.mcpTelemetry.activeCalls);\n\tconst connectionStatus = useAppStore((s) => s.status);\n\n\tconst lastMetricCountRef = useRef(mcpMetrics.length);\n\tconst [pulseKey, setPulseKey] = useState(0);\n\n\t// Detecta atividade geral do ThinkRail",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\useNeuralCoreState.ts",
+    "kind": "variable",
+    "name": "lastMetricCountRef",
+    "start_line": 11,
+    "end_line": 11,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

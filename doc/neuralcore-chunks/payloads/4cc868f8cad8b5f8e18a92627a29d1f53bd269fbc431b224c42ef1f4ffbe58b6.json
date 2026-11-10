@@ -1,0 +1,13 @@
+{
+  "id": "4cc868f8cad8b5f8e18a92627a29d1f53bd269fbc431b224c42ef1f4ffbe58b6",
+  "text": "\t\t\t\tconst rawTarget = (toolArgs.target || toolArgs.symbol || toolArgs.target_path) as\n\t\t\t\t\t| string\n\t\t\t\t\t| undefined;\n\t\t\t\tif (rawTarget && typeof rawTarget === \"string\") {\n\t\t\t\t\tconst cleanTarget = rawTarget.trim();\n\t\t\t\t\tif (cleanTarget.includes(\"/\") || cleanTarget.includes(\"\\\\\")) {\n\t\t\t\t\t\tconst norm = cleanTarget.replace(/\\\\/g, \"/\");\n\t\t\t\t\t\tactiveChatFilePath = activeChatFilePath || norm;",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\useNeuralCoreState.ts",
+    "kind": "variable",
+    "name": "cleanTarget",
+    "start_line": 80,
+    "end_line": 80,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

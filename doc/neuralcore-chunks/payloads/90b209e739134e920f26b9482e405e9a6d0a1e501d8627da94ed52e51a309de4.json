@@ -1,0 +1,13 @@
+{
+  "id": "90b209e739134e920f26b9482e405e9a6d0a1e501d8627da94ed52e51a309de4",
+  "text": "\t\t});\n\t});\n\n\tdescribe(\"Caso de Uso 4: Grafo de Dependências Pulsante sem Cruzamento 3D\", () => {\n\t\tconst nodes = [\n\t\t\t{\n\t\t\t\tid: \"A\",\n\t\t\t\tpath: \"src/A.tsx\",\n\t\t\t\tmodule: \"apps/web\",\n\t\t\t\tposition: [0, 0, 0] as [number, number, number],\n\t\t\t\tmethods: [{ id: \"mA\", name: \"doWork\", signature: \"doWork(b: B)\" }],\n\t\t\t},\n\t\t\t{\n\t\t\t\tid: \"B\",\n\t\t\t\tpath: \"src/B.ts\",\n\t\t\t\tmodule: \"apps/web\",\n\t\t\t\tposition: [1, 0, 1] as [number, number, number],\n\t\t\t\tmethods: [{ id: \"mB\", name: \"helper\", signature: \"helper()\" }],\n\t\t\t},\n\t\t\t{\n\t\t\t\tid: \"C\",\n\t\t\t\tpath: \"src/C.ts\",\n\t\t\t\tmodule: \"apps/web\",\n\t\t\t\tposition: [-1, 0, 1] as [number, number, number],\n\t\t\t},\n\t\t];\n\t\tconst edges = [\n\t\t\t{ source: 0, target: 1, kind: \"calls\" as const, similarity: 0.9 },\n\t\t\t{ source: 0, target: 2, kind: \"imports\" as const, similarity: 0.8 },",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\semanticFingerprint.test.ts",
+    "kind": "variable",
+    "name": "nodes",
+    "start_line": 148,
+    "end_line": 169,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

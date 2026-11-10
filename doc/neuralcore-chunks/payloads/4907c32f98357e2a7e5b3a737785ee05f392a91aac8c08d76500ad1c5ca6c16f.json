@@ -1,0 +1,13 @@
+{
+  "id": "4907c32f98357e2a7e5b3a737785ee05f392a91aac8c08d76500ad1c5ca6c16f",
+  "text": "\t\t\tconst colorTsx = resolveFileTypeColor(\"App.tsx\");\n\t\t\tconst colorTs = resolveFileTypeColor(\"math.ts\");\n\t\t\tconst colorMd = resolveFileTypeColor(\"README.md\");\n\t\t\tconst colorJson = resolveFileTypeColor(\"data.json\");\n\t\t\tconst colorCss = resolveFileTypeColor(\"styles.css\");\n\n\t\t\texpect(colorTsx).toEqual(FILE_TYPE_COLORS.tsx!);\n\t\t\texpect(colorTs).toEqual(FILE_TYPE_COLORS.ts!);",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\semanticFingerprint.test.ts",
+    "kind": "variable",
+    "name": "colorCss",
+    "start_line": 62,
+    "end_line": 62,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

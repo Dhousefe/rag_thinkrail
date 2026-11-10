@@ -1,0 +1,13 @@
+{
+  "id": "f274ce297fa2ef584c6a5760b801f65a4759cc89a702a8287712a4e9287985e1",
+  "text": "\t\t\tif (isRelated) score += 2500;\n\t\t\tif (isMatched) score += 800;\n\t\t\tif (isWithinCursorRadius) score += 500;\n\n\t\t\tconst nameParts = (node.relPath || node.id).split(/[/\\\\]/);\n\t\t\tconst cleanLabel = nameParts[nameParts.length - 1] || node.id;\n\n\t\t\t// Posição base do rótulo: SEMPRE ACIMA do polígono em questão (offset inicial -22px em Y)",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+    "kind": "variable",
+    "name": "nameParts",
+    "start_line": 962,
+    "end_line": 962,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

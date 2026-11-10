@@ -1,0 +1,13 @@
+{
+  "id": "128804a53efdeb2e753e469198a2f5f61f67bf5feb85ccd8a54a453d13e52cae",
+  "text": "\tconst vertexFloats: number[] = [];\n\tconst edgeIndices: number[] = [];\n\tlet vertexOffset = 0;\n\n\tconst axes: Array<{\n\t\taxis: \"xy\" | \"yz\" | \"xz\";\n\t\tr: number;\n\t\tcolor: [number, number, number, number];\n\t}> = [\n\t\t{ axis: \"xy\", r: radii[0], color: [0.0, 0.9, 1.0, 0.7] }, // Pitch ring (Ciano)\n\t\t{ axis: \"yz\", r: radii[1], color: [0.8, 0.2, 1.0, 0.7] }, // Roll ring (Magenta)\n\t\t{ axis: \"xz\", r: radii[2], color: [1.0, 0.75, 0.0, 0.8] }, // Yaw ring (Ouro/Âmbar)\n\t];\n\n\tfor (const item of axes) {\n\t\tconst startIdx = vertexOffset;",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+    "kind": "variable",
+    "name": "axes",
+    "start_line": 116,
+    "end_line": 124,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

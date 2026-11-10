@@ -1,0 +1,13 @@
+{
+  "id": "90026eae1cfa37ba9736c2409a8e3b148c06358bbc8207efdcfe8acf5989d6ea",
+  "text": "\t\tconst cx = w / 2;\n\t\tconst cy = h / 2;\n\t\tconst scale = Math.min(w, h) * 0.22;\n\n\t\tconst cosO = Math.cos(this.cameraOrbit.theta);\n\t\tconst sinO = Math.sin(this.cameraOrbit.theta);\n\t\tconst cosPhi = Math.cos(this.cameraOrbit.phi);\n\t\tconst sinPhi = Math.sin(this.cameraOrbit.phi);",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+    "kind": "variable",
+    "name": "cosO",
+    "start_line": 752,
+    "end_line": 752,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

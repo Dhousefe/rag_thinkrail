@@ -1,0 +1,12 @@
+{
+  "id": "31f1b3f92887966603fd9c9d71eda8528fa08efaa4027166c0251be1f7390bf4",
+  "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "kind": "variable",
+  "name": "p1",
+  "start_line": 1152,
+  "end_line": 1152,
+  "content": "\t\t\t\thasActiveSelection &&\n\t\t\t\t(edge.source === selectedNodeIndex || edge.target === selectedNodeIndex);\n\t\t\tconst isEdgeUnrelated = hasActiveSelection && !isConnectedToSelected;\n\n\t\t\tconst p1 = n1.position;\n\t\t\tconst p2 = n2.position;\n\n\t\t\t// Camada de elevação da trilha (PCB Copper Trace Layer) com separação Multi-Camada (Multi-Layer PCB)",
+  "token_estimate": 85,
+  "created_at": 1794331101060
+}

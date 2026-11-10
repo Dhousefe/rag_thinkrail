@@ -1,0 +1,13 @@
+{
+  "id": "f68702cd981cd6dd9c96142c68083a6725f4afe99ec09fe9c3d941b3a4929c56",
+  "text": "\t\t\t} else {\n\t\t\t\tconst p = (n.path || \"\").toLowerCase();\n\t\t\t\tconst qn = (n.relPath || \"\").toLowerCase();\n\t\t\t\tconst id = (n.id || \"\").toLowerCase();\n\t\t\t\tconst hasMatchingMethod = (n.methods || []).some(\n\t\t\t\t\t(m) => m.name.toLowerCase().includes(q) || (m.signature || \"\").toLowerCase().includes(q),\n\t\t\t\t);\n\t\t\t\tn.isMatchedBySearch =\n\t\t\t\t\tp.includes(q) || qn.includes(q) || id.includes(q) || hasMatchingMethod;\n\t\t\t}",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+    "kind": "variable",
+    "name": "hasMatchingMethod",
+    "start_line": 238,
+    "end_line": 240,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

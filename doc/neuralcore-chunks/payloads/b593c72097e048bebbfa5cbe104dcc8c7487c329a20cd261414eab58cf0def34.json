@@ -1,0 +1,13 @@
+{
+  "id": "b593c72097e048bebbfa5cbe104dcc8c7487c329a20cd261414eab58cf0def34",
+  "text": "\t\t\t\tcanvasListeners[type].push(fn);\n\t\t\t},\n\t\t} as unknown as HTMLCanvasElement;\n\n\t\tconst windowListeners: Record<string, ((e: unknown) => void)[]> = {};\n\t\tif (typeof window === \"undefined\") {\n\t\t\tObject.defineProperty(globalThis, \"window\", {\n\t\t\t\tvalue: {",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\cameraController.test.ts",
+    "kind": "variable",
+    "name": "windowListeners",
+    "start_line": 14,
+    "end_line": 14,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

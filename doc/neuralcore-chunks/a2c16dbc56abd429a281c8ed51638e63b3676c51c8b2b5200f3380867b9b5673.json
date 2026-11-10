@@ -1,0 +1,12 @@
+{
+  "id": "a2c16dbc56abd429a281c8ed51638e63b3676c51c8b2b5200f3380867b9b5673",
+  "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "kind": "variable",
+  "name": "icoRaw",
+  "start_line": 1041,
+  "end_line": 1054,
+  "content": "\t\t\t// Icosaedro Geodésico (Contratos e Definições de Tipos): 12 vértices, 30 arestas\n\t\t\tconst phi = (1.0 + Math.sqrt(5.0)) / 2.0;\n\t\t\tconst a = s * 0.9;\n\t\t\tconst b = a / phi;\n\t\t\tconst icoRaw: [number, number, number][] = [\n\t\t\t\t[-a, b, 0],\n\t\t\t\t[a, b, 0],\n\t\t\t\t[-a, -b, 0],\n\t\t\t\t[a, -b, 0],\n\t\t\t\t[0, -a, b],\n\t\t\t\t[0, a, b],\n\t\t\t\t[0, -a, -b],\n\t\t\t\t[0, a, -b],\n\t\t\t\t[b, 0, -a],\n\t\t\t\t[b, 0, a],\n\t\t\t\t[-b, 0, -a],\n\t\t\t\t[-b, 0, a],\n\t\t\t];\n\t\t\tfor (const [vx, vy, vz] of icoRaw) {\n\t\t\t\tvertexFloats.push(cx + vx, cy + vy, cz + vz, colR, colG, colB, colA);\n\t\t\t\tvOffset++;",
+  "token_estimate": 137,
+  "created_at": 1794331101052
+}

@@ -1,0 +1,12 @@
+{
+  "id": "2866f9694a644b353aa00d22f25bc01fc88d0bc155a6221d03b36476500f36de",
+  "file": "apps\\web\\src\\panels\\neural-core\\components\\searchBox.test.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\components\\searchBox.test.ts",
+  "kind": "variable",
+  "name": "q",
+  "start_line": 53,
+  "end_line": 53,
+  "content": "\t\t},\n\t];\n\n\tit(\"encontra nós pelo nome do método contido\", () => {\n\t\tconst q = \"wasJustDragging\";\n\t\tconst matches = mockNodes.filter((n) => {\n\t\t\tconst qn = (n.qualifiedName || \"\").toLowerCase();\n\t\t\tconst hasMethod = (n.methods || []).some(",
+  "token_estimate": 60,
+  "created_at": 1794331100943
+}

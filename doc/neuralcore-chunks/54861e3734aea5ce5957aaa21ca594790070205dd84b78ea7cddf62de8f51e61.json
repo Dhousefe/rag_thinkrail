@@ -1,0 +1,12 @@
+{
+  "id": "54861e3734aea5ce5957aaa21ca594790070205dd84b78ea7cddf62de8f51e61",
+  "file": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreChunksView.tsx",
+  "path": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreChunksView.tsx",
+  "kind": "variable",
+  "name": "handleCopyChunk",
+  "start_line": 99,
+  "end_line": 102,
+  "content": "\t\t\t</div>\n\t\t);\n\t}\n\n\tconst handleCopyChunk = (c: HermesChunkItem) => {\n\t\tvoid navigator.clipboard.writeText(c.content);\n\t\ttoast.success(\"Chunk copiado para a área de transferência\", c.qualifiedName || c.relPath);\n\t};\n\n\treturn (\n\t\t<div className=\"flex flex-col gap-6 max-h-[300px] overflow-hidden min-h-0 flex-1\">",
+  "token_estimate": 78,
+  "created_at": 1794331100908
+}

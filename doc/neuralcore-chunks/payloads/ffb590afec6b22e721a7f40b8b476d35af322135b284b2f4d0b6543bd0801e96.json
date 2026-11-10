@@ -1,0 +1,13 @@
+{
+  "id": "ffb590afec6b22e721a7f40b8b476d35af322135b284b2f4d0b6543bd0801e96",
+  "text": "// 2. Gerador do Icosaedro Geodésico Sagrado\nexport function createIcosahedronWireframe(radius = 1.0): GeometryMeshData {\n\tconst phi = (1.0 + Math.sqrt(5.0)) / 2.0;\n\tconst a = 1.0;\n\tconst b = 1.0 / phi;\n\n\tconst rawVertices: [number, number, number][] = [\n\t\t[-a, b, 0],",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+    "kind": "variable",
+    "name": "b",
+    "start_line": 69,
+    "end_line": 69,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

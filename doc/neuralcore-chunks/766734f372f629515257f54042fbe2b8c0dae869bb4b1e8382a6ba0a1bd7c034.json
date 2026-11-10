@@ -1,0 +1,12 @@
+{
+  "id": "766734f372f629515257f54042fbe2b8c0dae869bb4b1e8382a6ba0a1bd7c034",
+  "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "kind": "variable",
+  "name": "textureView",
+  "start_line": 578,
+  "end_line": 578,
+  "content": "\t\t\tthis.device.queue.writeBuffer(this.primaryVBuffer!, 0, this.primaryMesh.vertices as any);\n\t\t}\n\n\t\tconst commandEncoder = this.device.createCommandEncoder();\n\t\tconst textureView = this.context.getCurrentTexture().createView();\n\t\tconst renderPass = commandEncoder.beginRenderPass({\n\t\t\tcolorAttachments: [\n\t\t\t\t{",
+  "token_estimate": 78,
+  "created_at": 1794331101118
+}

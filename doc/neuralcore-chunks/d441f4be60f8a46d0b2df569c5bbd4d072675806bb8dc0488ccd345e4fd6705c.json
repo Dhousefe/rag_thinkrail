@@ -1,0 +1,12 @@
+{
+  "id": "d441f4be60f8a46d0b2df569c5bbd4d072675806bb8dc0488ccd345e4fd6705c",
+  "file": "apps\\web\\src\\panels\\neural-core\\cameraController.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\cameraController.ts",
+  "kind": "method",
+  "name": "OrbitCameraController.updateTween",
+  "start_line": 191,
+  "end_line": 227,
+  "content": "\t\t\tdistance: targetDist,\n\t\t};\n\t}\n\n\tpublic updateTween() {\n\t\tif (!this.flyTarget) return;\n\t\tconst diffT = this.flyTarget.theta - this.theta;\n\t\tconst diffP = this.flyTarget.phi - this.phi;\n\t\tconst diffD = this.flyTarget.distance - this.distance;\n\t\tconst diffTx = this.flyTarget.targetX - this.target[0];\n\t\tconst diffTy = this.flyTarget.targetY - this.target[1];\n\t\tconst diffTz = this.flyTarget.targetZ - this.target[2];\n\n\t\tconst isClose =\n\t\t\tMath.abs(diffT) < 0.005 &&\n\t\t\tMath.abs(diffP) < 0.005 &&\n\t\t\tMath.abs(diffD) < 0.01 &&\n\t\t\tMath.abs(diffTx) < 0.005 &&\n\t\t\tMath.abs(diffTy) < 0.005 &&\n\t\t\tMath.abs(diffTz) < 0.005;\n\n\t\tif (isClose) {\n\t\t\tthis.theta = this.flyTarget.theta;\n\t\t\tthis.phi = this.flyTarget.phi;\n\t\t\tthis.distance = this.flyTarget.distance;\n\t\t\tthis.target[0] = this.flyTarget.targetX;\n\t\t\tthis.target[1] = this.flyTarget.targetY;\n\t\t\tthis.target[2] = this.flyTarget.targetZ;\n\t\t\tthis.flyTarget = null;\n\t\t\tthis.onUpdate?.();\n\t\t\treturn;\n\t\t}\n\n\t\tthis.theta += diffT * 0.2;\n\t\tthis.phi += diffP * 0.2;\n\t\tthis.distance += diffD * 0.2;\n\t\tthis.target[0] += diffTx * 0.2;\n\t\tthis.target[1] += diffTy * 0.2;\n\t\tthis.target[2] += diffTz * 0.2;\n\t\tthis.onUpdate?.();\n\t}\n\n\t/**\n\t * Salva o estado atual da câmera (posição de foco, ângulo e distância).",
+  "token_estimate": 310,
+  "created_at": 1794331100874
+}

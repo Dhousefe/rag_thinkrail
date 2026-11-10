@@ -1,0 +1,13 @@
+{
+  "id": "7c4443556491f976ddb0560350ab4cf4029e6fa18a8a661aa666b0fc503cbe38",
+  "text": "\t\t\tctx.stroke();\n\t\t}\n\n\t\tconst cosO = Math.cos(this.cameraOrbit.theta);\n\t\tconst sinO = Math.sin(this.cameraOrbit.theta);\n\t\tconst cosPhi = Math.cos(this.cameraOrbit.phi);\n\t\tconst sinPhi = Math.sin(this.cameraOrbit.phi);\n",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+    "kind": "variable",
+    "name": "sinO",
+    "start_line": 1098,
+    "end_line": 1098,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}
