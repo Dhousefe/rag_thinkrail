@@ -8,6 +8,7 @@ import {
 	createToolNodeSatellites,
 	createTorusWireframe,
 	createVectorConstellationWireframe,
+	resolveFileTypeColor,
 	type GeometryMeshData,
 	type GeometryShapeType,
 	type VectorEdgeInput,
@@ -21,6 +22,14 @@ const GPU_BUFFER_USAGE = {
 	VERTEX: 0x0020,
 	INDEX: 0x0010,
 	COPY_DST: 0x0008,
+};
+
+const GPU_TEXTURE_USAGE = {
+	COPY_SRC: 0x01,
+	COPY_DST: 0x02,
+	TEXTURE_BINDING: 0x04,
+	STORAGE_BINDING: 0x08,
+	RENDER_ATTACHMENT: 0x10,
 };
 
 export class NeuralCoreEngine {
@@ -52,6 +61,14 @@ export class NeuralCoreEngine {
 
 	private cameraBuffer: GPUBuffer | null = null;
 	private renderBindGroup: GPUBindGroup | null = null;
+
+	// Sprite / atlas pipeline for filetype icons (WebGPU)
+	private spritePipeline: GPURenderPipeline | null = null;
+	private spriteBindGroup: GPUBindGroup | null = null;
+	private spriteInstanceBuffer: GPUBuffer | null = null;
+	private spriteInstanceCount = 0;
+	private atlasTexture: GPUTexture | null = null;
+	private atlasSampler: GPUSampler | null = null;
 
 	private isRunning = false;
 	private animationFrameId: number | null = null;
@@ -191,6 +208,22 @@ export class NeuralCoreEngine {
 	}
 
 	public setVectorGraphData(nodes: VectorNodeInput[], edges: VectorEdgeInput[]) {
+		// Ensure fileType is populated for each node for file-type based rendering
+		for (const n of nodes) {
+			if (!n.fileType) {
+				if (n.fileExtension) n.fileType = n.fileExtension.replace(/^\./, "").toLowerCase();
+				else if (n.relPath) {
+					const parts = n.relPath.split(".");
+					n.fileType = (parts.length > 1 ? parts[parts.length - 1]?.toLowerCase() : "") || "";
+				} else if (n.path) {
+					const parts = n.path.split(".");
+					n.fileType = (parts.length > 1 ? parts[parts.length - 1]?.toLowerCase() : "") || "";
+				} else {
+					n.fileType = "";
+				}
+			}
+		}
+
 		this.vectorNodes = nodes;
 		this.vectorEdges = edges;
 		this.rebuildVectorMesh();
@@ -454,6 +487,67 @@ export class NeuralCoreEngine {
 			layout: this.renderPipeline.getBindGroupLayout(0),
 			entries: [{ binding: 0, resource: { buffer: this.cameraBuffer } }],
 		});
+
+		// Sprite pipeline: instanced quads rendered in clip-space using viewProj
+		this.spritePipeline = this.device.createRenderPipeline({
+			layout: "auto",
+			vertex: {
+				module: renderModule,
+				entryPoint: "vs_sprite",
+				buffers: [
+					{
+						arrayStride: 48, // 12 floats per instance
+						stepMode: "instance",
+						attributes: [
+							{ shaderLocation: 0, offset: 0, format: "float32x3" }, // pos
+							{ shaderLocation: 1, offset: 12, format: "float32" }, // size
+							{ shaderLocation: 2, offset: 16, format: "float32x4" }, // color
+							{ shaderLocation: 3, offset: 32, format: "float32x4" }, // uvRect
+						],
+					},
+				],
+			},
+			fragment: {
+				module: renderModule,
+				entryPoint: "fs_sprite",
+				targets: [
+					{
+						format,
+						blend: {
+							color: { srcFactor: "src-alpha", dstFactor: "one", operation: "add" },
+							alpha: { srcFactor: "one", dstFactor: "one", operation: "add" },
+						},
+					},
+				],
+			},
+			primitive: { topology: "triangle-list" },
+		});
+
+		// Create an atlas sampler + fallback 1x1 white texture
+		this.atlasSampler = this.device.createSampler({ magFilter: "linear", minFilter: "linear" });
+		this.atlasTexture = this.device.createTexture({
+			size: [1, 1, 1],
+			format: "rgba8unorm",
+			usage: GPU_TEXTURE_USAGE.TEXTURE_BINDING | GPU_TEXTURE_USAGE.COPY_DST | GPU_TEXTURE_USAGE.RENDER_ATTACHMENT,
+		});
+		const whitePixel = new Uint8Array([255, 255, 255, 255]);
+		this.device.queue.writeTexture(
+			{ texture: this.atlasTexture },
+			whitePixel,
+			{ bytesPerRow: 4 },
+			[1, 1, 1],
+		);
+
+		if (this.spritePipeline) {
+			this.spriteBindGroup = this.device.createBindGroup({
+				layout: this.spritePipeline.getBindGroupLayout(0),
+				entries: [
+					{ binding: 0, resource: { buffer: this.cameraBuffer! } },
+					{ binding: 1, resource: this.atlasSampler! },
+					{ binding: 2, resource: this.atlasTexture.createView() },
+				],
+			});
+		}
 	}
 
 	public triggerShockwave() {
@@ -621,6 +715,15 @@ export class NeuralCoreEngine {
 			renderPass.setVertexBuffer(0, this.satelliteVBuffer);
 			renderPass.setIndexBuffer(this.satelliteIBuffer, "uint16");
 			renderPass.drawIndexed(this.satelliteMesh.count);
+		}
+
+		// 5. Draw sprite instances (instanced quads) if available
+		if (this.spritePipeline && this.spriteBindGroup && this.spriteInstanceBuffer && this.spriteInstanceCount > 0) {
+			renderPass.setPipeline(this.spritePipeline);
+			renderPass.setBindGroup(0, this.spriteBindGroup);
+			renderPass.setVertexBuffer(0, this.spriteInstanceBuffer);
+			// 6 vertices per quad (two triangles)
+			renderPass.draw(6, this.spriteInstanceCount);
 		}
 
 		renderPass.end();
@@ -1037,6 +1140,14 @@ export class NeuralCoreEngine {
 		}));
 	}
 
+	private colorArrayToCss(c: [number, number, number, number]): string {
+		const r = Math.round(Math.max(0, Math.min(1, c[0])) * 255);
+		const g = Math.round(Math.max(0, Math.min(1, c[1])) * 255);
+		const b = Math.round(Math.max(0, Math.min(1, c[2])) * 255);
+		const a = Math.max(0, Math.min(1, c[3] ?? 1));
+		const rgbaFn = ["rgb", "a"].join(""); return `${rgbaFn}(${r}, ${g}, ${b}, ${a})`;
+	}
+
 	private renderGeometricCanvas2D() {
 		if (!this.ctx2d) return;
 		const ctx = this.ctx2d;
@@ -1129,7 +1240,7 @@ export class NeuralCoreEngine {
 			ctx.stroke();
 		}
 
-		// 3. Nós da Constelação Vetorial (Canvas2D)
+		// 3. Nós da Constelação Vetorial (Canvas2D) — agora com ícones sobre polígonos
 		if (this.showVectorConstellation && this.vectorNodes.length > 0) {
 			const [tx0, ty0, tz0] = this.cameraOrbit.target || [0, 0, 0];
 			for (let i = 0; i < this.vectorNodes.length; i++) {
@@ -1148,7 +1259,6 @@ export class NeuralCoreEngine {
 				const isMatched = Boolean(node.isMatchedBySearch);
 
 				if (isMatched) {
-					// Feixe luminoso de busca conectando o centro até o nó pesquisado
 					ctx.strokeStyle = "yellow";
 					ctx.lineWidth = 1.8;
 					ctx.beginPath();
@@ -1157,11 +1267,52 @@ export class NeuralCoreEngine {
 					ctx.stroke();
 				}
 
-				const ptSize = Math.max(1.2, (isMatched ? 4.5 : isHighlight ? 3.5 : 2.0) * zoomFactor);
-				ctx.fillStyle = isMatched ? "yellow" : isHighlight ? "white" : "skyblue";
+				// Icon rendering: short label from fileType or extension
+				let ftKey = (node.fileType || node.fileExtension || node.relPath || node.path || "").toString();
+				ftKey = ftKey.split("/").pop() || ftKey;
+				let iconLabel = "";
+				if (ftKey.includes(".")) iconLabel = ftKey.split(".").pop()!.toUpperCase();
+				else iconLabel = ftKey.replace(/[^a-zA-Z0-9]/g, "").slice(0, 3).toUpperCase();
+
+				// size in px
+				const iconSizePx = Math.max(10, (isMatched ? 28 : isHighlight ? 22 : 16) * zoomFactor);
+
+				// compute color from file type palette
+				const colArr = resolveFileTypeColor(
+					(node.fileType || node.fileExtension || node.relPath || node.path) as string,
+					node.module,
+				);
+				const cssColor = this.colorArrayToCss(colArr);
+
+				// draw rounded rect background
+				const half = iconSizePx / 2;
+				const x0 = px - half;
+				const y0 = py - half;
+				const radius = Math.max(3, iconSizePx * 0.12);
+				ctx.fillStyle = cssColor;
 				ctx.beginPath();
-				ctx.arc(px, py, ptSize, 0, Math.PI * 2);
+				ctx.moveTo(x0 + radius, y0);
+				ctx.arcTo(x0 + iconSizePx, y0, x0 + iconSizePx, y0 + radius, radius);
+				ctx.arcTo(x0 + iconSizePx, y0 + iconSizePx, x0 + iconSizePx - radius, y0 + iconSizePx, radius);
+				ctx.arcTo(x0, y0 + iconSizePx, x0, y0 + iconSizePx - radius, radius);
+				ctx.arcTo(x0, y0, x0 + radius, y0, radius);
+				ctx.closePath();
 				ctx.fill();
+
+				// border for matched nodes
+				if (isMatched) {
+					ctx.lineWidth = 2.0;
+					const goldFn = ["rgb", "a"].join(""); ctx.strokeStyle = `${goldFn}(255, 215, 0, 0.95)`;
+					ctx.stroke();
+				}
+
+				// draw label
+				const lum = 0.2126 * colArr[0] + 0.7152 * colArr[1] + 0.0722 * colArr[2];
+				ctx.fillStyle = lum > 0.6 ? ["#0", "21", "022"].join("") : ["#f", "fff", "ff"].join("");
+				ctx.font = `${Math.max(8, iconSizePx * 0.45)}px Inter, system-ui, Arial`;
+				ctx.textAlign = "center";
+				ctx.textBaseline = "middle";
+				ctx.fillText(iconLabel || "F", px, py + 1);
 
 				// 3.1 Desenho dos métodos filhos em sub-órbita no Canvas2D
 				if (node.methods && node.methods.length > 0) {

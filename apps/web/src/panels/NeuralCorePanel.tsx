@@ -32,11 +32,19 @@ import {
 import type {
 	HermesChunkItem,
 	HermesClassStatsResult,
+	HermesVectorGraphSample,
 	HermesVectorNode,
 } from "@thinkrail/contracts";
 import { Button } from "@thinkrail/ui/button";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { selectWorkspaceById, selectWorkspaceChatTab, toast, useAppStore } from "@/store";
+import {
+	selectActiveFilePath,
+	selectActiveWorkspace,
+	selectWorkspaceById,
+	selectWorkspaceChatTab,
+	toast,
+	useAppStore,
+} from "@/store";
 import { getTransport } from "@/transport";
 import { projectRelativePath } from "../lib";
 import { OrbitCameraController } from "./neural-core/cameraController";
@@ -86,6 +94,55 @@ function getModuleClasses(moduleName?: string): { border: string; text: string; 
 	}
 }
 
+/**
+ * Resolve o slug do projeto correspondente ao workspace ativo no editor
+ * para definir como a home inicial do Neural Core.
+ */
+function resolveTargetProjectSlug(
+	workspace: { projectId?: string; worktreePath?: string } | null,
+	projects: Array<{ slug: string; path?: string }> = [],
+	fallbackSlug?: string | null,
+): string | null {
+	if (!workspace && !fallbackSlug && projects.length === 0) return null;
+
+	const wsPath = (workspace?.worktreePath || "")
+		.toLowerCase()
+		.replace(/\\/g, "/")
+		.replace(/\/+$/, "");
+	const wsProjectId = (workspace?.projectId || "").toLowerCase();
+
+	// 1. Tenta correspondência precisa por diretório de trabalho (worktreePath)
+	if (wsPath) {
+		for (const p of projects) {
+			const pPath = (p.path || "").toLowerCase().replace(/\\/g, "/").replace(/\/+$/, "");
+			if (pPath && (pPath === wsPath || wsPath.startsWith(pPath) || pPath.startsWith(wsPath))) {
+				return p.slug;
+			}
+		}
+	}
+
+	// 2. Tenta correspondência pelo projectId do workspace
+	if (wsProjectId) {
+		for (const p of projects) {
+			const slugLower = p.slug.toLowerCase();
+			if (
+				slugLower === wsProjectId ||
+				slugLower.includes(wsProjectId) ||
+				wsProjectId.includes(slugLower)
+			) {
+				return p.slug;
+			}
+		}
+	}
+
+	// 3. Fallback para activeProjectSlug ou primeiro projeto ativo
+	if (fallbackSlug && projects.some((p) => p.slug === fallbackSlug)) {
+		return fallbackSlug;
+	}
+
+	return projects[0]?.slug ?? null;
+}
+
 export function NeuralCorePanel() {
 	const canvasRef = useRef<HTMLCanvasElement | null>(null);
 	const engineRef = useRef<NeuralCoreEngine | null>(null);
@@ -113,11 +170,31 @@ export function NeuralCorePanel() {
 	// Estado da Projeção de Vetores RAG
 	const [vectorNodes, setVectorNodes] = useState<HermesVectorNode[]>([]);
 	const [vectorEdges, setVectorEdges] = useState<any[]>([]);
+	const vectorNodesRef = useRef<HermesVectorNode[]>([]);
+	const vectorEdgesRef = useRef<any[]>([]);
 	const [totalChunks, setTotalChunks] = useState(0);
 	const [inspectedNode, setInspectedNode] = useState<HermesVectorNode | null>(null);
 	const [selectedNode, setSelectedNode] = useState<HermesVectorNode | null>(null);
 	const [projectedLabels, setProjectedLabels] = useState<any[]>([]);
 	const [selectedModules, setSelectedModules] = useState<string[]>([]);
+
+	// Normaliza nodes vindos do transporte para garantir fileType preenchido antes de enviar ao engine
+	const normalizeNode = (n: HermesVectorNode): HermesVectorNode => {
+		try {
+			const existing = (n as any).fileType;
+			if (existing && typeof existing === "string" && existing.trim().length > 0) return n;
+			const ext =
+				(n as any).fileExtension ||
+				(n.relPath || n.path || "").split("/").pop()?.split(".").pop() ||
+				"";
+			const fileType = ext ? String(ext).replace(/^\./, "").toLowerCase() : "";
+			return { ...n, fileType } as HermesVectorNode;
+		} catch {
+			return n;
+		}
+	};
+
+	const normalizeNodes = (nodes: HermesVectorNode[] = []) => nodes.map(normalizeNode);
 
 	// Estatísticas de Classes e Arquivos dos Projetos Ativos
 	const [classStats, setClassStats] = useState<HermesClassStatsResult | null>(null);
@@ -128,8 +205,27 @@ export function NeuralCorePanel() {
 		return computeSemanticFingerprint(vectorNodes, vectorEdges);
 	}, [vectorNodes, vectorEdges]);
 
-	// Batch Loader (Carregador em Lote Progressivo)
-	const [selectedProjectFilter, setSelectedProjectFilter] = useState<string>("all");
+	// Sincronização Bidirecional com o Workspace e Projetos Ativos do Hermes RAG
+	const activeWorkspace = useAppStore(selectActiveWorkspace);
+	const hermesProjects = useAppStore((s) => s.hermesManagement.projects);
+	const activeProjectSlugs = useAppStore((s) => s.hermesManagement.activeProjectSlugs);
+	const activeProjectSlug = useAppStore((s) => s.hermesManagement.activeProjectSlug);
+
+	// Resolução do projeto inicial com foco no workspace atual como "home"
+	const initialHomeProjectSlug = useMemo(() => {
+		return (
+			resolveTargetProjectSlug(activeWorkspace, hermesProjects, activeProjectSlug) ||
+			activeProjectSlug ||
+			"all"
+		);
+	}, [activeWorkspace, hermesProjects, activeProjectSlug]);
+
+	// Batch Loader (Carregador em Lote Progressivo Resiliente)
+	const [selectedProjectFilter, setSelectedProjectFilter] =
+		useState<string>(initialHomeProjectSlug);
+	const selectedProjectFilterRef = useRef<string>(initialHomeProjectSlug);
+	const hasUserExplicitlySelectedFilterRef = useRef<boolean>(false);
+	const initialHomeLoadedRef = useRef<boolean>(false);
 	const [, setBatchOffset] = useState(0);
 	const batchOffsetRef = useRef(0);
 	const [hasMoreBatches, setHasMoreBatches] = useState(false);
@@ -138,13 +234,27 @@ export function NeuralCorePanel() {
 	const [totalFilesCount, setTotalFilesCount] = useState(0);
 	const [isLoadingBatch, setIsLoadingBatch] = useState(false);
 	const [isAutoStreaming, setIsAutoStreaming] = useState(false);
+	const [streamSequence, setStreamSequence] = useState(0);
 	const autoStreamingRef = useRef(false);
+	const isMountedRef = useRef(true);
 
-	// Sincronização e Reatividade com Projetos Ativos do Hermes RAG
-	const activeProjectSlugs = useAppStore((s) => s.hermesManagement.activeProjectSlugs);
-	const activeProjectSlug = useAppStore((s) => s.hermesManagement.activeProjectSlug);
+	// Sincronização Bidirecional com a Aba/Arquivo Ativo no Editor
+	const activeEditorFilePath = useAppStore((s) =>
+		activeWorkspace ? selectActiveFilePath(s, activeWorkspace.id) : null,
+	);
 
-	// Consulta de estatísticas detalhadas de classes e arquivos
+	useEffect(() => {
+		if (!activeEditorFilePath || selectedNode || !engineRef.current) return;
+		const pivot = resolvePivotNode(activeEditorFilePath, vectorNodes);
+		if (pivot) {
+			const idx = vectorNodes.findIndex((n) => n.id === pivot.id);
+			engineRef.current.setHighlightedNode(idx !== -1 ? idx : null);
+		} else {
+			engineRef.current.setHighlightedNode(null);
+		}
+	}, [activeEditorFilePath, selectedNode, vectorNodes]);
+
+	// Consulta de estatísticas detalhadas de classes e arquivos com resolução de home
 	const loadClassStats = useCallback(async () => {
 		setIsLoadingStats(true);
 		try {
@@ -154,85 +264,168 @@ export function NeuralCorePanel() {
 				setTotalClassesCount(stats.totals.totalClasses);
 				setTotalFilesCount(stats.totals.totalFiles);
 			}
+
+			// Se o usuário ainda não escolheu manualmente um filtro, vincula a home ao projeto atual
+			if (
+				!hasUserExplicitlySelectedFilterRef.current &&
+				stats?.projects &&
+				stats.projects.length > 0
+			) {
+				const resolved = resolveTargetProjectSlug(
+					activeWorkspace,
+					stats.projects,
+					activeProjectSlug,
+				);
+				if (resolved && resolved !== selectedProjectFilterRef.current) {
+					selectedProjectFilterRef.current = resolved;
+					setSelectedProjectFilter(resolved);
+					return resolved;
+				}
+			}
+			return stats?.projects && stats.projects.length > 0 ? selectedProjectFilterRef.current : null;
 		} catch (err) {
 			console.warn("[NeuralCorePanel] Erro ao carregar estatísticas de classes:", err);
+			return null;
 		} finally {
 			setIsLoadingStats(false);
 		}
-	}, []);
+	}, [activeWorkspace, activeProjectSlug]);
 
 	// Carregamento dos vetores do banco SQLite hermes.db com suporte a lote (Batch Loader)
-	const loadVectorGraph = useCallback(
-		async (reset = true, overrideSlug?: string) => {
-			try {
-				setIsLoadingBatch(true);
-				const currentOffset = reset ? 0 : batchOffsetRef.current;
-				const targetSlug =
-					overrideSlug !== undefined
-						? overrideSlug === "all"
-							? undefined
-							: overrideSlug
-						: selectedProjectFilter === "all"
-							? undefined
-							: selectedProjectFilter;
+	const loadVectorGraph = useCallback(async (reset = true, overrideSlug?: string) => {
+		if (!isMountedRef.current) return;
+		try {
+			setIsLoadingBatch(true);
+			const currentOffset = reset ? 0 : batchOffsetRef.current;
+			const currentFilter = selectedProjectFilterRef.current;
+			const targetSlug =
+				overrideSlug !== undefined
+					? overrideSlug === "all"
+						? undefined
+						: overrideSlug
+					: currentFilter === "all"
+						? undefined
+						: currentFilter;
 
-				// Lotes otimizados de 350 nós (anteriormente 180) para carregamento 2x mais rápido
-				// sem travar a thread de renderização WebGPU/WebGL
-				const res = await getTransport().request("hermes.getVectorGraph", {
-					limit: 350,
-					offset: currentOffset,
-					batchSize: 350,
-					includeAllClasses: true,
-					projectSlug: targetSlug,
-				});
-				if (res && Array.isArray(res.nodes)) {
-					if (reset) {
-						setVectorNodes(res.nodes);
-						setVectorEdges(res.edges || []);
-						const nextOffset = res.nodes.length;
-						batchOffsetRef.current = nextOffset;
-						setBatchOffset(nextOffset);
-						if (engineRef.current) {
-							engineRef.current.setVectorGraphData(res.nodes, res.edges || []);
-						}
-						// Ajusta o enquadramento inicial da câmera aos nós carregados para visualização ótima
-						if (res.nodes.length > 0 && cameraRef.current) {
-							const positions = res.nodes.map((n: HermesVectorNode) => n.position);
-							cameraRef.current.fitBounds(positions);
-						}
-					} else {
-						// Merge de nós preservando IDs únicos e remapeando arestas
-						setVectorNodes((prev) => {
-							const existing = new Set(prev.map((n) => n.id || n.path));
-							const fresh = res.nodes.filter((n) => !existing.has(n.id || n.path));
-							return [...prev, ...fresh];
-						});
-						setVectorEdges((prev) => [...prev, ...(res.edges || [])]);
-						const nextOffset = batchOffsetRef.current + res.nodes.length;
-						batchOffsetRef.current = nextOffset;
-						setBatchOffset(nextOffset);
-						if (engineRef.current) {
-							engineRef.current.appendVectorGraphData(res.nodes, res.edges || []);
-						}
+			// Retry resiliente contra oscilações transitórias de RPC / SQLite (até 3 tentativas)
+			let res: HermesVectorGraphSample | null = null;
+			let lastErr: unknown = null;
+			for (let attempt = 1; attempt <= 3; attempt++) {
+				try {
+					res = await getTransport().request("hermes.getVectorGraph", {
+						limit: 350,
+						offset: currentOffset,
+						batchSize: 350,
+						includeAllClasses: true,
+						projectSlug: targetSlug,
+					});
+					lastErr = null;
+					break;
+				} catch (rpcErr) {
+					lastErr = rpcErr;
+					if (attempt < 3 && isMountedRef.current) {
+						await new Promise((resolve) => setTimeout(resolve, attempt * 200));
 					}
-					setTotalChunks(res.totalChunks);
-					setHasMoreBatches(Boolean(res.hasMore));
-					setTotalAvailableNodes(res.totalAvailableNodes || res.totalChunks);
-					if (res.totalClasses) setTotalClassesCount(res.totalClasses);
-					if (res.totalFiles) setTotalFilesCount(res.totalFiles);
 				}
-			} catch (err) {
-				console.warn("[NeuralCorePanel] Erro ao carregar grafo vetorial:", err);
-			} finally {
+			}
+
+			if (lastErr) {
+				console.warn(
+					"[NeuralCorePanel] Falha após 3 tentativas no lote do grafo vetorial:",
+					lastErr,
+				);
+				if (autoStreamingRef.current) {
+					autoStreamingRef.current = false;
+					setIsAutoStreaming(false);
+					toast.error(
+						"Oscilação ao carregar lote de classes",
+						"Pausado. Clique em +350 para retomar.",
+					);
+				}
+				return;
+			}
+
+			if (!isMountedRef.current) return;
+
+			if (res && Array.isArray(res.nodes)) {
+				const normalizedNodes = normalizeNodes(res.nodes);
+				const hasMore = Boolean(res.hasMore && res.nodes.length > 0);
+
+				if (reset) {
+					vectorNodesRef.current = normalizedNodes;
+					vectorEdgesRef.current = res.edges || [];
+					setVectorNodes(normalizedNodes);
+					setVectorEdges(res.edges || []);
+					const nextOffset = normalizedNodes.length;
+					batchOffsetRef.current = nextOffset;
+					setBatchOffset(nextOffset);
+					if (engineRef.current) {
+						engineRef.current.setVectorGraphData(normalizedNodes, res.edges || []);
+					}
+					// Ajusta o enquadramento inicial da câmera aos nós carregados para visualização ótima
+					if (res.nodes.length > 0 && cameraRef.current) {
+						const positions = res.nodes.map((n: HermesVectorNode) => n.position);
+						cameraRef.current.fitBounds(positions);
+					}
+
+					// Auto-streaming seguro: se houver mais classes disponíveis para o projeto, ativa o streaming em lote
+					if (hasMore) {
+						autoStreamingRef.current = true;
+						setIsAutoStreaming(true);
+						setStreamSequence((s) => s + 1);
+					} else {
+						autoStreamingRef.current = false;
+						setIsAutoStreaming(false);
+					}
+				} else {
+					// Merge de nós preservando IDs únicos e remapeando arestas
+					setVectorNodes((prev) => {
+						const existing = new Set(prev.map((n) => n.id || n.path));
+						const fresh = normalizedNodes.filter((n) => !existing.has(n.id || n.path));
+						const merged = [...prev, ...fresh];
+						vectorNodesRef.current = merged;
+						return merged;
+					});
+					setVectorEdges((prev) => {
+						const mergedEdges = [...prev, ...(res.edges || [])];
+						vectorEdgesRef.current = mergedEdges;
+						return mergedEdges;
+					});
+					const nextOffset = batchOffsetRef.current + normalizedNodes.length;
+					batchOffsetRef.current = nextOffset;
+					setBatchOffset(nextOffset);
+					if (engineRef.current) {
+						engineRef.current.appendVectorGraphData(normalizedNodes, res.edges || []);
+					}
+
+					if (!hasMore) {
+						autoStreamingRef.current = false;
+						setIsAutoStreaming(false);
+						toast.success("Todas as classes carregadas", `${nextOffset} nós na cena 3D`);
+					} else if (autoStreamingRef.current) {
+						setStreamSequence((s) => s + 1);
+					}
+				}
+				setTotalChunks(res.totalChunks);
+				setHasMoreBatches(hasMore);
+				setTotalAvailableNodes(res.totalAvailableNodes || res.totalChunks);
+				if (res.totalClasses) setTotalClassesCount(res.totalClasses);
+				if (res.totalFiles) setTotalFilesCount(res.totalFiles);
+			}
+		} catch (err) {
+			console.warn("[NeuralCorePanel] Erro ao carregar grafo vetorial:", err);
+		} finally {
+			if (isMountedRef.current) {
 				setIsLoadingBatch(false);
 			}
-		},
-		[selectedProjectFilter],
-	);
+		}
+	}, []);
 
-	// Mudança de filtro de projeto
+	// Mudança de filtro de projeto (navegação global sem regressão)
 	const handleSelectProjectFilter = useCallback(
 		async (slug: string) => {
+			hasUserExplicitlySelectedFilterRef.current = true;
+			selectedProjectFilterRef.current = slug;
 			setSelectedProjectFilter(slug);
 			batchOffsetRef.current = 0;
 			setBatchOffset(0);
@@ -258,37 +451,50 @@ export function NeuralCorePanel() {
 		} else {
 			autoStreamingRef.current = true;
 			setIsAutoStreaming(true);
+			setStreamSequence((s) => s + 1);
 			toast.info("Carregando todas as classes", "Streaming progressivo em lote iniciado...");
 		}
 	}, [isAutoStreaming, vectorNodes.length]);
 
-	// Loop do streaming contínuo em lotes com pausa controlada
+	// Loop do streaming contínuo em lotes com pausa controlada e acoplamento reativo à prova de travamentos
 	useEffect(() => {
-		if (!isAutoStreaming) return;
-		if (!hasMoreBatches) {
-			setIsAutoStreaming(false);
-			autoStreamingRef.current = false;
-			toast.success("Todas as classes carregadas", `${vectorNodes.length} nós na cena 3D`);
-			return;
-		}
+		if (!isAutoStreaming || !hasMoreBatches) return;
 
 		let isCancelled = false;
 		const timer = setTimeout(async () => {
 			if (!autoStreamingRef.current || isCancelled) return;
 			await handleLoadNextBatch();
-		}, 180); // Intervalo reduzido de 450ms para 180ms para resposta rápida do streaming
+		}, 120);
 
 		return () => {
 			isCancelled = true;
 			clearTimeout(timer);
 		};
-	}, [isAutoStreaming, hasMoreBatches, handleLoadNextBatch, vectorNodes.length]);
+	}, [isAutoStreaming, hasMoreBatches, streamSequence, handleLoadNextBatch]);
 
-	// Recarrega automaticamente a representação gráfica e stats quando projetos RAG forem ativados/desativados
+	// Carga inicial: inicializa estatísticas de projetos, define o projeto atual como home e carrega o primeiro lote
 	useEffect(() => {
+		let isCancelled = false;
+		const initHomeProjectAndGraph = async () => {
+			if (initialHomeLoadedRef.current) return;
+			initialHomeLoadedRef.current = true;
+			const resolvedSlug = await loadClassStats();
+			if (isCancelled) return;
+			const slugToUse = resolvedSlug || selectedProjectFilterRef.current;
+			await loadVectorGraph(true, slugToUse);
+		};
+
+		void initHomeProjectAndGraph();
+		return () => {
+			isCancelled = true;
+		};
+	}, [loadClassStats, loadVectorGraph]);
+
+	// Recarrega quando projetos RAG forem ativados/desativados no painel de settings após a carga inicial
+	useEffect(() => {
+		if (!initialHomeLoadedRef.current) return;
 		void loadClassStats();
-		void loadVectorGraph(true);
-	}, [activeProjectSlugs, activeProjectSlug]);
+	}, [activeProjectSlugs, activeProjectSlug, loadClassStats]);
 
 	// Inicialização do Motor WebGPU Geométrico
 	useEffect(() => {
@@ -327,8 +533,17 @@ export function NeuralCorePanel() {
 		};
 
 		engine.init().then(() => {
+			if (!isMountedRef.current) {
+				engine.stop();
+				return;
+			}
 			engine.start();
-			void loadVectorGraph();
+			// Se nós já tiverem sido recebidos pela busca inicial, transfere imediatamente para o WebGPU
+			if (vectorNodesRef.current.length > 0) {
+				engine.setVectorGraphData(vectorNodesRef.current, vectorEdgesRef.current);
+			} else {
+				void loadVectorGraph(true);
+			}
 		});
 
 		const handleResize = () => {
@@ -345,6 +560,8 @@ export function NeuralCorePanel() {
 		return () => {
 			ro.disconnect();
 			engine.stop();
+			engineRef.current = null;
+			cameraRef.current = null;
 		};
 	}, [loadVectorGraph]);
 
@@ -472,7 +689,7 @@ export function NeuralCorePanel() {
 				.then((res) => {
 					if (isCancelled) return;
 					if (res && Array.isArray(res.nodes) && res.nodes.length > 0) {
-						const injectedNode = res.nodes[0]!;
+						const injectedNode = normalizeNode(res.nodes[0]!);
 						setVectorNodes((prev) => {
 							if (prev.some((n) => n.id === injectedNode.id)) return prev;
 							const updated = [...prev, injectedNode];
@@ -796,6 +1013,7 @@ export function NeuralCorePanel() {
 		if (restoreCamera && cameraRef.current) {
 			const restored = cameraRef.current.restoreCameraSnapshot();
 			if (restored) {
+				// A restauração agora usa flyTarget; aguarda a finalização na engine (visual suave)
 				toast.info("Câmera restaurada", "Retornou à visão anterior à seleção");
 			}
 		}
@@ -835,6 +1053,7 @@ export function NeuralCorePanel() {
 				handleDeselectNode(true);
 			} else if ((e.key === "r" || e.key === "R") && !e.ctrlKey && !e.metaKey) {
 				e.preventDefault();
+				// Limpa snapshot explicitamente antes de resetar a visão
 				cameraRef.current?.clearCameraSnapshot();
 				handleResetView();
 			} else if (e.key === "+" || e.key === "=") {
@@ -1227,7 +1446,7 @@ export function NeuralCorePanel() {
 				) : (
 					<div className="flex flex-wrap items-center gap-6 rounded-lg border border-border-default bg-container-elevated-bg px-8 py-4 tr-text-metadata text-text-muted backdrop-blur-md shadow-md pointer-events-auto">
 						{/* Seletor de Escopo de Projeto Ativo */}
-						{classStats?.projects && classStats.projects.length > 1 && (
+						{classStats?.projects && classStats.projects.length >= 1 && (
 							<div className="flex items-center gap-4 pr-4 border-r border-border-default">
 								<select
 									value={selectedProjectFilter}
@@ -1318,7 +1537,7 @@ export function NeuralCorePanel() {
 									) : (
 										<RiStackLine className="size-12 text-primary" />
 									)}
-									<span className="tr-text-emphasis">+180</span>
+									<span className="tr-text-emphasis">+350</span>
 								</button>
 
 								<button
@@ -1331,7 +1550,7 @@ export function NeuralCorePanel() {
 									}`}
 									title={
 										isAutoStreaming
-											? "Pausar carregamento automático"
+											? "Pausar carregamento automático em lote"
 											: "Carregar todas as classes e arquivos disponíveis"
 									}
 								>

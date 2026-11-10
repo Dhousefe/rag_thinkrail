@@ -1,0 +1,133 @@
+{
+  "generated_at": "2026-11-10T20:43:50.361Z",
+  "project": "project-thinkrail",
+  "neuralcore_chunk_match_count": 814,
+  "embeddings_present_for_matching_chunks_by_id": 719,
+  "embeddings_present_for_matching_chunks_by_path_join": 719,
+  "sample_chunks_shown": 10,
+  "samples": [
+    {
+      "id": "afa96894953b4e10592355c1c286bd3f47fc666177d2ff13ff3b2a2ed8ce9246",
+      "path": "D:\\Projet_Thinkrail\\source\\thinkrail\\apps\\web\\src\\panels\\neural-core\\resolvePivotNode.test.ts",
+      "qualified_name": "D:\\Projet_Thinkrail\\source\\thinkrail\\apps\\web\\src\\panels\\neural-core\\resolvePivotNode.test.ts",
+      "snippet": "import { describe, expect, it } from \"bun:test\"; import type { HermesVectorNode } from \"@thinkrail/contracts\"; import { resolvePivotNode } from \"./resolvePivotNode\";"
+    },
+    {
+      "id": "31b6ac359538870b50b9f0cc717b49f79acda3a8eecc81e4da5e92b2b1de571d",
+      "path": "D:\\Projet_Thinkrail\\source\\thinkrail\\apps\\web\\src\\panels\\neural-core\\resolvePivotNode.test.ts",
+      "qualified_name": "D:\\Projet_Thinkrail\\source\\thinkrail\\apps\\web\\src\\panels\\neural-core\\resolvePivotNode.test.ts",
+      "snippet": "\t}); }); "
+    },
+    {
+      "id": "620c8b1d52ef2bb3b38e2467a7717f5249edc46b8ae9d2a63a7b6d735732dc80",
+      "path": "D:\\Projet_Thinkrail\\source\\thinkrail\\apps\\web\\src\\panels\\neural-core\\resolvePivotNode.ts",
+      "qualified_name": "D:\\Projet_Thinkrail\\source\\thinkrail\\apps\\web\\src\\panels\\neural-core\\resolvePivotNode.ts",
+      "snippet": "import type { HermesVectorNode } from \"@thinkrail/contracts\";  /**"
+    },
+    {
+      "id": "58243f4aa06f1ced34f281473a373fa23ed02ff6a0cd77cb31c958b95b820b35",
+      "path": "D:\\Projet_Thinkrail\\source\\thinkrail\\apps\\web\\src\\panels\\neural-core\\resolvePivotNode.ts",
+      "qualified_name": "D:\\Projet_Thinkrail\\source\\thinkrail\\apps\\web\\src\\panels\\neural-core\\resolvePivotNode.ts",
+      "snippet": "\t}  \treturn null;"
+    },
+    {
+      "id": "666976548cdd1734647c9cfc5b869f736448e9dbc87141f1f2544a635bbd6828",
+      "path": "D:\\Projet_Thinkrail\\source\\thinkrail\\apps\\web\\src\\panels\\neural-core\\cameraController.ts",
+      "qualified_name": "D:\\Projet_Thinkrail\\source\\thinkrail\\apps\\web\\src\\panels\\neural-core\\cameraController.ts",
+      "snippet": "export class OrbitCameraController { \tprivate canvas: HTMLCanvasElement; \tprivate isDragging = false;"
+    },
+    {
+      "id": "cc98180f8b787e81bb7279e376938ffdc1aa95e9a0b6048fe5d776dab17197ac",
+      "path": "D:\\Projet_Thinkrail\\source\\thinkrail\\apps\\web\\src\\panels\\neural-core\\cameraController.ts",
+      "qualified_name": "D:\\Projet_Thinkrail\\source\\thinkrail\\apps\\web\\src\\panels\\neural-core\\cameraController.ts",
+      "snippet": "\t\t\tconst dx = e.clientX - this.lastMouseX; \t\t\tconst dy = e.clientY - this.lastMouseY; \t\t\tthis.totalDragDistance += Math.hypot(dx, dy);"
+    },
+    {
+      "id": "ab220827c1a12e886fa9b913b0510dfc3c5dea97187e215f7e99b93c4b325ecc",
+      "path": "D:\\Projet_Thinkrail\\source\\thinkrail\\apps\\web\\src\\panels\\neural-core\\cameraController.ts",
+      "qualified_name": "D:\\Projet_Thinkrail\\source\\thinkrail\\apps\\web\\src\\panels\\neural-core\\cameraController.ts",
+      "snippet": "\t\tconst panFactor = Math.max(0.001, this.distance * 0.0022);  \t\t// Vetor Right da câmera no plano horizontal"
+    },
+    {
+      "id": "aefbd160879bcdea043e968cdb2b068bcb89cf27b9599a6294bf0fc99df44a0d",
+      "path": "D:\\Projet_Thinkrail\\source\\thinkrail\\apps\\web\\src\\panels\\neural-core\\cameraController.ts",
+      "qualified_name": "D:\\Projet_Thinkrail\\source\\thinkrail\\apps\\web\\src\\panels\\neural-core\\cameraController.ts",
+      "snippet": "\t\tthis.flyTarget = { \t\t\ttargetX: x, \t\t\ttargetY: y,"
+    },
+    {
+      "id": "a40546db61f92e680fb66d9045896de2d248bc7ad9632704f96ee4a5b4c187f9",
+      "path": "D:\\Projet_Thinkrail\\source\\thinkrail\\apps\\web\\src\\panels\\neural-core\\cameraController.ts",
+      "qualified_name": "D:\\Projet_Thinkrail\\source\\thinkrail\\apps\\web\\src\\panels\\neural-core\\cameraController.ts",
+      "snippet": "\t\t}; \t} "
+    },
+    {
+      "id": "86058b5cdfc3ab3b093d3592f3daabb5f7d0fe684cd02d25b25048e24765a653",
+      "path": "D:\\Projet_Thinkrail\\source\\thinkrail\\apps\\web\\src\\panels\\neural-core\\cameraController.ts",
+      "qualified_name": "D:\\Projet_Thinkrail\\source\\thinkrail\\apps\\web\\src\\panels\\neural-core\\cameraController.ts",
+      "snippet": "\t\t\tif (z > maxZ) maxZ = z; \t\t} "
+    }
+  ],
+  "fts_neuralcore_hits": [
+    {
+      "id": "22453f94e25b037c9bf075fbaa9cd8fa7defc8ad470322458fc7f7c0433a5408",
+      "path": "D:\\Projet_Thinkrail\\source\\thinkrail\\apps\\web\\src\\shell\\layout\\presets.ts",
+      "qualified_name": "D:\\Projet_Thinkrail\\source\\thinkrail\\apps\\web\\src\\shell\\layout\\presets.ts",
+      "snippet": "export function presetPlacesTool(preset: LayoutPreset, tool: LayoutToolId): boolean { \treturn [preset.left, preset.right, preset.bottom].some((region) => \t\tregion.groups.some((group) => group.tools.in"
+    },
+    {
+      "id": "1444b8cb39965bd29b0b81a7c6d8bd406196915353c351900d4770e26004a28b",
+      "path": "D:\\Projet_Thinkrail\\source\\thinkrail\\apps\\web\\src\\shell\\paletteCatalog.ts",
+      "qualified_name": "D:\\Projet_Thinkrail\\source\\thinkrail\\apps\\web\\src\\shell\\paletteCatalog.ts",
+      "snippet": "import { \ttype RemixiconComponentType, \tRiAddLine,"
+    },
+    {
+      "id": "13cd24762c98c9d8549269677be8a0c4d4ca4ddaa12369c4ff84381f2e91dcfb",
+      "path": "D:\\Projet_Thinkrail\\source\\thinkrail\\packages\\locales\\en.json",
+      "qualified_name": "D:\\Projet_Thinkrail\\source\\thinkrail\\packages\\locales\\en.json",
+      "snippet": "\t\"workbench.tab.newGroupLeft\": \"New group left\", \t\"workbench.tab.newGroupRight\": \"New group right\", \t\"workbench.tab.newLeftGroupBottom\": \"New left group at bottom\","
+    },
+    {
+      "id": "64796cf422f0ba95a46b021ad6d55af94dd1d776ae1fc68dfa3dcb01ad90e24b",
+      "path": "D:\\Projet_Thinkrail\\source\\thinkrail\\scripts\\neuralcore-callgraph.js",
+      "qualified_name": "D:\\Projet_Thinkrail\\source\\thinkrail\\scripts\\neuralcore-callgraph.js",
+      "snippet": "import fs from 'fs'; import path from 'path'; import ts from 'typescript';"
+    },
+    {
+      "id": "8fa2527b1a8138f0b7028807a38e66389d136d7127d5f4b2a7855a181c650dc7",
+      "path": "D:\\Projet_Thinkrail\\source\\thinkrail\\scripts\\neuralcore-callgraph.js",
+      "qualified_name": "D:\\Projet_Thinkrail\\source\\thinkrail\\scripts\\neuralcore-callgraph.js",
+      "snippet": "  }   collect(sf); "
+    },
+    {
+      "id": "82a3b368c9631bf44ae2b772b08153fe95fb9d3f1b4fb95e31c766811bcefd4d",
+      "path": "D:\\Projet_Thinkrail\\source\\thinkrail\\scripts\\neuralcore-callgraph.js",
+      "qualified_name": "D:\\Projet_Thinkrail\\source\\thinkrail\\scripts\\neuralcore-callgraph.js",
+      "snippet": "          toId = symbolId(file, toName);         } else {           // try to find across files by name (best-effort)"
+    },
+    {
+      "id": "bd7d390c5593c9fef521ae950389b9a61cce94244fed82c3834bb5d90bfab517",
+      "path": "D:\\Projet_Thinkrail\\source\\thinkrail\\scripts\\neuralcore-extract-chunks.js",
+      "qualified_name": "D:\\Projet_Thinkrail\\source\\thinkrail\\scripts\\neuralcore-extract-chunks.js",
+      "snippet": "import fs from 'fs'; import path from 'path'; import ts from 'typescript';"
+    },
+    {
+      "id": "ad582969521fecee4688bba99a5846574abec312ecfcfa47c2344bc549e2a763",
+      "path": "D:\\Projet_Thinkrail\\source\\thinkrail\\scripts\\neuralcore-extract-chunks.js",
+      "qualified_name": "D:\\Projet_Thinkrail\\source\\thinkrail\\scripts\\neuralcore-extract-chunks.js",
+      "snippet": "        if ((ts.isMethodDeclaration(m) || ts.isMethodSignature(m)) && m.name) {           const mname = m.name.getText(sf);           addChunk('method', `${n.name.getText(sf)}.${mname}`, m.getStart(sf"
+    },
+    {
+      "id": "e46a66abb53d59c03eee4a10157db26071b5fada3986791caa2ebc07029d0dca",
+      "path": "D:\\Projet_Thinkrail\\source\\thinkrail\\scripts\\neuralcore-prepare-upsert.js",
+      "qualified_name": "D:\\Projet_Thinkrail\\source\\thinkrail\\scripts\\neuralcore-prepare-upsert.js",
+      "snippet": "import fs from 'fs'; import path from 'path'; "
+    },
+    {
+      "id": "693e9afc352759971decf9a0b5eb6eed21ec10cf4d110edadcf18193957bd052",
+      "path": "D:\\Projet_Thinkrail\\source\\thinkrail\\scripts\\neuralcore-upsert.js",
+      "qualified_name": "D:\\Projet_Thinkrail\\source\\thinkrail\\scripts\\neuralcore-upsert.js",
+      "snippet": "import fs from 'fs'; import path from 'path'; "
+    }
+  ],
+  "notes": "Validation: counts above reflect l2j_chunks rows whose path or qualified_name contains \"neural-core\". We report exact-id matches and a path-join fallback."
+}

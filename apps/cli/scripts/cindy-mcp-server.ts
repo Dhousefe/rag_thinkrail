@@ -99,13 +99,13 @@ function handleCindySearchCode(query: string, limit = 5) {
 		const rows = db
 			.query(
 				`
-			SELECT path, chunk_text 
+			SELECT path, content 
 			FROM l2j_chunk_fts 
 			WHERE l2j_chunk_fts MATCH ? 
 			LIMIT ?;
 		`,
 			)
-			.all(sanitized, limit) as { path: string; chunk_text: string }[];
+			.all(sanitized, limit) as { path: string; content: string }[];
 		db.close();
 
 		if (!rows || rows.length === 0) {
@@ -115,7 +115,7 @@ function handleCindySearchCode(query: string, limit = 5) {
 		return rows
 			.map(
 				(r, idx) =>
-					`#${idx + 1} [cindy] ${r.path}:\n${r.chunk_text.slice(0, 400)}...\n`,
+					`#${idx + 1} [cindy] ${r.path}:\n${(r.content || "").slice(0, 400)}...\n`,
 			)
 			.join("\n---\n");
 	} catch (err: any) {

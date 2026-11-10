@@ -77,13 +77,13 @@ export class OrbitCameraController {
 				const upY = Math.cos(this.phi);
 				const upZ = -Math.sin(this.phi) * Math.cos(this.theta);
 
-				this.target[0] -= (rightX * dx - upX * dy) * panFactor;
-				this.target[1] -= (-upY * dy) * panFactor;
-				this.target[2] -= (rightZ * dx - upZ * dy) * panFactor;
+				this.target[0] += (rightX * dx - upX * dy) * panFactor;
+				this.target[1] += -upY * dy * panFactor;
+				this.target[2] += (rightZ * dx - upZ * dy) * panFactor;
 			} else {
-				// Rotação Orbital com limites suaves que não causam singularidade
-				this.theta -= dx * 0.008;
-				this.phi = Math.max(-1.50, Math.min(1.50, this.phi + dy * 0.008));
+				// Rotação Orbital invertida para movimentação natural solicitada pelo usuário
+				this.theta += dx * 0.008;
+				this.phi = Math.max(-1.5, Math.min(1.5, this.phi - dy * 0.008));
 			}
 			this.onUpdate?.();
 		});
@@ -130,7 +130,7 @@ export class OrbitCameraController {
 		const upZ = -Math.sin(this.phi) * Math.cos(this.theta);
 
 		this.target[0] -= (rightX * deltaX - upX * deltaY) * panFactor;
-		this.target[1] -= (-upY * deltaY) * panFactor;
+		this.target[1] -= -upY * deltaY * panFactor;
 		this.target[2] -= (rightZ * deltaX - upZ * deltaY) * panFactor;
 		this.onUpdate?.();
 	}
@@ -190,7 +190,12 @@ export class OrbitCameraController {
 
 	public updateTween() {
 		if (!this.flyTarget) return;
-		const diffT = this.flyTarget.theta - this.theta;
+
+		// Normalização da menor distância angular para evitar voltas de 360° e teleportes bruscos
+		let diffT = this.flyTarget.theta - this.theta;
+		while (diffT > Math.PI) diffT -= Math.PI * 2;
+		while (diffT < -Math.PI) diffT += Math.PI * 2;
+
 		const diffP = this.flyTarget.phi - this.phi;
 		const diffD = this.flyTarget.distance - this.distance;
 		const diffTx = this.flyTarget.targetX - this.target[0];
@@ -198,12 +203,12 @@ export class OrbitCameraController {
 		const diffTz = this.flyTarget.targetZ - this.target[2];
 
 		const isClose =
-			Math.abs(diffT) < 0.005 &&
-			Math.abs(diffP) < 0.005 &&
-			Math.abs(diffD) < 0.01 &&
-			Math.abs(diffTx) < 0.005 &&
-			Math.abs(diffTy) < 0.005 &&
-			Math.abs(diffTz) < 0.005;
+			Math.abs(diffT) < 0.003 &&
+			Math.abs(diffP) < 0.003 &&
+			Math.abs(diffD) < 0.008 &&
+			Math.abs(diffTx) < 0.003 &&
+			Math.abs(diffTy) < 0.003 &&
+			Math.abs(diffTz) < 0.003;
 
 		if (isClose) {
 			this.theta = this.flyTarget.theta;
@@ -212,17 +217,29 @@ export class OrbitCameraController {
 			this.target[0] = this.flyTarget.targetX;
 			this.target[1] = this.flyTarget.targetY;
 			this.target[2] = this.flyTarget.targetZ;
+			// Ao concluir a animação do fly-to, limpe cameraSnapshot somente se ela corresponde ao destino
+			if (this.cameraSnapshot) {
+				const snapMatches =
+					Math.abs(this.cameraSnapshot.targetX - this.target[0]) < 0.01 &&
+					Math.abs(this.cameraSnapshot.targetY - this.target[1]) < 0.01 &&
+					Math.abs(this.cameraSnapshot.targetZ - this.target[2]) < 0.01;
+				if (snapMatches) {
+					this.cameraSnapshot = null;
+				}
+			}
 			this.flyTarget = null;
 			this.onUpdate?.();
 			return;
 		}
 
-		this.theta += diffT * 0.2;
-		this.phi += diffP * 0.2;
-		this.distance += diffD * 0.2;
-		this.target[0] += diffTx * 0.2;
-		this.target[1] += diffTy * 0.2;
-		this.target[2] += diffTz * 0.2;
+		// Easing constante suave sem saltos
+		const factor = 0.16;
+		this.theta += diffT * factor;
+		this.phi += diffP * factor;
+		this.distance += diffD * factor;
+		this.target[0] += diffTx * factor;
+		this.target[1] += diffTy * factor;
+		this.target[2] += diffTz * factor;
 		this.onUpdate?.();
 	}
 
@@ -246,15 +263,18 @@ export class OrbitCameraController {
 	 */
 	public restoreCameraSnapshot(): boolean {
 		if (!this.cameraSnapshot) return false;
+		// Protege a restauração colocando o flyTarget e preservando uma cópia
+		const snapshot = { ...this.cameraSnapshot };
 		this.flyTarget = {
-			targetX: this.cameraSnapshot.targetX,
-			targetY: this.cameraSnapshot.targetY,
-			targetZ: this.cameraSnapshot.targetZ,
-			theta: this.cameraSnapshot.theta,
-			phi: this.cameraSnapshot.phi,
-			distance: this.cameraSnapshot.distance,
+			targetX: snapshot.targetX,
+			targetY: snapshot.targetY,
+			targetZ: snapshot.targetZ,
+			theta: snapshot.theta,
+			phi: snapshot.phi,
+			distance: snapshot.distance,
 		};
-		this.cameraSnapshot = null;
+		// Não limpe o cameraSnapshot imediatamente: somente ao concluir a animação
+		// para evitar que chamadas intermediárias (setSelectedNode etc.) descartem a restauração.
 		this.onUpdate?.();
 		return true;
 	}
@@ -269,10 +289,10 @@ export class OrbitCameraController {
 	public reset() {
 		this.flyTarget = {
 			targetX: 0,
-			targetY: 0,
+			targetY: -0.4,
 			targetZ: 0,
 			theta: 0.6,
-			phi: 0.45,
+			phi: 0.55,
 			distance: 5.2,
 		};
 		this.onUpdate?.();
@@ -280,7 +300,7 @@ export class OrbitCameraController {
 
 	/**
 	 * Enquadra perfeitamente todos os nós informados dentro do campo de visão da câmera,
-	 * calculando o centro do bounding box e a distância de enquadramento ideal.
+	 * elevando o enquadramento vertical para exibir na área superior/central livre da tela.
 	 */
 	public fitBounds(positions: Array<[number, number, number]>, margin = 1.6) {
 		if (!positions || positions.length === 0) {
@@ -288,9 +308,12 @@ export class OrbitCameraController {
 			return;
 		}
 
-		let minX = Infinity, maxX = -Infinity;
-		let minY = Infinity, maxY = -Infinity;
-		let minZ = Infinity, maxZ = -Infinity;
+		let minX = Infinity,
+			maxX = -Infinity;
+		let minY = Infinity,
+			maxY = -Infinity;
+		let minZ = Infinity,
+			maxZ = -Infinity;
 
 		for (const [x, y, z] of positions) {
 			if (x < minX) minX = x;
@@ -315,12 +338,13 @@ export class OrbitCameraController {
 		// Com FOV de 45 deg (~0.785 rad), distância = raio / tan(FOV / 2) * margem
 		const fitDist = Math.max(2.8, Math.min(50.0, maxRadius * 2.4 * margin));
 
+		// Offset vertical (-fitDist * 0.12) para que o grafo fique na metade superior/central da tela
 		this.flyTarget = {
 			targetX: centerX,
-			targetY: centerY,
+			targetY: centerY - fitDist * 0.12,
 			targetZ: centerZ,
 			theta: this.theta,
-			phi: Math.max(0.35, Math.min(0.65, this.phi)),
+			phi: 0.55,
 			distance: fitDist,
 		};
 		this.onUpdate?.();

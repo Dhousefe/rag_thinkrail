@@ -1,80 +1,30 @@
 {
-  "files": [
-    {
-      "path": "apps\\web\\src\\panels\\neural-core\\cameraController.test.ts",
-      "exports": []
-    },
-    {
-      "path": "apps\\web\\src\\panels\\neural-core\\cameraController.ts",
-      "exports": []
-    },
-    {
-      "path": "apps\\web\\src\\panels\\neural-core\\components\\index.ts",
-      "exports": []
-    },
-    {
-      "path": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreChunksView.tsx",
-      "exports": []
-    },
-    {
-      "path": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreFingerprintCard.tsx",
-      "exports": []
-    },
-    {
-      "path": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreNodeOverview.tsx",
-      "exports": []
-    },
-    {
-      "path": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreSearchBox.tsx",
-      "exports": []
-    },
-    {
-      "path": "apps\\web\\src\\panels\\neural-core\\components\\searchBox.test.ts",
-      "exports": []
-    },
-    {
-      "path": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
-      "exports": [
-        {
-          "name": "FILE_TYPE_COLORS",
-          "kind": "variable",
-          "type": "Record<string, [number, number, number, number]>"
-        }
-      ]
-    },
-    {
-      "path": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
-      "exports": []
-    },
-    {
-      "path": "apps\\web\\src\\panels\\neural-core\\resolvePivotNode.test.ts",
-      "exports": []
-    },
-    {
-      "path": "apps\\web\\src\\panels\\neural-core\\resolvePivotNode.ts",
-      "exports": []
-    },
-    {
-      "path": "apps\\web\\src\\panels\\neural-core\\semanticFingerprint.test.ts",
-      "exports": []
-    },
-    {
-      "path": "apps\\web\\src\\panels\\neural-core\\shaders.wgsl.ts",
-      "exports": [
-        {
-          "name": "GEOMETRY_RENDER_WGSL",
-          "kind": "variable",
-          "type": null
-        }
-      ]
-    },
-    {
-      "path": "apps\\web\\src\\panels\\neural-core\\types.ts",
-      "exports": []
-    },
-    {
-      "path": "apps\\web\\src\\panels\\neural-core\\useNeuralCoreState.ts",
-      "exports": []
-    }
-  ]
+  "files": {
+    "apps/web/src/panels/neural-core/cameraController.ts": [
+      "export class OrbitCameraController",
+      "public wasJustDragging(thresholdMs = 250): boolean",
+      "public focusPosition(pos: [number, number, number], targetDist = 2.0)",
+      "public saveCameraSnapshot()",
+      "public restoreCameraSnapshot(): boolean",
+      "public fitBounds(positions: Array<[number, number, number]>, margin = 1.6)",
+      "public panBy(deltaX: number, deltaY: number)"
+    ],
+    "apps/web/src/panels/neural-core/neuralEngine.ts": [
+      "export class NeuralCoreEngine",
+      "public triggerMcpSearchTarget(nodeId: string | null, autoPause = false)",
+      "public setVisibleModules(modules: string[])",
+      "public setVectorGraphData(nodes: VectorNodeInput[], edges: VectorEdgeInput[])",
+      "public appendVectorGraphData(newNodes: VectorNodeInput[], newEdges: VectorEdgeInput[])",
+      "public setRagSearch(query: string | null)",
+      "public setHighlightedNode(index: number | null)",
+      "public setSelectedNode(index: number | null)",
+      "public findNodeUnderScreenCoord(screenX: number, screenY: number, tolerancePx = 18): number | null",
+      "public getProjectedNodeLabels(maxLabels = 8): Array<{ index: number; id: string; label: string; module: string; x: number; y: number; isHovered: boolean; isMatched: boolean; isSearchingTarget: boolean; methodsCount: number; isSelected?: boolean | undefined; isRelated?: boolean | undefined; relationKind?: \"CALLER\" | \"IMPORT\" | \"TYPE\" | \"DEPENDENCY\" | undefined; }>",
+      "private rebuildVectorMesh(overrideAnimTime?: number)",
+      "public triggerShockwave()",
+      "public setActivity(activity: NeuralActivityState, intensity = 0.5)",
+      "public start()",
+      "public stop()"
+    ]
+  }
 }

@@ -433,5 +433,36 @@
       "NeuralCoreFingerprintCard"
     ],
     "ground_truth": "O Neural Core v18 calcula um hash deterministico SHA-256 equiv e entropia de Shannon sobre os nos e arestas indexados no RAG para auditoria anti-plagio, atribuindo poligonos 3D e paletas cromaticas distintas por tipo de arquivo, com linhas ortogonais Manhattan multicamada em cotas Y isoladas sem cruzamento 3D e feixes pulsantes direcionais de fluxo."
+  },
+  {
+    "id": "tc_28_web-ui_neuralcorepanel",
+    "question": "Como funciona o carregamento automático em lote de classes no painel Neural Core?",
+    "query": "NeuralCorePanel autoStreaming loadVectorGraph classes batch",
+    "expected_cluster": "web-ui",
+    "expected_files": [
+      "apps/web/src/panels/NeuralCorePanel.tsx"
+    ],
+    "expected_symbols": [
+      "NeuralCorePanel",
+      "loadVectorGraph",
+      "handleToggleAutoStreaming"
+    ],
+    "ground_truth": "O NeuralCorePanel prioriza o projeto do workspace ativo e executa auto-streaming sequencial de lotes de 350 nós via loadVectorGraph e getVectorGraph ate que hasMore seja falso, com protecao de ciclo de vida via isMountedRef e cancelamento limpo de timers."
+  },
+  {
+    "id": "tc_29_web-ui_resolvetargetprojectslug",
+    "question": "Como o Neural Core inicializa o projeto ativo como home e elimina jitter na câmera orbital?",
+    "query": "neural core initial home camera controller fitBounds jitter",
+    "expected_cluster": "web-ui",
+    "expected_files": [
+      "apps/web/src/panels/NeuralCorePanel.tsx",
+      "apps/web/src/panels/neural-core/cameraController.ts"
+    ],
+    "expected_symbols": [
+      "resolveTargetProjectSlug",
+      "updateTween",
+      "fitBounds"
+    ],
+    "ground_truth": "O Neural Core utiliza resolveTargetProjectSlug mapeando o workspace ativo no Hermes RAG para focar inicialmente no projeto em questao. Na camera orbital, updateTween normaliza o menor arco angular em theta [-PI, PI] eliminando jitter/voltas bruscas, inverte os eixos do mouse e ajusta o offset vertical em fitBounds para enquadramento na regiao superior livre."
   }
 ]
