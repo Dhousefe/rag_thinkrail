@@ -553,5 +553,23 @@
       "normalizeNodes"
     ],
     "ground_truth": "O OrbitCameraController calcula fitBounds ponderando 75% o centroide médio de todos os nós com 25% do centro do bounding box sem rebaixamento vertical, os contadores do HUD refletem o total de nós estruturais do projeto com paridade 100% entre CLI e Desktop dev."
+  },
+  {
+    "id": "tc_35_architecture_check:parity",
+    "question": "Como é garantida a paridade contínua e sem divergências entre o CLI e a aplicação Desktop no ThinkRail?",
+    "query": "check:parity parity invariant CLI Desktop SPEC-cli-desktop-parity check-client-parity",
+    "expected_cluster": "architecture",
+    "expected_files": [
+      "apps/desktop/SPEC-cli-desktop-parity.md",
+      "scripts/check-client-parity.ts",
+      "package.json",
+      "AGENTS.md"
+    ],
+    "expected_symbols": [
+      "check:parity",
+      "computeFileHash",
+      "findMainBundle"
+    ],
+    "ground_truth": "A SPEC apps/desktop/SPEC-cli-desktop-parity.md e o gate bun run check:parity comparam hashes SHA-256 do bundle de entrada index-*.js e a versão sufixada do executável em apps/cli/dist para assegurar paridade absoluta."
   }
 ]
