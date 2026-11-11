@@ -43,6 +43,11 @@ fn vs_line(input: VertexInput) -> VertexOutput {
     return output;
 }
 
+@fragment
+fn fs_line(input: VertexOutput) -> @location(0) vec4<f32> {
+    return input.color;
+}
+
 // Sprite vertex/fragment pair for instanced icon quads
 struct SpriteVertexOutput {
     @builtin(position) position: vec4<f32>,

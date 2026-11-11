@@ -913,8 +913,8 @@ export function createVectorConstellationWireframe(
 		const isMatched = Boolean(n.isMatchedBySearch);
 		const isSearchingTarget = Boolean(searchingAnim && searchingAnim.nodeId === n.id);
 
-		// Tamanho base reduzido e harmonioso para visual limpo sem sobreposição
-		let s = 0.024;
+		// Tamanho base dos polígonos das classes (calibrado para visual nítido e sólido no espaço 3D)
+		let s = 0.11;
 		if (isSelected) {
 			// Polígono Selecionado: aumento nítido (2.4x)
 			s *= 2.4;

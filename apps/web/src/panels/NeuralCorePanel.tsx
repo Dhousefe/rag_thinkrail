@@ -95,28 +95,52 @@ function getModuleClasses(moduleName?: string): { border: string; text: string; 
 }
 
 /**
+ * Normaliza caminhos de arquivo ou pastas para comparação consistente,
+ * tratando especificidades de drive letters e barras do Windows.
+ */
+export function normalizePathForComparison(rawPath?: string | null): string {
+	if (!rawPath) return "";
+	let p = rawPath.replace(/\\/g, "/").trim();
+	p = p.replace(/\/+/g, "/").replace(/\/+$/, "");
+	// No Windows, normaliza a letra da unidade (ex: "D:/" ou "d:/") para minúsculo
+	if (/^[a-zA-Z]:/.test(p)) {
+		p = p.charAt(0).toLowerCase() + p.slice(1);
+	}
+	return p.toLowerCase();
+}
+
+/**
  * Resolve o slug do projeto correspondente ao workspace ativo no editor
  * para definir como a home inicial do Neural Core.
  */
-function resolveTargetProjectSlug(
+export function resolveTargetProjectSlug(
 	workspace: { projectId?: string; worktreePath?: string } | null,
 	projects: Array<{ slug: string; path?: string }> = [],
 	fallbackSlug?: string | null,
 ): string | null {
 	if (!workspace && !fallbackSlug && projects.length === 0) return null;
 
-	const wsPath = (workspace?.worktreePath || "")
-		.toLowerCase()
-		.replace(/\\/g, "/")
-		.replace(/\/+$/, "");
+	const wsPath = normalizePathForComparison(workspace?.worktreePath);
 	const wsProjectId = (workspace?.projectId || "").toLowerCase();
 
-	// 1. Tenta correspondência precisa por diretório de trabalho (worktreePath)
+	// 1. Tenta correspondência precisa ou por subcaminho em worktreePath
 	if (wsPath) {
 		for (const p of projects) {
-			const pPath = (p.path || "").toLowerCase().replace(/\\/g, "/").replace(/\/+$/, "");
+			const pPath = normalizePathForComparison(p.path);
 			if (pPath && (pPath === wsPath || wsPath.startsWith(pPath) || pPath.startsWith(wsPath))) {
 				return p.slug;
+			}
+		}
+
+		// 1.1 Match pela pasta raiz do workspace (ex: "thinkrail" em "project-thinkrail")
+		const wsFolder = wsPath.split("/").filter(Boolean).pop();
+		if (wsFolder) {
+			for (const p of projects) {
+				const slugClean = p.slug.toLowerCase().replace(/[-_]/g, "");
+				const folderClean = wsFolder.replace(/[-_]/g, "");
+				if (slugClean.includes(folderClean) || folderClean.includes(slugClean)) {
+					return p.slug;
+				}
 			}
 		}
 	}
@@ -230,7 +254,6 @@ export function NeuralCorePanel() {
 	const batchOffsetRef = useRef(0);
 	const [hasMoreBatches, setHasMoreBatches] = useState(false);
 	const [totalAvailableNodes, setTotalAvailableNodes] = useState(0);
-	const [totalClassesCount, setTotalClassesCount] = useState(0);
 	const [totalFilesCount, setTotalFilesCount] = useState(0);
 	const [isLoadingBatch, setIsLoadingBatch] = useState(false);
 	const [isAutoStreaming, setIsAutoStreaming] = useState(false);
@@ -258,10 +281,29 @@ export function NeuralCorePanel() {
 	const loadClassStats = useCallback(async () => {
 		setIsLoadingStats(true);
 		try {
+			// Se a lista de projetos ainda não foi carregada no estado global (ex: abertura direta do Neural Core no desktop),
+			// dispara o fetch de hermes.listProjects em paralelo para popular a store imediatamente.
+			const store = useAppStore.getState();
+			if (!store.hermesManagement.projects || store.hermesManagement.projects.length === 0) {
+				void Promise.all([
+					getTransport().request("hermes.listProjects", {}),
+					getTransport().request("hermes.getActiveProjects", {}).catch(() => ({ activeSlugs: [] })),
+				]).then(([resProjects, resActive]) => {
+					if (resProjects?.projects) {
+						useAppStore.getState().setHermesProjects(resProjects.projects, resProjects.hermesHome);
+					}
+					if (Array.isArray(resActive?.activeSlugs) && resActive.activeSlugs.length > 0) {
+						useAppStore.getState().setHermesActiveProjectSlugs(resActive.activeSlugs);
+					}
+				}).catch((err) => {
+					console.warn("[NeuralCorePanel] Erro ao carregar lista de projetos Hermes:", err);
+				});
+			}
+
 			const stats = await getTransport().request("hermes.getClassStats", {});
 			setClassStats(stats);
 			if (stats?.totals) {
-				setTotalClassesCount(stats.totals.totalClasses);
+				setTotalAvailableNodes(stats.totals.totalClasses + (stats.totals.totalInterfaces || 0));
 				setTotalFilesCount(stats.totals.totalFiles);
 			}
 
@@ -409,7 +451,6 @@ export function NeuralCorePanel() {
 				setTotalChunks(res.totalChunks);
 				setHasMoreBatches(hasMore);
 				setTotalAvailableNodes(res.totalAvailableNodes || res.totalChunks);
-				if (res.totalClasses) setTotalClassesCount(res.totalClasses);
 				if (res.totalFiles) setTotalFilesCount(res.totalFiles);
 			}
 		} catch (err) {
@@ -1159,6 +1200,9 @@ export function NeuralCorePanel() {
 		} else if (!selectedNode) {
 			setInspectedNode(null);
 		}
+
+		// Atualização imediata com z-sorting ao mover o ponteiro sobre a cena
+		setProjectedLabels(engineRef.current.getProjectedNodeLabels(12));
 	};
 
 	const handlePointerLeave = () => {
@@ -1168,6 +1212,7 @@ export function NeuralCorePanel() {
 		if (engineRef.current) {
 			engineRef.current.setCursorScreenCoord(null, null);
 			engineRef.current.setHighlightedNode(null);
+			setProjectedLabels(engineRef.current.getProjectedNodeLabels(10));
 		}
 		if (!selectedNode) {
 			setInspectedNode(null);
@@ -1290,7 +1335,7 @@ export function NeuralCorePanel() {
 													? "bg-container-elevated-bg border-feedback-warning shadow-md z-35 opacity-100 ring-1 ring-feedback-warning text-text-default scale-105"
 													: "bg-container-elevated-bg border-primary shadow-md z-30 opacity-95 text-text-default scale-100"
 										: item.isHovered
-											? "bg-container-elevated-bg border-primary shadow-lg scale-105 z-30 opacity-100 ring-1 ring-primary text-text-default"
+											? "bg-container-elevated-bg border-primary shadow-xl scale-110 z-50 opacity-100 ring-2 ring-primary text-text-default"
 											: item.isMatched
 												? "bg-container-elevated-bg border-feedback-warning shadow-md scale-105 z-20 opacity-95 text-feedback-warning"
 												: `bg-container-elevated-bg ${modStyle.border} shadow-sm opacity-85 z-10 text-text-default hover:opacity-100 hover:border-primary`
@@ -1458,16 +1503,19 @@ export function NeuralCorePanel() {
 									title="Filtrar classes e grafos por projeto ativo"
 								>
 									<option value="all">Todos os Projetos ({classStats.projects.length})</option>
-									{classStats.projects.map((p) => (
-										<option key={p.slug} value={p.slug}>
-											{p.name} ({p.totalClasses} classes)
-										</option>
-									))}
+									{classStats.projects.map((p) => {
+										const projectCount = p.totalClasses + (p.totalInterfaces || 0);
+										return (
+											<option key={p.slug} value={p.slug}>
+												{p.name} ({projectCount > 0 ? `${projectCount} nós` : `${p.totalClasses} classes`})
+											</option>
+										);
+									})}
 								</select>
 							</div>
 						)}
 
-						{/* Indicador de Classes e Arquivos por Projeto Ativo */}
+						{/* Indicador de Classes e Nós Estruturais por Projeto Ativo */}
 						<div
 							className="flex items-center gap-4 cursor-help"
 							title={
@@ -1478,7 +1526,7 @@ export function NeuralCorePanel() {
 													`[${p.name}]: ${p.totalClasses} classes, ${p.totalInterfaces} interfaces, ${p.totalFiles} arquivos`,
 											)
 											.join("\n")
-									: "Projetos ativos indexados no Hermes RAG"
+									: "Entidades e classes indexadas no Hermes RAG"
 							}
 						>
 							<RiNodeTree
@@ -1486,13 +1534,13 @@ export function NeuralCorePanel() {
 							/>
 							<span className="tr-text-emphasis text-text-default">
 								{vectorNodes.length}
-								{totalClassesCount > 0 && ` / ${totalClassesCount}`} classes
+								{totalAvailableNodes > 0 && ` / ${totalAvailableNodes}`} nós
 							</span>
-							{totalClassesCount > 0 && (
+							{totalAvailableNodes > 0 && (
 								<span className="rounded bg-control-bg px-4 py-2 text-primary tr-text-emphasis">
 									{Math.min(
 										100,
-										Math.round((vectorNodes.length / Math.max(1, totalClassesCount)) * 100),
+										Math.round((vectorNodes.length / Math.max(1, totalAvailableNodes)) * 100),
 									)}
 									%
 								</span>

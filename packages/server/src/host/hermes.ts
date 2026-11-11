@@ -1945,8 +1945,9 @@ export async function getHermesVectorGraph(
 					const it = items[itemIdx]!;
 
 					// Progressão espiral logarítmica galáctica com espaçamento amplo entre polígonos:
-					// Passo radial aumentado (0.88) para que centenas de classes fiquem bem dispersas e fáceis de navegar
-					const radialStep = 0.88 * Math.sqrt(itemIdx + 1);
+					// Passo radial dinâmico ajustado à densidade de nós para evitar aglomeração
+					const radialScale = nItems > 400 ? 1.18 : 0.98;
+					const radialStep = radialScale * Math.sqrt(itemIdx + 1);
 					const rLog = coreExclusionRadius + radialStep;
 
 					// Curvatura do braço espiral da Via Láctea (espiral logarítmica)
@@ -2011,9 +2012,9 @@ export async function getHermesVectorGraph(
 
 		// Relaxação anti-colisão via Spatial Hash Grid O(N):
 		// Garante distância segura e folga generosa entre os centros de todos os polígonos da cena
-		const minSafeDist2D = 1.05; // Distância mínima física segura entre centros de polígonos
+		const minSafeDist2D = 1.18; // Distância mínima física segura entre centros de polígonos
 		const cellSize = minSafeDist2D * 1.1;
-		const relaxationIterations = 6; // Iterações de relaxamento para acomodar ampla dispersão
+		const relaxationIterations = 8; // Iterações de relaxamento para acomodar ampla dispersão
 
 		for (let iter = 0; iter < relaxationIterations; iter++) {
 			const spatialGrid = new Map<string, number[]>();

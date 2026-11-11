@@ -482,5 +482,76 @@
       "DEFAULT_DRAG_THRESHOLD_PX"
     ],
     "ground_truth": "No OrbitCameraController, saveCameraSnapshot suporta parâmetro overwrite=false para preservar a pose panorâmica de entrada caso múltiplos nós sejam focados em sequência. restoreCameraSnapshot aciona flyTarget com interpolação suave e limpa o snapshot após aterrissar. O NeuralCorePanel salva snapshot antes de focar classes solicitadas pelo chat/ferramentas ou busca em tempo real, e protege contra desseleção usando wasJustDragging com threshold configurável."
+  },
+  {
+    "id": "tc_31_web-ui_normalizepathforcomparison",
+    "question": "Como garantir exibição correta e fallback de classes no Neural Core ao abrir diretamente no aplicativo Desktop?",
+    "query": "normalizePathForComparison resolveTargetProjectSlug neuralEngine init fallback canvas2d dpr",
+    "expected_cluster": "web-ui",
+    "expected_files": [
+      "apps/web/src/panels/neural-core/neuralEngine.ts",
+      "apps/web/src/panels/NeuralCorePanel.tsx",
+      "apps/web/src/panels/neural-core/resolveTargetProjectSlug.test.ts"
+    ],
+    "expected_symbols": [
+      "normalizePathForComparison",
+      "resolveTargetProjectSlug",
+      "NeuralCoreEngine",
+      "renderGeometricCanvas2D"
+    ],
+    "ground_truth": "No NeuralCoreEngine, o método init realiza detecção resiliente com suporte a fallback limpo para Canvas2D sem bloqueio por contexto duplicado, escalonando as coordenadas com o devicePixelRatio (DPR) para alinhamento pixel-a-pixel com labels e mouse. No NeuralCorePanel, a resolução do slug inicial através de resolveTargetProjectSlug normaliza caminhos Windows e drive letters (d:/ vs D:/) e dispara a sincronização antecipada de hermes.listProjects caso a store ainda não tenha sido populada."
+  },
+  {
+    "id": "tc_32_web-ui_projectworldtoscreen",
+    "question": "Como garantir alinhamento sub-pixel e renderizacao confiavel de nos e classes no painel Neural Core em ambientes CEF desktop sem WebGPU?",
+    "query": "projectWorldToScreen neuralEngine canvas probe desktop webgpu fallback",
+    "expected_cluster": "web-ui",
+    "expected_files": [
+      "apps/web/src/panels/neural-core/neuralEngine.ts",
+      "apps/web/src/panels/neural-core/geometry.ts"
+    ],
+    "expected_symbols": [
+      "projectWorldToScreen",
+      "init",
+      "renderGeometricCanvas2D",
+      "findNodeUnderScreenCoord"
+    ],
+    "ground_truth": "Utiliza um canvas probe off-screen isolado no init() para detectar suporte real a WebGPU sem tocar no canvas principal antes de acionar o fallback 2D. Emprega a matriz View-Projection real de 4x4 em projectWorldToScreen para unificar a projecao de coordenadas 3D para tela em ambos os renderizadores (WebGPU e Canvas2D), labels HTML e raycasting do mouse, calibrou a escala base poligonal s de 0.024 para 0.11 em geometry.ts tornando as formas perfeitamente visiveis a distancias orbitais de visualizacao global."
+  },
+  {
+    "id": "tc_33_web-ui_fitbounds",
+    "question": "Como harmonizar as metricas de classes e nos estruturais e enquadrar a camera no centroide ponderado no Neural Core?",
+    "query": "neural core camera fitbounds centroid counters totalAvailableNodes",
+    "expected_cluster": "web-ui",
+    "expected_files": [
+      "apps/web/src/panels/NeuralCorePanel.tsx",
+      "apps/web/src/panels/neural-core/cameraController.ts",
+      "packages/server/src/host/hermes.ts"
+    ],
+    "expected_symbols": [
+      "fitBounds",
+      "totalAvailableNodes",
+      "minSafeDist2D",
+      "radialStep"
+    ],
+    "ground_truth": "O enquadramento da camera via fitBounds pondera 75% o centroide medio dos nos e 25% o centro do bounding box, eliminando o offset vertical de -fitDist * 0.12. As metricas do HUD e dropdown utilizam totalAvailableNodes somando classes e interfaces, garantindo consistencia sem conflito com o numero geral de chunks brutos."
+  },
+  {
+    "id": "tc_34_web-ui_fitbounds",
+    "question": "Como o Neural Core do ThinkRail calcula o enquadramento de câmera e harmoniza contadores entre CLI e Desktop?",
+    "query": "fitBounds weighted centroid HUD metrics count paridade desktop cli",
+    "expected_cluster": "web-ui",
+    "expected_files": [
+      "apps/web/src/panels/neural-core/cameraController.ts",
+      "apps/web/src/panels/NeuralCorePanel.tsx",
+      "packages/server/src/host/hermes.ts"
+    ],
+    "expected_symbols": [
+      "fitBounds",
+      "calculateViewProjMatrix",
+      "projectWorldToScreen",
+      "normalizeNodes"
+    ],
+    "ground_truth": "O OrbitCameraController calcula fitBounds ponderando 75% o centroide médio de todos os nós com 25% do centro do bounding box sem rebaixamento vertical, os contadores do HUD refletem o total de nós estruturais do projeto com paridade 100% entre CLI e Desktop dev."
   }
 ]

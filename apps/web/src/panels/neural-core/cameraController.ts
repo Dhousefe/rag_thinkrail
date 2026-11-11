@@ -318,9 +318,9 @@ export class OrbitCameraController {
 
 	/**
 	 * Enquadra perfeitamente todos os nós informados dentro do campo de visão da câmera,
-	 * elevando o enquadramento vertical para exibir na área superior/central livre da tela.
+	 * centralizando o alvo focal no centroide geométrico ponderado dos nós com margem harmônica.
 	 */
-	public fitBounds(positions: Array<[number, number, number]>, margin = 1.6) {
+	public fitBounds(positions: Array<[number, number, number]>, margin = 1.15) {
 		if (!positions || positions.length === 0) {
 			this.reset();
 			return;
@@ -332,6 +332,9 @@ export class OrbitCameraController {
 			maxY = -Infinity;
 		let minZ = Infinity,
 			maxZ = -Infinity;
+		let sumX = 0,
+			sumY = 0,
+			sumZ = 0;
 
 		for (const [x, y, z] of positions) {
 			if (x < minX) minX = x;
@@ -340,13 +343,22 @@ export class OrbitCameraController {
 			if (y > maxY) maxY = y;
 			if (z < minZ) minZ = z;
 			if (z > maxZ) maxZ = z;
+			sumX += x;
+			sumY += y;
+			sumZ += z;
 		}
 
-		const centerX = (minX + maxX) / 2;
-		const centerY = (minY + maxY) / 2;
-		const centerZ = (minZ + maxZ) / 2;
+		const count = positions.length;
+		const avgX = sumX / count;
+		const avgY = sumY / count;
+		const avgZ = sumZ / count;
 
-		// Calcula o raio máximo a partir do centro
+		// Ponto focal balanceado entre centroide e centro do bounding box
+		const centerX = avgX * 0.75 + ((minX + maxX) / 2) * 0.25;
+		const centerY = avgY * 0.75 + ((minY + maxY) / 2) * 0.25;
+		const centerZ = avgZ * 0.75 + ((minZ + maxZ) / 2) * 0.25;
+
+		// Calcula o raio máximo a partir do centro balanceado
 		let maxRadius = 0.5;
 		for (const [x, y, z] of positions) {
 			const r = Math.hypot(x - centerX, y - centerY, z - centerZ);
@@ -354,15 +366,15 @@ export class OrbitCameraController {
 		}
 
 		// Com FOV de 45 deg (~0.785 rad), distância = raio / tan(FOV / 2) * margem
-		const fitDist = Math.max(2.8, Math.min(50.0, maxRadius * 2.4 * margin));
+		const fitDist = Math.max(3.2, Math.min(36.0, maxRadius * 2.42 * margin));
 
-		// Offset vertical (-fitDist * 0.12) para que o grafo fique na metade superior/central da tela
+		// Alvo rigorosamente centralizado no grafo (sem rebaixamento artificial)
 		this.flyTarget = {
 			targetX: centerX,
-			targetY: centerY - fitDist * 0.12,
+			targetY: centerY,
 			targetZ: centerZ,
 			theta: this.theta,
-			phi: 0.55,
+			phi: Math.max(0.35, Math.min(0.65, this.phi || 0.48)),
 			distance: fitDist,
 		};
 		this.onUpdate?.();

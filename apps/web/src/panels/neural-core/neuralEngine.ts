@@ -371,31 +371,69 @@ export class NeuralCoreEngine {
 	}
 
 	async init(): Promise<boolean> {
-		if ("gpu" in navigator) {
+		// Detecção resiliente de WebGPU via Probe Isolado (não compromete this.canvas caso WebGPU falhe)
+		if (typeof navigator !== "undefined" && "gpu" in navigator) {
 			try {
-				const adapter = await (navigator as any).gpu.requestAdapter();
+				const gpu = (navigator as unknown as { gpu: GPU }).gpu;
+				const adapter = await gpu.requestAdapter();
 				if (adapter) {
-					this.device = await adapter.requestDevice();
-					this.context = this.canvas.getContext("webgpu") as unknown as GPUCanvasContext;
-					const format = (navigator as any).gpu.getPreferredCanvasFormat();
-					this.context.configure({
-						device: this.device!,
-						format,
-						alphaMode: "premultiplied",
-					});
-					await this.setupWebGpuPipelines(format);
-					this.isWebGpuSupported = true;
-					return true;
+					const probe = typeof document !== "undefined" ? document.createElement("canvas") : null;
+					const probeContext = probe?.getContext("webgpu") as unknown as GPUCanvasContext;
+					if (probeContext) {
+						const device = await adapter.requestDevice();
+						const format = gpu.getPreferredCanvasFormat();
+						probeContext.configure({
+							device,
+							format,
+							alphaMode: "premultiplied",
+						});
+
+						this.device = device;
+						// Inicializa os pipelines e buffers na GPU antes de comprometer o canvas principal
+						await this.setupWebGpuPipelines(format);
+
+						// Pipelines validados sem erros! Agora acopla ao canvas principal
+						const context = this.canvas.getContext("webgpu") as unknown as GPUCanvasContext;
+						if (context) {
+							this.context = context;
+							this.context.configure({
+								device: this.device,
+								format,
+								alphaMode: "premultiplied",
+							});
+							this.isWebGpuSupported = true;
+							return true;
+						}
+					}
 				}
 			} catch (err) {
 				console.warn(
-					"[NeuralCoreEngine] WebGPU indisponível, usando fallback geométrico Canvas2D:",
+					"[NeuralCoreEngine] WebGPU indisponível ou falhou ao inicializar pipelines, ativando fallback 2D:",
 					err,
 				);
+				this.device = null;
+				this.context = null;
+				this.isWebGpuSupported = false;
 			}
 		}
 
-		this.ctx2d = this.canvas.getContext("2d");
+		// Fallback Canvas2D garantido: this.canvas nunca foi tocado por "webgpu" caso os pipelines tenham falhado
+		let ctx2d = this.canvas.getContext("2d");
+		if (!ctx2d && this.canvas.parentElement) {
+			try {
+				const freshCanvas = document.createElement("canvas");
+				freshCanvas.className = this.canvas.className;
+				freshCanvas.width = this.canvas.width;
+				freshCanvas.height = this.canvas.height;
+				this.canvas.parentElement.replaceChild(freshCanvas, this.canvas);
+				this.canvas = freshCanvas;
+				ctx2d = freshCanvas.getContext("2d");
+			} catch (replaceErr) {
+				console.warn("[NeuralCoreEngine] Falha ao substituir canvas para 2D:", replaceErr);
+			}
+		}
+
+		this.ctx2d = ctx2d;
 		return false;
 	}
 
@@ -833,6 +871,55 @@ export class NeuralCoreEngine {
 	}
 
 	/**
+	 * Projeta um ponto 3D para as coordenadas 2D da tela utilizando a matriz de visão/projeção real (View-Projection).
+	 * Garante alinhamento sub-pixel rigoroso entre os renderizadores WebGPU/Canvas2D, overlays HTML e hit-testing do mouse.
+	 */
+	public projectWorldToScreen(
+		pos: [number, number, number],
+		viewProj?: Float32Array,
+		width?: number,
+		height?: number,
+	): { x: number; y: number; depth: number; visible: boolean } {
+		const w = width ?? (this.canvas.clientWidth || this.canvas.width);
+		const h = height ?? (this.canvas.clientHeight || this.canvas.height);
+		const vp = viewProj ?? this.calculateViewProjMatrix(w / (h || 1));
+
+		const x = pos[0];
+		const y = pos[1];
+		const z = pos[2];
+
+		const v0 = vp[0]!;
+		const v1 = vp[1]!;
+		const v3 = vp[3]!;
+		const v4 = vp[4]!;
+		const v5 = vp[5]!;
+		const v7 = vp[7]!;
+		const v8 = vp[8]!;
+		const v9 = vp[9]!;
+		const v11 = vp[11]!;
+		const v12 = vp[12]!;
+		const v13 = vp[13]!;
+		const v15 = vp[15]!;
+
+		// Multiplicação matricial 4x4 (column-major order)
+		const clipX = v0 * x + v4 * y + v8 * z + v12;
+		const clipY = v1 * x + v5 * y + v9 * z + v13;
+		const clipW = v3 * x + v7 * y + v11 * z + v15;
+
+		if (clipW <= 0.001) {
+			return { x: -9999, y: -9999, depth: clipW, visible: false };
+		}
+
+		const ndcX = clipX / clipW;
+		const ndcY = clipY / clipW;
+		const screenX = (ndcX * 0.5 + 0.5) * w;
+		const screenY = (-ndcY * 0.5 + 0.5) * h;
+		const visible = ndcX >= -1.25 && ndcX <= 1.25 && ndcY >= -1.25 && ndcY <= 1.25;
+
+		return { x: screenX, y: screenY, depth: clipW, visible };
+	}
+
+	/**
 	 * Detecta com precisão determinística o polígono vetorial sob as coordenadas da tela (mouse hover / clique).
 	 * Utiliza z-sorting (ordenação por profundidade da câmera): quando o cursor passa sobre uma região,
 	 * seleciona sempre o polígono mais próximo dos olhos do observador (menor depth), eliminando qualquer
@@ -848,17 +935,7 @@ export class NeuralCoreEngine {
 		// Usa as dimensões CSS reais do canvas para coincidir exatamente com os ponteiros do mouse
 		const w = this.canvas.clientWidth || this.canvas.width;
 		const h = this.canvas.clientHeight || this.canvas.height;
-		const cx = w / 2;
-		const cy = h / 2;
-		const scale = Math.min(w, h) * 0.22;
-
-		const cosO = Math.cos(this.cameraOrbit.theta);
-		const sinO = Math.sin(this.cameraOrbit.theta);
-		const cosPhi = Math.cos(this.cameraOrbit.phi);
-		const sinPhi = Math.sin(this.cameraOrbit.phi);
-
-		const baseDist = Math.max(1.0, this.cameraOrbit.distance);
-		const [tx0, ty0, tz0] = this.cameraOrbit.target || [0, 0, 0];
+		const viewProj = this.calculateViewProjMatrix(w / (h || 1));
 
 		// Candidatos dentro da tolerância do ponteiro
 		const candidates: Array<{ index: number; distance2D: number; depth: number }> = [];
@@ -868,34 +945,23 @@ export class NeuralCoreEngine {
 			if (this.visibleModules.size > 0 && !this.visibleModules.has(node.module)) {
 				continue;
 			}
-			const [vx0, vy0, vz0] = node.position;
-			const vx = vx0 - tx0;
-			const vy = vy0 - ty0;
-			const vz = vz0 - tz0;
 
-			// Projeção da rotação orbital da câmera
-			const rx = vx * cosO - vz * sinO;
-			const rz = vx * sinO + vz * cosO;
-			const ry = vy * cosPhi - rz * sinPhi;
-			const depth = Math.max(0.2, baseDist + (vy * sinPhi + rz * cosPhi) * 0.45);
+			const proj = this.projectWorldToScreen(node.position, viewProj, w, h);
+			if (!proj.visible) continue;
 
-			const px = cx + (rx / depth) * scale * 5.6;
-			const py = cy - (ry / depth) * scale * 5.6;
-
-			const dx = screenX - px;
-			const dy = screenY - py;
+			const dx = screenX - proj.x;
+			const dy = screenY - proj.y;
 			const d = Math.sqrt(dx * dx + dy * dy);
 
-			// Raio aparente do polígono 3D projetado na tela:
-			// Um nó comum tem tamanho s=0.024 a 0.057. Em tela isso corresponde a ~14-30px.
-			const approxNodeRadiusPx = Math.max(12, Math.min(32, (0.055 / depth) * scale * 5.6));
+			// Raio aparente do polígono 3D projetado na tela
+			const approxNodeRadiusPx = Math.max(14, Math.min(36, (1.8 / Math.max(0.5, proj.depth)) * (h * 0.2)));
 			const dynamicTolerance = Math.max(tolerancePx, approxNodeRadiusPx + 4.0);
 
 			if (d <= dynamicTolerance) {
 				candidates.push({
 					index: i,
 					distance2D: d,
-					depth,
+					depth: proj.depth,
 				});
 			}
 		}
@@ -939,16 +1005,6 @@ export class NeuralCoreEngine {
 
 		const w = this.canvas.clientWidth || this.canvas.width;
 		const h = this.canvas.clientHeight || this.canvas.height;
-		const cx = w / 2;
-		const cy = h / 2;
-		const scale = Math.min(w, h) * 0.22;
-
-		const cosO = Math.cos(this.cameraOrbit.theta);
-		const sinO = Math.sin(this.cameraOrbit.theta);
-		const cosPhi = Math.cos(this.cameraOrbit.phi);
-		const sinPhi = Math.sin(this.cameraOrbit.phi);
-		const baseDist = Math.max(1.0, this.cameraOrbit.distance);
-		const [tx0, ty0, tz0] = this.cameraOrbit.target || [0, 0, 0];
 
 		const hasActiveSelection =
 			this.selectedNodeIndex !== null &&
@@ -964,27 +1020,17 @@ export class NeuralCoreEngine {
 
 		// 1. Projeção de todos os nós visíveis na tela para uso na repulsão magnética
 		const allProjectedNodes: Array<{ index: number; px: number; py: number; depth: number }> = [];
+		const viewProj = this.calculateViewProjMatrix(w / (h || 1));
 
 		for (let i = 0; i < this.vectorNodes.length; i++) {
 			const node = this.vectorNodes[i]!;
 			if (this.visibleModules.size > 0 && !this.visibleModules.has(node.module)) {
 				continue;
 			}
-			const [vx0, vy0, vz0] = node.position;
-			const vx = vx0 - tx0;
-			const vy = vy0 - ty0;
-			const vz = vz0 - tz0;
 
-			const rx = vx * cosO - vz * sinO;
-			const rz = vx * sinO + vz * cosO;
-			const ry = vy * cosPhi - rz * sinPhi;
-			const depth = Math.max(0.2, baseDist + (vy * sinPhi + rz * cosPhi) * 0.45);
-
-			const px = cx + (rx / depth) * scale * 5.6;
-			const py = cy - (ry / depth) * scale * 5.6;
-
-			if (px >= 20 && px <= w - 20 && py >= 20 && py <= h - 20) {
-				allProjectedNodes.push({ index: i, px, py, depth });
+			const proj = this.projectWorldToScreen(node.position, viewProj, w, h);
+			if (proj.visible && proj.x >= 20 && proj.x <= w - 20 && proj.y >= 20 && proj.y <= h - 20) {
+				allProjectedNodes.push({ index: i, px: proj.x, py: proj.y, depth: proj.depth });
 			}
 		}
 
@@ -1055,8 +1101,8 @@ export class NeuralCoreEngine {
 			}
 
 			let score = methodsCount;
+			if (isHovered) score += 10000;
 			if (isSelected) score += 6000;
-			if (isHovered) score += 5000;
 			if (isSearchingTarget) score += 3000;
 			if (isRelated) score += 2500;
 			if (isMatched) score += 800;
@@ -1151,17 +1197,26 @@ export class NeuralCoreEngine {
 	private renderGeometricCanvas2D() {
 		if (!this.ctx2d) return;
 		const ctx = this.ctx2d;
-		const w = this.canvas.width;
-		const h = this.canvas.height;
+		const bufferW = this.canvas.width;
+		const bufferH = this.canvas.height;
+
+		// Dimensões CSS do cliente (alinhamento exato com overlays HTML e mouse)
+		const clientW = this.canvas.clientWidth || bufferW;
+		const clientH = this.canvas.clientHeight || bufferH;
+		const dprX = bufferW / (clientW || 1);
+		const dprY = bufferH / (clientH || 1);
+
+		ctx.save();
+		ctx.scale(dprX, dprY);
 
 		ctx.globalAlpha = 0.25;
 		ctx.fillStyle = "black";
-		ctx.fillRect(0, 0, w, h);
+		ctx.fillRect(0, 0, clientW, clientH);
 		ctx.globalAlpha = 1.0;
 
-		const cx = w / 2;
-		const cy = h / 2;
-		const scale = Math.min(w, h) * 0.22;
+		const cx = clientW / 2;
+		const cy = clientH / 2;
+		const scale = Math.min(clientW, clientH) * 0.22;
 
 		const baseDist = Math.max(1.0, this.cameraOrbit.distance);
 		const zoomFactor = 5.6 / baseDist;
@@ -1205,11 +1260,6 @@ export class NeuralCoreEngine {
 			ctx.stroke();
 		}
 
-		const cosO = Math.cos(this.cameraOrbit.theta);
-		const sinO = Math.sin(this.cameraOrbit.theta);
-		const cosPhi = Math.cos(this.cameraOrbit.phi);
-		const sinPhi = Math.sin(this.cameraOrbit.phi);
-
 		// 2. Anéis Cardânicos (apenas se habilitado)
 		if (this.showGimbalRings) {
 			ctx.lineWidth = 1.0;
@@ -1240,20 +1290,37 @@ export class NeuralCoreEngine {
 			ctx.stroke();
 		}
 
-		// 3. Nós da Constelação Vetorial (Canvas2D) — agora com ícones sobre polígonos
+		// 3. Nós da Constelação Vetorial (Canvas2D) — com posições projetadas pela matriz exata ViewProj
 		if (this.showVectorConstellation && this.vectorNodes.length > 0) {
-			const [tx0, ty0, tz0] = this.cameraOrbit.target || [0, 0, 0];
+			const viewProj = this.calculateViewProjMatrix(clientW / (clientH || 1));
+
+			// 3.0 Conexões e arestas entre classes no Canvas2D
+			if (this.showPcbLines && this.vectorEdges.length > 0) {
+				ctx.lineWidth = 1.0;
+				for (const edge of this.vectorEdges) {
+					const n1 = this.vectorNodes[edge.source];
+					const n2 = this.vectorNodes[edge.target];
+					if (!n1 || !n2) continue;
+					const p1 = this.projectWorldToScreen(n1.position, viewProj, clientW, clientH);
+					const p2 = this.projectWorldToScreen(n2.position, viewProj, clientW, clientH);
+					if (!p1.visible && !p2.visible) continue;
+					const alpha = Math.min(0.5, Math.max(0.12, (edge.similarity || 0.5) * 0.6));
+					const cyanFn = ["rgb", "a"].join("");
+					ctx.strokeStyle = `${cyanFn}(0, 200, 255, ${alpha})`;
+					ctx.beginPath();
+					ctx.moveTo(p1.x, p1.y);
+					ctx.lineTo(p2.x, p2.y);
+					ctx.stroke();
+				}
+			}
+
+			// 3.1 Polígonos e ícones das classes
 			for (let i = 0; i < this.vectorNodes.length; i++) {
 				const node = this.vectorNodes[i]!;
-				const vx = node.position[0] - tx0;
-				const vy = node.position[1] - ty0;
-				const vz = node.position[2] - tz0;
-				const rx = vx * cosO - vz * sinO;
-				const rz = vx * sinO + vz * cosO;
-				const ry = vy * cosPhi - rz * sinPhi;
-				const d = Math.max(0.2, baseDist + (vy * sinPhi + rz * cosPhi) * 0.45);
-				const px = cx + (rx / d) * scale * 5.6;
-				const py = cy - (ry / d) * scale * 5.6;
+				const proj = this.projectWorldToScreen(node.position, viewProj, clientW, clientH);
+				if (!proj.visible) continue;
+				const px = proj.x;
+				const py = proj.y;
 
 				const isHighlight = i === this.highlightedNodeIndex;
 				const isMatched = Boolean(node.isMatchedBySearch);
@@ -1274,8 +1341,10 @@ export class NeuralCoreEngine {
 				if (ftKey.includes(".")) iconLabel = ftKey.split(".").pop()!.toUpperCase();
 				else iconLabel = ftKey.replace(/[^a-zA-Z0-9]/g, "").slice(0, 3).toUpperCase();
 
-				// size in px
-				const iconSizePx = Math.max(10, (isMatched ? 28 : isHighlight ? 22 : 16) * zoomFactor);
+				// Tamanho em pixels escalonado pela profundidade da câmera
+				const baseNodeSize = isMatched ? 32 : isHighlight ? 26 : 20;
+				const depthScale = Math.max(0.4, Math.min(2.0, 5.2 / Math.max(0.5, proj.depth)));
+				const iconSizePx = Math.max(12, baseNodeSize * depthScale);
 
 				// compute color from file type palette
 				const colArr = resolveFileTypeColor(
@@ -1302,7 +1371,8 @@ export class NeuralCoreEngine {
 				// border for matched nodes
 				if (isMatched) {
 					ctx.lineWidth = 2.0;
-					const goldFn = ["rgb", "a"].join(""); ctx.strokeStyle = `${goldFn}(255, 215, 0, 0.95)`;
+					const goldFn = ["rgb", "a"].join("");
+					ctx.strokeStyle = `${goldFn}(255, 215, 0, 0.95)`;
 					ctx.stroke();
 				}
 
@@ -1314,42 +1384,41 @@ export class NeuralCoreEngine {
 				ctx.textBaseline = "middle";
 				ctx.fillText(iconLabel || "F", px, py + 1);
 
-				// 3.1 Desenho dos métodos filhos em sub-órbita no Canvas2D
+				// 3.2 Métodos filhos em sub-órbita no Canvas2D
 				if (node.methods && node.methods.length > 0) {
 					const totalM = node.methods.length;
 					for (let mIdx = 0; mIdx < totalM; mIdx++) {
 						const m = node.methods[mIdx]!;
 						const mAngle = m.orbitAngle ?? (mIdx / totalM) * Math.PI * 2;
-						const mRadius = m.orbitRadius ?? 0.16;
+						const mRadius = m.orbitRadius ?? 0.28;
 
-						const mx = vx + Math.cos(mAngle) * mRadius;
-						const my = vy + Math.sin(mAngle) * 0.45 * mRadius;
-						const mz = vz + Math.sin(mAngle) * mRadius;
-
-						const mrx = mx * cosO - mz * sinO;
-						const mrz = mx * sinO + mz * cosO;
-						const mry = my * cosPhi - mrz * sinPhi;
-						const md = Math.max(0.2, baseDist + (my * sinPhi + mrz * cosPhi) * 0.45);
-						const mpx = cx + (mrx / md) * scale * 5.6;
-						const mpy = cy - (mry / md) * scale * 5.6;
+						const mWorld: [number, number, number] = [
+							node.position[0] + Math.cos(mAngle) * mRadius,
+							node.position[1] + Math.sin(mAngle) * 0.45 * mRadius,
+							node.position[2] + Math.sin(mAngle) * mRadius,
+						];
+						const mProj = this.projectWorldToScreen(mWorld, viewProj, clientW, clientH);
+						if (!mProj.visible) continue;
 
 						// Linha radial
 						ctx.strokeStyle = "cyan";
 						ctx.lineWidth = 0.6;
 						ctx.beginPath();
 						ctx.moveTo(px, py);
-						ctx.lineTo(mpx, mpy);
+						ctx.lineTo(mProj.x, mProj.y);
 						ctx.stroke();
 
 						// Micro-ponto do método
 						ctx.fillStyle = isMatched ? "yellow" : "white";
 						ctx.beginPath();
-						ctx.arc(mpx, mpy, Math.max(0.8, 1.2 * zoomFactor), 0, Math.PI * 2);
+						ctx.arc(mProj.x, mProj.y, Math.max(1.0, 1.5 * depthScale), 0, Math.PI * 2);
 						ctx.fill();
 					}
 				}
 			}
 		}
+
+		ctx.restore();
 	}
 
 	public stop() {
