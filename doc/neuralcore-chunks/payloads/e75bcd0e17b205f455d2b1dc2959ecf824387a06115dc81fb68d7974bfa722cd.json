@@ -1,0 +1,13 @@
+{
+  "id": "e75bcd0e17b205f455d2b1dc2959ecf824387a06115dc81fb68d7974bfa722cd",
+  "text": "\t\texpect(matches[0]?.qualifiedName).toBe(\"OrbitCameraController\");\n\t});\n\n\tit(\"filtra chunks por múltiplos termos em qualquer ordem\", () => {\n\t\tconst chunks: HermesChunkItem[] = [\n\t\t\t{\n\t\t\t\tid: \"c-1\",\n\t\t\t\tpath: \"apps/web/src/panels/neural-core/cameraController.ts\",\n\t\t\t\trelPath: \"cameraController.ts\",\n\t\t\t\tqualifiedName: \"wasJustDragging\",\n\t\t\t\tchunkKind: \"method\",\n\t\t\t\tcontent: \"public wasJustDragging(thresholdMs = 250): boolean\",\n\t\t\t\ttokenEstimate: 30,\n\t\t\t},\n\t\t\t{\n\t\t\t\tid: \"c-2\",\n\t\t\t\tpath: \"apps/web/src/panels/NeuralCorePanel.tsx\",\n\t\t\t\trelPath: \"NeuralCorePanel.tsx\",\n\t\t\t\tqualifiedName: \"handleCanvasClick\",\n\t\t\t\tchunkKind: \"function\",\n\t\t\t\tcontent: \"const handleCanvasClick = (e) => {}\",\n\t\t\t\ttokenEstimate: 40,\n\t\t\t},\n\t\t];\n\n\t\tconst query = \"camera dragging\";\n\t\tconst terms = query.toLowerCase().split(/\\s+/).filter(Boolean);",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\components\\searchBox.test.ts",
+    "kind": "variable",
+    "name": "chunks",
+    "start_line": 69,
+    "end_line": 88,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

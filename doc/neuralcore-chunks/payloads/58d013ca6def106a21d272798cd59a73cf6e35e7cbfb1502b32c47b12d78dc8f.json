@@ -1,0 +1,13 @@
+{
+  "id": "58d013ca6def106a21d272798cd59a73cf6e35e7cbfb1502b32c47b12d78dc8f",
+  "text": "\t\t\tlet trColG = isCrossProject ? 0.75 : 0.85;\n\t\t\tlet trColB = isCrossProject ? 0.2 : 0.95;\n\n\t\t\tif (isConnectedToSelected) {\n\t\t\t\tconst otherIdx = edge.source === selectedNodeIndex ? edge.target : edge.source;\n\t\t\t\tif (relations.callNeighbors.has(otherIdx)) {\n\t\t\t\t\t// Chamada de método / Caller\n\t\t\t\t\ttrColR = 0.1;",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+    "kind": "variable",
+    "name": "otherIdx",
+    "start_line": 1173,
+    "end_line": 1173,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

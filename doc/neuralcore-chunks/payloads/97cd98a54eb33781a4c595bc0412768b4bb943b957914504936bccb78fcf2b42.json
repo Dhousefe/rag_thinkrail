@@ -1,0 +1,13 @@
+{
+  "id": "97cd98a54eb33781a4c595bc0412768b4bb943b957914504936bccb78fcf2b42",
+  "text": "\t\tconst y2 = z0 * x1 - z1 * x0;\n\n\t\t// Componentes de translação da visão V: -dot(axis, eye)\n\t\tconst tx = -(x0 * eyeX + x1 * eyeY + x2 * eyeZ);\n\t\tconst ty = -(y0 * eyeX + y1 * eyeY + y2 * eyeZ);\n\t\tconst tz = -(z0 * eyeX + z1 * eyeY + z2 * eyeZ);\n\n\t\t// Projeção perspectiva WebGPU (NDC z in [0, 1]) com frustum amplo e estável",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+    "kind": "variable",
+    "name": "ty",
+    "start_line": 676,
+    "end_line": 676,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

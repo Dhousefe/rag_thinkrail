@@ -1,0 +1,12 @@
+{
+  "id": "b14b24638c94d582b736b7d94c3a79f0b958b7dd9396e5d74b3a2af21816fdb0",
+  "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "kind": "variable",
+  "name": "out",
+  "start_line": 715,
+  "end_line": 715,
+  "content": "\t\treturn out;\n\t}\n\n\tprivate createRotationMatrix(ax: number, ay: number): Float32Array {\n\t\tconst out = new Float32Array(16);\n\t\tconst cx = Math.cos(ax);\n\t\tconst sx = Math.sin(ax);\n\t\tconst cy = Math.cos(ay);",
+  "token_estimate": 51,
+  "created_at": 1794331101131
+}

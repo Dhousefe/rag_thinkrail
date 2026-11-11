@@ -1,0 +1,13 @@
+{
+  "id": "059a5002d537f0c867e022fa6c4543eafa2d61feb7a0b682b21258173eb1f130",
+  "text": "\t\tif (!newNodes || newNodes.length === 0) return;\n\t\tconst existingIds = new Set(this.vectorNodes.map((n) => n.id || n.path));\n\t\tconst uniqueAdditions: VectorNodeInput[] = [];\n\t\tfor (const node of newNodes) {\n\t\t\tconst key = node.id || node.path;\n\t\t\tif (!existingIds.has(key)) {\n\t\t\t\texistingIds.add(key);\n\t\t\t\tuniqueAdditions.push(node);",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+    "kind": "variable",
+    "name": "key",
+    "start_line": 208,
+    "end_line": 208,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

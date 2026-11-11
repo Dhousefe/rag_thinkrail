@@ -1,0 +1,12 @@
+{
+  "id": "9a84c2d26ba20c76038002b38fe9502b0345cdbb2bc7b676ec52d5a881d12574",
+  "file": "apps\\web\\src\\panels\\neural-core\\cameraController.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\cameraController.ts",
+  "kind": "variable",
+  "name": "centerZ",
+  "start_line": 306,
+  "end_line": 306,
+  "content": "\t\t}\n\n\t\tconst centerX = (minX + maxX) / 2;\n\t\tconst centerY = (minY + maxY) / 2;\n\t\tconst centerZ = (minZ + maxZ) / 2;\n\n\t\t// Calcula o raio máximo a partir do centro\n\t\tlet maxRadius = 0.5;",
+  "token_estimate": 47,
+  "created_at": 1794331100891
+}

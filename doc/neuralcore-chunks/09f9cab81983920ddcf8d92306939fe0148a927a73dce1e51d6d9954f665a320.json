@@ -1,0 +1,12 @@
+{
+  "id": "09f9cab81983920ddcf8d92306939fe0148a927a73dce1e51d6d9954f665a320",
+  "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "kind": "variable",
+  "name": "part4",
+  "start_line": 682,
+  "end_line": 682,
+  "content": "\tconst toHex = (n: number) => (n >>> 0).toString(16).padStart(8, \"0\");\n\tconst part1 = toHex(h1) + toHex(h2);\n\tconst part2 = toHex(h3) + toHex(h4);\n\tconst part3 = toHex(h1 ^ h3) + toHex(h2 ^ h4);\n\tconst part4 = toHex(h1 + h2) + toHex(h3 + h4);\n\tconst fingerprintHash = `${part1}${part2}${part3}${part4}`.toLowerCase();\n\tconst shortHash = fingerprintHash.substring(0, 10).toUpperCase();\n",
+  "token_estimate": 97,
+  "created_at": 1794331101024
+}

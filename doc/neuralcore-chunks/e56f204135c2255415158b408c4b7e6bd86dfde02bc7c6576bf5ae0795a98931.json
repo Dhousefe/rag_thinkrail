@@ -1,0 +1,12 @@
+{
+  "id": "e56f204135c2255415158b408c4b7e6bd86dfde02bc7c6576bf5ae0795a98931",
+  "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "kind": "variable",
+  "name": "rx",
+  "start_line": 1077,
+  "end_line": 1077,
+  "content": "\t\t\t\tconst x = m.vertices[off + 0]!;\n\t\t\t\tconst y = m.vertices[off + 1]!;\n\t\t\t\tconst z = m.vertices[off + 2]!;\n\n\t\t\t\tconst rx = x * cosO - z * sinO;\n\t\t\t\tconst rz = x * sinO + z * cosO;\n\t\t\t\tconst ry = y * cosPhi - rz * sinPhi;\n\t\t\t\tconst d = Math.max(0.2, baseDist + (y * sinPhi + rz * cosPhi) * 0.45);",
+  "token_estimate": 74,
+  "created_at": 1794331101170
+}

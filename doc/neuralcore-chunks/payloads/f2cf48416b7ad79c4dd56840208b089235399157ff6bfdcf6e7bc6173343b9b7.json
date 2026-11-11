@@ -1,0 +1,13 @@
+{
+  "id": "f2cf48416b7ad79c4dd56840208b089235399157ff6bfdcf6e7bc6173343b9b7",
+  "text": "\n\t/**\n\t * Restaura suavemente o estado salvo anteriormente na câmera, se existir.\n\t */\n\tpublic restoreCameraSnapshot(): boolean {\n\t\tif (!this.cameraSnapshot) return false;\n\t\tthis.flyTarget = {\n\t\t\ttargetX: this.cameraSnapshot.targetX,\n\t\t\ttargetY: this.cameraSnapshot.targetY,\n\t\t\ttargetZ: this.cameraSnapshot.targetZ,\n\t\t\ttheta: this.cameraSnapshot.theta,\n\t\t\tphi: this.cameraSnapshot.phi,\n\t\t\tdistance: this.cameraSnapshot.distance,\n\t\t};\n\t\tthis.cameraSnapshot = null;\n\t\tthis.onUpdate?.();\n\t\treturn true;\n\t}\n\n\t/**\n\t * Limpa o snapshot salvo sem restaurar.",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\cameraController.ts",
+    "kind": "method",
+    "name": "OrbitCameraController.restoreCameraSnapshot",
+    "start_line": 247,
+    "end_line": 260,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

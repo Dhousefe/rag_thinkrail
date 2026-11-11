@@ -1,0 +1,13 @@
+{
+  "id": "f3c27e403c76c72fb46b680d1c1fad9f522ed90fe9ac7dabb0d434e546084daf",
+  "text": "\t\t\t\t\t\t\t\t\tconst badge = getSymbolKindBadge(n.chunkKind);\n\t\t\t\t\t\t\t\t\tconst IconComp = badge.icon;\n\t\t\t\t\t\t\t\t\tconst isCurrent = idx === selectedIndex;\n\t\t\t\t\t\t\t\t\tconst qLower = query.toLowerCase().trim();\n\t\t\t\t\t\t\t\t\tconst matchedMethods = (n.methods || []).filter(\n\t\t\t\t\t\t\t\t\t\t(m) =>\n\t\t\t\t\t\t\t\t\t\t\tm.name.toLowerCase().includes(qLower) ||\n\t\t\t\t\t\t\t\t\t\t\t(m.signature && m.signature.toLowerCase().includes(qLower)),\n\t\t\t\t\t\t\t\t\t);\n\t\t\t\t\t\t\t\t\treturn (\n\t\t\t\t\t\t\t\t\t\t<button\n\t\t\t\t\t\t\t\t\t\t\ttype=\"button\"",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreSearchBox.tsx",
+    "kind": "variable",
+    "name": "matchedMethods",
+    "start_line": 303,
+    "end_line": 307,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

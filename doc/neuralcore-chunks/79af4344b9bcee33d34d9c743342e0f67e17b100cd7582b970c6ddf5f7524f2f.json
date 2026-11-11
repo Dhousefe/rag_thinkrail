@@ -1,0 +1,12 @@
+{
+  "id": "79af4344b9bcee33d34d9c743342e0f67e17b100cd7582b970c6ddf5f7524f2f",
+  "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "kind": "variable",
+  "name": "candidateLabels",
+  "start_line": 889,
+  "end_line": 907,
+  "content": "\t\t\t}\n\t\t}\n\n\t\t// 2. Filtra nós candidatos para receberem rótulo conforme raio do cursor e prioridade\n\t\tconst candidateLabels: Array<{\n\t\t\tindex: number;\n\t\t\tid: string;\n\t\t\tlabel: string;\n\t\t\tmodule: string;\n\t\t\tnodePx: number;\n\t\t\tnodePy: number;\n\t\t\tx: number;\n\t\t\ty: number;\n\t\t\tdepth: number;\n\t\t\tisHovered: boolean;\n\t\t\tisMatched: boolean;\n\t\t\tisSearchingTarget: boolean;\n\t\t\tmethodsCount: number;\n\t\t\timportanceScore: number;\n\t\t\tisSelected: boolean;\n\t\t\tisRelated: boolean;\n\t\t\trelationKind?: \"CALLER\" | \"IMPORT\" | \"TYPE\" | \"DEPENDENCY\" | undefined;\n\t\t}> = [];\n\n\t\tfor (const proj of allProjectedNodes) {\n\t\t\tconst i = proj.index;",
+  "token_estimate": 154,
+  "created_at": 1794331101149
+}

@@ -1,0 +1,12 @@
+{
+  "id": "b565828f08de0acb51a69cec1661c0eb7b5f6c208449df2c39f11a147acfcb42",
+  "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "kind": "variable",
+  "name": "steps",
+  "start_line": 1308,
+  "end_line": 1308,
+  "content": "\t\t\t\tconst totalSegments = waypoints.length - 1;\n\t\t\t\tfor (let seg = 0; seg < totalSegments; seg++) {\n\t\t\t\t\tconst pStart = waypoints[seg]!;\n\t\t\t\t\tconst pEnd = waypoints[seg + 1]!;\n\t\t\t\t\tconst steps = 3; // Subdivisão fina para propagação do feixe de pulso\n\n\t\t\t\t\tfor (let st = 0; st < steps; st++) {\n\t\t\t\t\t\tconst u1 = (seg * steps + st) / (totalSegments * steps);",
+  "token_estimate": 89,
+  "created_at": 1794331101070
+}

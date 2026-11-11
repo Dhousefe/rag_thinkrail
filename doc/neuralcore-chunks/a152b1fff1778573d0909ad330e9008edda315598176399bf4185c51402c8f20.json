@@ -1,0 +1,12 @@
+{
+  "id": "a152b1fff1778573d0909ad330e9008edda315598176399bf4185c51402c8f20",
+  "file": "apps\\web\\src\\panels\\neural-core\\cameraController.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\cameraController.ts",
+  "kind": "method",
+  "name": "OrbitCameraController.setPcbTopView",
+  "start_line": 154,
+  "end_line": 164,
+  "content": "\tpublic panDown(step = 120) {\n\t\tthis.panBy(0, -step);\n\t}\n\n\tpublic setPcbTopView() {\n\t\tthis.flyTarget = {\n\t\t\ttargetX: this.target[0],\n\t\t\ttargetY: 0,\n\t\t\ttargetZ: this.target[2],\n\t\t\ttheta: 0,\n\t\t\tphi: 1.25, // Visão zenital de placa PCB\n\t\t\tdistance: Math.max(4.2, this.distance),\n\t\t};\n\t\tthis.onUpdate?.();\n\t}\n\n\tpublic zoomIn() {\n\t\tthis.flyTarget = null;",
+  "token_estimate": 88,
+  "created_at": 1794331100872
+}

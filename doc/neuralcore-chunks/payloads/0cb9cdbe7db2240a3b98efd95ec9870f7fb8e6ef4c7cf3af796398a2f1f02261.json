@@ -1,0 +1,13 @@
+{
+  "id": "0cb9cdbe7db2240a3b98efd95ec9870f7fb8e6ef4c7cf3af796398a2f1f02261",
+  "text": "\t * para suporte ao carregador em lote (Batch Loader).\n\t */\n\tpublic appendVectorGraphData(newNodes: VectorNodeInput[], newEdges: VectorEdgeInput[]) {\n\t\tif (!newNodes || newNodes.length === 0) return;\n\t\tconst existingIds = new Set(this.vectorNodes.map((n) => n.id || n.path));\n\t\tconst uniqueAdditions: VectorNodeInput[] = [];\n\t\tfor (const node of newNodes) {\n\t\t\tconst key = node.id || node.path;",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+    "kind": "variable",
+    "name": "existingIds",
+    "start_line": 205,
+    "end_line": 205,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

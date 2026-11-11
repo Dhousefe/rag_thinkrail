@@ -1,0 +1,13 @@
+{
+  "id": "3f9dfef1dbf0c59aa69b6d23808e5dec87acfd4d0a7a14dc5ca8169f926657aa",
+  "text": "\t\t\t\tconst rightZ = -Math.sin(this.theta);\n\n\t\t\t\t// Vetor Up da câmera\n\t\t\t\tconst upX = -Math.sin(this.phi) * Math.sin(this.theta);\n\t\t\t\tconst upY = Math.cos(this.phi);\n\t\t\t\tconst upZ = -Math.sin(this.phi) * Math.cos(this.theta);\n\n\t\t\t\tthis.target[0] -= (rightX * dx - upX * dy) * panFactor;",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\cameraController.ts",
+    "kind": "variable",
+    "name": "upY",
+    "start_line": 77,
+    "end_line": 77,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

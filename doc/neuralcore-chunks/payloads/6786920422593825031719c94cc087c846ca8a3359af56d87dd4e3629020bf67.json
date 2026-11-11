@@ -1,0 +1,13 @@
+{
+  "id": "6786920422593825031719c94cc087c846ca8a3359af56d87dd4e3629020bf67",
+  "text": "\t// Pode ser ocultado via toggle para desobstruir a visualização de centenas de classes e polígonos.\n\tif (showPcbLines) {\n\t\tfor (const edge of edges) {\n\t\t\tif (edge.source >= nodes.length || edge.target >= nodes.length) continue;\n\t\t\tconst n1 = nodes[edge.source];\n\t\t\tconst n2 = nodes[edge.target];\n\t\t\tif (!n1 || !n2) continue;\n",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+    "kind": "variable",
+    "name": "n1",
+    "start_line": 1143,
+    "end_line": 1143,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

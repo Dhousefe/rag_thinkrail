@@ -1,0 +1,12 @@
+{
+  "id": "7a253ad132d88bb911963abbcf0a9a71ca7ee22bb9ec373f678789d91daa15f8",
+  "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "kind": "method",
+  "name": "NeuralCoreEngine.setVisibleModules",
+  "start_line": 188,
+  "end_line": 191,
+  "content": "\t\t}\n\t\tthis.rebuildVectorMesh();\n\t}\n\n\tpublic setVisibleModules(modules: string[]) {\n\t\tthis.visibleModules = new Set(modules);\n\t\tthis.rebuildVectorMesh();\n\t}\n\n\tpublic setVectorGraphData(nodes: VectorNodeInput[], edges: VectorEdgeInput[]) {\n\t\tthis.vectorNodes = nodes;",
+  "token_estimate": 67,
+  "created_at": 1794331101097
+}

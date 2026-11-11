@@ -1,0 +1,13 @@
+{
+  "id": "6a0671635b9b849d68ae5524317adaa267c63ba5d802fa927007460e48a0e184",
+  "text": "\tconst c = 0.85;\n\tconst x = c * (1 - Math.abs((h % 2) - 1));\n\tlet r = 0;\n\tlet g = 0;\n\tlet b = 0;\n\tif (h < 1) {\n\t\tr = c;\n\t\tg = x;",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+    "kind": "variable",
+    "name": "b",
+    "start_line": 464,
+    "end_line": 464,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

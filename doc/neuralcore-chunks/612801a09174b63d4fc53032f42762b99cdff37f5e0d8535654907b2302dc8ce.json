@@ -1,0 +1,12 @@
+{
+  "id": "612801a09174b63d4fc53032f42762b99cdff37f5e0d8535654907b2302dc8ce",
+  "file": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreChunksView.tsx",
+  "path": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreChunksView.tsx",
+  "kind": "variable",
+  "name": "MetaIcon",
+  "start_line": 157,
+  "end_line": 157,
+  "content": "\t\t\t\t\t</div>\n\t\t\t\t) : (\n\t\t\t\t\tfilteredChunks.map((c, idx) => {\n\t\t\t\t\t\tconst meta = getChunkKindMeta(c.chunkKind);\n\t\t\t\t\t\tconst MetaIcon = meta.icon;\n\t\t\t\t\t\treturn (\n\t\t\t\t\t\t\t<div\n\t\t\t\t\t\t\t\tkey={c.id || idx}",
+  "token_estimate": 49,
+  "created_at": 1794331100909
+}

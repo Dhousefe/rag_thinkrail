@@ -1,0 +1,12 @@
+{
+  "id": "ce6568d0c7fced491bbbd1bd87ba19f079b743ed87dad05f9ef4d0f24e432153",
+  "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "kind": "variable",
+  "name": "far",
+  "start_line": 682,
+  "end_line": 682,
+  "content": "\n\t\t// Projeção perspectiva WebGPU (NDC z in [0, 1]) com frustum amplo e estável\n\t\tconst fov = Math.PI / 4;\n\t\tconst near = 0.05;\n\t\tconst far = 2000.0;\n\t\tconst f = 1.0 / Math.tan(fov / 2);\n\t\tconst rangeInv = 1.0 / (near - far);\n",
+  "token_estimate": 57,
+  "created_at": 1794331101129
+}

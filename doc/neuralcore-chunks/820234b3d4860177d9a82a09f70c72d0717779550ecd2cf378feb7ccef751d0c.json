@@ -1,0 +1,12 @@
+{
+  "id": "820234b3d4860177d9a82a09f70c72d0717779550ecd2cf378feb7ccef751d0c",
+  "file": "apps\\web\\src\\panels\\neural-core\\useNeuralCoreState.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\useNeuralCoreState.ts",
+  "kind": "variable",
+  "name": "age",
+  "start_line": 37,
+  "end_line": 37,
+  "content": "\t\t\t}\n\t\t} else if (mcpMetrics.length > 0) {\n\t\t\tconst latest = mcpMetrics[mcpMetrics.length - 1];\n\t\t\tif (latest) {\n\t\t\t\tconst age = Date.now() - (latest.startedAt || 0);\n\t\t\t\tif (age < 5000) {\n\t\t\t\t\tactivity = latest.status === \"error\" ? \"error\" : \"tool_exec\";\n\t\t\t\t\tintensity = Math.max(0.2, 1.0 - age / 5000);",
+  "token_estimate": 77,
+  "created_at": 1794331101214
+}

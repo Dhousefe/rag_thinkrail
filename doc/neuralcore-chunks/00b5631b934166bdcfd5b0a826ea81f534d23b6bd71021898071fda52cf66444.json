@@ -1,0 +1,12 @@
+{
+  "id": "00b5631b934166bdcfd5b0a826ea81f534d23b6bd71021898071fda52cf66444",
+  "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "kind": "variable",
+  "name": "node",
+  "start_line": 1136,
+  "end_line": 1136,
+  "content": "\t\t// 3. Nós da Constelação Vetorial (Canvas2D)\n\t\tif (this.showVectorConstellation && this.vectorNodes.length > 0) {\n\t\t\tconst [tx0, ty0, tz0] = this.cameraOrbit.target || [0, 0, 0];\n\t\t\tfor (let i = 0; i < this.vectorNodes.length; i++) {\n\t\t\t\tconst node = this.vectorNodes[i]!;\n\t\t\t\tconst vx = node.position[0] - tx0;\n\t\t\t\tconst vy = node.position[1] - ty0;\n\t\t\t\tconst vz = node.position[2] - tz0;",
+  "token_estimate": 98,
+  "created_at": 1794331101174
+}

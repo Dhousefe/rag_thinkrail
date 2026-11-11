@@ -1,0 +1,12 @@
+{
+  "id": "79489238ef387c65d1f8213b0ab0b89ef72e5a934d491dd8b67fb27d28c857f1",
+  "file": "apps\\web\\src\\panels\\neural-core\\useNeuralCoreState.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\useNeuralCoreState.ts",
+  "kind": "variable",
+  "name": "activeRagToolName",
+  "start_line": 21,
+  "end_line": 21,
+  "content": "\t\tlet activity: NeuralActivityState = \"idle\";\n\t\tlet intensity = 0.0;\n\t\tlet activeToolName: string | undefined;\n\t\tlet activeRagQuery: string | undefined;\n\t\tlet activeRagToolName: string | undefined;\n\t\tlet isRagSearching = false;\n\t\tlet toolArgs: any;\n",
+  "token_estimate": 63,
+  "created_at": 1794331101212
+}

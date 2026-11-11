@@ -1,0 +1,12 @@
+{
+  "id": "c17805b8cde3f1a67f012b9bef73647f5fb497c332aed9a6d39c8ad61091dacf",
+  "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "kind": "variable",
+  "name": "cosO",
+  "start_line": 1097,
+  "end_line": 1097,
+  "content": "\t\t\t}\n\t\t\tctx.stroke();\n\t\t}\n\n\t\tconst cosO = Math.cos(this.cameraOrbit.theta);\n\t\tconst sinO = Math.sin(this.cameraOrbit.theta);\n\t\tconst cosPhi = Math.cos(this.cameraOrbit.phi);\n\t\tconst sinPhi = Math.sin(this.cameraOrbit.phi);",
+  "token_estimate": 56,
+  "created_at": 1794331101172
+}

@@ -1,0 +1,12 @@
+{
+  "id": "a2231ab162804b092bf6764de9a81217f1c4e3ec054087799a7b8380e919b35a",
+  "file": "apps\\web\\src\\panels\\neural-core\\resolvePivotNode.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\resolvePivotNode.ts",
+  "kind": "variable",
+  "name": "fileName",
+  "start_line": 15,
+  "end_line": 15,
+  "content": "): HermesVectorNode | null {\n\tif ((!filePath && !fallbackClassName) || vectorNodes.length === 0) return null;\n\n\tconst cleanPath = (filePath || \"\").replace(/\\\\/g, \"/\").toLowerCase().trim();\n\tconst fileName = cleanPath.split(\"/\").pop() || \"\";\n\tconst baseName = fileName.replace(/\\.[^.]+$/, \"\");\n\tconst targetClassName = (fallbackClassName || baseName).toLowerCase().trim();\n",
+  "token_estimate": 93,
+  "created_at": 1794331101190
+}

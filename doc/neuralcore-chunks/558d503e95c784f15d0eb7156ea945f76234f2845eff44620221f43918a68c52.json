@@ -1,0 +1,12 @@
+{
+  "id": "558d503e95c784f15d0eb7156ea945f76234f2845eff44620221f43918a68c52",
+  "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "kind": "variable",
+  "name": "p22",
+  "start_line": 687,
+  "end_line": 687,
+  "content": "\t\tconst f = 1.0 / Math.tan(fov / 2);\n\t\tconst rangeInv = 1.0 / (near - far);\n\n\t\t// Termos exatos da linha 2 da matriz de projeção P (sem distorção de -z0)\n\t\tconst p22 = far * rangeInv;\n\t\tconst p23 = near * far * rangeInv;\n\n\t\tconst out = new Float32Array(16);",
+  "token_estimate": 65,
+  "created_at": 1794331101130
+}

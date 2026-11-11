@@ -1,0 +1,13 @@
+{
+  "id": "79e0f1cc9d70ac4dd6c2a9f459f7eeab782380d8b672bacaa0872753b30099be",
+  "text": "\t}\n\n\t// Rotação 4D simples no plano XW e ZW\n\tconst cosA = Math.cos(angle4D);\n\tconst sinA = Math.sin(angle4D);\n\tconst projDistance = 2.2;\n\n\tconst vertexFloats: number[] = [];",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+    "kind": "variable",
+    "name": "sinA",
+    "start_line": 26,
+    "end_line": 26,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

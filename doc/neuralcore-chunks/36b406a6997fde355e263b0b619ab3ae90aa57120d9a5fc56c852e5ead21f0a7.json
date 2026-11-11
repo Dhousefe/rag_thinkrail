@@ -1,0 +1,12 @@
+{
+  "id": "36b406a6997fde355e263b0b619ab3ae90aa57120d9a5fc56c852e5ead21f0a7",
+  "file": "apps\\web\\src\\panels\\neural-core\\resolvePivotNode.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\resolvePivotNode.ts",
+  "kind": "variable",
+  "name": "qn",
+  "start_line": 53,
+  "end_line": 53,
+  "content": "\n\t// 2. Se não encontrou por caminho exato, tenta encontrar pelo nome da classe/símbolo pivô\n\tif (targetClassName && targetClassName.length >= 3) {\n\t\tconst classNode = vectorNodes.find((n) => {\n\t\t\tconst qn = (n.qualifiedName || \"\").toLowerCase();\n\t\t\treturn (\n\t\t\t\tqn === targetClassName ||\n\t\t\t\tqn.endsWith(`.${targetClassName}`) ||",
+  "token_estimate": 83,
+  "created_at": 1794331101194
+}

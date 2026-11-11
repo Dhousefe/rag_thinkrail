@@ -1,0 +1,13 @@
+{
+  "id": "55ea9636a544b30f7f98252171e0f31e3d732385b96acdd9ad58ef56c926ab7c",
+  "text": "",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreSearchBox.tsx",
+    "kind": "file",
+    "name": "NeuralCoreSearchBox.tsx",
+    "start_line": 1,
+    "end_line": 442,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "id": "eab39cfbde2cb6b7b523af1589b15914fb54f42a9fa67941b681350f640e05a3",
+  "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "kind": "variable",
+  "name": "cosA",
+  "start_line": 25,
+  "end_line": 25,
+  "content": "\t\t}\n\t}\n\n\t// Rotação 4D simples no plano XW e ZW\n\tconst cosA = Math.cos(angle4D);\n\tconst sinA = Math.sin(angle4D);\n\tconst projDistance = 2.2;\n",
+  "token_estimate": 36,
+  "created_at": 1794331100973
+}

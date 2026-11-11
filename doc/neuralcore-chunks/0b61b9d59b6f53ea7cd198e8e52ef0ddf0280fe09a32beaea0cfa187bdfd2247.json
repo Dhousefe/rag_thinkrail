@@ -1,0 +1,12 @@
+{
+  "id": "0b61b9d59b6f53ea7cd198e8e52ef0ddf0280fe09a32beaea0cfa187bdfd2247",
+  "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "kind": "variable",
+  "name": "vxj",
+  "start_line": 374,
+  "end_line": 374,
+  "content": "\t\tconst vxi = vertexFloats[i * 7] ?? 0;\n\t\tconst vyi = vertexFloats[i * 7 + 1] ?? 0;\n\t\tconst vzi = vertexFloats[i * 7 + 2] ?? 0;\n\t\tfor (let j = i + 1; j < rawVertices.length; j++) {\n\t\t\tconst vxj = vertexFloats[j * 7] ?? 0;\n\t\t\tconst vyj = vertexFloats[j * 7 + 1] ?? 0;\n\t\t\tconst vzj = vertexFloats[j * 7 + 2] ?? 0;\n\t\t\tconst dx = vxi - vxj;",
+  "token_estimate": 84,
+  "created_at": 1794331101008
+}

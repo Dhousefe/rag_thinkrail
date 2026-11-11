@@ -1,0 +1,13 @@
+{
+  "id": "49c91a0eca098c108a9def88e787a53093f048ba5058f392d895ea507097c934",
+  "text": "\t\tthis.distance = Math.min(60.0, this.distance * 1.25);\n\t\tthis.onUpdate?.();\n\t}\n\n\tpublic focusPosition(pos: [number, number, number], targetDist = 2.0) {\n\t\tconst [x, y, z] = pos;\n\t\t// Centraliza o target no nó desejado com ângulo de visão ideal para polígonos e métodos\n\t\tthis.flyTarget = {\n\t\t\ttargetX: x,\n\t\t\ttargetY: y,\n\t\t\ttargetZ: z,\n\t\t\ttheta: this.theta,\n\t\t\tphi: Math.max(0.25, Math.min(0.65, this.phi)),\n\t\t\tdistance: targetDist,\n\t\t};\n\t}\n\n\tpublic updateTween() {\n\t\tif (!this.flyTarget) return;",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\cameraController.ts",
+    "kind": "method",
+    "name": "OrbitCameraController.focusPosition",
+    "start_line": 178,
+    "end_line": 189,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

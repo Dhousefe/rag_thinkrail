@@ -1,0 +1,13 @@
+{
+  "id": "de8324765a96f5561a76c8609804334310353f58ce7e86c79ce0d0676e117805",
+  "text": "",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\shaders.wgsl.ts",
+    "kind": "file",
+    "name": "shaders.wgsl.ts",
+    "start_line": 1,
+    "end_line": 47,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

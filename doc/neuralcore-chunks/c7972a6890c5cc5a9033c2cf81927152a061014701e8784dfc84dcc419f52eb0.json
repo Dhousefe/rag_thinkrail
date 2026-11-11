@@ -1,0 +1,12 @@
+{
+  "id": "c7972a6890c5cc5a9033c2cf81927152a061014701e8784dfc84dcc419f52eb0",
+  "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "kind": "variable",
+  "name": "b",
+  "start_line": 301,
+  "end_line": 301,
+  "content": "\t\t\t// Gradiente espectral de vórtice (Ciano a Violeta)\n\t\t\tconst t = i / radarRings;\n\t\t\tconst r = 0.2 + 0.6 * Math.sin(t * Math.PI);\n\t\t\tconst g = 0.8 * Math.cos(t * Math.PI * 0.5);\n\t\t\tconst b = 1.0;\n\t\t\tvertexFloats.push(x, y, z, r, g, b, 0.75);\n\n\t\t\t// Aresta longitudinal (ao redor do tubo)",
+  "token_estimate": 73,
+  "created_at": 1794331101002
+}

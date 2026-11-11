@@ -1,0 +1,13 @@
+{
+  "id": "43917cca3c39e7fcf4b238b55f61ee62e62c0cf300b4906834e4e11947c2c9f5",
+  "text": "\t\t\ts *= 0.65;\n\t\t} else if (isSearchingTarget && searchingAnim) {\n\t\t\t// Animação de vida gradativa em 2 segundos (pulso orgânico, expansão e breathing)\n\t\t\tconst p = Math.max(0, Math.min(1, searchingAnim.animProgress));\n\t\t\tconst lifePulse = 1.0 + Math.sin(p * Math.PI * 4) * 0.45 * (1.0 - p * 0.35);\n\t\t\ts *= 2.2 * lifePulse;\n\t\t} else if (isMatched) {\n\t\t\ts *= 1.8;",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+    "kind": "variable",
+    "name": "lifePulse",
+    "start_line": 869,
+    "end_line": 869,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

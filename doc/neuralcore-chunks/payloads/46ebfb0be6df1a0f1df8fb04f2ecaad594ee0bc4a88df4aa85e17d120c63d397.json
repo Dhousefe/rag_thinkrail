@@ -1,0 +1,13 @@
+{
+  "id": "46ebfb0be6df1a0f1df8fb04f2ecaad594ee0bc4a88df4aa85e17d120c63d397",
+  "text": "\t\t\t\tconst rz = vx * sinO + vz * cosO;\n\t\t\t\tconst ry = vy * cosPhi - rz * sinPhi;\n\t\t\t\tconst d = Math.max(0.2, baseDist + (vy * sinPhi + rz * cosPhi) * 0.45);\n\t\t\t\tconst px = cx + (rx / d) * scale * 5.6;\n\t\t\t\tconst py = cy - (ry / d) * scale * 5.6;\n\n\t\t\t\tconst isHighlight = i === this.highlightedNodeIndex;\n\t\t\t\tconst isMatched = Boolean(node.isMatchedBySearch);",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+    "kind": "variable",
+    "name": "py",
+    "start_line": 1145,
+    "end_line": 1145,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

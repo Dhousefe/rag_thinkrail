@@ -1,0 +1,13 @@
+{
+  "id": "4bb26f85d72036bae61b701bb1c1603188845d9163e63431d5e2dda88be7d5ac",
+  "text": "\t\tconst tx0 = target ? target[0] : 0;\n\t\tconst ty0 = target ? target[1] : 0;\n\t\tconst tz0 = target ? target[2] : 0;\n\n\t\tconst eyeX = tx0 + distance * Math.cos(phi) * Math.sin(theta);\n\t\tconst eyeY = ty0 + distance * Math.sin(phi);\n\t\tconst eyeZ = tz0 + distance * Math.cos(phi) * Math.cos(theta);\n",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+    "kind": "variable",
+    "name": "eyeX",
+    "start_line": 636,
+    "end_line": 636,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

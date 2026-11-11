@@ -1,0 +1,12 @@
+{
+  "id": "79f2bd3ed548ae78670b4406808686a2057d2ff2b8667eeed4f6e37c93eb2901",
+  "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "kind": "variable",
+  "name": "now",
+  "start_line": 272,
+  "end_line": 272,
+  "content": "\t\t\tthis.visibleModules.size > 0\n\t\t\t\t? this.vectorNodes.filter((n) => this.visibleModules.has(n.module))\n\t\t\t\t: this.vectorNodes;\n\n\t\tconst now = performance.now();\n\t\tconst elapsed = now - this.searchAnimStartTime;\n\t\tconst searchingAnim = this.searchingNodeId\n\t\t\t? {",
+  "token_estimate": 66,
+  "created_at": 1794331101110
+}

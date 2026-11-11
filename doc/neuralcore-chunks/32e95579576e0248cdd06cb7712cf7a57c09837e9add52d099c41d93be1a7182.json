@@ -1,0 +1,12 @@
+{
+  "id": "32e95579576e0248cdd06cb7712cf7a57c09837e9add52d099c41d93be1a7182",
+  "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "kind": "method",
+  "name": "NeuralCoreEngine.setShowPcbLines",
+  "start_line": 146,
+  "end_line": 149,
+  "content": "\tpublic toggleVectorConstellation(show?: boolean) {\n\t\tthis.showVectorConstellation = show !== undefined ? show : !this.showVectorConstellation;\n\t}\n\n\tpublic setShowPcbLines(show: boolean) {\n\t\tthis.showPcbLines = show;\n\t\tthis.rebuildVectorMesh();\n\t}\n\n\tpublic togglePcbLines(show?: boolean): boolean {\n\t\tthis.showPcbLines = show !== undefined ? show : !this.showPcbLines;",
+  "token_estimate": 92,
+  "created_at": 1794331101095
+}

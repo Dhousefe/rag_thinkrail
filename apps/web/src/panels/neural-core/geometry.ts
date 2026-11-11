@@ -413,6 +413,8 @@ export interface VectorNodeInput {
 	position: [number, number, number];
 	isMatchedBySearch?: boolean | undefined;
 	methods?: VectorMethodNode[] | undefined;
+	// Novo: campo fileType usado para mapear ícone/forma/cores do mapa
+	fileType?: string | undefined;
 }
 
 export type GeometryShapeType = "tesseract" | "icosahedron" | "merkaba" | "torus" | "dodecahedron";
@@ -820,6 +822,55 @@ export function computeNodeRelations(
 	return { directNeighbors, callNeighbors, typeNeighbors, importNeighbors };
 }
 
+/**
+ * Verifica se um segmento de trilha Manhattan cruza a Keepout Zone de algum nó intermediário alheio.
+ * Retorna o nó interceptado ou null se a zona de exclusão estiver desobstruída.
+ */
+export function findKeepoutNodeConflict(
+	x1: number,
+	z1: number,
+	x2: number,
+	z2: number,
+	nodes: VectorNodeInput[],
+	excludeIdxA: number,
+	excludeIdxB: number,
+	keepoutRadius = 0.075,
+): VectorNodeInput | null {
+	const minX = Math.min(x1, x2) - keepoutRadius;
+	const maxX = Math.max(x1, x2) + keepoutRadius;
+	const minZ = Math.min(z1, z2) - keepoutRadius;
+	const maxZ = Math.max(z1, z2) + keepoutRadius;
+
+	for (let i = 0; i < nodes.length; i++) {
+		if (i === excludeIdxA || i === excludeIdxB) continue;
+		const n = nodes[i];
+		if (!n) continue;
+		const nx = n.position[0];
+		const nz = n.position[2];
+
+		if (nx >= minX && nx <= maxX && nz >= minZ && nz <= maxZ) {
+			// Se o segmento é horizontal (z1 == z2)
+			if (Math.abs(z1 - z2) < 0.001) {
+				if (Math.abs(nz - z1) <= keepoutRadius && nx >= Math.min(x1, x2) && nx <= Math.max(x1, x2)) {
+					return n;
+				}
+			}
+			// Se o segmento é vertical (x1 == x2)
+			else if (Math.abs(x1 - x2) < 0.001) {
+				if (Math.abs(nx - x1) <= keepoutRadius && nz >= Math.min(z1, z2) && nz <= Math.max(z1, z2)) {
+					return n;
+				}
+			}
+			// Segmento arbitrário
+			else {
+				const dist = Math.hypot(nx - (x1 + x2) * 0.5, nz - (z1 + z2) * 0.5);
+				if (dist <= keepoutRadius) return n;
+			}
+		}
+	}
+	return null;
+}
+
 export function createVectorConstellationWireframe(
 	nodes: VectorNodeInput[],
 	edges: VectorEdgeInput[],
@@ -830,6 +881,16 @@ export function createVectorConstellationWireframe(
 	showPcbLines: boolean = true,
 	animTime: number = 0,
 ): GeometryMeshData {
+	// Leitura de mapeamento por tipo de arquivo (sincrona — arquivo JSON gerado em build ou disponível em runtime)
+	let fileTypeMap: Record<string, { shape?: string; color?: string; label?: string }> | null = null;
+	try {
+		// require é usado para compatibilidade com runtime/bundlers sem alterações substanciais
+		// eslint-disable-next-line @typescript-eslint/no-var-requires
+		fileTypeMap = require("./filetype-map.json");
+	} catch (e) {
+		fileTypeMap = null;
+	}
+
 	const vertexFloats: number[] = [];
 	const edgeIndices: number[] = [];
 	let vOffset = 0;
@@ -874,43 +935,68 @@ export function createVectorConstellationWireframe(
 			s *= 1.7; // Destaque nítido ao passar o mouse
 		}
 
+		// Tentativa de override por mapeamento de tipo de arquivo (fileTypeMap carregado no topo da função)
 		let col: [number, number, number, number];
+		let overrideColor: [number, number, number, number] | null = null;
+		let overrideShape: string | null = null;
+		if (typeof (n.fileType || n.fileExtension || n.relPath || n.path) === "string") {
+			const key = (n.fileType || n.fileExtension || n.relPath || n.path || "").toLowerCase();
+			if (fileTypeMap) {
+				const foundKey = Object.keys(fileTypeMap).find((k) => key.endsWith(k) || key === k.replace(/^\./, ""));
+				const entry = fileTypeMap[foundKey || "default"];
+				if (entry) {
+					if (entry.color) {
+						if (entry.color.startsWith("var(")) {
+							// Não resolvemos CSS vars; fallback para palette existente
+							overrideColor = resolveFileTypeColor(key, n.module);
+						} else if (entry.color.startsWith("#") && entry.color.length >= 7) {
+							const r = parseInt(entry.color.slice(1, 3), 16) / 255;
+							const g = parseInt(entry.color.slice(3, 5), 16) / 255;
+							const b = parseInt(entry.color.slice(5, 7), 16) / 255;
+							overrideColor = [r, g, b, 0.95];
+						}
+					}
+					if (entry.shape) {
+						overrideShape = entry.shape;
+					}
+				}
+			}
+		}
+
 		if (isSelected) {
-			// Nó selecionado: Ouro elétrico vibrante com 100% de opacidade
 			col = [1.0, 0.9, 0.1, 1.0];
 		} else if (isRelated) {
-			// Classes relacionadas: cores distintas conforme tipo de relação
 			if (relations.callNeighbors.has(i)) {
-				col = [0.1, 1.0, 0.65, 0.95]; // Verde esmeralda para Callers/Callees de métodos
+				col = [0.1, 1.0, 0.65, 0.95];
 			} else if (relations.importNeighbors.has(i)) {
-				col = [0.2, 0.85, 1.0, 0.95]; // Ciano vívido para Imports / Dependências estruturais
+				col = [0.2, 0.85, 1.0, 0.95];
 			} else if (relations.typeNeighbors.has(i)) {
-				col = [1.0, 0.5, 0.9, 0.95]; // Magenta / Violeta para Tipos / Interfaces
+				col = [1.0, 0.5, 0.9, 0.95];
 			} else {
-				col = [0.4, 0.9, 1.0, 0.9]; // Azul safira para conexões k-NN próximas
+				col = [0.4, 0.9, 1.0, 0.9];
 			}
 		} else if (isUnrelated) {
-			// Outros polígonos não relacionados mantêm definição geométrica visível sem poluir
 			const baseMod = resolveFileTypeColor(n.fileExtension || n.relPath || n.path, n.module);
 			col = [baseMod[0] * 0.65, baseMod[1] * 0.65, baseMod[2] * 0.65, 0.22];
 		} else if (isSearchingTarget && searchingAnim) {
-			// Transição de cor gradativa: do ciano vibrante ao magenta e ouro esmeralda vivo
 			const p = Math.max(0, Math.min(1, searchingAnim.animProgress));
 			const r = 0.1 + p * 0.9;
 			const g = 0.9 - Math.sin(p * Math.PI) * 0.4 + p * 0.3;
 			const b = 1.0 - p * 0.85;
 			col = [Math.min(1, r), Math.min(1, g), Math.min(1, b), 1.0];
 		} else if (isMatched) {
-			col = [1.0, 0.9, 0.2, 1.0]; // Dourado brilhante quando pesquisado no RAG
+			col = [1.0, 0.9, 0.2, 1.0];
 		} else if (isHighlight) {
-			col = [0.2, 1.0, 0.85, 1.0]; // Ciano-água incandescente sob cursor
+			col = [0.2, 1.0, 0.85, 1.0];
 		} else {
-			// Cor única por tipo de arquivo (extensão) para impressão digital cromática
 			col = resolveFileTypeColor(n.fileExtension || n.relPath || n.path, n.module);
 		}
+
+		if (overrideColor) col = overrideColor;
 		const [colR, colG, colB, colA] = col;
 
-		const polyKind = getPolygonKindForFile(n.fileExtension || n.relPath || n.path);
+		const polyKindDefault = getPolygonKindForFile(n.fileExtension || n.relPath || n.path);
+		const polyKind = overrideShape ? (overrideShape as any) : polyKindDefault;
 		const base = vOffset;
 
 		if (polyKind === "cube") {
@@ -1211,28 +1297,38 @@ export function createVectorConstellationWireframe(
 			const midX = p1[0] + (p2[0] - p1[0]) * (0.45 + (pairHash % 3) * 0.05);
 			const midZ = p1[2] + (p2[2] - p1[2]) * (0.45 + (pairHash % 3) * 0.05);
 
-			// Segmentos da trilha PCB com vias anti-transfixação:
+			// Segmentos da trilha PCB com vias anti-transfixação (UC01: Keepout Zone):
+			const conflictNode = routeOrder
+				? findKeepoutNodeConflict(p1[0], p1[2], midX, p1[2], nodes, edge.source, edge.target) ||
+				  findKeepoutNodeConflict(midX, p1[2], midX, p2[2], nodes, edge.source, edge.target) ||
+				  findKeepoutNodeConflict(midX, p2[2], p2[0], p2[2], nodes, edge.source, edge.target)
+				: findKeepoutNodeConflict(p1[0], p1[2], p1[0], midZ, nodes, edge.source, edge.target) ||
+				  findKeepoutNodeConflict(p1[0], midZ, p2[0], midZ, nodes, edge.source, edge.target) ||
+				  findKeepoutNodeConflict(p2[0], midZ, p2[0], p2[2], nodes, edge.source, edge.target);
+
+			const effectiveTraceY = conflictNode ? traceY - 0.065 : traceY;
+			const effectiveAlpha = conflictNode ? alpha * 0.45 : alpha;
 			const tracePts: [number, number, number][] = routeOrder
 				? [
 						[p1[0], p1[1], p1[2]],
-						[p1[0], traceY, p1[2]],
-						[midX, traceY, p1[2]],
-						[midX, traceY, p2[2]],
-						[p2[0], traceY, p2[2]],
+						[p1[0], effectiveTraceY, p1[2]],
+						[midX, effectiveTraceY, p1[2]],
+						[midX, effectiveTraceY, p2[2]],
+						[p2[0], effectiveTraceY, p2[2]],
 						[p2[0], p2[1], p2[2]],
 					]
 				: [
 						[p1[0], p1[1], p1[2]],
-						[p1[0], traceY, p1[2]],
-						[p1[0], traceY, midZ],
-						[p2[0], traceY, midZ],
-						[p2[0], traceY, p2[2]],
+						[p1[0], effectiveTraceY, p1[2]],
+						[p1[0], effectiveTraceY, midZ],
+						[p2[0], effectiveTraceY, midZ],
+						[p2[0], effectiveTraceY, p2[2]],
 						[p2[0], p2[1], p2[2]],
 					];
 
 			const baseIdx = vOffset;
 			for (const [tx, ty, tz] of tracePts) {
-				vertexFloats.push(tx, ty, tz, trColR, trColG, trColB, alpha);
+				vertexFloats.push(tx, ty, tz, trColR, trColG, trColB, effectiveAlpha);
 				vOffset++;
 			}
 
@@ -1255,8 +1351,8 @@ export function createVectorConstellationWireframe(
 			const viaBase = vOffset;
 			vertexFloats.push(midX + viaR, traceY, midX ? p1[2] : 0, 1.0, 0.85, 0.3, alpha * 0.9);
 			vertexFloats.push(midX - viaR, traceY, midX ? p1[2] : 0, 1.0, 0.85, 0.3, alpha * 0.9);
-			vertexFloats.push(midX, traceY, p1[2] + viaR, 1.0, 0.85, 0.3, alpha * 0.9);
-			vertexFloats.push(midX, traceY, p1[2] - viaR, 1.0, 0.85, 0.3, alpha * 0.9);
+			vertexFloats.push(midX, effectiveTraceY, p1[2] + viaR, 1.0, 0.85, 0.3, alpha * 0.9);
+			vertexFloats.push(midX, effectiveTraceY, p1[2] - viaR, 1.0, 0.85, 0.3, alpha * 0.9);
 			vOffset += 4;
 			edgeIndices.push(viaBase + 0, viaBase + 1, viaBase + 2, viaBase + 3);
 		}

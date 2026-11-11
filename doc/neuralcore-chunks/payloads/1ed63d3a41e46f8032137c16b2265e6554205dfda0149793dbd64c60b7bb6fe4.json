@@ -1,0 +1,13 @@
+{
+  "id": "1ed63d3a41e46f8032137c16b2265e6554205dfda0149793dbd64c60b7bb6fe4",
+  "text": "\t\t\t\t\t\tconst x1 = pStart[0] + (pEnd[0] - pStart[0]) * (st / steps);\n\t\t\t\t\t\tconst y1 = pStart[1] + (pEnd[1] - pStart[1]) * (st / steps);\n\t\t\t\t\t\tconst z1 = pStart[2] + (pEnd[2] - pStart[2]) * (st / steps);\n\n\t\t\t\t\t\tconst x2 = pStart[0] + (pEnd[0] - pStart[0]) * ((st + 1) / steps);\n\t\t\t\t\t\tconst y2 = pStart[1] + (pEnd[1] - pStart[1]) * ((st + 1) / steps);\n\t\t\t\t\t\tconst z2 = pStart[2] + (pEnd[2] - pStart[2]) * ((st + 1) / steps);\n",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+    "kind": "variable",
+    "name": "x2",
+    "start_line": 1318,
+    "end_line": 1318,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

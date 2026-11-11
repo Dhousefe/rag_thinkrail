@@ -1,0 +1,13 @@
+{
+  "id": "29438fa9fe5f3a5b9c9c97334db6a003689d73d401046d3a1fdff3696ac8fbfd",
+  "text": "\tcount: number;\n}\n\n// 1. Gerador do Hipercubo 4D (Tesseract rotativo projetado em 3D)\nexport function createTesseractWireframe(scale = 1.0, angle4D = 0.0): GeometryMeshData {\n\tconst v4: [number, number, number, number][] = [];\n\tfor (let x = -1; x <= 1; x += 2) {\n\t\tfor (let y = -1; y <= 1; y += 2) {\n\t\t\tfor (let z = -1; z <= 1; z += 2) {\n\t\t\t\tfor (let w = -1; w <= 1; w += 2) {\n\t\t\t\t\tv4.push([x * 0.7, y * 0.7, z * 0.7, w * 0.7]);\n\t\t\t\t}\n\t\t\t}\n\t\t}\n\t}\n\n\t// Rotação 4D simples no plano XW e ZW\n\tconst cosA = Math.cos(angle4D);\n\tconst sinA = Math.sin(angle4D);\n\tconst projDistance = 2.2;\n\n\tconst vertexFloats: number[] = [];\n\tfor (const [px0, py0, pz0, pw0] of v4) {\n\t\t// Rotação no plano XW\n\t\tconst x = px0 * cosA - pw0 * sinA;\n\t\tconst w = px0 * sinA + pw0 * cosA;\n\t\tconst y = py0;\n\t\tconst z = pz0;\n\n\t\t// Projeção perspectiva 4D -> 3D\n\t\tconst perspective = 1.0 / (projDistance - w * 0.6);\n\t\tconst px = x * perspective * scale;\n\t\tconst py = y * perspective * scale;\n\t\tconst pz = z * perspective * scale;\n\n\t\t// Posição + Cor RGBA (Ciano / Azul Elétrico)\n\t\tvertexFloats.push(px, py, pz, 0.0, 0.85, 1.0, 0.9);\n\t}\n\n\t// 32 Arestas conectando os vértices que diferem em exatamente 1 bit\n\tconst edgeIndices: number[] = [];\n\tfor (let i = 0; i < 16; i++) {\n\t\tfor (let bit = 0; bit < 4; bit++) {\n\t\t\tconst j = i ^ (1 << bit);\n\t\t\tif (i < j) {\n\t\t\t\tedgeIndices.push(i, j);\n\t\t\t}\n\t\t}\n\t}\n\n\treturn {\n\t\tvertices: new Float32Array(vertexFloats),\n\t\tindices: new Uint16Array(edgeIndices),\n\t\tcount: edgeIndices.length,\n\t};\n}\n\n// 2. Gerador do Icosaedro Geodésico Sagrado\nexport function createIcosahedronWireframe(radius = 1.0): GeometryMeshData {",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+    "kind": "function",
+    "name": "createTesseractWireframe",
+    "start_line": 12,
+    "end_line": 63,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

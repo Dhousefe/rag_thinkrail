@@ -1,0 +1,13 @@
+{
+  "id": "edcbaff57ff8c8cb7d08816ea1718f2c12a473b1b335ab103ca545416dce6fad",
+  "text": "\t\t\tconst mSig = (m.signature || \"\").toLowerCase();\n\t\t\treturn (\n\t\t\t\tmSig.includes(otherBaseName) ||\n\t\t\t\t(other.methods || []).some((om) => {\n\t\t\t\t\tconst omName = om.name.toLowerCase();\n\t\t\t\t\treturn mSig.includes(omName) || (om.signature || \"\").toLowerCase().includes(mName);\n\t\t\t\t})\n\t\t\t);",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+    "kind": "variable",
+    "name": "omName",
+    "start_line": 808,
+    "end_line": 808,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

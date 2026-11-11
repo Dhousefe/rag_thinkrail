@@ -1,0 +1,13 @@
+{
+  "id": "b563510765b5cd6cc13003c7c6bd5fdf066dcbc71b57049f83ca950c206956fe",
+  "text": "\t\t} else if (polyKind === \"icosahedron\") {\n\t\t\t// Icosaedro Geodésico (Contratos e Definições de Tipos): 12 vértices, 30 arestas\n\t\t\tconst phi = (1.0 + Math.sqrt(5.0)) / 2.0;\n\t\t\tconst a = s * 0.9;\n\t\t\tconst b = a / phi;\n\t\t\tconst icoRaw: [number, number, number][] = [\n\t\t\t\t[-a, b, 0],\n\t\t\t\t[a, b, 0],",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+    "kind": "variable",
+    "name": "b",
+    "start_line": 1040,
+    "end_line": 1040,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

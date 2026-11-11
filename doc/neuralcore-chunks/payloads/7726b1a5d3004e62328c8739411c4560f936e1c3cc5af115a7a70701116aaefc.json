@@ -1,0 +1,13 @@
+{
+  "id": "7726b1a5d3004e62328c8739411c4560f936e1c3cc5af115a7a70701116aaefc",
+  "text": "\t\t\tconst d = Math.sqrt(dx * dx + dy * dy);\n\n\t\t\t// Raio aparente do polígono 3D projetado na tela:\n\t\t\t// Um nó comum tem tamanho s=0.024 a 0.057. Em tela isso corresponde a ~14-30px.\n\t\t\tconst approxNodeRadiusPx = Math.max(12, Math.min(32, (0.055 / depth) * scale * 5.6));\n\t\t\tconst dynamicTolerance = Math.max(tolerancePx, approxNodeRadiusPx + 4.0);\n\n\t\t\tif (d <= dynamicTolerance) {",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+    "kind": "variable",
+    "name": "approxNodeRadiusPx",
+    "start_line": 788,
+    "end_line": 788,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

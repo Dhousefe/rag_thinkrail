@@ -1,0 +1,12 @@
+{
+  "id": "e6568ae22e5d682ac576a1adf1eb506e68c3735c6b2b1925f618b6b625330318",
+  "file": "apps\\web\\src\\panels\\neural-core\\cameraController.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\cameraController.ts",
+  "kind": "variable",
+  "name": "r",
+  "start_line": 311,
+  "end_line": 311,
+  "content": "\n\t\t// Calcula o raio máximo a partir do centro\n\t\tlet maxRadius = 0.5;\n\t\tfor (const [x, y, z] of positions) {\n\t\t\tconst r = Math.hypot(x - centerX, y - centerY, z - centerZ);\n\t\t\tif (r > maxRadius) maxRadius = r;\n\t\t}\n",
+  "token_estimate": 54,
+  "created_at": 1794331100892
+}

@@ -1,0 +1,12 @@
+{
+  "id": "ed76133c6a8f7335a172ba0bc844ab0e3c0c809719b0a89f998bea7b00e95b64",
+  "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "kind": "variable",
+  "name": "lineStart",
+  "start_line": 1119,
+  "end_line": 1119,
+  "content": "\t\t\t\tconst mOctEdges = [0, 2, 0, 3, 0, 4, 0, 5, 1, 2, 1, 3, 1, 4, 1, 5, 2, 4, 4, 3, 3, 5, 5, 2];\n\t\t\t\tfor (const me of mOctEdges) edgeIndices.push(mBase + me);\n\n\t\t\t\t// Linha orbital conectando o centro da classe ao ponto do método\n\t\t\t\tconst lineStart = vOffset;\n\t\t\t\tvertexFloats.push(cx, cy, cz, colR, colG, colB, 0.25);\n\t\t\t\tvertexFloats.push(mx, my, mz, mColR, mColG, mColB, 0.45);\n\t\t\t\tvOffset += 2;",
+  "token_estimate": 100,
+  "created_at": 1794331101058
+}

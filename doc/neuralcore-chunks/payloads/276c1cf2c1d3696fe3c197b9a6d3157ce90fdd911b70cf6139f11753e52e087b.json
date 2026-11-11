@@ -1,0 +1,13 @@
+{
+  "id": "276c1cf2c1d3696fe3c197b9a6d3157ce90fdd911b70cf6139f11753e52e087b",
+  "text": "\t\tif (this.vectorNodes.length === 0) {\n\t\t\tthis.vectorMesh = null;\n\t\t\treturn;\n\t\t}\n\t\tconst filteredNodes =\n\t\t\tthis.visibleModules.size > 0\n\t\t\t\t? this.vectorNodes.filter((n) => this.visibleModules.has(n.module))\n\t\t\t\t: this.vectorNodes;\n\n\t\tconst now = performance.now();\n\t\tconst elapsed = now - this.searchAnimStartTime;",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+    "kind": "variable",
+    "name": "filteredNodes",
+    "start_line": 267,
+    "end_line": 270,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

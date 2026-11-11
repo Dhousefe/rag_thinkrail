@@ -1,0 +1,12 @@
+{
+  "id": "46f174c6be844ee54e8ea7b4105fb5e5e945828a3d9c07f92d2a15784bb8822d",
+  "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "kind": "variable",
+  "name": "mx",
+  "start_line": 1092,
+  "end_line": 1092,
+  "content": "\t\t\t\tif (!m) continue;\n\t\t\t\tconst mAngle = m.orbitAngle ?? (mIdx / totalM) * Math.PI * 2;\n\t\t\t\tconst mRadius = m.orbitRadius ?? 0.16;\n\n\t\t\t\tconst mx = cx + Math.cos(mAngle) * mRadius;\n\t\t\t\tconst my = cy + Math.sin(mAngle) * 0.45 * mRadius;\n\t\t\t\tconst mz = cz + Math.sin(mAngle) * mRadius;\n",
+  "token_estimate": 71,
+  "created_at": 1794331101055
+}

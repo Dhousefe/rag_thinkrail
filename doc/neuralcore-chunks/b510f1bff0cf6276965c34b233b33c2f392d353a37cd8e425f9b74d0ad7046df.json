@@ -1,0 +1,12 @@
+{
+  "id": "b510f1bff0cf6276965c34b233b33c2f392d353a37cd8e425f9b74d0ad7046df",
+  "file": "apps\\web\\src\\panels\\neural-core\\cameraController.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\cameraController.ts",
+  "kind": "variable",
+  "name": "minY",
+  "start_line": 292,
+  "end_line": 292,
+  "content": "\t\t\treturn;\n\t\t}\n\n\t\tlet minX = Infinity, maxX = -Infinity;\n\t\tlet minY = Infinity, maxY = -Infinity;\n\t\tlet minZ = Infinity, maxZ = -Infinity;\n\n\t\tfor (const [x, y, z] of positions) {",
+  "token_estimate": 45,
+  "created_at": 1794331100888
+}

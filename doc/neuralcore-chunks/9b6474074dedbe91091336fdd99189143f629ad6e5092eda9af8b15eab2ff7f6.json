@@ -1,0 +1,12 @@
+{
+  "id": "9b6474074dedbe91091336fdd99189143f629ad6e5092eda9af8b15eab2ff7f6",
+  "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "kind": "variable",
+  "name": "entropy",
+  "start_line": 642,
+  "end_line": 642,
+  "content": "\t\ttypeDistribution[kind] = (typeDistribution[kind] || 0) + 1;\n\t}\n\n\t// 2. Entropia de Shannon da variedade tipológica\n\tlet entropy = 0;\n\tconst totalNodes = nodes.length;\n\tfor (const count of Object.values(typeDistribution)) {\n\t\tconst p = count / totalNodes;",
+  "token_estimate": 64,
+  "created_at": 1794331101018
+}

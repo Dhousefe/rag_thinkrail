@@ -1,0 +1,12 @@
+{
+  "id": "f4f4b0420ddf0e79452e26b9cf1aefb6ab0666c8935229c2fac0ea32e20e9cd2",
+  "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "kind": "variable",
+  "name": "mrx",
+  "start_line": 1178,
+  "end_line": 1178,
+  "content": "\t\t\t\t\t\tconst mx = vx + Math.cos(mAngle) * mRadius;\n\t\t\t\t\t\tconst my = vy + Math.sin(mAngle) * 0.45 * mRadius;\n\t\t\t\t\t\tconst mz = vz + Math.sin(mAngle) * mRadius;\n\n\t\t\t\t\t\tconst mrx = mx * cosO - mz * sinO;\n\t\t\t\t\t\tconst mrz = mx * sinO + mz * cosO;\n\t\t\t\t\t\tconst mry = my * cosPhi - mrz * sinPhi;\n\t\t\t\t\t\tconst md = Math.max(0.2, baseDist + (my * sinPhi + mrz * cosPhi) * 0.45);",
+  "token_estimate": 92,
+  "created_at": 1794331101182
+}

@@ -1,0 +1,13 @@
+{
+  "id": "0ce202b3cd2ceb93360b7f127c91f355260b3e9ecadcf873ad9771c781664536",
+  "text": "\t\tconst hasActiveSelection =\n\t\t\tthis.selectedNodeIndex !== null &&\n\t\t\tthis.selectedNodeIndex >= 0 &&\n\t\t\tthis.selectedNodeIndex < this.vectorNodes.length;\n\t\tconst relations = hasActiveSelection\n\t\t\t? computeNodeRelations(this.selectedNodeIndex, this.vectorNodes, this.vectorEdges)\n\t\t\t: null;\n\n\t\t// Raio seguro a partir do cursor para evitar poluição visual (em pixels)\n\t\tconst cursorRadiusPx = 135;",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+    "kind": "variable",
+    "name": "relations",
+    "start_line": 854,
+    "end_line": 856,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

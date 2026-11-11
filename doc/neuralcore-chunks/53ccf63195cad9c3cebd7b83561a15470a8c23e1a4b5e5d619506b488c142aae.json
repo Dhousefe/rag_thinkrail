@@ -1,0 +1,12 @@
+{
+  "id": "53ccf63195cad9c3cebd7b83561a15470a8c23e1a4b5e5d619506b488c142aae",
+  "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "kind": "variable",
+  "name": "overlap",
+  "start_line": 1011,
+  "end_line": 1011,
+  "content": "\t\t\t\tconst dist = Math.sqrt(dx * dx + dy * dy);\n\n\t\t\t\tif (dist < minSafeLabelDist) {\n\t\t\t\t\tconst safeD = Math.max(dist, 1.0);\n\t\t\t\t\tconst overlap = minSafeLabelDist - safeD;\n\t\t\t\t\tconst repulseStrength = overlap / minSafeLabelDist;\n\n\t\t\t\t\tconst nx = dx / safeD;",
+  "token_estimate": 64,
+  "created_at": 1794331101160
+}

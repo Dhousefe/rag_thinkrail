@@ -1,0 +1,12 @@
+{
+  "id": "cf77195cb61299598456e57b7fd6d87bc06a1a7d9ace4f6ab84249a93013345f",
+  "file": "apps\\web\\src\\panels\\neural-core\\semanticFingerprint.test.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\semanticFingerprint.test.ts",
+  "kind": "variable",
+  "name": "colorJson",
+  "start_line": 61,
+  "end_line": 61,
+  "content": "\t\tit(\"atribui cores exclusivas e contrastantes para cada formato\", () => {\n\t\t\tconst colorTsx = resolveFileTypeColor(\"App.tsx\");\n\t\t\tconst colorTs = resolveFileTypeColor(\"math.ts\");\n\t\t\tconst colorMd = resolveFileTypeColor(\"README.md\");\n\t\t\tconst colorJson = resolveFileTypeColor(\"data.json\");\n\t\t\tconst colorCss = resolveFileTypeColor(\"styles.css\");\n\n\t\t\texpect(colorTsx).toEqual(FILE_TYPE_COLORS.tsx!);",
+  "token_estimate": 100,
+  "created_at": 1794331101199
+}

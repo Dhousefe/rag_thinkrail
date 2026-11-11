@@ -1,0 +1,12 @@
+{
+  "id": "61ce09babf49bc51a57e78f285e3395255a02c645436cb5c6c1866b39935446f",
+  "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "kind": "variable",
+  "name": "y",
+  "start_line": 1074,
+  "end_line": 1074,
+  "content": "\t\t\tconst projectedPts: Array<[number, number]> = [];\n\t\t\tfor (let i = 0; i < vertexCount; i++) {\n\t\t\t\tconst off = i * 7;\n\t\t\t\tconst x = m.vertices[off + 0]!;\n\t\t\t\tconst y = m.vertices[off + 1]!;\n\t\t\t\tconst z = m.vertices[off + 2]!;\n\n\t\t\t\tconst rx = x * cosO - z * sinO;",
+  "token_estimate": 66,
+  "created_at": 1794331101168
+}

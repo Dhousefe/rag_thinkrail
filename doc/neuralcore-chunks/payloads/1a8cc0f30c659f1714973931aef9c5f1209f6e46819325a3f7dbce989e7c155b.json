@@ -1,0 +1,13 @@
+{
+  "id": "1a8cc0f30c659f1714973931aef9c5f1209f6e46819325a3f7dbce989e7c155b",
+  "text": "\tconst baseName = fileName.replace(/\\.[^.]+$/, \"\");\n\tconst targetClassName = (fallbackClassName || baseName).toLowerCase().trim();\n\n\t// 1. Coleta todos os nós cujo path ou relPath corresponde ao arquivo\n\tconst fileCandidates = vectorNodes.filter((node) => {\n\t\tconst p = (node.path || \"\").replace(/\\\\/g, \"/\").toLowerCase();\n\t\tconst rel = (node.relPath || \"\").replace(/\\\\/g, \"/\").toLowerCase();\n\t\treturn (\n\t\t\t(cleanPath && (p.endsWith(cleanPath) || rel.endsWith(cleanPath))) ||\n\t\t\t(cleanPath && (cleanPath.endsWith(rel) || cleanPath.endsWith(p))) ||\n\t\t\t(fileName && (p.endsWith(`/${fileName}`) || rel.endsWith(`/${fileName}`) || rel === fileName))\n\t\t);\n\t});\n\n\tif (fileCandidates.length > 0) {\n\t\t// Prioridade 1: nó com chunkKind == \"class\"",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\resolvePivotNode.ts",
+    "kind": "variable",
+    "name": "fileCandidates",
+    "start_line": 20,
+    "end_line": 28,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

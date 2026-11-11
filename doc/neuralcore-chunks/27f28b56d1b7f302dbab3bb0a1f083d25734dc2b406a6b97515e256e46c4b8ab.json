@@ -1,0 +1,12 @@
+{
+  "id": "27f28b56d1b7f302dbab3bb0a1f083d25734dc2b406a6b97515e256e46c4b8ab",
+  "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "kind": "variable",
+  "name": "d",
+  "start_line": 1080,
+  "end_line": 1080,
+  "content": "\n\t\t\t\tconst rx = x * cosO - z * sinO;\n\t\t\t\tconst rz = x * sinO + z * cosO;\n\t\t\t\tconst ry = y * cosPhi - rz * sinPhi;\n\t\t\t\tconst d = Math.max(0.2, baseDist + (y * sinPhi + rz * cosPhi) * 0.45);\n\n\t\t\t\tprojectedPts.push([cx + (rx / d) * scale * 5.6, cy - (ry / d) * scale * 5.6]);\n\t\t\t}",
+  "token_estimate": 70,
+  "created_at": 1794331101171
+}

@@ -1,0 +1,12 @@
+{
+  "id": "da7d7794afd5f226df2ef23ec6ae7ddecbb5d07e6df14dc8cb14ddd63b9a6331",
+  "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "kind": "variable",
+  "name": "layerElevation",
+  "start_line": 1290,
+  "end_line": 1290,
+  "content": "\t\t\t\t\trCol = [1.0, 0.15, 0.9]; // Magenta Laser (Interfaces e Definições de Tipos)\n\t\t\t\t}\n\n\t\t\t\t// Altura de camada Y dedicada por relação para NUNCA cruzar no espaço 3D\n\t\t\t\tconst layerElevation = 0.048 + (neighborOrder % 12) * 0.024;\n\t\t\t\tconst routeY = Math.max(sy, ny) + layerElevation;\n\t\t\t\tneighborOrder++;\n",
+  "token_estimate": 77,
+  "created_at": 1794331101068
+}

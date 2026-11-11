@@ -1,0 +1,13 @@
+{
+  "id": "fca83ad3d7f64d09a269da7efad894c168c50eab35ad4fd025a4f03c85390502",
+  "text": "\t\tthis.isPaused = paused !== undefined ? paused : !this.isPaused;\n\t\tthis.onPauseChange?.(this.isPaused);\n\t}\n\n\tpublic setCursorScreenCoord(x: number | null, y: number | null) {\n\t\tif (x === null || y === null) {\n\t\t\tthis.cursorScreenCoord = null;\n\t\t} else {\n\t\t\tthis.cursorScreenCoord = { x, y };\n\t\t}\n\t}\n\n\t/**\n\t * Aciona o alvo procurado pelo MCP/Chat, disparando animação de vida gradativa",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+    "kind": "method",
+    "name": "NeuralCoreEngine.setCursorScreenCoord",
+    "start_line": 166,
+    "end_line": 172,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

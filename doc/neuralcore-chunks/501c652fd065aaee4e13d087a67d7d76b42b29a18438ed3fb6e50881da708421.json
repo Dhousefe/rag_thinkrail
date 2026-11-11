@@ -1,0 +1,12 @@
+{
+  "id": "501c652fd065aaee4e13d087a67d7d76b42b29a18438ed3fb6e50881da708421",
+  "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "kind": "variable",
+  "name": "isUnrelated",
+  "start_line": 849,
+  "end_line": 849,
+  "content": "\t\tif (!n) continue;\n\t\tconst [cx, cy, cz] = n.position;\n\t\tconst isSelected = hasActiveSelection && i === selectedNodeIndex;\n\t\tconst isRelated = hasActiveSelection && relations.directNeighbors.has(i);\n\t\tconst isUnrelated = hasActiveSelection && !isSelected && !isRelated;\n\n\t\tconst isHighlight = i === highlightedNodeIndex;\n\t\tconst isMatched = Boolean(n.isMatchedBySearch);",
+  "token_estimate": 93,
+  "created_at": 1794331101037
+}

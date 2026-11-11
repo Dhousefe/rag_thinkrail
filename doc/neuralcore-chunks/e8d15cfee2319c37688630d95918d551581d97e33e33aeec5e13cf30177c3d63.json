@@ -1,0 +1,12 @@
+{
+  "id": "e8d15cfee2319c37688630d95918d551581d97e33e33aeec5e13cf30177c3d63",
+  "file": "apps\\web\\src\\panels\\neural-core\\cameraController.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\cameraController.ts",
+  "kind": "variable",
+  "name": "fitDist",
+  "start_line": 316,
+  "end_line": 316,
+  "content": "\t\t\tif (r > maxRadius) maxRadius = r;\n\t\t}\n\n\t\t// Com FOV de 45 deg (~0.785 rad), distância = raio / tan(FOV / 2) * margem\n\t\tconst fitDist = Math.max(2.8, Math.min(50.0, maxRadius * 2.4 * margin));\n\n\t\tthis.flyTarget = {\n\t\t\ttargetX: centerX,",
+  "token_estimate": 60,
+  "created_at": 1794331100892
+}

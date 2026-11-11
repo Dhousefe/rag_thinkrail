@@ -1,0 +1,13 @@
+{
+  "id": "0a94c72b2090ec97586f4afda926f6b5fffd735ce496b9b2e384ea353ca0287e",
+  "text": "\t\t\t\t\t\tVizinhos Conectados ({activeNeighbors.length}):\n\t\t\t\t\t</span>\n\t\t\t\t\t<div className=\"flex flex-wrap items-center gap-4 min-w-0\">\n\t\t\t\t\t\t{activeNeighbors.map((nb) => {\n\t\t\t\t\t\t\tconst nbStyle = getModuleClasses(nb.module);\n\t\t\t\t\t\t\treturn (\n\t\t\t\t\t\t\t\t<button\n\t\t\t\t\t\t\t\t\tkey={nb.id}",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreNodeOverview.tsx",
+    "kind": "variable",
+    "name": "nbStyle",
+    "start_line": 42,
+    "end_line": 42,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

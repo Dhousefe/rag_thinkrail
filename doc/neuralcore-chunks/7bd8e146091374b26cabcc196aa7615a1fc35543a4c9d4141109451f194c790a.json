@@ -1,0 +1,12 @@
+{
+  "id": "7bd8e146091374b26cabcc196aa7615a1fc35543a4c9d4141109451f194c790a",
+  "file": "apps\\web\\src\\panels\\neural-core\\resolvePivotNode.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\resolvePivotNode.ts",
+  "kind": "variable",
+  "name": "baseName",
+  "start_line": 16,
+  "end_line": 16,
+  "content": "\tif ((!filePath && !fallbackClassName) || vectorNodes.length === 0) return null;\n\n\tconst cleanPath = (filePath || \"\").replace(/\\\\/g, \"/\").toLowerCase().trim();\n\tconst fileName = cleanPath.split(\"/\").pop() || \"\";\n\tconst baseName = fileName.replace(/\\.[^.]+$/, \"\");\n\tconst targetClassName = (fallbackClassName || baseName).toLowerCase().trim();\n\n\t// 1. Coleta todos os nós cujo path ou relPath corresponde ao arquivo",
+  "token_estimate": 104,
+  "created_at": 1794331101190
+}

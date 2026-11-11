@@ -1,0 +1,12 @@
+{
+  "id": "03586ea4059cb43e8f56752d32e0ca2fb1e73d734c471a5a1018c5d5fff358a1",
+  "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "kind": "variable",
+  "name": "aspect",
+  "start_line": 541,
+  "end_line": 541,
+  "content": "\n\tprivate renderWebGpu(time: number) {\n\t\tif (!this.device || !this.context || !this.renderPipeline) return;\n\n\t\tconst aspect = this.canvas.width / (this.canvas.height || 1);\n\t\tconst viewProj = this.calculateViewProjMatrix(aspect);\n\n\t\tlet tint = [0.0, 0.85, 1.0, 1.0];",
+  "token_estimate": 67,
+  "created_at": 1794331101116
+}

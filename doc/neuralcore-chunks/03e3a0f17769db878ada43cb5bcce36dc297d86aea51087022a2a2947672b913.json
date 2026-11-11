@@ -1,0 +1,12 @@
+{
+  "id": "03e3a0f17769db878ada43cb5bcce36dc297d86aea51087022a2a2947672b913",
+  "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "kind": "variable",
+  "name": "hash",
+  "start_line": 452,
+  "end_line": 452,
+  "content": "\t\t}\n\t}\n\n\t// Hash determinístico para projetos externos\n\tlet hash = 0;\n\tfor (let i = 0; i < modName.length; i++) {\n\t\thash = (hash << 5) - hash + modName.charCodeAt(i);\n\t\thash |= 0;",
+  "token_estimate": 45,
+  "created_at": 1794331101013
+}

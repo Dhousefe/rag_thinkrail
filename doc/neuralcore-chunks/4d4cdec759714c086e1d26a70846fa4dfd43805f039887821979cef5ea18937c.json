@@ -1,0 +1,12 @@
+{
+  "id": "4d4cdec759714c086e1d26a70846fa4dfd43805f039887821979cef5ea18937c",
+  "file": "apps\\web\\src\\panels\\neural-core\\useNeuralCoreState.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\useNeuralCoreState.ts",
+  "kind": "variable",
+  "name": "latest",
+  "start_line": 35,
+  "end_line": 35,
+  "content": "\t\t\t\tactiveToolName = activeCalls[firstKey].toolName;\n\t\t\t\ttoolArgs = activeCalls[firstKey].args;\n\t\t\t}\n\t\t} else if (mcpMetrics.length > 0) {\n\t\t\tconst latest = mcpMetrics[mcpMetrics.length - 1];\n\t\t\tif (latest) {\n\t\t\t\tconst age = Date.now() - (latest.startedAt || 0);\n\t\t\t\tif (age < 5000) {",
+  "token_estimate": 71,
+  "created_at": 1794331101213
+}

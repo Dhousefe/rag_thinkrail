@@ -1,0 +1,13 @@
+{
+  "id": "2d0b313ac8810b5a4d418677d5cc8668ca6c2696821941f99b28aa298ef77c87",
+  "text": "\t\t\t\tconst px = cx + (rx / d) * scale * 5.6;\n\t\t\t\tconst py = cy - (ry / d) * scale * 5.6;\n\n\t\t\t\tconst isHighlight = i === this.highlightedNodeIndex;\n\t\t\t\tconst isMatched = Boolean(node.isMatchedBySearch);\n\n\t\t\t\tif (isMatched) {\n\t\t\t\t\t// Feixe luminoso de busca conectando o centro até o nó pesquisado",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+    "kind": "variable",
+    "name": "isMatched",
+    "start_line": 1148,
+    "end_line": 1148,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

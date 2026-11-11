@@ -1,0 +1,12 @@
+{
+  "id": "13f1d257c2e0243f98c020b57c85a825bb37175b1a3eb3d5dd0687835bcc3cc1",
+  "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "kind": "variable",
+  "name": "projDistance",
+  "start_line": 27,
+  "end_line": 27,
+  "content": "\n\t// Rotação 4D simples no plano XW e ZW\n\tconst cosA = Math.cos(angle4D);\n\tconst sinA = Math.sin(angle4D);\n\tconst projDistance = 2.2;\n\n\tconst vertexFloats: number[] = [];\n\tfor (const [px0, py0, pz0, pw0] of v4) {",
+  "token_estimate": 53,
+  "created_at": 1794331100974
+}

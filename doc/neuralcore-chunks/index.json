@@ -1,0 +1,5758 @@
+{
+  "generated_at": 1794331101218,
+  "count": 719,
+  "chunks": [
+    {
+      "id": "9762937f6dadf0abef89d314f736ef7f2c15814e1652b569643ea0a68f0715a1",
+      "file": "apps\\web\\src\\panels\\neural-core\\cameraController.test.ts",
+      "kind": "variable",
+      "name": "canvasListeners",
+      "start": 6,
+      "end": 6
+    },
+    {
+      "id": "dae43150ac70e13f2e327f493e09ad85f36b8d8442e2bdedc191bb8dd95b596a",
+      "file": "apps\\web\\src\\panels\\neural-core\\cameraController.test.ts",
+      "kind": "variable",
+      "name": "canvasMock",
+      "start": 7,
+      "end": 12
+    },
+    {
+      "id": "b593c72097e048bebbfa5cbe104dcc8c7487c329a20cd261414eab58cf0def34",
+      "file": "apps\\web\\src\\panels\\neural-core\\cameraController.test.ts",
+      "kind": "variable",
+      "name": "windowListeners",
+      "start": 14,
+      "end": 14
+    },
+    {
+      "id": "8dffaf6167af478a08d27f768d8309c84e9451370b73893e2a1cac75d3916fc1",
+      "file": "apps\\web\\src\\panels\\neural-core\\cameraController.test.ts",
+      "kind": "variable",
+      "name": "controller",
+      "start": 28,
+      "end": 28
+    },
+    {
+      "id": "685246c191566cd19912945b260928ea7e3b4e0e9d10c8e7ac5bd92cc44d12c8",
+      "file": "apps\\web\\src\\panels\\neural-core\\cameraController.test.ts",
+      "kind": "variable",
+      "name": "canvasMock",
+      "start": 55,
+      "end": 57
+    },
+    {
+      "id": "42236f432b90dfae4200642424a09ecb773e0619526cde196a02607b41418c40",
+      "file": "apps\\web\\src\\panels\\neural-core\\cameraController.test.ts",
+      "kind": "variable",
+      "name": "controller",
+      "start": 59,
+      "end": 59
+    },
+    {
+      "id": "7067692d92623fc763dea7ba3e0fd2bdf753925ceeb38ff57fabd6facc2d34f7",
+      "file": "apps\\web\\src\\panels\\neural-core\\cameraController.test.ts",
+      "kind": "variable",
+      "name": "mockPositions",
+      "start": 60,
+      "end": 64
+    },
+    {
+      "id": "9b6247f2d044129b9e950729d36a055dbe2bb0afc926de9ded98911a0f7da48c",
+      "file": "apps\\web\\src\\panels\\neural-core\\cameraController.test.ts",
+      "kind": "file",
+      "name": "cameraController.test.ts",
+      "start": 1,
+      "end": 73
+    },
+    {
+      "id": "32d4290a94b68bd968f446cf90c5732f652e4b9947b865faa1a75670df3fdcc1",
+      "file": "apps\\web\\src\\panels\\neural-core\\cameraController.ts",
+      "kind": "class",
+      "name": "OrbitCameraController",
+      "start": 1,
+      "end": 328
+    },
+    {
+      "id": "ef6c3991c7369ce31c2dea2f382c60e2651c47b4e7ff61108afd200d26750e1a",
+      "file": "apps\\web\\src\\panels\\neural-core\\cameraController.ts",
+      "kind": "method",
+      "name": "OrbitCameraController.attachEvents",
+      "start": 39,
+      "end": 110
+    },
+    {
+      "id": "e253c9c51d1339b0656020c17f0069b209fe333a1661198b4294c0f6c0de45fa",
+      "file": "apps\\web\\src\\panels\\neural-core\\cameraController.ts",
+      "kind": "method",
+      "name": "OrbitCameraController.wasJustDragging",
+      "start": 112,
+      "end": 117
+    },
+    {
+      "id": "a9a6dd8be5bfc3441c9fbbcb814a8af12b068063297f373566c6879c8dfbc3f1",
+      "file": "apps\\web\\src\\panels\\neural-core\\cameraController.ts",
+      "kind": "method",
+      "name": "OrbitCameraController.panBy",
+      "start": 119,
+      "end": 136
+    },
+    {
+      "id": "4bd0621d2e946f7bf78a076ec585aaf16a9f46ed60b2a7f2994d659c6e9cb78a",
+      "file": "apps\\web\\src\\panels\\neural-core\\cameraController.ts",
+      "kind": "method",
+      "name": "OrbitCameraController.panLeft",
+      "start": 138,
+      "end": 140
+    },
+    {
+      "id": "e72db42d704d1e3db798b728746e4654f86d5632179d0a824941027b25ea6e9e",
+      "file": "apps\\web\\src\\panels\\neural-core\\cameraController.ts",
+      "kind": "method",
+      "name": "OrbitCameraController.panRight",
+      "start": 142,
+      "end": 144
+    },
+    {
+      "id": "87ec548da5ffbd0c53c63b2efa7b7130ebfb2c70be5ecdb879691c37e71f2e71",
+      "file": "apps\\web\\src\\panels\\neural-core\\cameraController.ts",
+      "kind": "method",
+      "name": "OrbitCameraController.panUp",
+      "start": 146,
+      "end": 148
+    },
+    {
+      "id": "143413a0cbe1165a29872405c99876c20264a6440261f18dca794af8ed5fedd8",
+      "file": "apps\\web\\src\\panels\\neural-core\\cameraController.ts",
+      "kind": "method",
+      "name": "OrbitCameraController.panDown",
+      "start": 150,
+      "end": 152
+    },
+    {
+      "id": "a152b1fff1778573d0909ad330e9008edda315598176399bf4185c51402c8f20",
+      "file": "apps\\web\\src\\panels\\neural-core\\cameraController.ts",
+      "kind": "method",
+      "name": "OrbitCameraController.setPcbTopView",
+      "start": 154,
+      "end": 164
+    },
+    {
+      "id": "17cae7fde57231f6888b5ddd7264ce5ca19182dbeca42b524b6935ecc354821b",
+      "file": "apps\\web\\src\\panels\\neural-core\\cameraController.ts",
+      "kind": "method",
+      "name": "OrbitCameraController.zoomIn",
+      "start": 166,
+      "end": 170
+    },
+    {
+      "id": "cefe32cc8eeaaca7cbf49598c3508e32ad5c523f658b15ae94acd303b653a189",
+      "file": "apps\\web\\src\\panels\\neural-core\\cameraController.ts",
+      "kind": "method",
+      "name": "OrbitCameraController.zoomOut",
+      "start": 172,
+      "end": 176
+    },
+    {
+      "id": "49c91a0eca098c108a9def88e787a53093f048ba5058f392d895ea507097c934",
+      "file": "apps\\web\\src\\panels\\neural-core\\cameraController.ts",
+      "kind": "method",
+      "name": "OrbitCameraController.focusPosition",
+      "start": 178,
+      "end": 189
+    },
+    {
+      "id": "d441f4be60f8a46d0b2df569c5bbd4d072675806bb8dc0488ccd345e4fd6705c",
+      "file": "apps\\web\\src\\panels\\neural-core\\cameraController.ts",
+      "kind": "method",
+      "name": "OrbitCameraController.updateTween",
+      "start": 191,
+      "end": 227
+    },
+    {
+      "id": "d1af3a49c6b8328b1a03f4c607ea53efc7e7be9fb8b689f351ec1c1effb8abdb",
+      "file": "apps\\web\\src\\panels\\neural-core\\cameraController.ts",
+      "kind": "method",
+      "name": "OrbitCameraController.saveCameraSnapshot",
+      "start": 233,
+      "end": 242
+    },
+    {
+      "id": "f2cf48416b7ad79c4dd56840208b089235399157ff6bfdcf6e7bc6173343b9b7",
+      "file": "apps\\web\\src\\panels\\neural-core\\cameraController.ts",
+      "kind": "method",
+      "name": "OrbitCameraController.restoreCameraSnapshot",
+      "start": 247,
+      "end": 260
+    },
+    {
+      "id": "e3ac13222034ccd09772f04e4617a15232d5c9f160f9e56aa962ff1bde7fb5fc",
+      "file": "apps\\web\\src\\panels\\neural-core\\cameraController.ts",
+      "kind": "method",
+      "name": "OrbitCameraController.clearCameraSnapshot",
+      "start": 265,
+      "end": 267
+    },
+    {
+      "id": "4dde4774682663ef9b6ccceae4dfdf6770eba3c5d89975dbe1b3d8df7834d15a",
+      "file": "apps\\web\\src\\panels\\neural-core\\cameraController.ts",
+      "kind": "method",
+      "name": "OrbitCameraController.reset",
+      "start": 269,
+      "end": 279
+    },
+    {
+      "id": "e4cda10cd88a3287a07769a5fb43c144718954e0b36c86450c6ac6ab1913451b",
+      "file": "apps\\web\\src\\panels\\neural-core\\cameraController.ts",
+      "kind": "method",
+      "name": "OrbitCameraController.fitBounds",
+      "start": 285,
+      "end": 327
+    },
+    {
+      "id": "f02d60fc0216a3b44232461c597222b59984fe7c329b82578a6431a586c8e5e8",
+      "file": "apps\\web\\src\\panels\\neural-core\\cameraController.ts",
+      "kind": "variable",
+      "name": "dx",
+      "start": 61,
+      "end": 61
+    },
+    {
+      "id": "602d570a47c7187d4435903b4f8dbebd07c613fe192c5547cf8897d501507a0e",
+      "file": "apps\\web\\src\\panels\\neural-core\\cameraController.ts",
+      "kind": "variable",
+      "name": "dy",
+      "start": 62,
+      "end": 62
+    },
+    {
+      "id": "1ed714249b4375fdcc6cac437b2e49c89a751458b288537bd6eb95a04643bc0a",
+      "file": "apps\\web\\src\\panels\\neural-core\\cameraController.ts",
+      "kind": "variable",
+      "name": "panFactor",
+      "start": 69,
+      "end": 69
+    },
+    {
+      "id": "ac28b0b7789efbafaf7646de8e67bd6309a0b28f13d18c671ed1595f29ff0f51",
+      "file": "apps\\web\\src\\panels\\neural-core\\cameraController.ts",
+      "kind": "variable",
+      "name": "rightX",
+      "start": 72,
+      "end": 72
+    },
+    {
+      "id": "62bf1b33f5f792ddc64f644114c7b72ead987ff3a3a4d86122987b6abcf36874",
+      "file": "apps\\web\\src\\panels\\neural-core\\cameraController.ts",
+      "kind": "variable",
+      "name": "rightZ",
+      "start": 73,
+      "end": 73
+    },
+    {
+      "id": "3229096b84375b6e0c503d22d0788f60fecc1597e183bbbb59d8861a6db5d681",
+      "file": "apps\\web\\src\\panels\\neural-core\\cameraController.ts",
+      "kind": "variable",
+      "name": "upX",
+      "start": 76,
+      "end": 76
+    },
+    {
+      "id": "3f9dfef1dbf0c59aa69b6d23808e5dec87acfd4d0a7a14dc5ca8169f926657aa",
+      "file": "apps\\web\\src\\panels\\neural-core\\cameraController.ts",
+      "kind": "variable",
+      "name": "upY",
+      "start": 77,
+      "end": 77
+    },
+    {
+      "id": "cbbaa41f4253b24507e561618666fb2b36360ab4eb45aebda55435231e559107",
+      "file": "apps\\web\\src\\panels\\neural-core\\cameraController.ts",
+      "kind": "variable",
+      "name": "upZ",
+      "start": 78,
+      "end": 78
+    },
+    {
+      "id": "468b9ef84ae30c4f5b7c9e692e448b327c0a4b4be4ce8e8c3d82855e26503f94",
+      "file": "apps\\web\\src\\panels\\neural-core\\cameraController.ts",
+      "kind": "variable",
+      "name": "zoomStep",
+      "start": 104,
+      "end": 104
+    },
+    {
+      "id": "117e246f183aedee153748458f3e2b8900038c9009cbf01df2ca55c4c1c3bf67",
+      "file": "apps\\web\\src\\panels\\neural-core\\cameraController.ts",
+      "kind": "variable",
+      "name": "panFactor",
+      "start": 121,
+      "end": 121
+    },
+    {
+      "id": "43e0880a0d50ceab303c554ddf2f16c4f1bfe6ebb1206eed2d2a83dae509f9ec",
+      "file": "apps\\web\\src\\panels\\neural-core\\cameraController.ts",
+      "kind": "variable",
+      "name": "rightX",
+      "start": 124,
+      "end": 124
+    },
+    {
+      "id": "b36ca633f075e13cf906d23a62ca9187553515240113d178eac62a8d21783474",
+      "file": "apps\\web\\src\\panels\\neural-core\\cameraController.ts",
+      "kind": "variable",
+      "name": "rightZ",
+      "start": 125,
+      "end": 125
+    },
+    {
+      "id": "55306e087a6f71426d12451827f4f5bf7ac8c5490479f3bb9e0602ae26d2c8cd",
+      "file": "apps\\web\\src\\panels\\neural-core\\cameraController.ts",
+      "kind": "variable",
+      "name": "upX",
+      "start": 128,
+      "end": 128
+    },
+    {
+      "id": "b31f40642364460f941de0d1e8c0ca09cf25fa2edd72fb3793e89e886d8393b6",
+      "file": "apps\\web\\src\\panels\\neural-core\\cameraController.ts",
+      "kind": "variable",
+      "name": "upY",
+      "start": 129,
+      "end": 129
+    },
+    {
+      "id": "18ca9fc94e82aa0a39d09dec10f2576754db637994e242df424d98cfd3e06d36",
+      "file": "apps\\web\\src\\panels\\neural-core\\cameraController.ts",
+      "kind": "variable",
+      "name": "upZ",
+      "start": 130,
+      "end": 130
+    },
+    {
+      "id": "83fd7b64b3ac5535da88e42d0f11d0e94e05b16d8444211310df0d192c2a1ca4",
+      "file": "apps\\web\\src\\panels\\neural-core\\cameraController.ts",
+      "kind": "variable",
+      "name": "diffT",
+      "start": 193,
+      "end": 193
+    },
+    {
+      "id": "4efec12765396060aff1f0d5a4d8a332ab09da4f8aec4da600e7ae046b9c7032",
+      "file": "apps\\web\\src\\panels\\neural-core\\cameraController.ts",
+      "kind": "variable",
+      "name": "diffP",
+      "start": 194,
+      "end": 194
+    },
+    {
+      "id": "310e0eab8e2feea148b02a833f84c9196f57abdbce0d58289b35ec0405ace0d1",
+      "file": "apps\\web\\src\\panels\\neural-core\\cameraController.ts",
+      "kind": "variable",
+      "name": "diffD",
+      "start": 195,
+      "end": 195
+    },
+    {
+      "id": "83e0b37032b259938f468cc0d7c0ecaa23319f7a301abd8a6f6eb29fdc3d5044",
+      "file": "apps\\web\\src\\panels\\neural-core\\cameraController.ts",
+      "kind": "variable",
+      "name": "diffTx",
+      "start": 196,
+      "end": 196
+    },
+    {
+      "id": "e273cb327c4f43a8e6fbfed37bb90c425c6a99aaab20241b5591841f565030af",
+      "file": "apps\\web\\src\\panels\\neural-core\\cameraController.ts",
+      "kind": "variable",
+      "name": "diffTy",
+      "start": 197,
+      "end": 197
+    },
+    {
+      "id": "d52827c59c4aa8224577ea396fe3f377dc0b60b2d905161f0751085a3bee7787",
+      "file": "apps\\web\\src\\panels\\neural-core\\cameraController.ts",
+      "kind": "variable",
+      "name": "diffTz",
+      "start": 198,
+      "end": 198
+    },
+    {
+      "id": "e5226a266988cbcace090cb4cc4a9b1a0c4348a5ebfe0e83a54c3b492a74b914",
+      "file": "apps\\web\\src\\panels\\neural-core\\cameraController.ts",
+      "kind": "variable",
+      "name": "isClose",
+      "start": 200,
+      "end": 206
+    },
+    {
+      "id": "3ff68c7e8239c8309c459c4d87d3a6da246932159771d2b928b4284a4fa10fb1",
+      "file": "apps\\web\\src\\panels\\neural-core\\cameraController.ts",
+      "kind": "variable",
+      "name": "minX",
+      "start": 291,
+      "end": 291
+    },
+    {
+      "id": "031ea5d27f4c842eea6b21683077a78b2511350a9de4c3aa2861e7f4f2d3dbf8",
+      "file": "apps\\web\\src\\panels\\neural-core\\cameraController.ts",
+      "kind": "variable",
+      "name": "maxX",
+      "start": 291,
+      "end": 291
+    },
+    {
+      "id": "b510f1bff0cf6276965c34b233b33c2f392d353a37cd8e425f9b74d0ad7046df",
+      "file": "apps\\web\\src\\panels\\neural-core\\cameraController.ts",
+      "kind": "variable",
+      "name": "minY",
+      "start": 292,
+      "end": 292
+    },
+    {
+      "id": "6dafd6016d1fbdc12197e72c6291f59dda4f1cfee7501d5e34c4d8d08b250922",
+      "file": "apps\\web\\src\\panels\\neural-core\\cameraController.ts",
+      "kind": "variable",
+      "name": "maxY",
+      "start": 292,
+      "end": 292
+    },
+    {
+      "id": "7f890746432363febc4901984ef845d3af62c9eb924aa769fe02e13226f9d2b1",
+      "file": "apps\\web\\src\\panels\\neural-core\\cameraController.ts",
+      "kind": "variable",
+      "name": "minZ",
+      "start": 293,
+      "end": 293
+    },
+    {
+      "id": "2ed2dd230ca35ff19b38c8c362e1046796ad84f27b32619882e3eefe1e9e53f0",
+      "file": "apps\\web\\src\\panels\\neural-core\\cameraController.ts",
+      "kind": "variable",
+      "name": "maxZ",
+      "start": 293,
+      "end": 293
+    },
+    {
+      "id": "a455fad572b6870e08c958593dcd46768643c44091a8b3484fae93b761fc7431",
+      "file": "apps\\web\\src\\panels\\neural-core\\cameraController.ts",
+      "kind": "variable",
+      "name": "centerX",
+      "start": 304,
+      "end": 304
+    },
+    {
+      "id": "02afc9c06a842b224f4b0a643f7f40dfef51a48c085979328eebe334d0ef2d6e",
+      "file": "apps\\web\\src\\panels\\neural-core\\cameraController.ts",
+      "kind": "variable",
+      "name": "centerY",
+      "start": 305,
+      "end": 305
+    },
+    {
+      "id": "9a84c2d26ba20c76038002b38fe9502b0345cdbb2bc7b676ec52d5a881d12574",
+      "file": "apps\\web\\src\\panels\\neural-core\\cameraController.ts",
+      "kind": "variable",
+      "name": "centerZ",
+      "start": 306,
+      "end": 306
+    },
+    {
+      "id": "0de47756e1379dd8a9875c0d7db2ee4b25ee2ef7ad0150d12101a7c73d475ca1",
+      "file": "apps\\web\\src\\panels\\neural-core\\cameraController.ts",
+      "kind": "variable",
+      "name": "maxRadius",
+      "start": 309,
+      "end": 309
+    },
+    {
+      "id": "e6568ae22e5d682ac576a1adf1eb506e68c3735c6b2b1925f618b6b625330318",
+      "file": "apps\\web\\src\\panels\\neural-core\\cameraController.ts",
+      "kind": "variable",
+      "name": "r",
+      "start": 311,
+      "end": 311
+    },
+    {
+      "id": "e8d15cfee2319c37688630d95918d551581d97e33e33aeec5e13cf30177c3d63",
+      "file": "apps\\web\\src\\panels\\neural-core\\cameraController.ts",
+      "kind": "variable",
+      "name": "fitDist",
+      "start": 316,
+      "end": 316
+    },
+    {
+      "id": "c1197e744d72d60774374b2d81f8ed6875f279f3e1867fc173a9118aec8d7375",
+      "file": "apps\\web\\src\\panels\\neural-core\\cameraController.ts",
+      "kind": "file",
+      "name": "cameraController.ts",
+      "start": 1,
+      "end": 329
+    },
+    {
+      "id": "8e8696156c7a323a01acf7784736bd5efd904106a624764d1c45a859aa188332",
+      "file": "apps\\web\\src\\panels\\neural-core\\components\\index.ts",
+      "kind": "file",
+      "name": "index.ts",
+      "start": 1,
+      "end": 5
+    },
+    {
+      "id": "9b9345f1fb91710acedc98e688da70735e63b130fb7d42ff75c42d1d5a969537",
+      "file": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreChunksView.tsx",
+      "kind": "function",
+      "name": "getChunkKindMeta",
+      "start": 21,
+      "end": 36
+    },
+    {
+      "id": "cdcd34143a31f7b606f7409efaf2c1a81896c75052bfff4fcc6c5f0c478c8d6e",
+      "file": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreChunksView.tsx",
+      "kind": "variable",
+      "name": "k",
+      "start": 22,
+      "end": 22
+    },
+    {
+      "id": "80f722adc0768488f728343f6a4e9990f3b2f27590de1000b67c7eddb14cd81a",
+      "file": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreChunksView.tsx",
+      "kind": "function",
+      "name": "NeuralCoreChunksView",
+      "start": 38,
+      "end": 216
+    },
+    {
+      "id": "d6fa358eb623dcb4f43d71bad27853b3e73b71592e7c19b1ff2b5a2b0afae882",
+      "file": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreChunksView.tsx",
+      "kind": "variable",
+      "name": "filteredChunks",
+      "start": 42,
+      "end": 80
+    },
+    {
+      "id": "f8524bc40289092f86c31b8cf16886454dad46d81410188a348ca06b33e0ac21",
+      "file": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreChunksView.tsx",
+      "kind": "variable",
+      "name": "list",
+      "start": 43,
+      "end": 43
+    },
+    {
+      "id": "9cdd4d91766d73538e9d48be2ea68ed7df614af807089d7cc5a751931f186cf4",
+      "file": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreChunksView.tsx",
+      "kind": "variable",
+      "name": "k",
+      "start": 46,
+      "end": 46
+    },
+    {
+      "id": "a5dcd3526197835c32065229a50edc3556899b063e8683c271dc250d1b2a02d7",
+      "file": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreChunksView.tsx",
+      "kind": "variable",
+      "name": "k",
+      "start": 51,
+      "end": 51
+    },
+    {
+      "id": "1e1f0fff18f30884dd229daea7144518f0641633a214560e3f85990151b0992e",
+      "file": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreChunksView.tsx",
+      "kind": "variable",
+      "name": "k",
+      "start": 56,
+      "end": 56
+    },
+    {
+      "id": "e8ff2e5f75a31fff97359ad71b2567cfa300ea1c9bd5725beed3827a99489a95",
+      "file": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreChunksView.tsx",
+      "kind": "variable",
+      "name": "q",
+      "start": 62,
+      "end": 62
+    },
+    {
+      "id": "f924a47ce4a415974bca5cbac1b6157784d86dd06d152f552ec72af04e0e42fb",
+      "file": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreChunksView.tsx",
+      "kind": "variable",
+      "name": "terms",
+      "start": 63,
+      "end": 63
+    },
+    {
+      "id": "6f355716400294941ca8631f72b1890c0a7e03fbabdbc2bcf0a3cc0447fe3ecd",
+      "file": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreChunksView.tsx",
+      "kind": "variable",
+      "name": "name",
+      "start": 65,
+      "end": 65
+    },
+    {
+      "id": "d0cfdbaba1cefb52cf4f0ef46166e5cb0686903c32d8c25e62ae8989266e5867",
+      "file": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreChunksView.tsx",
+      "kind": "variable",
+      "name": "sig",
+      "start": 66,
+      "end": 66
+    },
+    {
+      "id": "a553310b420a343b42659a18d630a7247ed9d322fcd9601400de94de07cdb64e",
+      "file": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreChunksView.tsx",
+      "kind": "variable",
+      "name": "content",
+      "start": 67,
+      "end": 67
+    },
+    {
+      "id": "270801ec8a8e7cb4b25b4686ec7167492c046412691bbb6b05e93f418cc71434",
+      "file": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreChunksView.tsx",
+      "kind": "variable",
+      "name": "kind",
+      "start": 68,
+      "end": 68
+    },
+    {
+      "id": "54861e3734aea5ce5957aaa21ca594790070205dd84b78ea7cddf62de8f51e61",
+      "file": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreChunksView.tsx",
+      "kind": "variable",
+      "name": "handleCopyChunk",
+      "start": 99,
+      "end": 102
+    },
+    {
+      "id": "05082d18d5bb23127c53c150bcb4292cddb3a24ebf94aece12d7443bb3038b07",
+      "file": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreChunksView.tsx",
+      "kind": "variable",
+      "name": "meta",
+      "start": 156,
+      "end": 156
+    },
+    {
+      "id": "612801a09174b63d4fc53032f42762b99cdff37f5e0d8535654907b2302dc8ce",
+      "file": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreChunksView.tsx",
+      "kind": "variable",
+      "name": "MetaIcon",
+      "start": 157,
+      "end": 157
+    },
+    {
+      "id": "7afb55b4a7c7f625b69d6fd1ad79e90668db56a7674fbc79c94eb34f6692640e",
+      "file": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreChunksView.tsx",
+      "kind": "file",
+      "name": "NeuralCoreChunksView.tsx",
+      "start": 1,
+      "end": 218
+    },
+    {
+      "id": "ba5bc0c977806d66addf374c47c112f29b8c15d33ac2307e89a418cd56481d6c",
+      "file": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreFingerprintCard.tsx",
+      "kind": "function",
+      "name": "NeuralCoreFingerprintCard",
+      "start": 17,
+      "end": 135
+    },
+    {
+      "id": "b6ad85ff4017dfa556ad7f57089c3315b3d6bd3ec2166cb8334e1328631f219e",
+      "file": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreFingerprintCard.tsx",
+      "kind": "variable",
+      "name": "handleCopyHash",
+      "start": 23,
+      "end": 30
+    },
+    {
+      "id": "df97ffce51c026569a7fe2833c883da6e38088c757e6e01391c84e442f760134",
+      "file": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreFingerprintCard.tsx",
+      "kind": "file",
+      "name": "NeuralCoreFingerprintCard.tsx",
+      "start": 1,
+      "end": 136
+    },
+    {
+      "id": "4d13b2ad8e489619aa82efe05c0622a8b9835672fdd0027815dff36b45f20594",
+      "file": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreNodeOverview.tsx",
+      "kind": "function",
+      "name": "NeuralCoreNodeOverview",
+      "start": 17,
+      "end": 113
+    },
+    {
+      "id": "553f2e1838eefc875892e164ff34b42de0992a45c22e4072667ad315c8126655",
+      "file": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreNodeOverview.tsx",
+      "kind": "variable",
+      "name": "handleCopySnippet",
+      "start": 24,
+      "end": 29
+    },
+    {
+      "id": "0a94c72b2090ec97586f4afda926f6b5fffd735ce496b9b2e384ea353ca0287e",
+      "file": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreNodeOverview.tsx",
+      "kind": "variable",
+      "name": "nbStyle",
+      "start": 42,
+      "end": 42
+    },
+    {
+      "id": "9ad0abfe56ad0d5d5f8d799a8badc521fbb571e76966b2144a6a8b34d8fa6113",
+      "file": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreNodeOverview.tsx",
+      "kind": "file",
+      "name": "NeuralCoreNodeOverview.tsx",
+      "start": 1,
+      "end": 115
+    },
+    {
+      "id": "6b2d3ad30e96f0cab11ac5cead0efdb7a30b8e3bff76d879cdcdd72179764e53",
+      "file": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreSearchBox.tsx",
+      "kind": "function",
+      "name": "getSymbolKindBadge",
+      "start": 30,
+      "end": 61
+    },
+    {
+      "id": "547b5abf4568885dff76d6b114ba959db7fca435b8a7a079259e3115df98a0ae",
+      "file": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreSearchBox.tsx",
+      "kind": "variable",
+      "name": "k",
+      "start": 35,
+      "end": 35
+    },
+    {
+      "id": "72780af817626434c346c2de985b6a8ee05f7afdfbb196e237161b491a64088e",
+      "file": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreSearchBox.tsx",
+      "kind": "function",
+      "name": "NeuralCoreSearchBox",
+      "start": 63,
+      "end": 441
+    },
+    {
+      "id": "63a460b60333b9b3fc940f28fe6318fd98448c2ead3483a2a203729a52dac40f",
+      "file": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreSearchBox.tsx",
+      "kind": "variable",
+      "name": "listContainerRef",
+      "start": 77,
+      "end": 77
+    },
+    {
+      "id": "8ae7bb1e70e54566011a7198832b77bf3d960eafc21ce0dfb21398502d2de19f",
+      "file": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreSearchBox.tsx",
+      "kind": "variable",
+      "name": "containerRef",
+      "start": 78,
+      "end": 78
+    },
+    {
+      "id": "0376c78c4adc2ff3ff5b2114d909d70f4c5fd714a2b2929419f7d85afa2915a9",
+      "file": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreSearchBox.tsx",
+      "kind": "variable",
+      "name": "handleClickOutside",
+      "start": 83,
+      "end": 87
+    },
+    {
+      "id": "7b357e37a7665e5521a8503bc02235a41b188351f315c26f1ad21fbde1db8538",
+      "file": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreSearchBox.tsx",
+      "kind": "variable",
+      "name": "filteredNodes",
+      "start": 95,
+      "end": 132
+    },
+    {
+      "id": "00042383dc38124b4028641fac7ceff321b526fc5666e114646ef9925ae48346",
+      "file": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreSearchBox.tsx",
+      "kind": "variable",
+      "name": "k",
+      "start": 98,
+      "end": 98
+    },
+    {
+      "id": "1beab5d8ffef8ee09ed9e9437fea66911afdfb7a5e3f0e34c7fb24a7cc2c70e2",
+      "file": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreSearchBox.tsx",
+      "kind": "variable",
+      "name": "filteredChunks",
+      "start": 134,
+      "end": 146
+    },
+    {
+      "id": "92dcfaa8e94bc930b4dd7d04cc474599c85dae6039ab8b9c589ac1d6c30de26a",
+      "file": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreSearchBox.tsx",
+      "kind": "variable",
+      "name": "k",
+      "start": 137,
+      "end": 137
+    },
+    {
+      "id": "7ac2600f48777bae4989bc794314ac27a7db50eabde5b2e716bd7089b87da417",
+      "file": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreSearchBox.tsx",
+      "kind": "variable",
+      "name": "handleKeyDown",
+      "start": 154,
+      "end": 190
+    },
+    {
+      "id": "494500fb40bca2625cfa7c504cbf1bc3a28c723092f496bd7b33db72b6453384",
+      "file": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreSearchBox.tsx",
+      "kind": "variable",
+      "name": "totalItems",
+      "start": 162,
+      "end": 162
+    },
+    {
+      "id": "e356a51a8b41d1a2c840f2fdcb093a2db126174a3566643dafbda8a8f8b90ea6",
+      "file": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreSearchBox.tsx",
+      "kind": "variable",
+      "name": "item",
+      "start": 174,
+      "end": 174
+    },
+    {
+      "id": "c90655e5c493a9ca1cc28a850bccb45b6cafc593574982596ed8dbbbdd69ce67",
+      "file": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreSearchBox.tsx",
+      "kind": "variable",
+      "name": "chunk",
+      "start": 180,
+      "end": 180
+    },
+    {
+      "id": "a39243d5aa2aff377a67ecc499be6da53bf8c6ef4a84b96b30d9c05a7e64385f",
+      "file": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreSearchBox.tsx",
+      "kind": "variable",
+      "name": "modStyle",
+      "start": 298,
+      "end": 298
+    },
+    {
+      "id": "47c96d9b9cb80a09461a929717b078af168ab659d053ecd7cb64828db3b6c5ff",
+      "file": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreSearchBox.tsx",
+      "kind": "variable",
+      "name": "badge",
+      "start": 299,
+      "end": 299
+    },
+    {
+      "id": "5dd17270445f28876a4c8e6ef44be9f1a393df3b80314fd4e78554f327df77b6",
+      "file": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreSearchBox.tsx",
+      "kind": "variable",
+      "name": "IconComp",
+      "start": 300,
+      "end": 300
+    },
+    {
+      "id": "fd0a6cd4c588b5b36d0557773455ea0a689f2f053e6928b6c98071fb4bd56175",
+      "file": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreSearchBox.tsx",
+      "kind": "variable",
+      "name": "isCurrent",
+      "start": 301,
+      "end": 301
+    },
+    {
+      "id": "c2ad3705f6a6c05cd47821193a95af45c22e1fd5f4c767a01af209632fc555a4",
+      "file": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreSearchBox.tsx",
+      "kind": "variable",
+      "name": "qLower",
+      "start": 302,
+      "end": 302
+    },
+    {
+      "id": "f3c27e403c76c72fb46b680d1c1fad9f522ed90fe9ac7dabb0d434e546084daf",
+      "file": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreSearchBox.tsx",
+      "kind": "variable",
+      "name": "matchedMethods",
+      "start": 303,
+      "end": 307
+    },
+    {
+      "id": "db60c6918f90852d85f8d177c022b093781386939dc21388dc9fd1163ecb9fb8",
+      "file": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreSearchBox.tsx",
+      "kind": "variable",
+      "name": "badge",
+      "start": 390,
+      "end": 390
+    },
+    {
+      "id": "a55e7ba2638f7e377c28195aa9861d70c601318d5d02de6a5f98ab95abda39ab",
+      "file": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreSearchBox.tsx",
+      "kind": "variable",
+      "name": "IconComp",
+      "start": 391,
+      "end": 391
+    },
+    {
+      "id": "67e35eee2b7a495e083782d0fb1163a4defbcf6eafbf1b592532c188aa3485c6",
+      "file": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreSearchBox.tsx",
+      "kind": "variable",
+      "name": "isCurrent",
+      "start": 392,
+      "end": 392
+    },
+    {
+      "id": "55ea9636a544b30f7f98252171e0f31e3d732385b96acdd9ad58ef56c926ab7c",
+      "file": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreSearchBox.tsx",
+      "kind": "file",
+      "name": "NeuralCoreSearchBox.tsx",
+      "start": 1,
+      "end": 442
+    },
+    {
+      "id": "72517bc65911f8a85919c3af561ccb32db9a227b2ebe502d41fe1e7fcb89e15d",
+      "file": "apps\\web\\src\\panels\\neural-core\\components\\searchBox.test.ts",
+      "kind": "variable",
+      "name": "mockNodes",
+      "start": 5,
+      "end": 50
+    },
+    {
+      "id": "2866f9694a644b353aa00d22f25bc01fc88d0bc155a6221d03b36476500f36de",
+      "file": "apps\\web\\src\\panels\\neural-core\\components\\searchBox.test.ts",
+      "kind": "variable",
+      "name": "q",
+      "start": 53,
+      "end": 53
+    },
+    {
+      "id": "91c52df4dcb70d253982b455e0beaa611d255c74eb2e652a3bad6caf66358940",
+      "file": "apps\\web\\src\\panels\\neural-core\\components\\searchBox.test.ts",
+      "kind": "variable",
+      "name": "matches",
+      "start": 54,
+      "end": 62
+    },
+    {
+      "id": "1da865059a526a3c98d96ea3b5fb7f60b4e49ef74bf274858971d54b8441611d",
+      "file": "apps\\web\\src\\panels\\neural-core\\components\\searchBox.test.ts",
+      "kind": "variable",
+      "name": "qn",
+      "start": 55,
+      "end": 55
+    },
+    {
+      "id": "feb32be82bc67deb47d5f92b1b5da47a7c8b2ebd9dab68db533214191cd0badd",
+      "file": "apps\\web\\src\\panels\\neural-core\\components\\searchBox.test.ts",
+      "kind": "variable",
+      "name": "hasMethod",
+      "start": 56,
+      "end": 60
+    },
+    {
+      "id": "e75bcd0e17b205f455d2b1dc2959ecf824387a06115dc81fb68d7974bfa722cd",
+      "file": "apps\\web\\src\\panels\\neural-core\\components\\searchBox.test.ts",
+      "kind": "variable",
+      "name": "chunks",
+      "start": 69,
+      "end": 88
+    },
+    {
+      "id": "00f3635d03334963b8008ba5f8bc4c5cd5a9874b19b6cae4c20a682a108c5a03",
+      "file": "apps\\web\\src\\panels\\neural-core\\components\\searchBox.test.ts",
+      "kind": "variable",
+      "name": "query",
+      "start": 90,
+      "end": 90
+    },
+    {
+      "id": "5369b5e112ff3540354d9dc9b3d21d8fc830afaa500344bd74051d8ccfe9842c",
+      "file": "apps\\web\\src\\panels\\neural-core\\components\\searchBox.test.ts",
+      "kind": "variable",
+      "name": "terms",
+      "start": 91,
+      "end": 91
+    },
+    {
+      "id": "bf828177790b9a287a3cd7cd80d3a5c16243562a90e145ae7c1b473e2fc30a7d",
+      "file": "apps\\web\\src\\panels\\neural-core\\components\\searchBox.test.ts",
+      "kind": "variable",
+      "name": "filtered",
+      "start": 92,
+      "end": 97
+    },
+    {
+      "id": "ad0c63afd49a5cd2b5c83210af4681a98447501703d4f56c660dd2d9df720080",
+      "file": "apps\\web\\src\\panels\\neural-core\\components\\searchBox.test.ts",
+      "kind": "variable",
+      "name": "name",
+      "start": 93,
+      "end": 93
+    },
+    {
+      "id": "c830532027d0a8c3ce375f155a9f8bea535c2e4048237b6260cc4c95998cb28b",
+      "file": "apps\\web\\src\\panels\\neural-core\\components\\searchBox.test.ts",
+      "kind": "variable",
+      "name": "content",
+      "start": 94,
+      "end": 94
+    },
+    {
+      "id": "201657a95d39941bf0dade3b83b06fa188620dd64846cae01735d052e1836898",
+      "file": "apps\\web\\src\\panels\\neural-core\\components\\searchBox.test.ts",
+      "kind": "variable",
+      "name": "path",
+      "start": 95,
+      "end": 95
+    },
+    {
+      "id": "14aea6a03986dfef2fa93104737b967f79c7a42ea35608c08833a58b6979a435",
+      "file": "apps\\web\\src\\panels\\neural-core\\components\\searchBox.test.ts",
+      "kind": "file",
+      "name": "searchBox.test.ts",
+      "start": 1,
+      "end": 103
+    },
+    {
+      "id": "29438fa9fe5f3a5b9c9c97334db6a003689d73d401046d3a1fdff3696ac8fbfd",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "function",
+      "name": "createTesseractWireframe",
+      "start": 12,
+      "end": 63
+    },
+    {
+      "id": "695a9254c6cdd1c02ed85eb4f98e01464e743f86055bab3ab06f5578a68ba46e",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "v4",
+      "start": 13,
+      "end": 13
+    },
+    {
+      "id": "eab39cfbde2cb6b7b523af1589b15914fb54f42a9fa67941b681350f640e05a3",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "cosA",
+      "start": 25,
+      "end": 25
+    },
+    {
+      "id": "79e0f1cc9d70ac4dd6c2a9f459f7eeab782380d8b672bacaa0872753b30099be",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "sinA",
+      "start": 26,
+      "end": 26
+    },
+    {
+      "id": "13f1d257c2e0243f98c020b57c85a825bb37175b1a3eb3d5dd0687835bcc3cc1",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "projDistance",
+      "start": 27,
+      "end": 27
+    },
+    {
+      "id": "6b1e1e38e992642ad8da25b560a51f0e36fa89b5fc6bc5eabafa73c86a12f6fe",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "vertexFloats",
+      "start": 29,
+      "end": 29
+    },
+    {
+      "id": "5840fa6fe860b5b6c409f797afa7541021833c9d140638bde2c55fd392c31be0",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "x",
+      "start": 32,
+      "end": 32
+    },
+    {
+      "id": "f6f4d355dd2244f402bda08cc965fde80204f84beaf5456838dcc6820ca0d176",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "w",
+      "start": 33,
+      "end": 33
+    },
+    {
+      "id": "7d39b0ea76b67b696d1b07eeab1afb795918a385712e637ebefb4b5092883991",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "y",
+      "start": 34,
+      "end": 34
+    },
+    {
+      "id": "5d4451b6bf8f220740fa521bd5c5df826d36bf92cef573bcdd8919a6786fc5a2",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "z",
+      "start": 35,
+      "end": 35
+    },
+    {
+      "id": "0186813b6f01f1b36fed00ba2e0ad0790e90dc3b9a4a956bad65d02d86cd6034",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "perspective",
+      "start": 38,
+      "end": 38
+    },
+    {
+      "id": "f6c0ca50399049e40dcf1dddf4cebdabd5027edd40edf4637a873a17ae567a99",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "px",
+      "start": 39,
+      "end": 39
+    },
+    {
+      "id": "ba5a121bac6cd4ae63a5e35d5633fff11ae0060cda892703a31a6393d619a855",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "py",
+      "start": 40,
+      "end": 40
+    },
+    {
+      "id": "a17d0e3414d95746cf1d2b2405c63a93054f9859ce6f5ee2c9810e3e92349f40",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "pz",
+      "start": 41,
+      "end": 41
+    },
+    {
+      "id": "5441cb193105900d54483400888be08fd1c00a69f3f0a072f84a950901f9cee8",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "edgeIndices",
+      "start": 48,
+      "end": 48
+    },
+    {
+      "id": "38b8ee6b7c287d004afb6816126dc52450e6f79dd3879a07c5042b9e595cb1c8",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "j",
+      "start": 51,
+      "end": 51
+    },
+    {
+      "id": "ecce5625fcc9eefafe22692eb655a1637774b478eb224b1096ff47e0ac637a90",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "function",
+      "name": "createIcosahedronWireframe",
+      "start": 66,
+      "end": 105
+    },
+    {
+      "id": "f228174189c183760269b4ff91287b8cd572922dfa9da8f29a272c662182400c",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "phi",
+      "start": 67,
+      "end": 67
+    },
+    {
+      "id": "e5787318b2f30bfa0806e25905bb1f9f285c9b2f8d5102f1aded0debf650e43e",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "a",
+      "start": 68,
+      "end": 68
+    },
+    {
+      "id": "ffb590afec6b22e721a7f40b8b476d35af322135b284b2f4d0b6543bd0801e96",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "b",
+      "start": 69,
+      "end": 69
+    },
+    {
+      "id": "d99d43e5858ccdfbb780b20a7322614314a112acc125185ca2521e703f107e80",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "rawVertices",
+      "start": 71,
+      "end": 84
+    },
+    {
+      "id": "d6be0c69fd4e929dd93746a11fc1c101d37b563d676612b06c3b925665869c30",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "vertexFloats",
+      "start": 86,
+      "end": 86
+    },
+    {
+      "id": "5dca11084b4833833fa66f32fb5a2817928bc947ecaa917d844d3dfba17a126a",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "len",
+      "start": 88,
+      "end": 88
+    },
+    {
+      "id": "ee4620a4e524ca9e0adc9ced29b25969e3cb51c8a217caf0ceb575aeec29f4f1",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "x",
+      "start": 89,
+      "end": 89
+    },
+    {
+      "id": "956149824bc4649eb7aca2cb6819efdb56acc08c6e833c914932cf7a76fff9fa",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "y",
+      "start": 90,
+      "end": 90
+    },
+    {
+      "id": "41cce8097528968a23b5df6b3e1a6f1e34eb9c47c825f8d1f93c2d5448d03fa3",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "z",
+      "start": 91,
+      "end": 91
+    },
+    {
+      "id": "37078c7452c38aaf85a1a734c3643b66d514c5f36c1e9a1ad1a2bf8c559d9371",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "indices",
+      "start": 95,
+      "end": 98
+    },
+    {
+      "id": "660806c47a05e62b15209c92bbebbdeb3adfcc46d8765fcd9f80f958203a380f",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "function",
+      "name": "createGimbalRingsWireframe",
+      "start": 108,
+      "end": 164
+    },
+    {
+      "id": "9cc428d0a24f5410cedcae9139bf0b56b48f5899decdfb4c8b61f7cbc18dfc20",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "vertexFloats",
+      "start": 112,
+      "end": 112
+    },
+    {
+      "id": "f0200cd87809f02b130207ea816f300e3dc50f4eae720408a264ec2f8bd1ece1",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "edgeIndices",
+      "start": 113,
+      "end": 113
+    },
+    {
+      "id": "1b86caa3257a329356be0c8b5552619dda6773aed231acf416a1b905d1955a95",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "vertexOffset",
+      "start": 114,
+      "end": 114
+    },
+    {
+      "id": "128804a53efdeb2e753e469198a2f5f61f67bf5feb85ccd8a54a453d13e52cae",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "axes",
+      "start": 116,
+      "end": 124
+    },
+    {
+      "id": "178e102101bebbb301d206a3ba208fc6b20e8215f31281b5685781c34d697f1d",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "startIdx",
+      "start": 127,
+      "end": 127
+    },
+    {
+      "id": "628d83b9d12807741b870d0d16a221751a57a0848e9d1462b46224102fa1b855",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "theta",
+      "start": 130,
+      "end": 130
+    },
+    {
+      "id": "62eedd11be8f589270edd292b6e12c834104668f23d6340a406bb40e9c832e22",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "c",
+      "start": 131,
+      "end": 131
+    },
+    {
+      "id": "e6932138f083b3baf653149a5fb2f50dbc4214c0a55f8eb5aaa285fb2389bca8",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "s",
+      "start": 132,
+      "end": 132
+    },
+    {
+      "id": "e79e7a8e783f43f24cd03ffca74918d23df7e8206004ca7c0a88f19f2a100338",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "x",
+      "start": 134,
+      "end": 134
+    },
+    {
+      "id": "d3813ef0868146e381c0d4fb32425c47656dc04d9c5d4ec5f4f04a31c398ddca",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "y",
+      "start": 135,
+      "end": 135
+    },
+    {
+      "id": "089690d85c7551de97f732d683fe7243f66995982218848dcdbb4f4c0f3db2f2",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "z",
+      "start": 136,
+      "end": 136
+    },
+    {
+      "id": "20c3acdfea1221e2f831258cedc3de65922aa8382c388d12dee2668d21ea1226",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "next",
+      "start": 153,
+      "end": 153
+    },
+    {
+      "id": "6792845c875b42ffac1e22b9cea9428f49745f2a68ee275d8321395f93c94345",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "function",
+      "name": "createToolNodeSatellites",
+      "start": 167,
+      "end": 207
+    },
+    {
+      "id": "8b430412349c90e4ffa95e82649d3038490289e90b6e61ad3bbfaf88f8b7cf0e",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "vertexFloats",
+      "start": 168,
+      "end": 168
+    },
+    {
+      "id": "c870fca6ad6a899fa4004adb07a90b60f63974c4caf38d3bd599a53c0f379404",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "edgeIndices",
+      "start": 169,
+      "end": 169
+    },
+    {
+      "id": "d834bddcd57ae44164b97680ab4c81436a700f833d54819f1329ef9c60ca3b11",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "vOffset",
+      "start": 170,
+      "end": 170
+    },
+    {
+      "id": "7827b5a102753b9a5a927f155bca58b4e754e5be570694d73eb696e1e6f65a9d",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "angle",
+      "start": 173,
+      "end": 173
+    },
+    {
+      "id": "b4e3529270fdab8fd4a2fed085a3e1539b1e01831646428f23e25706ba1e4c11",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "cx",
+      "start": 174,
+      "end": 174
+    },
+    {
+      "id": "9543710a63437d2f0b9aea6914eabfe3dc32d681d49279c569db18ed307dd76e",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "cy",
+      "start": 175,
+      "end": 175
+    },
+    {
+      "id": "4b69b238631ab4ae4fe122f131ff812fdc6098142f1eb99829aa43ccf3ddac4d",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "cz",
+      "start": 176,
+      "end": 176
+    },
+    {
+      "id": "d051022e2a708039bdd6dc0793ccaeb7017ee1d228c30182c21f3c3e5e42694e",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "s",
+      "start": 179,
+      "end": 179
+    },
+    {
+      "id": "9f25250b4e5558b2bda3a660c6c3d31eb82df8095a1228f45d21c2d30b935079",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "base",
+      "start": 180,
+      "end": 180
+    },
+    {
+      "id": "1798df4a1dfa0e8a710b16cccb4f2c4f777d5ddb87acf9797b8d122b0372d625",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "pts",
+      "start": 181,
+      "end": 188
+    },
+    {
+      "id": "d57c4c012862fabfea5a066c9b3d828a984d7e7e4944729c3650c62a6a355693",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "octEdges",
+      "start": 196,
+      "end": 196
+    },
+    {
+      "id": "04a6494541223afee423dc4f7c6642f7d9eb8d9951d3e5fbb75318776597f7e7",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "function",
+      "name": "createMerkabaWireframe",
+      "start": 210,
+      "end": 270
+    },
+    {
+      "id": "459d890352da496d1958a72df3a6e50d45cee053ea859c76ff0a6cca7692f836",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "vertexFloats",
+      "start": 211,
+      "end": 211
+    },
+    {
+      "id": "6c1e67cd0f228ca5a67f6f7a21e07a705414371869b61b9b865acefc66022cec",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "edgeIndices",
+      "start": 212,
+      "end": 212
+    },
+    {
+      "id": "c3343945cbad805751210d71ca7c385cae9360f02a6e45806ee9d548f6ecf510",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "t1",
+      "start": 215,
+      "end": 220
+    },
+    {
+      "id": "954e39b0946bb695423b86286d3805a3e7a768c472c563dfa5be537f2411ace3",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "t1Edges",
+      "start": 234,
+      "end": 234
+    },
+    {
+      "id": "68f4fa231e1c09583dcf55f7ba898df01104b98d99faf846d2f5998b3ec445f4",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "t2",
+      "start": 238,
+      "end": 243
+    },
+    {
+      "id": "641fc44d71f6aae1f7761217730055c71f90379743f94f0dd333f82c85023b35",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "harmEdges",
+      "start": 262,
+      "end": 262
+    },
+    {
+      "id": "14e01f419f69716e136b4d11cc5e6f1c91a9baa7c62698a7eca54fdc74a9412f",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "function",
+      "name": "createTorusWireframe",
+      "start": 273,
+      "end": 321
+    },
+    {
+      "id": "867b5439f3230e8479346173d6efb453e7349ce180995b53c6fb6e8036652f12",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "vertexFloats",
+      "start": 279,
+      "end": 279
+    },
+    {
+      "id": "da53b657d247cf053fe9ff30b8f9e2421d252909362fcd004ed0ebc9a3fa1020",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "edgeIndices",
+      "start": 280,
+      "end": 280
+    },
+    {
+      "id": "e87b3241a6104c4d6b2898df99207680cd65c394dbb4a46122b2a492761b3c8b",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "vOffset",
+      "start": 281,
+      "end": 281
+    },
+    {
+      "id": "ed88ed2596689f9fdd442c645802f290ed68ec83c58abce9d8559788869af79d",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "u",
+      "start": 284,
+      "end": 284
+    },
+    {
+      "id": "180e463f3edb7bd66901a17e504264f80aa495068b97385c33b94fdcfdf81bec",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "cu",
+      "start": 285,
+      "end": 285
+    },
+    {
+      "id": "876ccc944ba8629bc6fc8766ac7b3937d6721f845e685f7bbdfd6d0f7c8d0450",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "su",
+      "start": 286,
+      "end": 286
+    },
+    {
+      "id": "33609c0161d0900be3031005136ae4103b6d419ea9422c91a2d14f88f41fd07f",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "v",
+      "start": 289,
+      "end": 289
+    },
+    {
+      "id": "c2891190051c3324a881bfa3d03f2c0c153044e936ba67f69c474a7db066b1cf",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "cv",
+      "start": 290,
+      "end": 290
+    },
+    {
+      "id": "c8da61a26aa80e90668dce0ad25f93fa532ff89d8a5bb04ffb2c74ba421236ab",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "sv",
+      "start": 291,
+      "end": 291
+    },
+    {
+      "id": "bf6d3e2373a206016e9dc64658bf4a406664d2e5376627f133dd063fd48781e7",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "x",
+      "start": 293,
+      "end": 293
+    },
+    {
+      "id": "4bb8b83c512f909f2bf93bbd7191c290efb133e184c3fc1819610a2a94ea7947",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "y",
+      "start": 294,
+      "end": 294
+    },
+    {
+      "id": "60ae6d7d87ba12ca78112e44c6e85f647cc5fa50bd67319f78f796bd18e11bf3",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "z",
+      "start": 295,
+      "end": 295
+    },
+    {
+      "id": "cf899f33ba4b98825b29c65a829660c7a2bcbd0cd85b427411f7869d90854702",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "t",
+      "start": 298,
+      "end": 298
+    },
+    {
+      "id": "21f6e8753c0357f5c20418f31efeca759dcdf786f971219ccb99fe616e1fffc0",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "r",
+      "start": 299,
+      "end": 299
+    },
+    {
+      "id": "d115aaf034f030b53973734f5db5bc0eea2cb1e0afd6e405fa7f1d9a85958624",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "g",
+      "start": 300,
+      "end": 300
+    },
+    {
+      "id": "c7972a6890c5cc5a9033c2cf81927152a061014701e8784dfc84dcc419f52eb0",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "b",
+      "start": 301,
+      "end": 301
+    },
+    {
+      "id": "2f62f52376e716482ba20d8571699c939eee84acd1b474915eff194c44f51f3e",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "nextLong",
+      "start": 305,
+      "end": 305
+    },
+    {
+      "id": "65762e5d57e9649257b37e40ae4dbe769206ea8fb97e09242ca43f5447b69b5c",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "nextRing",
+      "start": 309,
+      "end": 309
+    },
+    {
+      "id": "b26dbc8bc02bc1bff59554e91f6ff84371e910b4c636ec6bf6a698144975fbd5",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "function",
+      "name": "createDodecahedronWireframe",
+      "start": 324,
+      "end": 392
+    },
+    {
+      "id": "84b8684608fe85397c9b8e11b6c4064ffd083f0387fc9fa7ddcbc2c5f60e2b11",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "phi",
+      "start": 325,
+      "end": 325
+    },
+    {
+      "id": "6e0ce4cd6e2c150e8d453faf2d58d4c5dac86dcb51b3c68d063ad1d762602a08",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "invPhi",
+      "start": 326,
+      "end": 326
+    },
+    {
+      "id": "925ea6d36927ebd3270fe0e52b3c61acf3f114eacadc69b8f73a41ff58117a68",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "rawVertices",
+      "start": 328,
+      "end": 353
+    },
+    {
+      "id": "b3c0813ca182bb44845a4bc015edf5746c36bb903e9090a6c679e9d2c2d77e47",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "vertexFloats",
+      "start": 355,
+      "end": 355
+    },
+    {
+      "id": "34afd0982a2bed8eccb91a9072d188b645a0736681f5f109293f72694f56e891",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "len",
+      "start": 357,
+      "end": 357
+    },
+    {
+      "id": "8a6113dc3f1aa80ac07d3ec98d7e3f5aed97c106cc1f13e294b26ae215aef2ef",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "x",
+      "start": 358,
+      "end": 358
+    },
+    {
+      "id": "cf42cf803cc59201c7425fc05b503f0e9a8e911ef38c67b9284567dda08e90bf",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "y",
+      "start": 359,
+      "end": 359
+    },
+    {
+      "id": "007ee884f4505c4c6142e3be4c25f4ce31c166ec83620836f97a3f39540d3289",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "z",
+      "start": 360,
+      "end": 360
+    },
+    {
+      "id": "a5a56053e88ed7586bb5c6584b06f60652ecc6edfd2f605f7e6c31072da25b9d",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "edgeIndices",
+      "start": 365,
+      "end": 365
+    },
+    {
+      "id": "826804940cf62f4f45a1d348a4dfd14c6f02c935f410d7926fe52961cad369d2",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "minDist",
+      "start": 366,
+      "end": 366
+    },
+    {
+      "id": "a57b2106ad5169a7c2219b2238627c379cf61169dc5963f89baac1c5b2e89659",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "threshold",
+      "start": 367,
+      "end": 367
+    },
+    {
+      "id": "0c262e7ac9eef37791f9d9056666ad2728b82d0aed8fe17f8ccc2a2339f51d4f",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "vxi",
+      "start": 370,
+      "end": 370
+    },
+    {
+      "id": "9690afc11df344f116942d795bb0af466f2bdd73493d6332b9962dbcde2cf688",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "vyi",
+      "start": 371,
+      "end": 371
+    },
+    {
+      "id": "0bfe12678fb1073f288bb787242ec2a4930623fe1492d6f56bca5a25ed2c4aa1",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "vzi",
+      "start": 372,
+      "end": 372
+    },
+    {
+      "id": "0b61b9d59b6f53ea7cd198e8e52ef0ddf0280fe09a32beaea0cfa187bdfd2247",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "vxj",
+      "start": 374,
+      "end": 374
+    },
+    {
+      "id": "b81e0a401bce2707db695d54bd0303fb60913c74c25a0ae87f3d333ec23582a2",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "vyj",
+      "start": 375,
+      "end": 375
+    },
+    {
+      "id": "9307c5d8392bb5cd9c0d71ee78320a66d491b415b0f3c159c4f83e57084ae076",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "vzj",
+      "start": 376,
+      "end": 376
+    },
+    {
+      "id": "93fe2a7cfb1d6a5a6fcac44683da523cddbbb07c1457dace76218483f7918e8d",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "dx",
+      "start": 377,
+      "end": 377
+    },
+    {
+      "id": "7fe15c9bd3c806ca5a70b60c87114a7f213a76070f23a7133bc1b274fe8a85a9",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "dy",
+      "start": 378,
+      "end": 378
+    },
+    {
+      "id": "a1fa79d99222203e14dd0d03b1dcd7a23620fa102747d5306277458f17d2d47f",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "dz",
+      "start": 379,
+      "end": 379
+    },
+    {
+      "id": "c80128fe0b1dfe7b81302601f488c45a58af419363a72500678afc81ffb7608b",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "dist",
+      "start": 380,
+      "end": 380
+    },
+    {
+      "id": "30d95cfdb5e49342645ee2da87d8f754fb694077d80c3c45c484afeee56dc8d5",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "MODULE_COLORS",
+      "start": 427,
+      "end": 435
+    },
+    {
+      "id": "7e434b9290c2447be07255d0d77f2fd7e2d4f0131ae5321971820803b09f11cb",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "function",
+      "name": "resolveModuleColor",
+      "start": 438,
+      "end": 485
+    },
+    {
+      "id": "52712f479bc5db83b7a6468b21d4d6830cff80a3a39b3f9197e23b7bbed9b10c",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "parts",
+      "start": 444,
+      "end": 444
+    },
+    {
+      "id": "f100ad9b2609136d677a7f2b80df5c965d5137b1a7eaec6dd40107e543e48e60",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "subMod",
+      "start": 445,
+      "end": 445
+    },
+    {
+      "id": "03e3a0f17769db878ada43cb5bcce36dc297d86aea51087022a2a2947672b913",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "hash",
+      "start": 452,
+      "end": 452
+    },
+    {
+      "id": "481aba75f92ab387b18389d1b8399b0ac9cb953c27c06ee921f429bd000e85cf",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "hue",
+      "start": 457,
+      "end": 457
+    },
+    {
+      "id": "9ec653463ee816f2cbcd8d41b4f9709a93a2ee61736706fe345cc85542513508",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "h",
+      "start": 459,
+      "end": 459
+    },
+    {
+      "id": "f447d8b7736b45550703659d8d287194cd0ade4e58ff30809d86cb802635a607",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "c",
+      "start": 460,
+      "end": 460
+    },
+    {
+      "id": "57787994b52b8692de524d9b0dd97d2a8d36813535d9fcb58e58f04d34d131bf",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "x",
+      "start": 461,
+      "end": 461
+    },
+    {
+      "id": "bf51fa8864c7d35f09527b0e04ff8b391f3819c0e174168d7642d89ff69a02f0",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "r",
+      "start": 462,
+      "end": 462
+    },
+    {
+      "id": "bc23e7ed386e68078a9a83be466f922aa5ebe2d373e828a6d644fed912cf968f",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "g",
+      "start": 463,
+      "end": 463
+    },
+    {
+      "id": "6a0671635b9b849d68ae5524317adaa267c63ba5d802fa927007460e48a0e184",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "b",
+      "start": 464,
+      "end": 464
+    },
+    {
+      "id": "f9adc6e0d9572252968c552c2cb898843b8f2e9e372a6d4e3f9f540d51f9c0ff",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "FILE_TYPE_COLORS",
+      "start": 498,
+      "end": 519
+    },
+    {
+      "id": "8c611623bf3f9aeb1dfd0c6b98ad66e8a1cea1b2559cb249b268d43de88e081c",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "function",
+      "name": "getPolygonKindForFile",
+      "start": 522,
+      "end": 578
+    },
+    {
+      "id": "763b7099d3f0886e88c23f5c119a28b349a80ca3369d0edee596ba48c752a746",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "clean",
+      "start": 524,
+      "end": 524
+    },
+    {
+      "id": "ca4f1eb744379ff066461279efdd777877e67eae4169a92dbdd77daac98eed71",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "function",
+      "name": "resolveFileTypeColor",
+      "start": 581,
+      "end": 597
+    },
+    {
+      "id": "c26f29e549da959c52cd0a75be15d077b62b0e5f6d061e3c6ce655b956c0b4c8",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "clean",
+      "start": 586,
+      "end": 586
+    },
+    {
+      "id": "3df57a8f176bd21b8ca59a537d5af8ab9e45072449c96cb298f3c1e29da7f7b0",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "function",
+      "name": "computeSemanticFingerprint",
+      "start": 616,
+      "end": 706
+    },
+    {
+      "id": "0523cd274e5ce1e12e515914546c37fddadbb57e4f63e2f43485cebcdccbee7d",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "typeDistribution",
+      "start": 635,
+      "end": 635
+    },
+    {
+      "id": "623b0b7f69c59d832b11cf927801982d9136fb7f78a325e9a95715c333858d4d",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "kind",
+      "start": 637,
+      "end": 637
+    },
+    {
+      "id": "9b6474074dedbe91091336fdd99189143f629ad6e5092eda9af8b15eab2ff7f6",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "entropy",
+      "start": 642,
+      "end": 642
+    },
+    {
+      "id": "e36bf62ecc9a04166340c35b53bd6dbf870e08fd888f493abafd4f3a63ef211c",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "totalNodes",
+      "start": 643,
+      "end": 643
+    },
+    {
+      "id": "82e5ff9ba04b60a02d53ac2bb9b473ecc9fd8416e2013168d831997fb64509ea",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "p",
+      "start": 645,
+      "end": 645
+    },
+    {
+      "id": "e4770dc1898420d7952d19425113bf5266e71cdfc9e1fa293bc40603aecf3189",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "h1",
+      "start": 652,
+      "end": 652
+    },
+    {
+      "id": "c10b2786bf81c4f2d440009cecb3df860e44e789359a8e6688413d371812a078",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "h2",
+      "start": 653,
+      "end": 653
+    },
+    {
+      "id": "1fce1bf31639d41c2442c8c2c60406c3d2242857005c913d4eccf16b66ee3d49",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "h3",
+      "start": 654,
+      "end": 654
+    },
+    {
+      "id": "94ea201cb061a8d5399e563a781170c7af6d69fb4b4503233f6eb34c843896f6",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "h4",
+      "start": 655,
+      "end": 655
+    },
+    {
+      "id": "327e0f2107a268a839464b696cb2b734c14521e0950843601860976a3e2dc6aa",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "sortedNodes",
+      "start": 657,
+      "end": 657
+    },
+    {
+      "id": "cce8d472062e463ec4056805b274234e4bdba0ea29f0f696a09b2c2337f122ff",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "str",
+      "start": 659,
+      "end": 659
+    },
+    {
+      "id": "dabf93b5988cd727914074d990a72258364e874a09a4cb051c2ba891acb4a055",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "c",
+      "start": 661,
+      "end": 661
+    },
+    {
+      "id": "65c6a002dfb048aa24a23d553dd9f8ef64d4b6197cf5e2c3b2c8252d816564e0",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "eStr",
+      "start": 670,
+      "end": 670
+    },
+    {
+      "id": "2bb1991824435adf784d3ac457c5a1bb329560291c603731210d4a6d5b9d83d8",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "c",
+      "start": 672,
+      "end": 672
+    },
+    {
+      "id": "ade064124d20e9f8cb09307593779e9a4589f4fc827a9af21aad1a6777aae188",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "toHex",
+      "start": 678,
+      "end": 678
+    },
+    {
+      "id": "69fac99eacb4d630432d044675ee45cfe86c4e56a4ca535cfa3cca95d9bf6d36",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "part1",
+      "start": 679,
+      "end": 679
+    },
+    {
+      "id": "2fd867c46a36720a71ec6e42d5328a3846f4c5a789de07e04f65155b8d1939c6",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "part2",
+      "start": 680,
+      "end": 680
+    },
+    {
+      "id": "c51fabfd35d475ca492d440d0a45e388b525beddcca0f110bf38da3af5a16549",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "part3",
+      "start": 681,
+      "end": 681
+    },
+    {
+      "id": "09f9cab81983920ddcf8d92306939fe0148a927a73dce1e51d6d9954f665a320",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "part4",
+      "start": 682,
+      "end": 682
+    },
+    {
+      "id": "2358100205b398ae41969a9adca3bbeea0b2a4f7b7b6183c19abbad27bf834c2",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "fingerprintHash",
+      "start": 683,
+      "end": 683
+    },
+    {
+      "id": "e861d01602a1f8f1b2ee838e781876e44a1c8627b925645384cd55dad8af43f4",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "shortHash",
+      "start": 684,
+      "end": 684
+    },
+    {
+      "id": "8d32e5eba2f6ccb649cf4e3fb324ab5144c8ea56333f5663404aaccf2b03c046",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "totalRelations",
+      "start": 686,
+      "end": 686
+    },
+    {
+      "id": "310f12be494e47f3805544c6f1b1aa27c2a984a7c5f2db1a20f361f9fbd914e5",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "maxPossibleEdges",
+      "start": 687,
+      "end": 687
+    },
+    {
+      "id": "231418442fac73ceb1da548e1e3ff7adfeb2af5bed8899b5446c29e8f9cdfeb1",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "density",
+      "start": 688,
+      "end": 688
+    },
+    {
+      "id": "0548d4f4deef8e7b28adf1691d3f65c0149caf133edd4ab2eb18d09e3853ab91",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "integrityStatus",
+      "start": 690,
+      "end": 690
+    },
+    {
+      "id": "33aac7954f3524a9088885e075aadde585e002ec0884e1f35ccec672f7734a59",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "auditBadge",
+      "start": 693,
+      "end": 693
+    },
+    {
+      "id": "e587364a58fda795ffdfcb462b0fcc68826f40faba6352cf98e8a7df2e1c5398",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "function",
+      "name": "computeNodeRelations",
+      "start": 720,
+      "end": 821
+    },
+    {
+      "id": "4829e9ab9e99889f022d9669ced6263a65fb4eb2a0f4aad6895a5188bcd8ec96",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "directNeighbors",
+      "start": 725,
+      "end": 725
+    },
+    {
+      "id": "657b467d7f06815d10dc1774de23a7217ece63f56ade45237cf5d76c9cd3a031",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "callNeighbors",
+      "start": 726,
+      "end": 726
+    },
+    {
+      "id": "4fac9b500f3d2cdd7d397de26be18424a95ecdcd54abd6c998a3e8421c0c4cc3",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "typeNeighbors",
+      "start": 727,
+      "end": 727
+    },
+    {
+      "id": "9e5150c150c83d5882f164ef2b8f45c1745200712ac0cd1400f4c617b09b05b7",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "importNeighbors",
+      "start": 728,
+      "end": 728
+    },
+    {
+      "id": "ae9eb5ae933d511e03afa8610db0866401302d649393a6fe1d5a5d9d7f8d6d35",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "selectedNode",
+      "start": 734,
+      "end": 734
+    },
+    {
+      "id": "20560dce4962e715980dadb0984c27b6f4c28486829c9f4cb5bc00861489cfb8",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "selectedNormRel",
+      "start": 739,
+      "end": 739
+    },
+    {
+      "id": "833ae9a2b637dd31bdf94391b17465c0f7bf99cd2b106fd1991e50a233650dca",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "selectedBaseName",
+      "start": 740,
+      "end": 744
+    },
+    {
+      "id": "498112a3872c4ca5cd5347a0654d2dff58faba2d8f0a147df7f3323b76ccc456",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "selectedQName",
+      "start": 745,
+      "end": 745
+    },
+    {
+      "id": "d95be465c080f64ca16db1fc61290fc8399164ec32bd42b15f570d21cf366968",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "otherIdx",
+      "start": 749,
+      "end": 749
+    },
+    {
+      "id": "5ad0d215b4e0efdea7e682af5bf39c7b570b7ee97aaf40079170ba5114d66d70",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "other",
+      "start": 774,
+      "end": 774
+    },
+    {
+      "id": "d6c5ec8208c00d883e158173728248f9d187913d852511ddfc32b503f2dfea41",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "otherNormRel",
+      "start": 777,
+      "end": 777
+    },
+    {
+      "id": "0ef62e31afd72c74a92b3171b2deb07afd917c42912894315bacae4a9855f575",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "otherBaseName",
+      "start": 778,
+      "end": 782
+    },
+    {
+      "id": "94bd5aea4ca8f3c655ddb44734e1a3ee79ced0634d4eb5c731ae80f795677142",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "otherQName",
+      "start": 783,
+      "end": 783
+    },
+    {
+      "id": "26c17d9d684343bb1fea5b94531a683d4eac08bdfee20c475501035aa3779c75",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "isImported",
+      "start": 786,
+      "end": 794
+    },
+    {
+      "id": "35ce703884d0afd50d5613ffb2a24d7a8ae176ebf99a89a9ffe64e6323e37914",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "impLower",
+      "start": 788,
+      "end": 788
+    },
+    {
+      "id": "96b46aa3792c8792811c94e08b5486291a5ec42f16d1393ac6ec8d20232bac10",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "impLower",
+      "start": 792,
+      "end": 792
+    },
+    {
+      "id": "86bc6a44b939c99d3fa967a59046d5a7dd11e387ff2ccfb7d344de66227e5f63",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "isMethodLinked",
+      "start": 802,
+      "end": 812
+    },
+    {
+      "id": "5379ff1590c76944e0567c0aa5f3e29c7d0954be73626ec9f2c16df817c97570",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "mName",
+      "start": 803,
+      "end": 803
+    },
+    {
+      "id": "9fe9dd67e9e22849818680f878e4ca20a265c79c642739550cf56d444d953f57",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "mSig",
+      "start": 804,
+      "end": 804
+    },
+    {
+      "id": "edcbaff57ff8c8cb7d08816ea1718f2c12a473b1b335ab103ca545416dce6fad",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "omName",
+      "start": 808,
+      "end": 808
+    },
+    {
+      "id": "9f188d29dd0be89661f2553089170342611e306a74e138e78c3b9adfcd0a9fef",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "function",
+      "name": "createVectorConstellationWireframe",
+      "start": 823,
+      "end": 1367
+    },
+    {
+      "id": "a66bfa63b5c8f5b5fe27dec5365fd618823f21780ce9e8ab97b4a2d8f16b77c9",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "vertexFloats",
+      "start": 833,
+      "end": 833
+    },
+    {
+      "id": "9023afa7e9fb37218843b28cfe51a02ff02777816caa0a823a7c78eaf5985907",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "edgeIndices",
+      "start": 834,
+      "end": 834
+    },
+    {
+      "id": "105058539191aee79a8cd750554647f27f91d4699c5f9be70f57eb9e0f76846a",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "vOffset",
+      "start": 835,
+      "end": 835
+    },
+    {
+      "id": "76a0e0dfb1771df2cf21d0b7126c937cab7c610b5b87624f747c1d1e319c3c90",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "relations",
+      "start": 838,
+      "end": 838
+    },
+    {
+      "id": "c1870b809785b3daafc22ee8dc8224dd6d8600042e46cb782ccdbc60101084cc",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "hasActiveSelection",
+      "start": 839,
+      "end": 840
+    },
+    {
+      "id": "248a1ef7a12ad7f60688819feb126e896ba046151b69afad25a6fb45e570361b",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "n",
+      "start": 844,
+      "end": 844
+    },
+    {
+      "id": "ca25858e0b99a033506773aa32aa605df1ce76b4df2ad2cc5110e6a36eab9784",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "isSelected",
+      "start": 847,
+      "end": 847
+    },
+    {
+      "id": "592adde124089b5f479cf2e424283a6ddf9fa96fb3366274fa0f54ec7c1fe159",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "isRelated",
+      "start": 848,
+      "end": 848
+    },
+    {
+      "id": "501c652fd065aaee4e13d087a67d7d76b42b29a18438ed3fb6e50881da708421",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "isUnrelated",
+      "start": 849,
+      "end": 849
+    },
+    {
+      "id": "f3c44f262d2b14a956938b99a040c54fedbd95c57e2f9ee3cafdd2ff3ae94c83",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "isHighlight",
+      "start": 851,
+      "end": 851
+    },
+    {
+      "id": "3aa0861f5685613c33a23f3c02594e25824a9c29f3253c0128b58217924e484f",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "isMatched",
+      "start": 852,
+      "end": 852
+    },
+    {
+      "id": "d6e0dcdbb917d0a08d8973b6c643758ec86201517c7ba22ac20f2a4d17d86d5e",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "isSearchingTarget",
+      "start": 853,
+      "end": 853
+    },
+    {
+      "id": "d330607ecd7151ab0d6f1b4c6b1ac1865127c7bd51e5d741938cbafa5ed12c35",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "s",
+      "start": 856,
+      "end": 856
+    },
+    {
+      "id": "674080cc33cf9238a138f942fa24570621b441e9378c698ad380136f9c1f354b",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "p",
+      "start": 868,
+      "end": 868
+    },
+    {
+      "id": "43917cca3c39e7fcf4b238b55f61ee62e62c0cf300b4906834e4e11947c2c9f5",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "lifePulse",
+      "start": 869,
+      "end": 869
+    },
+    {
+      "id": "f5cb65c96807dcc4dd9497021b38b814729792ae011ca96e3db1370da499cbdb",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "col",
+      "start": 877,
+      "end": 877
+    },
+    {
+      "id": "a2f5db28c0400d925e4aa10203d57d6efb10efbf9977dd4081609e06abfc6a1d",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "baseMod",
+      "start": 894,
+      "end": 894
+    },
+    {
+      "id": "a193b3c48f232876a7a55cb150ee84fcb49afff8a8d45363e3ecd3d86b038fd1",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "p",
+      "start": 898,
+      "end": 898
+    },
+    {
+      "id": "f39824df11610cc179522c7cd0b63ab47ce49cb72e764f911198121ecaf6da95",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "r",
+      "start": 899,
+      "end": 899
+    },
+    {
+      "id": "29c485c014e0456dee0f8cdead43031832209e0cc08166e5cafa7d6ee994a8a6",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "g",
+      "start": 900,
+      "end": 900
+    },
+    {
+      "id": "8c2f20b6fd9dc36d3a0b230d8a7a4afc0c52db4e0b7733f3106fc74975217532",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "b",
+      "start": 901,
+      "end": 901
+    },
+    {
+      "id": "489d01d91551068d3bcf366ad9744ef74b7883fc3e3e1b77316ff8e3d691bf34",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "polyKind",
+      "start": 913,
+      "end": 913
+    },
+    {
+      "id": "fd2cb28f0a20efdc2f57d934bec0374b82ceee2c709f75685bfeffbb3dd40d97",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "base",
+      "start": 914,
+      "end": 914
+    },
+    {
+      "id": "0347d91557d32c084f67cd3196bdcca572d70ce37b176f48ee55f5c103a26076",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "d",
+      "start": 918,
+      "end": 918
+    },
+    {
+      "id": "ca92dff5e154e636e3b2a5bbdad8a97b17a011ba669ad3337de2559ecb320611",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "cubeEdges",
+      "start": 927,
+      "end": 927
+    },
+    {
+      "id": "4049e8707e541f7a3fcf9b8ca8022cf42f35114f4e1a174007e9204fa896592b",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "d",
+      "start": 931,
+      "end": 931
+    },
+    {
+      "id": "dfcc921dd305f3086e8d176f4add2cfc571e34dd8227415a77cd907da765c4c8",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "tPts",
+      "start": 932,
+      "end": 937
+    },
+    {
+      "id": "d8457f134aa0803a39df350fa3e5af754beabd76adeceec8c104c5452d790a3d",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "tetEdges",
+      "start": 942,
+      "end": 942
+    },
+    {
+      "id": "cd2eb5bf84a244c29504d277c23fcadda19cb0ac5b02f04c4d52b9711eed6498",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "r",
+      "start": 946,
+      "end": 946
+    },
+    {
+      "id": "07e5a0f3ccfb248c638128b5c5dae4859bed46416673fb8ae6a3f11759f407a1",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "h",
+      "start": 947,
+      "end": 947
+    },
+    {
+      "id": "b54981bc2d43d9870ba20d00bf71d354143eaa1a9d548fb444e0465daa34f908",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "angle",
+      "start": 950,
+      "end": 950
+    },
+    {
+      "id": "83491efd0f97b1e7f79195ea18eebd9a6c3b91d3887df5c7cd3442209d3f9103",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "prismEdges",
+      "start": 963,
+      "end": 963
+    },
+    {
+      "id": "b6f7acb425c5a1b74720993d3eefe871a7ccab46c236b43b2ab6da575d84dbac",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "r",
+      "start": 967,
+      "end": 967
+    },
+    {
+      "id": "0f3661939c00acd18fd3692073adcfa8336a2e737d94dffbbed41b4fba451cf0",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "h",
+      "start": 968,
+      "end": 968
+    },
+    {
+      "id": "765bae976436265849c0576d485f1539675c378e6395b029992e9107d7758fbf",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "ang",
+      "start": 975,
+      "end": 975
+    },
+    {
+      "id": "c13694d96d67542cda115c98bc55ed809bf81d68c6ce2a27a4d1a7dd5ede8b68",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "eq",
+      "start": 988,
+      "end": 988
+    },
+    {
+      "id": "8541f2c43f8204aa43377f417c08ff5263b6d54dfcef7d1cb223bd14309e904d",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "nextEq",
+      "start": 989,
+      "end": 989
+    },
+    {
+      "id": "c5115d54b6e0f0982c401bac8b54305ea11b89e5ce203e152a2c22180047e2b2",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "r",
+      "start": 996,
+      "end": 996
+    },
+    {
+      "id": "ddd6b16c6dd68cac0ce734f86cedc0754602424fa7df2ba35dcfd879bbb9919d",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "h",
+      "start": 997,
+      "end": 997
+    },
+    {
+      "id": "ce3bbf750979c71829da476dca0cc4d6007af60fbae58e6cb1554351eca1047b",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "pts",
+      "start": 998,
+      "end": 1005
+    },
+    {
+      "id": "935f9988702fc39868e2bcd7e3e193fafe1083a235ca13e60225d2d1671a8ad7",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "dEdges",
+      "start": 1010,
+      "end": 1010
+    },
+    {
+      "id": "3c9b03d1bd66319664446484af5e17511fb6328115973412114de9647fb17abf",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "d",
+      "start": 1014,
+      "end": 1014
+    },
+    {
+      "id": "59c9a6cad23d6ffe4427cb4504ba8ea9ba9483f96c0cb08f84c53a58baf83542",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "t1",
+      "start": 1015,
+      "end": 1020
+    },
+    {
+      "id": "5618d30312a93b4c70469124f1c67d672cc784c4a3ba8fa6195c4c6a6c86af17",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "t2",
+      "start": 1021,
+      "end": 1026
+    },
+    {
+      "id": "118bc67a45a3c44de7ace8c910969b8a598d207e50544330bc95248ece882a3e",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "tetEdges",
+      "start": 1031,
+      "end": 1031
+    },
+    {
+      "id": "2df6d88e5452631c5a0617b16e8af815e68cc9e8fd6aaee021bde532ddd095c5",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "phi",
+      "start": 1038,
+      "end": 1038
+    },
+    {
+      "id": "ba91ad341c851b660e699dfda09f9319e0be844b49ed3825ec56ceadfd5399a2",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "a",
+      "start": 1039,
+      "end": 1039
+    },
+    {
+      "id": "b563510765b5cd6cc13003c7c6bd5fdf066dcbc71b57049f83ca950c206956fe",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "b",
+      "start": 1040,
+      "end": 1040
+    },
+    {
+      "id": "a2c16dbc56abd429a281c8ed51638e63b3676c51c8b2b5200f3380867b9b5673",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "icoRaw",
+      "start": 1041,
+      "end": 1054
+    },
+    {
+      "id": "19af47bb4b439b71f18b4406a32374fec2b6e30e7a6671c8da8b562d8973a36c",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "icoEdges",
+      "start": 1059,
+      "end": 1063
+    },
+    {
+      "id": "9e946dd35fbc9ff5c248713023504578dec5a310a5b6fc0ea88838f544fdf03b",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "pts",
+      "start": 1067,
+      "end": 1074
+    },
+    {
+      "id": "b461c7ff90de4cf3a50a3d854279a564e756c5e853a56bb86a99c4785448fb77",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "octEdges",
+      "start": 1079,
+      "end": 1079
+    },
+    {
+      "id": "8f9f0b8308cb66aa17d70137eb2969f3346e6555737ca1cc45fdd9f09a21f5c0",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "totalM",
+      "start": 1085,
+      "end": 1085
+    },
+    {
+      "id": "5716af3e04553034fe3b9f71758e3a3125adab178c8e86a8b14664141e76be7b",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "m",
+      "start": 1087,
+      "end": 1087
+    },
+    {
+      "id": "3a079fc2f8643ae70f4847139f10fbe76665a41cf17260e558cdbd9794a0fe1e",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "mAngle",
+      "start": 1089,
+      "end": 1089
+    },
+    {
+      "id": "b50560f86435221d4d38b27c2637b1331039281748d88510010a4bc98138ccfb",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "mRadius",
+      "start": 1090,
+      "end": 1090
+    },
+    {
+      "id": "46f174c6be844ee54e8ea7b4105fb5e5e945828a3d9c07f92d2a15784bb8822d",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "mx",
+      "start": 1092,
+      "end": 1092
+    },
+    {
+      "id": "3dd5ebdfc0fc60d3b5efe426ea74834077a17698e6c119115e7cedbd2c571089",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "my",
+      "start": 1093,
+      "end": 1093
+    },
+    {
+      "id": "dc25b443a0357a525cd80228be054bd9ce0fa6e3207524cf69edd2ce7f099eb5",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "mz",
+      "start": 1094,
+      "end": 1094
+    },
+    {
+      "id": "1cace4b3b9e512cc342e1bebef23300ad5aec93a5d221031ad9ecd0152b4d2cf",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "ms",
+      "start": 1097,
+      "end": 1097
+    },
+    {
+      "id": "6935a5ec397d2611db3dbfaaad8e7cb9aba236209484ca55379e77712ab1358b",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "mBase",
+      "start": 1098,
+      "end": 1098
+    },
+    {
+      "id": "809d3e9e2991fae88ad8222250d32b56c4090a3c7dceea12cdc72153150688ba",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "mPts",
+      "start": 1103,
+      "end": 1110
+    },
+    {
+      "id": "69fcfadb4305ac6ba6c3f5aa6f967b3d6e5c3930e740cd62f2fd1c70dbe37501",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "mOctEdges",
+      "start": 1115,
+      "end": 1115
+    },
+    {
+      "id": "ed76133c6a8f7335a172ba0bc844ab0e3c0c809719b0a89f998bea7b00e95b64",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "lineStart",
+      "start": 1119,
+      "end": 1119
+    },
+    {
+      "id": "fa0b9f1f9c1ca1db30fdd68805233b16be5d456e55898b1ff2268b44c25b3801",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "bStart",
+      "start": 1129,
+      "end": 1129
+    },
+    {
+      "id": "6786920422593825031719c94cc087c846ca8a3359af56d87dd4e3629020bf67",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "n1",
+      "start": 1143,
+      "end": 1143
+    },
+    {
+      "id": "3f552c6a5b566c5d7f1685a36a17ea36825e6cbb0ad28dcff9a1cc81236cdcc9",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "n2",
+      "start": 1144,
+      "end": 1144
+    },
+    {
+      "id": "0df53a6f81f20ef5f6cc564d980bf8be765238071aa8cacb1f4b1d1331f5d248",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "isConnectedToSelected",
+      "start": 1147,
+      "end": 1149
+    },
+    {
+      "id": "ffb6880a772642961ca0778f9205a9d59d55abb8840cfd7b0459ea4ca37ecc3c",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "isEdgeUnrelated",
+      "start": 1150,
+      "end": 1150
+    },
+    {
+      "id": "31f1b3f92887966603fd9c9d71eda8528fa08efaa4027166c0251be1f7390bf4",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "p1",
+      "start": 1152,
+      "end": 1152
+    },
+    {
+      "id": "d9c28d95cd3e04ac107dd49feb20e1d205dad06ddcb9987b6738f84cdaebf255",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "p2",
+      "start": 1153,
+      "end": 1153
+    },
+    {
+      "id": "9877df49b819d38bb71c88d793fd24865cbe2ed2d8eef13de5ad38607ac3f3d9",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "pairHash",
+      "start": 1158,
+      "end": 1158
+    },
+    {
+      "id": "b5454923c6a4f5f91cbd239c0bdcc71adedf5702d398aaea85e01b8cddd711c9",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "layerOffset",
+      "start": 1159,
+      "end": 1159
+    },
+    {
+      "id": "04214c730d653d7212df5b1adf3d5e8351d6661cd1536e5bf2c81d643a7626cc",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "traceY",
+      "start": 1160,
+      "end": 1160
+    },
+    {
+      "id": "b1998b9504d415d1abcbf4c3e513c801adfcf6a7570153e8b74bcc503feec878",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "alpha",
+      "start": 1161,
+      "end": 1161
+    },
+    {
+      "id": "96d836b9e3c39adda0199762fd3a5572c92667b4f52c55dc9da0f5bb7ba5f413",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "isCrossProject",
+      "start": 1164,
+      "end": 1167
+    },
+    {
+      "id": "bb8768089076496cd6ee3a519bf30b999564f24f9ae99c34a9535d5fd6ee0158",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "trColR",
+      "start": 1168,
+      "end": 1168
+    },
+    {
+      "id": "6c8839acc962e2e22b49260df16e68c3b619b77a8ef09c5a8ad4532fc14ee0b1",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "trColG",
+      "start": 1169,
+      "end": 1169
+    },
+    {
+      "id": "da758128474018b21b56673b321d5b3e7d439d8269895a0f9b7fe046611f3dfd",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "trColB",
+      "start": 1170,
+      "end": 1170
+    },
+    {
+      "id": "58d013ca6def106a21d272798cd59a73cf6e35e7cbfb1502b32c47b12d78dc8f",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "otherIdx",
+      "start": 1173,
+      "end": 1173
+    },
+    {
+      "id": "e2cf99b1f859536275fa0329742207d50e594875f9e5892176463e4a3cd78181",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "routeOrder",
+      "start": 1210,
+      "end": 1210
+    },
+    {
+      "id": "c88f57b13d2ba18661cb81f8a680c9ad131f4a77263e9d29546ce8f10cc91d73",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "midX",
+      "start": 1211,
+      "end": 1211
+    },
+    {
+      "id": "5be3c6c5211b0d338a4460fed3f51606a7b8c69643caddf2a7155ff2c17ececc",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "midZ",
+      "start": 1212,
+      "end": 1212
+    },
+    {
+      "id": "4ec00a31525367cefbcdd6b41154ef03e73a4953ac6e88b0df56b94e805a9e49",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "tracePts",
+      "start": 1215,
+      "end": 1231
+    },
+    {
+      "id": "d0f90ade905bf9fa115a45387f18bde99b7394f352049dae585b12e275b7d837",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "baseIdx",
+      "start": 1233,
+      "end": 1233
+    },
+    {
+      "id": "8f39cf26b28614a1c09b15d79a79873b8d8a0a2495a03a9e33060a77072cbf9e",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "viaR",
+      "start": 1254,
+      "end": 1254
+    },
+    {
+      "id": "f5710b15d87e9b6f9997c26c207e510d0687f35b12798ad89af10134e56a64db",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "viaBase",
+      "start": 1255,
+      "end": 1255
+    },
+    {
+      "id": "b628ea6805e1d1ba39410bce06093e217563745b0e339924ec71e3540c7cee68",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "selNode",
+      "start": 1269,
+      "end": 1269
+    },
+    {
+      "id": "0e4f3ffd6f767d41dcbb271164f05fe0a5d53fff40ce08a41cb79a3a653ff207",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "neighborOrder",
+      "start": 1272,
+      "end": 1272
+    },
+    {
+      "id": "4f25a17a19de04a391e6a977a7554038ced68d621abe57be5fcc8de1b0d84cc6",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "neighbor",
+      "start": 1275,
+      "end": 1275
+    },
+    {
+      "id": "f79147744dfd47486e737f6673ef859df62e9aa5773b671efcaf109650836b59",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "rCol",
+      "start": 1280,
+      "end": 1280
+    },
+    {
+      "id": "da7d7794afd5f226df2ef23ec6ae7ddecbb5d07e6df14dc8cb14ddd63b9a6331",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "layerElevation",
+      "start": 1290,
+      "end": 1290
+    },
+    {
+      "id": "9592dcf1c8c624053217f5d7a20bd2a4f2fe224113c5d1f1db6f56bbe8369f1e",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "routeY",
+      "start": 1291,
+      "end": 1291
+    },
+    {
+      "id": "bae2e1fa7deeae2bfb8fec3a4af50c1b06bd0f9ce45ab7a0c5ae804d70e801f5",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "waypoints",
+      "start": 1295,
+      "end": 1301
+    },
+    {
+      "id": "deb9d18ce0cbbb27445fc91c90fa2ca2b6eab74c89c44e6684a6c1e6763cbb82",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "totalSegments",
+      "start": 1304,
+      "end": 1304
+    },
+    {
+      "id": "17cab79f8f8fc92a77f6df44cf6e5dd4a6a36154e0518ca517185fdebf95fce3",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "pStart",
+      "start": 1306,
+      "end": 1306
+    },
+    {
+      "id": "bf3e96bf5d934b1def6a83d803e7c3be46d5fe09fdc0b30497dc18f281fbb03b",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "pEnd",
+      "start": 1307,
+      "end": 1307
+    },
+    {
+      "id": "b565828f08de0acb51a69cec1661c0eb7b5f6c208449df2c39f11a147acfcb42",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "steps",
+      "start": 1308,
+      "end": 1308
+    },
+    {
+      "id": "ade71b608573db632a6399cd115b6ca0b5489df06ef932b8dd29cc998eddc842",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "u1",
+      "start": 1311,
+      "end": 1311
+    },
+    {
+      "id": "03477798ab94bc3866c0d7d2f5bba2f88cb74a06d6dc90475f1a544ba1d27282",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "u2",
+      "start": 1312,
+      "end": 1312
+    },
+    {
+      "id": "e9d009ce1802821f7ba80dd70968a2826ad63650ef472c8b0f639655260732be",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "x1",
+      "start": 1314,
+      "end": 1314
+    },
+    {
+      "id": "da1e5276523dab3cbf0772ab52fc967ee7756064f4f6886eca6794fd0d237130",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "y1",
+      "start": 1315,
+      "end": 1315
+    },
+    {
+      "id": "6a9bdc705521f4f5c624cd85afb483d5d0b4d920eea2d40839423a44155e2292",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "z1",
+      "start": 1316,
+      "end": 1316
+    },
+    {
+      "id": "1ed63d3a41e46f8032137c16b2265e6554205dfda0149793dbd64c60b7bb6fe4",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "x2",
+      "start": 1318,
+      "end": 1318
+    },
+    {
+      "id": "cfaa29e7e10ec52d73b52f4370c28981638312f8da83f853f99173f3766cfb23",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "y2",
+      "start": 1319,
+      "end": 1319
+    },
+    {
+      "id": "c8146053bcacc7b777e231ab0c81d7134cb1581c38aba74de871a8fe25c4c139",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "z2",
+      "start": 1320,
+      "end": 1320
+    },
+    {
+      "id": "ee93eb0618ef138ba901d6662dab4b281313a94c0d15a3177aa4068432cd4add",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "wave1",
+      "start": 1323,
+      "end": 1323
+    },
+    {
+      "id": "58560fe1ddacc6cb670af690e0827ebd951caa61c7f4b0074decc2a414dbcdce",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "wave2",
+      "start": 1324,
+      "end": 1324
+    },
+    {
+      "id": "b420cadf8e0501595da2522e2c5d6c2cc4aa0dd053113b394586b501b0a30a8e",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "alpha1",
+      "start": 1325,
+      "end": 1325
+    },
+    {
+      "id": "c745576dee3693de9f47dd46ff0f98726debb57f9c585e9480f5667d5e028451",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "alpha2",
+      "start": 1326,
+      "end": 1326
+    },
+    {
+      "id": "360cd7e1cb601fd59f73a20885c87c70f122404b5e2fb9d2339bf237ae131f80",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "lIdx",
+      "start": 1328,
+      "end": 1328
+    },
+    {
+      "id": "8eea4847e1e3414f1d4bdbc957e3dbba31ec208c3fd6967d38ca0d8e43ad07db",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "arrBase",
+      "start": 1337,
+      "end": 1337
+    },
+    {
+      "id": "162024746247a3141ee7635feddea19163ff873768018e038600ca392b789d75",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "arrSize",
+      "start": 1338,
+      "end": 1338
+    },
+    {
+      "id": "4697845f53f8e9e2bcc34e4491aa93fc50636abee5e7b447f24566a5d04267a7",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "arrPulse",
+      "start": 1339,
+      "end": 1339
+    },
+    {
+      "id": "99b6aa413515f6dc008fe24bb018212e9ba4d9f0803dd6dddb5f26943c9b10f7",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "variable",
+      "name": "arrAlpha",
+      "start": 1340,
+      "end": 1340
+    },
+    {
+      "id": "f61c41ebc671b6276127cee7b3ae61b00dd28856721c1caa9dac48e5a4fa93bf",
+      "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+      "kind": "file",
+      "name": "geometry.ts",
+      "start": 1,
+      "end": 1368
+    },
+    {
+      "id": "aa5a2ac7f46a08c778b0ef8a3d25afdadc233a2f2c3c9ed1a2337877e8dc2516",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "GPU_BUFFER_USAGE",
+      "start": 19,
+      "end": 24
+    },
+    {
+      "id": "605e399efc38a705b033f7429639033dc6c485d226635dbd169fa45cc9b00f0f",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "class",
+      "name": "NeuralCoreEngine",
+      "start": 26,
+      "end": 1211
+    },
+    {
+      "id": "832f9caa600f497433f234fe0bc1fd326b71154b4091edf00019030d5fcc14ca",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "method",
+      "name": "NeuralCoreEngine.generatePrimaryMesh",
+      "start": 117,
+      "end": 132
+    },
+    {
+      "id": "0e45368bfc491c800c0214e483b9c47b27aa4b3588dadcaa52cb54b8db44f9fa",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "method",
+      "name": "NeuralCoreEngine.setShape",
+      "start": 134,
+      "end": 140
+    },
+    {
+      "id": "817e7395ddf036ef9162f0901274c056a33313b4c75287ed1cd5304735cbdbd2",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "method",
+      "name": "NeuralCoreEngine.toggleVectorConstellation",
+      "start": 142,
+      "end": 144
+    },
+    {
+      "id": "32e95579576e0248cdd06cb7712cf7a57c09837e9add52d099c41d93be1a7182",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "method",
+      "name": "NeuralCoreEngine.setShowPcbLines",
+      "start": 146,
+      "end": 149
+    },
+    {
+      "id": "bc5f44f37110ac9609ac8a3e0c4800c44d9945d26d81796a8a9e3c74093799d7",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "method",
+      "name": "NeuralCoreEngine.togglePcbLines",
+      "start": 151,
+      "end": 155
+    },
+    {
+      "id": "58884eaa6708560b1c775811836e90d2474a8634c285e4143258b2092755a8e4",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "method",
+      "name": "NeuralCoreEngine.toggleGimbalRings",
+      "start": 157,
+      "end": 159
+    },
+    {
+      "id": "af4716336fa45831e942748014c9f80b86333594342f5505269b2ce69eb8f8d4",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "method",
+      "name": "NeuralCoreEngine.togglePause",
+      "start": 161,
+      "end": 164
+    },
+    {
+      "id": "fca83ad3d7f64d09a269da7efad894c168c50eab35ad4fd025a4f03c85390502",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "method",
+      "name": "NeuralCoreEngine.setCursorScreenCoord",
+      "start": 166,
+      "end": 172
+    },
+    {
+      "id": "a5d013f90bbd908bfab3f9131517cbfeb9714e8cdccf4c2f0cabd10169ecb3af",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "method",
+      "name": "NeuralCoreEngine.triggerMcpSearchTarget",
+      "start": 178,
+      "end": 186
+    },
+    {
+      "id": "7a253ad132d88bb911963abbcf0a9a71ca7ee22bb9ec373f678789d91daa15f8",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "method",
+      "name": "NeuralCoreEngine.setVisibleModules",
+      "start": 188,
+      "end": 191
+    },
+    {
+      "id": "c7162c5cca1f23c86dadd061fd191e5272b05ce1ccef4b2ace934fc235918a1b",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "method",
+      "name": "NeuralCoreEngine.setVectorGraphData",
+      "start": 193,
+      "end": 197
+    },
+    {
+      "id": "e8265f86d610fb51544b034a55047519c2faa6fb857b22e19b25bee40b3b9b8c",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "method",
+      "name": "NeuralCoreEngine.appendVectorGraphData",
+      "start": 203,
+      "end": 222
+    },
+    {
+      "id": "b918e51a509a502a9b4a5ab9d5bf168bec54242bab90164a5258c66486612a5a",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "method",
+      "name": "NeuralCoreEngine.setRagSearch",
+      "start": 224,
+      "end": 246
+    },
+    {
+      "id": "008e6066bd1d38546d70817a11240876a5b2e3bc6eea53329ec42a6b5e264d58",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "method",
+      "name": "NeuralCoreEngine.setHighlightedNode",
+      "start": 248,
+      "end": 253
+    },
+    {
+      "id": "77305992083e1dfd72993d4302ba2461bed7412d3a5082ba50d561028f658f48",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "method",
+      "name": "NeuralCoreEngine.setSelectedNode",
+      "start": 255,
+      "end": 260
+    },
+    {
+      "id": "d842aea1ee743877584eb1ccaf5438ee60f576d5266de5b21b5e466b97ae643d",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "method",
+      "name": "NeuralCoreEngine.rebuildVectorMesh",
+      "start": 262,
+      "end": 296
+    },
+    {
+      "id": "4eeb646e1a4c98f5c3f29c86bd706b0e45e8f12254bc1569e19a8ce25bc3f2af",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "method",
+      "name": "NeuralCoreEngine.uploadPrimaryMesh",
+      "start": 298,
+      "end": 317
+    },
+    {
+      "id": "1d2bf05fd6e2b0a1b919091be10d864882b6797679963ea6c1da4e5b84aae5ac",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "method",
+      "name": "NeuralCoreEngine.uploadVectorMesh",
+      "start": 319,
+      "end": 338
+    },
+    {
+      "id": "49f16e1fd376f73f19a2e4487f27bc7436734ff45f87aa0fd2c726175c2d8340",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "method",
+      "name": "NeuralCoreEngine.init",
+      "start": 340,
+      "end": 367
+    },
+    {
+      "id": "5a6316200845e7b270cf6659721f6e5a2cdfa7481c7a62525cd59f0422831cd6",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "method",
+      "name": "NeuralCoreEngine.setupWebGpuPipelines",
+      "start": 369,
+      "end": 457
+    },
+    {
+      "id": "7bc25b953bf515fb6457558f27b6c1641e1ab9dda306e91eb5b958db97d14427",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "method",
+      "name": "NeuralCoreEngine.triggerShockwave",
+      "start": 459,
+      "end": 461
+    },
+    {
+      "id": "f15c5da693f4c6ca6f9f8cf91df4c90815f438567c906e2087139b537a547388",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "method",
+      "name": "NeuralCoreEngine.setActivity",
+      "start": 463,
+      "end": 466
+    },
+    {
+      "id": "3fdc25953c626ee2ff5e2e46c83e3f6b45528ad68b10c6609fd4a54edba6e9e6",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "method",
+      "name": "NeuralCoreEngine.start",
+      "start": 468,
+      "end": 536
+    },
+    {
+      "id": "136ce3fb5bddb3a1c82e1ec41dd13dc3db21e4f8967f547f757593a9a1609a07",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "method",
+      "name": "NeuralCoreEngine.renderWebGpu",
+      "start": 538,
+      "end": 628
+    },
+    {
+      "id": "560c8a069216b72abf3c46fcc6b23c3ca96aea1eb9719e158b76bdfece5df049",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "method",
+      "name": "NeuralCoreEngine.calculateViewProjMatrix",
+      "start": 630,
+      "end": 712
+    },
+    {
+      "id": "4c18c45efba7b3f36a0137bf62ddadff817d27d1fe5a074d3245d421984a8fc9",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "method",
+      "name": "NeuralCoreEngine.createRotationMatrix",
+      "start": 714,
+      "end": 730
+    },
+    {
+      "id": "04abb003efc50dd03e287d730cf31804ec3e06c51b620f4293e59f82720eb8a2",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "method",
+      "name": "NeuralCoreEngine.findNodeUnderScreenCoord",
+      "start": 738,
+      "end": 815
+    },
+    {
+      "id": "857e1632d2b9e8f7006e9359e3d7bb0b2178213c6d21b1ff0df8c28a37d1b024",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "method",
+      "name": "NeuralCoreEngine.getProjectedNodeLabels",
+      "start": 820,
+      "end": 1038
+    },
+    {
+      "id": "a7dc3ce413d78c6cadc94c75cb4d11b366db4c63e3f2eed79400a47f336b1ef1",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "method",
+      "name": "NeuralCoreEngine.renderGeometricCanvas2D",
+      "start": 1040,
+      "end": 1202
+    },
+    {
+      "id": "87ef24fec6bbf9618ac62514e8730faede42cf1b8374d05f49567abacd92f423",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "method",
+      "name": "NeuralCoreEngine.stop",
+      "start": 1204,
+      "end": 1210
+    },
+    {
+      "id": "0cb9cdbe7db2240a3b98efd95ec9870f7fb8e6ef4c7cf3af796398a2f1f02261",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "existingIds",
+      "start": 205,
+      "end": 205
+    },
+    {
+      "id": "997dde4234144ad53051d94d48b2d89b4cc396d0b9611a63b16886b8bdebaa67",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "uniqueAdditions",
+      "start": 206,
+      "end": 206
+    },
+    {
+      "id": "059a5002d537f0c867e022fa6c4543eafa2d61feb7a0b682b21258173eb1f130",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "key",
+      "start": 208,
+      "end": 208
+    },
+    {
+      "id": "8f67de01917e944e7683abf2714a5036beb933f050750d3c4f9b090e41d83a7a",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "q",
+      "start": 230,
+      "end": 230
+    },
+    {
+      "id": "cb8d95ad7a4b962f6239405836a0c23d4bd4a3207ef035965b6d93761a66dfcf",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "p",
+      "start": 235,
+      "end": 235
+    },
+    {
+      "id": "568d7fdb28c15de1826de5f86c0598d470f3a2ea2a8ce573c35f9d0990c02ee6",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "qn",
+      "start": 236,
+      "end": 236
+    },
+    {
+      "id": "1a0892fa50b919c503e83aa480acd930e2b343931a93a62f2a8ac3bb53ed08a4",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "id",
+      "start": 237,
+      "end": 237
+    },
+    {
+      "id": "f68702cd981cd6dd9c96142c68083a6725f4afe99ec09fe9c3d941b3a4929c56",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "hasMatchingMethod",
+      "start": 238,
+      "end": 240
+    },
+    {
+      "id": "276c1cf2c1d3696fe3c197b9a6d3157ce90fdd911b70cf6139f11753e52e087b",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "filteredNodes",
+      "start": 267,
+      "end": 270
+    },
+    {
+      "id": "79f2bd3ed548ae78670b4406808686a2057d2ff2b8667eeed4f6e37c93eb2901",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "now",
+      "start": 272,
+      "end": 272
+    },
+    {
+      "id": "931cedab2a67054bf4c802ea4f50ab5c9e5400f0aa4814eed1c81c0419b47e6b",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "elapsed",
+      "start": 273,
+      "end": 273
+    },
+    {
+      "id": "f91fd798b8286d220e2bea7e2474ac481d73b820d21556ceacc6753c7ed8038d",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "searchingAnim",
+      "start": 274,
+      "end": 279
+    },
+    {
+      "id": "fc8a184f85e6706ee3c530745d3793350b5e00cabefac9c57bb32a7c5c70bff1",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "animTime",
+      "start": 281,
+      "end": 281
+    },
+    {
+      "id": "9af9cb382874243d315a628d64f639cfd79c40ed63e48b165681173e7b3bf9e4",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "adapter",
+      "start": 343,
+      "end": 343
+    },
+    {
+      "id": "316bd815d62d184963471e841fc274ca11105e82fccdbfce62c0e212e27c75c2",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "format",
+      "start": 347,
+      "end": 347
+    },
+    {
+      "id": "609c2aaa6ffc6f4675ab29aeb6888b66c05702f6629de34ce67bdd0206650c8c",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "renderModule",
+      "start": 372,
+      "end": 374
+    },
+    {
+      "id": "775e6b4b7db2ca8ffeb17ee1f53c0a35c934a0119b348cec16d0990d44e7bd3f",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "loop",
+      "start": 475,
+      "end": 533
+    },
+    {
+      "id": "b48da30a6929767563c34a4d7b46697fd3a50bfb6e0fb8a04fa5ee1df466e7ff",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "dt",
+      "start": 477,
+      "end": 477
+    },
+    {
+      "id": "8eeba8a087388473b3112ee1fb644bb72a29b5cb20e3984b2b080aab863bf272",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "isMotionActive",
+      "start": 484,
+      "end": 487
+    },
+    {
+      "id": "70eae1bcce103546d4378f0dbb9bff45dff1b53291a7cc9a1b8475f5e2eeff8e",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "targetSpeed",
+      "start": 489,
+      "end": 489
+    },
+    {
+      "id": "96630d88d12104ea5a4a9bbc2f000510792ec9bacfd18171a41dd9f88bb4436b",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "totalElements",
+      "start": 520,
+      "end": 520
+    },
+    {
+      "id": "03586ea4059cb43e8f56752d32e0ca2fb1e73d734c471a5a1018c5d5fff358a1",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "aspect",
+      "start": 541,
+      "end": 541
+    },
+    {
+      "id": "a188104cfc438c552068a05b55a8c0cf0efe81aeb2798cac573545305a1e1158",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "viewProj",
+      "start": 542,
+      "end": 542
+    },
+    {
+      "id": "348a1738d9c8a24c8fd303fac044e89ef44020b1ccb804a38168541509065d49",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "tint",
+      "start": 544,
+      "end": 544
+    },
+    {
+      "id": "efab70bd794138816bedac42a329f2d597b10925232663217788d4775d6f6575",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "model",
+      "start": 553,
+      "end": 553
+    },
+    {
+      "id": "c2cfdc7e601ca9bf639cc486c20a5f73dc1ef9519aad263595d44fda623069fa",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "uniformData",
+      "start": 555,
+      "end": 555
+    },
+    {
+      "id": "036718927e3cd75f130eac006e4f0971f285ec1e2859c9ea0ed6855ebe42dc9a",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "commandEncoder",
+      "start": 577,
+      "end": 577
+    },
+    {
+      "id": "766734f372f629515257f54042fbe2b8c0dae869bb4b1e8382a6ba0a1bd7c034",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "textureView",
+      "start": 578,
+      "end": 578
+    },
+    {
+      "id": "877edf597a031fb05c02ac79a096163ec107ef669b7f0077d978263a4f37142d",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "renderPass",
+      "start": 579,
+      "end": 588
+    },
+    {
+      "id": "131a4b252c9d4378c0d09e3f933706e432263d208a626040a7a3ca813debe3dd",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "tx0",
+      "start": 632,
+      "end": 632
+    },
+    {
+      "id": "e6f4f79b4716e6468c0033255337a50ba397632156b8dcb665ddda00a21d7ac1",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "ty0",
+      "start": 633,
+      "end": 633
+    },
+    {
+      "id": "4d0806cd5fd9d9bc4e61d6e0afd82d78ab6f93ba803ab3628e38518fca820bdc",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "tz0",
+      "start": 634,
+      "end": 634
+    },
+    {
+      "id": "4bb26f85d72036bae61b701bb1c1603188845d9163e63431d5e2dda88be7d5ac",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "eyeX",
+      "start": 636,
+      "end": 636
+    },
+    {
+      "id": "c8ed44683af3015b7c690f0775207fc0e851d2227d13091aaa51aedf26d1d975",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "eyeY",
+      "start": 637,
+      "end": 637
+    },
+    {
+      "id": "dcbe7dc675c01ea3670533233ffb01a2bd3523e67bb4959c653c76a4f7213005",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "eyeZ",
+      "start": 638,
+      "end": 638
+    },
+    {
+      "id": "82a832db3557e23281bf89cecd0bd1d0ed993a6ab4c0868977a9f06fe46c3842",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "dirX",
+      "start": 641,
+      "end": 641
+    },
+    {
+      "id": "fba3f8714acb824c525be11aea8171a46b16b058719b61e44ca016bb66a28a77",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "dirY",
+      "start": 642,
+      "end": 642
+    },
+    {
+      "id": "90b3fc77d05e3dceead544bbc8482644ea1d8030c46a2cee3083e9e8f947ed8b",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "dirZ",
+      "start": 643,
+      "end": 643
+    },
+    {
+      "id": "b9176c3edc60941a8b81d2c8507902d083cf1804ba5be0fad2cee70e58f617c3",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "zLen",
+      "start": 644,
+      "end": 644
+    },
+    {
+      "id": "8b67ff2d52114f37c1b3862ca01c4ecc40215d331db5752a69e9d1400cc21c61",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "z0",
+      "start": 645,
+      "end": 645
+    },
+    {
+      "id": "e01dd3a8734a8669cb5bc94f28c47e3bf979706dce0759f49f8a4649a1064593",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "z1",
+      "start": 646,
+      "end": 646
+    },
+    {
+      "id": "baa6713369b9c9470b01a224b833956fc8b013ab6688ed1b077f02bab58cc17e",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "z2",
+      "start": 647,
+      "end": 647
+    },
+    {
+      "id": "1083b18f5bbea1e68bde4f2110bf8eb9d6f727dc0b5523ac4783a771b73c3da9",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "upX",
+      "start": 650,
+      "end": 650
+    },
+    {
+      "id": "ff266985e6000f288f98aed6f6285c57f33ab7f732e6abe1789cf741b95293a6",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "upY",
+      "start": 651,
+      "end": 651
+    },
+    {
+      "id": "d19917569a0401006500c40ded7f47144c1a2b41923506a7b0a9caa8e78c7148",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "upZ",
+      "start": 652,
+      "end": 652
+    },
+    {
+      "id": "d1b123754a7268152890d92aefda8ec863cb2563fad3ee56d609de42af7dcd9e",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "x0_raw",
+      "start": 661,
+      "end": 661
+    },
+    {
+      "id": "ec3c1cabb9d8f61606683aadda03310d72739afe641c8040547df815eff13d7c",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "x1_raw",
+      "start": 662,
+      "end": 662
+    },
+    {
+      "id": "f9a34ee990905ced8dab67705681d53d396af618820c8956b8d667f61fb7bd30",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "x2_raw",
+      "start": 663,
+      "end": 663
+    },
+    {
+      "id": "6bc608a32aa228d41248f9df61f6894d15bd1ad150720359fa9ce6dcce37b096",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "xLen",
+      "start": 664,
+      "end": 664
+    },
+    {
+      "id": "52bc0f8b4176cc8dcf5e1efbe0388a95bf3d616bbcf0be2e3e2c93b5b505e3d0",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "x0",
+      "start": 665,
+      "end": 665
+    },
+    {
+      "id": "ae4a3d8c40b1438671f9c57410e077e10e35a20ca562546638f97c568dc126ed",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "x1",
+      "start": 666,
+      "end": 666
+    },
+    {
+      "id": "b85e8317ba0b2a5056e45e9c4bc4f3dd16602d12b6ccef3bb9d9a01bce76dae4",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "x2",
+      "start": 667,
+      "end": 667
+    },
+    {
+      "id": "edfa89fa990aa73f66c56c799f79527fab6adc6bf194831771fa2ae81f64e341",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "y0",
+      "start": 670,
+      "end": 670
+    },
+    {
+      "id": "4bde6c3ca6962677215217ae9d1e9f4da1d54b28b1a0f9c4051dd8ce1e1c2724",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "y1",
+      "start": 671,
+      "end": 671
+    },
+    {
+      "id": "1b0c86e7a4e61370fa5311f3021093b77006eac73ea83e857eee134dd43283b4",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "y2",
+      "start": 672,
+      "end": 672
+    },
+    {
+      "id": "87cbea5d0e5c8cd0337ba67f09345c7eae922650acb0b9b5adb5a1f49eac4076",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "tx",
+      "start": 675,
+      "end": 675
+    },
+    {
+      "id": "97cd98a54eb33781a4c595bc0412768b4bb943b957914504936bccb78fcf2b42",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "ty",
+      "start": 676,
+      "end": 676
+    },
+    {
+      "id": "be6a63890f7631ae5f54e7f8526ef168d13100e2594d2e55b68b03f63a0140c3",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "tz",
+      "start": 677,
+      "end": 677
+    },
+    {
+      "id": "74b7edde59abfad977a145a3e4ce474a67018a670bc291a4acb2120bb5f8e60a",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "fov",
+      "start": 680,
+      "end": 680
+    },
+    {
+      "id": "f20c317843ec12304d48c6a3bc98d3a6ab5dc8770e9649bfad038effbc97800a",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "near",
+      "start": 681,
+      "end": 681
+    },
+    {
+      "id": "ce6568d0c7fced491bbbd1bd87ba19f079b743ed87dad05f9ef4d0f24e432153",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "far",
+      "start": 682,
+      "end": 682
+    },
+    {
+      "id": "f2ec23c2968059f7133d86132b0606f27be433e60cb49a763b9d0895f23f8b78",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "f",
+      "start": 683,
+      "end": 683
+    },
+    {
+      "id": "c18cb34c04130ff9465141bac587872320a31b7cf478d2c572da79860b78b489",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "rangeInv",
+      "start": 684,
+      "end": 684
+    },
+    {
+      "id": "558d503e95c784f15d0eb7156ea945f76234f2845eff44620221f43918a68c52",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "p22",
+      "start": 687,
+      "end": 687
+    },
+    {
+      "id": "6e968e7e6ac353014d82ec9bf097596362dc951e2ec1c08c9820a40f13827727",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "p23",
+      "start": 688,
+      "end": 688
+    },
+    {
+      "id": "051c82be954b25ff2ecc509e1c848f44c3ac1a6b3af523a792e115fc9686fd79",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "out",
+      "start": 690,
+      "end": 690
+    },
+    {
+      "id": "b14b24638c94d582b736b7d94c3a79f0b958b7dd9396e5d74b3a2af21816fdb0",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "out",
+      "start": 715,
+      "end": 715
+    },
+    {
+      "id": "14cbb8c0e4be1d6e4398df6cbb9b440e9676c5951c02199c378783cbbce997bb",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "cx",
+      "start": 716,
+      "end": 716
+    },
+    {
+      "id": "c13ac3ad21046cea39cc02053119c878a598ded20c5564cd9f77b4baab6820e0",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "sx",
+      "start": 717,
+      "end": 717
+    },
+    {
+      "id": "9dc55592052d99f73237f99989f7f06d7fa3504889aae66fd17739cd55cef40a",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "cy",
+      "start": 718,
+      "end": 718
+    },
+    {
+      "id": "3168238475afaa5a5dfeb5569ddafb22afe36764cb1464734bf2cc004b028380",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "sy",
+      "start": 719,
+      "end": 719
+    },
+    {
+      "id": "7be90bd0e811b9761f6edab3145627cbe9777cb26afdf90957a2358d7e4e7fa7",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "w",
+      "start": 746,
+      "end": 746
+    },
+    {
+      "id": "0568d14ed55ce2bf4899af31eb716a971b84514140a808b84058e3b5f4dc96a9",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "h",
+      "start": 747,
+      "end": 747
+    },
+    {
+      "id": "c825e2162e894a920e312d6ea4ad134aec57ae8ff5ee0eb7959eb95d7ad2794c",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "cx",
+      "start": 748,
+      "end": 748
+    },
+    {
+      "id": "5673a74e5b12cbc05bf67801f8003a6f17c3b7aafa4e3228bb0f29eaab8f8a56",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "cy",
+      "start": 749,
+      "end": 749
+    },
+    {
+      "id": "1a428113ba83d0a24e6415d8ed12c51a54d68a5f383efd564d26a68821ee24af",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "scale",
+      "start": 750,
+      "end": 750
+    },
+    {
+      "id": "90026eae1cfa37ba9736c2409a8e3b148c06358bbc8207efdcfe8acf5989d6ea",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "cosO",
+      "start": 752,
+      "end": 752
+    },
+    {
+      "id": "a41121f001a3fc9a0b7c5e7c682e70fb0ef4c5271d495961378bac14d139cdab",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "sinO",
+      "start": 753,
+      "end": 753
+    },
+    {
+      "id": "2f2e83df9bbbdf4f76bdbe8ced1e74f90478fc98ed6e97f6616971d3061320f4",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "cosPhi",
+      "start": 754,
+      "end": 754
+    },
+    {
+      "id": "4a0f48016c542c6ee7b799ae9fe78a7af1e75022c96788652ed0e00cc2aa7867",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "sinPhi",
+      "start": 755,
+      "end": 755
+    },
+    {
+      "id": "1983692a094ded1cb4afd13532876c6a2c65f99a0c1941b02bb0eebb0625701e",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "baseDist",
+      "start": 757,
+      "end": 757
+    },
+    {
+      "id": "22d3bfcbf73080ec54097e648e83d5c8f15b9a40d08976a118647aae754f2190",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "candidates",
+      "start": 761,
+      "end": 761
+    },
+    {
+      "id": "1c3b9667b74740a1f7131d94f275411fb48dd0595434be8b2ec8d9d5694aef7a",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "node",
+      "start": 764,
+      "end": 764
+    },
+    {
+      "id": "1b13d2d0cb5ca1f4bd3f37d758ee982c6b0981b659bf1fe9ec6aec458d1f4b63",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "vx",
+      "start": 769,
+      "end": 769
+    },
+    {
+      "id": "0209ab93c38abf935d1ef9675e3d5561d76653187e0e59fcd13beb6a99cc3c1b",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "vy",
+      "start": 770,
+      "end": 770
+    },
+    {
+      "id": "4dc8d41736b58b5d4faf95d3e46427c9a9fe066331292e5f550837c3e4551df2",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "vz",
+      "start": 771,
+      "end": 771
+    },
+    {
+      "id": "67b82aa43f49ce9e94518d328a137a7b7f65c935175d8e4b62cb8d793ece75dc",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "rx",
+      "start": 774,
+      "end": 774
+    },
+    {
+      "id": "5ef2932a45c8595bf24d55c043890c069014e0e9b41c373c791f13b5a74b0167",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "rz",
+      "start": 775,
+      "end": 775
+    },
+    {
+      "id": "af07dee47eff68b88f73cdbcef8d24742408c364cc269de66d24982fdc23b3f7",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "ry",
+      "start": 776,
+      "end": 776
+    },
+    {
+      "id": "a572a6db90df677824a357dd1923dcad7abcaf8d479a7dd350a9d2c6b97973bb",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "depth",
+      "start": 777,
+      "end": 777
+    },
+    {
+      "id": "df626c431ec5ff311adf68496d931fad48c996c195de05eb1ebda6b527dfa028",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "px",
+      "start": 779,
+      "end": 779
+    },
+    {
+      "id": "11fb70aafcfd9c430a584836192d4e9df1416e0b2cbc975d9f9116c2a186f3b1",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "py",
+      "start": 780,
+      "end": 780
+    },
+    {
+      "id": "3d3124e21eca7904ff6ddf9d2d1dc9282eeb18ae7f795ef54920fa2e776ceee4",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "dx",
+      "start": 782,
+      "end": 782
+    },
+    {
+      "id": "8175550814c7795d27a8a963658de01f96c60cb1d97de842a952e7cb8e7041ce",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "dy",
+      "start": 783,
+      "end": 783
+    },
+    {
+      "id": "86faf3f782b710cbdd3ec82843ecb68d96870c49c7a2f70b0c4e12419a00d838",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "d",
+      "start": 784,
+      "end": 784
+    },
+    {
+      "id": "7726b1a5d3004e62328c8739411c4560f936e1c3cc5af115a7a70701116aaefc",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "approxNodeRadiusPx",
+      "start": 788,
+      "end": 788
+    },
+    {
+      "id": "57b0bcad445a96f9459213c69e8fbd6cf5d2a415e2bf124d2fab69780e7106be",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "dynamicTolerance",
+      "start": 789,
+      "end": 789
+    },
+    {
+      "id": "a28cf297485f7c52bd9800c431a873d44d6a92bed6f5329e7e7a299d15c16648",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "depthDiff",
+      "start": 805,
+      "end": 805
+    },
+    {
+      "id": "b1876d7c0a5892b424eab3050c5b3fec7f499f4415e2da2912773eef1541049e",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "w",
+      "start": 837,
+      "end": 837
+    },
+    {
+      "id": "d95fc0244efb1772de8f8cc88d1b3f97515d7b328d3f56a7689a3833d03067ba",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "h",
+      "start": 838,
+      "end": 838
+    },
+    {
+      "id": "2438c2502ed644ed330a59904add01ed8660a7a097ea32233c28079c72724554",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "cx",
+      "start": 839,
+      "end": 839
+    },
+    {
+      "id": "203e65533f0e9e698446939020182a2822e7c7f0230d3f539b3cef4d44c52329",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "cy",
+      "start": 840,
+      "end": 840
+    },
+    {
+      "id": "4666e16ed6576fc36e3f688d7d2c1500ecf1c1526178856b5647869de3998c30",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "scale",
+      "start": 841,
+      "end": 841
+    },
+    {
+      "id": "50c0472ae51b0e216be3c23d1f1d2b385154a8cf629f299fe1c7877bdaf2d107",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "cosO",
+      "start": 843,
+      "end": 843
+    },
+    {
+      "id": "91eae2eccd405cfa2ca38ea929e3b423b52eeba51f3b8d7f18fe25ee6f95b0c6",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "sinO",
+      "start": 844,
+      "end": 844
+    },
+    {
+      "id": "5326f57445a66aa8e4cc01d267fd0eb8af54eb95b25e77ccb64fba924688ca29",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "cosPhi",
+      "start": 845,
+      "end": 845
+    },
+    {
+      "id": "46b7080e25088a681f9bf28204824407dd1504df82c7548d6cbafe32f94da1fb",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "sinPhi",
+      "start": 846,
+      "end": 846
+    },
+    {
+      "id": "8a31922eeec3d4116463222a66b08cf14541c987fbfed738f63d5f81282c87bd",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "baseDist",
+      "start": 847,
+      "end": 847
+    },
+    {
+      "id": "5da88cfc2e90ecc9b729e96fdc8da8a405b40871f2e6fa927e3c1de50f819b0e",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "hasActiveSelection",
+      "start": 850,
+      "end": 853
+    },
+    {
+      "id": "0ce202b3cd2ceb93360b7f127c91f355260b3e9ecadcf873ad9771c781664536",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "relations",
+      "start": 854,
+      "end": 856
+    },
+    {
+      "id": "b1371d5acde9caba1dc69079cd31a1fe5af5e43a8dee909692717dccdaeb9eed",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "cursorRadiusPx",
+      "start": 859,
+      "end": 859
+    },
+    {
+      "id": "144a2ffd6201613c99bee3f83ecde2334011a0e455bf6ca16a38391b0c717469",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "cursor",
+      "start": 860,
+      "end": 860
+    },
+    {
+      "id": "07b70281114ad8ac0e8ff4691b984c5d0ac87e622d140c14bd7ba6542a5ebfc0",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "allProjectedNodes",
+      "start": 863,
+      "end": 863
+    },
+    {
+      "id": "530b4078ecab6c361c46df492271bff1e8e7f5051ca0860f397574ee753b8095",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "node",
+      "start": 866,
+      "end": 866
+    },
+    {
+      "id": "f520d86ecdc5a7437b5ed961572261890effe5f7bb7105733be1b86a839f8c13",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "vx",
+      "start": 871,
+      "end": 871
+    },
+    {
+      "id": "5ed68f4e062aea0ebf5549f57cc35458807780644431d73c89023ba0af1bf83d",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "vy",
+      "start": 872,
+      "end": 872
+    },
+    {
+      "id": "b8ebcec19eb86bcea6c93155668220c7333d23c5d7c8734bacc6d5b721b40015",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "vz",
+      "start": 873,
+      "end": 873
+    },
+    {
+      "id": "70dd6989ac65d67a2222a5bea5b15a62d7748d240337c0d7f9fe5a8d5fa77759",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "rx",
+      "start": 875,
+      "end": 875
+    },
+    {
+      "id": "ff6d04ad9a6bbd1b6dcc651c755887b392cc7d718f39153211ee786a8aa5a55f",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "rz",
+      "start": 876,
+      "end": 876
+    },
+    {
+      "id": "ac969908d2ecb8507ca41b36608f7250c27b1a1e09d9a846ad560c38907bde40",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "ry",
+      "start": 877,
+      "end": 877
+    },
+    {
+      "id": "89db5c37090c2f4a2e7262189c07830285b4d65c61b469886fc9b8fd14493752",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "depth",
+      "start": 878,
+      "end": 878
+    },
+    {
+      "id": "8deaa31cde6de4d3dc978478a3aa7be66605f85a9cf810f91f42634761a9d218",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "px",
+      "start": 880,
+      "end": 880
+    },
+    {
+      "id": "f89da8faaa3d3665ee24f64ab3b3d8189522ca72c711ee2fbf3a4bbc23acdda6",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "py",
+      "start": 881,
+      "end": 881
+    },
+    {
+      "id": "79af4344b9bcee33d34d9c743342e0f67e17b100cd7582b970c6ddf5f7524f2f",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "candidateLabels",
+      "start": 889,
+      "end": 907
+    },
+    {
+      "id": "c973b148e0e0706ce807df93d0ff1316a8635b5768fbb79ccc11713aa3f27ef8",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "i",
+      "start": 910,
+      "end": 910
+    },
+    {
+      "id": "b73d89bc642e948eaed000c3c9d8d7fbc005762d6b1b1205ed26208973183260",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "node",
+      "start": 911,
+      "end": 911
+    },
+    {
+      "id": "73d8692c96f5a8a5f27cdd2beeb88e311e364b3ca5990c7b16d8ff0722c7ec8b",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "isSelected",
+      "start": 912,
+      "end": 912
+    },
+    {
+      "id": "23f4a2106a2ee7c82bfe800bb9e71917c21f61ea73f5058a6da21e7c85bdd6da",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "isRelated",
+      "start": 913,
+      "end": 913
+    },
+    {
+      "id": "d06fcfd60bbca19c4efb33a313e693a8583e1af5d526eb288e92d3d86a862278",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "isUnrelated",
+      "start": 914,
+      "end": 914
+    },
+    {
+      "id": "06460d75747455b808e569c400d5e08d5cc63d7cb92b87d1b975d1ccea502b99",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "isHovered",
+      "start": 919,
+      "end": 919
+    },
+    {
+      "id": "b2fca0c0ddc477b4d3d1e8a5fcb57f281c7622cbcba48d7175aea4fb294563a9",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "isMatched",
+      "start": 920,
+      "end": 920
+    },
+    {
+      "id": "7b577aac27bac9515c3aee5de2898c14de3118f8b593b7c1cf2696cd731c4650",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "isSearchingTarget",
+      "start": 921,
+      "end": 921
+    },
+    {
+      "id": "94901a6ff27c51612c5d651bef7950c315971cb7ce267ea510c964d4909dc695",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "methodsCount",
+      "start": 922,
+      "end": 922
+    },
+    {
+      "id": "ce3f78fc6ece214886f386d5c030ec6d139616004508fe05c51d25a6b6feb040",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "relationKind",
+      "start": 925,
+      "end": 925
+    },
+    {
+      "id": "792a9aedae8749a20600b26e1dcfee2c3e865c60ac8dce62db43a6c885d7caf8",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "isWithinCursorRadius",
+      "start": 934,
+      "end": 934
+    },
+    {
+      "id": "8784894b4f7f44a095ce691064a8b13aeea0dfea2015b5038386848f6cae955a",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "cdx",
+      "start": 936,
+      "end": 936
+    },
+    {
+      "id": "0d7d3071d03fd5c56e08afb9d27cff443e12f02c5d68dce0a478786c1a9ebbd9",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "cdy",
+      "start": 937,
+      "end": 937
+    },
+    {
+      "id": "880688f5f5d1a663f3706f74241442d25c06f0b94c1107c1c60ea5af1913be38",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "distCursor",
+      "start": 938,
+      "end": 938
+    },
+    {
+      "id": "b21eba29192b1ed0003e695acab55daba578da2a535571df29d67b2a8d02696c",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "score",
+      "start": 954,
+      "end": 954
+    },
+    {
+      "id": "f274ce297fa2ef584c6a5760b801f65a4759cc89a702a8287712a4e9287985e1",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "nameParts",
+      "start": 962,
+      "end": 962
+    },
+    {
+      "id": "9dca678cbbd2117b63833bd78772f502712ab7fcbfba5532fe547a30004de62d",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "cleanLabel",
+      "start": 963,
+      "end": 963
+    },
+    {
+      "id": "3076053cff5f373b4a40191ef98e68eba086e443009911e92728499a4c67f3d6",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "initialLabelX",
+      "start": 966,
+      "end": 966
+    },
+    {
+      "id": "b4948d7637f097424cdca1a5652bba548641ac0708e882ab822e9e6eebf0a8a4",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "initialLabelY",
+      "start": 967,
+      "end": 967
+    },
+    {
+      "id": "8b9bcc5b0bb746e16c5e8bdbc5acab9a6e815c5e26eb47cf8b6a4026cf825441",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "effectiveMax",
+      "start": 992,
+      "end": 992
+    },
+    {
+      "id": "08f3c545fd840e252e5dfa06e6b937f884fb95a241726301e05462995117d5db",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "selectedCandidates",
+      "start": 993,
+      "end": 993
+    },
+    {
+      "id": "fab6ad3ee30610f305754b75f9a184f18cf95dfb81eca65ee6ede65e56eaf0b9",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "minSafeLabelDist",
+      "start": 999,
+      "end": 999
+    },
+    {
+      "id": "35236028d86fbd8fef64d44424a3e1b491bd950d40014eb5556100b72a902078",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "dx",
+      "start": 1005,
+      "end": 1005
+    },
+    {
+      "id": "1d84652897d288a0938cb6da91207c50b42125d2a199dbe262ddaca1844d08de",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "dy",
+      "start": 1006,
+      "end": 1006
+    },
+    {
+      "id": "9caf9a4ee9f758983411aae7149464a5507f9b7f41fe37c050946ab97cd1758d",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "dist",
+      "start": 1007,
+      "end": 1007
+    },
+    {
+      "id": "6bb9b2cd7cc454e83e5dbc39c20d48e9e83cdfcc1b3edde6ce27343d818a6f60",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "safeD",
+      "start": 1010,
+      "end": 1010
+    },
+    {
+      "id": "53ccf63195cad9c3cebd7b83561a15470a8c23e1a4b5e5d619506b488c142aae",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "overlap",
+      "start": 1011,
+      "end": 1011
+    },
+    {
+      "id": "921bf2514ac588eb6226c315932462733dd0c73dc64a9749cde693dffde20f55",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "repulseStrength",
+      "start": 1012,
+      "end": 1012
+    },
+    {
+      "id": "275ba4acf782081e016bcc2b4845c0465b00244d1152ed61ab24ecf16409dd87",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "nx",
+      "start": 1014,
+      "end": 1014
+    },
+    {
+      "id": "934eb9f12e85f26916be834c3604be40d4865a791606ae2ea5fdc0a8d88bde84",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "ny",
+      "start": 1015,
+      "end": 1015
+    },
+    {
+      "id": "d3670a6e38c0ebf72796d5fa3098fa9b9e553af7e945deacd361d4af803bada8",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "ctx",
+      "start": 1042,
+      "end": 1042
+    },
+    {
+      "id": "0fe8a87d4e48ae132da1842da184fc0c2e828650fa8676ed4219114929455d6a",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "w",
+      "start": 1043,
+      "end": 1043
+    },
+    {
+      "id": "3f854fc35e147a5d958738a9fb1dbdba8d102507e8754ed4687a75f62c899eca",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "h",
+      "start": 1044,
+      "end": 1044
+    },
+    {
+      "id": "020f2a76ddd3e44294848aa60df35e52b286c9c0b07764dce9b737861726ce86",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "cx",
+      "start": 1051,
+      "end": 1051
+    },
+    {
+      "id": "5377f5e734c7dfd0fd53f542c729fe46fd5d1fb53e0380bfd884b321ede911d0",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "cy",
+      "start": 1052,
+      "end": 1052
+    },
+    {
+      "id": "4285f27f0c1deed4b4f6450a5b1527ceb6e3ed3088823a99ef857cf4a604dd8c",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "scale",
+      "start": 1053,
+      "end": 1053
+    },
+    {
+      "id": "b8d6beb9043f02b86eb08b259f3e74d4f58ab9d62f4170d8c4dcf1fa4b382309",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "baseDist",
+      "start": 1055,
+      "end": 1055
+    },
+    {
+      "id": "66749ede075c49ae2ff6157ab80c32e6cd089feea61add0966357156de4b3cdc",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "zoomFactor",
+      "start": 1056,
+      "end": 1056
+    },
+    {
+      "id": "17fcd0d49d53379c4457892b14e50ca2d5d05e7973b82c48e6ecc4d1217e792e",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "m",
+      "start": 1060,
+      "end": 1060
+    },
+    {
+      "id": "b9661c46a053dbc69d1a39e644fffc773bc3798520b4303e227253ccbb013192",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "cosO",
+      "start": 1064,
+      "end": 1064
+    },
+    {
+      "id": "1e6770de61cd6e2f82f92899172962fdf0b889d390f7da6668a454eb704e3307",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "sinO",
+      "start": 1065,
+      "end": 1065
+    },
+    {
+      "id": "dbf07b5f96d403a907609fdc1bf47114c6df7773572914e24521e99c117e99c0",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "cosPhi",
+      "start": 1066,
+      "end": 1066
+    },
+    {
+      "id": "47e95fd13ca6f0b1b4f5bc11e0b23b732686381d1ea3b009284503d5bebb2bbb",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "sinPhi",
+      "start": 1067,
+      "end": 1067
+    },
+    {
+      "id": "f50e21721147961bf090c21f01b769c0072a7cf8b596bad032e6685886a905aa",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "vertexCount",
+      "start": 1069,
+      "end": 1069
+    },
+    {
+      "id": "cacd71b67935173fad43324cc6e12d3ce6d9390c5068132c40d03aee1df98a15",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "projectedPts",
+      "start": 1070,
+      "end": 1070
+    },
+    {
+      "id": "f3fee3970dbb31714e2c6f34c63fefe9eb2a6fcd353319cd24a26f9a428eb818",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "off",
+      "start": 1072,
+      "end": 1072
+    },
+    {
+      "id": "462b6212dd0ba8f4085c867f4dd7d2819c9423edb5eb0ad22ae888f58fe329d8",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "x",
+      "start": 1073,
+      "end": 1073
+    },
+    {
+      "id": "61ce09babf49bc51a57e78f285e3395255a02c645436cb5c6c1866b39935446f",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "y",
+      "start": 1074,
+      "end": 1074
+    },
+    {
+      "id": "22a7a7943eb31f32de0e1615113c8b9c0ed96bb88eee5fa15ca1cc5794ab93ee",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "z",
+      "start": 1075,
+      "end": 1075
+    },
+    {
+      "id": "e56f204135c2255415158b408c4b7e6bd86dfde02bc7c6576bf5ae0795a98931",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "rx",
+      "start": 1077,
+      "end": 1077
+    },
+    {
+      "id": "f86a986b4277b14743ae52557b013e107dec9d12c822c0c64254223d6c102f0d",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "rz",
+      "start": 1078,
+      "end": 1078
+    },
+    {
+      "id": "e30fb802380fbe3d415e063ef2de14d1c8f244e0852d924238cde33581deb691",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "ry",
+      "start": 1079,
+      "end": 1079
+    },
+    {
+      "id": "27f28b56d1b7f302dbab3bb0a1f083d25734dc2b406a6b97515e256e46c4b8ab",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "d",
+      "start": 1080,
+      "end": 1080
+    },
+    {
+      "id": "cc5d9ead11a7d789c670639439aff7591a35dac2d4b5dda556eb1ec449659d38",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "p1",
+      "start": 1087,
+      "end": 1087
+    },
+    {
+      "id": "a2e361a04b481fd8eef85c7fb42196229679168891a2bca0baeb949fec94e0b6",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "p2",
+      "start": 1088,
+      "end": 1088
+    },
+    {
+      "id": "c17805b8cde3f1a67f012b9bef73647f5fb497c332aed9a6d39c8ad61091dacf",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "cosO",
+      "start": 1097,
+      "end": 1097
+    },
+    {
+      "id": "7c4443556491f976ddb0560350ab4cf4029e6fa18a8a661aa666b0fc503cbe38",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "sinO",
+      "start": 1098,
+      "end": 1098
+    },
+    {
+      "id": "37c6a649db964bbae4d6c845c9451e4baf9a2dda92523ac7fd11d3614369841f",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "cosPhi",
+      "start": 1099,
+      "end": 1099
+    },
+    {
+      "id": "7e1018c7b0109659c1e7d499c00b079c139ce64cce8e4ca100f23ca1d2774fd0",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "sinPhi",
+      "start": 1100,
+      "end": 1100
+    },
+    {
+      "id": "00b5631b934166bdcfd5b0a826ea81f534d23b6bd71021898071fda52cf66444",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "node",
+      "start": 1136,
+      "end": 1136
+    },
+    {
+      "id": "6c2978cd9c13aad67b013b6ca56ef1846c00f7e817c68c1c54c37f32a5a53e74",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "vx",
+      "start": 1137,
+      "end": 1137
+    },
+    {
+      "id": "4b4ffd71d3f6138c120818ee32465e5970e31d1f4be222544095506c2fcd7978",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "vy",
+      "start": 1138,
+      "end": 1138
+    },
+    {
+      "id": "e539e64ce3b7f7bf3d479c895181a45821c9fbcfaa68a2ade55292c193dcb3fe",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "vz",
+      "start": 1139,
+      "end": 1139
+    },
+    {
+      "id": "6e8104609821c16389a000bada6b8c74838292d42f1bbebe1437078fad430a0c",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "rx",
+      "start": 1140,
+      "end": 1140
+    },
+    {
+      "id": "d33a777e2b15d38f0c0e307ec8c4690306610e1cc18e291ca7915bda58c7cb99",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "rz",
+      "start": 1141,
+      "end": 1141
+    },
+    {
+      "id": "8ed1cf5994a9fbca0544f5fc878180dee787df0aa61661d2f26fb0eb87053494",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "ry",
+      "start": 1142,
+      "end": 1142
+    },
+    {
+      "id": "bd720570f1eab166db088b8d712fcb23f36ea21175779bc449ce98c6755a4ea5",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "d",
+      "start": 1143,
+      "end": 1143
+    },
+    {
+      "id": "30ec0f218b2593d8cac4c531d200a8d8c0e55db05c7348f05754373c2714d8bf",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "px",
+      "start": 1144,
+      "end": 1144
+    },
+    {
+      "id": "46ebfb0be6df1a0f1df8fb04f2ecaad594ee0bc4a88df4aa85e17d120c63d397",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "py",
+      "start": 1145,
+      "end": 1145
+    },
+    {
+      "id": "49ed5a12e3aa688cb40a571e4c98478969e78ee998909283eeb083060a730fd3",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "isHighlight",
+      "start": 1147,
+      "end": 1147
+    },
+    {
+      "id": "2d0b313ac8810b5a4d418677d5cc8668ca6c2696821941f99b28aa298ef77c87",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "isMatched",
+      "start": 1148,
+      "end": 1148
+    },
+    {
+      "id": "940f0ad860063f5826edd0f8511fb4fb0bba8e2159a06b1f40b6e29cb64083df",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "ptSize",
+      "start": 1160,
+      "end": 1160
+    },
+    {
+      "id": "395e09228decbae22fcc16f38b995f767fa77ff6def2885881e87c0280397459",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "totalM",
+      "start": 1168,
+      "end": 1168
+    },
+    {
+      "id": "6a4d33dbcf6d47e314829af334a85d23b5d3009a7cf7691236fa6ef53456e077",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "m",
+      "start": 1170,
+      "end": 1170
+    },
+    {
+      "id": "b089f155860afa5d6b0baeb975cd40b436099152d52208822a9ee67bae9b8e9e",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "mAngle",
+      "start": 1171,
+      "end": 1171
+    },
+    {
+      "id": "53a91e9448b31cf213eb92c57326d68442923f290c1275ef8a52c734d096e2d8",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "mRadius",
+      "start": 1172,
+      "end": 1172
+    },
+    {
+      "id": "f127f2b8e3c2a06b2dbec318449c281acd549c813943080e600a4b6823b93af8",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "mx",
+      "start": 1174,
+      "end": 1174
+    },
+    {
+      "id": "7e5b94b4f322fbc7113dbc4538e753379b072232816ec399cada948827e03cbc",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "my",
+      "start": 1175,
+      "end": 1175
+    },
+    {
+      "id": "4148dda7da9356cdffeecaed05f8abd5242e1d4638f616f9512f6195eab1160b",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "mz",
+      "start": 1176,
+      "end": 1176
+    },
+    {
+      "id": "f4f4b0420ddf0e79452e26b9cf1aefb6ab0666c8935229c2fac0ea32e20e9cd2",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "mrx",
+      "start": 1178,
+      "end": 1178
+    },
+    {
+      "id": "30a08449d641df76056bbe41fbd07f0f954bece9886b6c86455299e74a890f03",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "mrz",
+      "start": 1179,
+      "end": 1179
+    },
+    {
+      "id": "2e08921b647bd664a2cc9aade10ee10664807f6b61701d96acb4b56a928a137e",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "mry",
+      "start": 1180,
+      "end": 1180
+    },
+    {
+      "id": "d44e21f114a74541db88e7e5c3a7ed147f909f9a0a65d7558771bfceefb52163",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "md",
+      "start": 1181,
+      "end": 1181
+    },
+    {
+      "id": "255eafc6f7951be7f07a8fc27b46b1857733a221b424e8792f4b79deddf726f4",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "mpx",
+      "start": 1182,
+      "end": 1182
+    },
+    {
+      "id": "49d338755c78e0c991edd5ea9a361c196bb8d71e05fff5edf514a57119a04044",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "variable",
+      "name": "mpy",
+      "start": 1183,
+      "end": 1183
+    },
+    {
+      "id": "5e5960931aebdbdcae03daa585ed9119716607baf11e81292c4609b800875614",
+      "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+      "kind": "file",
+      "name": "neuralEngine.ts",
+      "start": 1,
+      "end": 1212
+    },
+    {
+      "id": "a4e229c4f67ef61645b0efc8ab8e346e6811049d5c6441c70505f7e5a4c2ff1f",
+      "file": "apps\\web\\src\\panels\\neural-core\\resolvePivotNode.test.ts",
+      "kind": "variable",
+      "name": "mockNodes",
+      "start": 6,
+      "end": 40
+    },
+    {
+      "id": "802736454f1c9d818bc166258012281ef315769f9afda6e9df33d1370fcf1905",
+      "file": "apps\\web\\src\\panels\\neural-core\\resolvePivotNode.test.ts",
+      "kind": "variable",
+      "name": "result",
+      "start": 43,
+      "end": 43
+    },
+    {
+      "id": "3c52971150ca5a8153f6063c8545f15465824a2c2b6fe46978a781104a1a0501",
+      "file": "apps\\web\\src\\panels\\neural-core\\resolvePivotNode.test.ts",
+      "kind": "variable",
+      "name": "result",
+      "start": 49,
+      "end": 49
+    },
+    {
+      "id": "59e5f3cf63455da52436ab434445f099883cc22b949f61ce312a2d10689c0136",
+      "file": "apps\\web\\src\\panels\\neural-core\\resolvePivotNode.test.ts",
+      "kind": "variable",
+      "name": "result",
+      "start": 54,
+      "end": 54
+    },
+    {
+      "id": "19ba7275e4743bd11ec331a0a84ac2b4131a896087c1cb3c371b4f7d79ef844d",
+      "file": "apps\\web\\src\\panels\\neural-core\\resolvePivotNode.test.ts",
+      "kind": "variable",
+      "name": "result",
+      "start": 59,
+      "end": 59
+    },
+    {
+      "id": "05448344e5de17a194e63ac88548302da6813167d64240a9fef90cfb018780cf",
+      "file": "apps\\web\\src\\panels\\neural-core\\resolvePivotNode.test.ts",
+      "kind": "file",
+      "name": "resolvePivotNode.test.ts",
+      "start": 1,
+      "end": 63
+    },
+    {
+      "id": "aaaeb51ceeea74189418293613d95835d1fc0fc6ea366af15e335c11ba6292f9",
+      "file": "apps\\web\\src\\panels\\neural-core\\resolvePivotNode.ts",
+      "kind": "function",
+      "name": "resolvePivotNode",
+      "start": 7,
+      "end": 64
+    },
+    {
+      "id": "c1bc76cdd3121caa532296146cc048964701e15d1c52ac2e1c6ad74ebab7a159",
+      "file": "apps\\web\\src\\panels\\neural-core\\resolvePivotNode.ts",
+      "kind": "variable",
+      "name": "cleanPath",
+      "start": 14,
+      "end": 14
+    },
+    {
+      "id": "a2231ab162804b092bf6764de9a81217f1c4e3ec054087799a7b8380e919b35a",
+      "file": "apps\\web\\src\\panels\\neural-core\\resolvePivotNode.ts",
+      "kind": "variable",
+      "name": "fileName",
+      "start": 15,
+      "end": 15
+    },
+    {
+      "id": "7bd8e146091374b26cabcc196aa7615a1fc35543a4c9d4141109451f194c790a",
+      "file": "apps\\web\\src\\panels\\neural-core\\resolvePivotNode.ts",
+      "kind": "variable",
+      "name": "baseName",
+      "start": 16,
+      "end": 16
+    },
+    {
+      "id": "6bcab430fbf3ee6e4f45fdb7fe0aa32a41c2f949e08cd003a956f731c3e14275",
+      "file": "apps\\web\\src\\panels\\neural-core\\resolvePivotNode.ts",
+      "kind": "variable",
+      "name": "targetClassName",
+      "start": 17,
+      "end": 17
+    },
+    {
+      "id": "1a8cc0f30c659f1714973931aef9c5f1209f6e46819325a3f7dbce989e7c155b",
+      "file": "apps\\web\\src\\panels\\neural-core\\resolvePivotNode.ts",
+      "kind": "variable",
+      "name": "fileCandidates",
+      "start": 20,
+      "end": 28
+    },
+    {
+      "id": "e6c62167251427d65ad1375f2472c4cfc0b741e6f39c4356b3b3c564bc433015",
+      "file": "apps\\web\\src\\panels\\neural-core\\resolvePivotNode.ts",
+      "kind": "variable",
+      "name": "p",
+      "start": 21,
+      "end": 21
+    },
+    {
+      "id": "98d37b4f8163ad8e77b279a2de74874d17103a47b7d75fe0a9167b2720412e3e",
+      "file": "apps\\web\\src\\panels\\neural-core\\resolvePivotNode.ts",
+      "kind": "variable",
+      "name": "rel",
+      "start": 22,
+      "end": 22
+    },
+    {
+      "id": "f3a1ca8bbd10c9878b7dd4f0be3c6e943b32df994d5dc5d40a73d099839c1e63",
+      "file": "apps\\web\\src\\panels\\neural-core\\resolvePivotNode.ts",
+      "kind": "variable",
+      "name": "classNode",
+      "start": 32,
+      "end": 34
+    },
+    {
+      "id": "f1e838ec5966a943141fd431b046199458d3ec4a5fd9f2ae3faaff32c0a988de",
+      "file": "apps\\web\\src\\panels\\neural-core\\resolvePivotNode.ts",
+      "kind": "variable",
+      "name": "nameMatch",
+      "start": 39,
+      "end": 42
+    },
+    {
+      "id": "102c37ce2c656ac433298da22b319f600e40c8eb6d8fa4988844127a8a152084",
+      "file": "apps\\web\\src\\panels\\neural-core\\resolvePivotNode.ts",
+      "kind": "variable",
+      "name": "qn",
+      "start": 40,
+      "end": 40
+    },
+    {
+      "id": "87b780ed8f7040736863f803d5c2509f54bcc4716ae7eb5186342bf496393032",
+      "file": "apps\\web\\src\\panels\\neural-core\\resolvePivotNode.ts",
+      "kind": "variable",
+      "name": "classNode",
+      "start": 52,
+      "end": 59
+    },
+    {
+      "id": "36b406a6997fde355e263b0b619ab3ae90aa57120d9a5fc56c852e5ead21f0a7",
+      "file": "apps\\web\\src\\panels\\neural-core\\resolvePivotNode.ts",
+      "kind": "variable",
+      "name": "qn",
+      "start": 53,
+      "end": 53
+    },
+    {
+      "id": "c6fe5d13f977950723b58a80f86b47858b55b45d65e0fc41c0b8cd49473a08d4",
+      "file": "apps\\web\\src\\panels\\neural-core\\resolvePivotNode.ts",
+      "kind": "file",
+      "name": "resolvePivotNode.ts",
+      "start": 1,
+      "end": 65
+    },
+    {
+      "id": "711080a7c24e272ccfff2db2dd91671742c9a875b7ea4713a42b165d32aa0cb8",
+      "file": "apps\\web\\src\\panels\\neural-core\\semanticFingerprint.test.ts",
+      "kind": "variable",
+      "name": "colorTsx",
+      "start": 58,
+      "end": 58
+    },
+    {
+      "id": "750923dea7d969cae4b3dd9ee8225455a53663739cb0697e8d2be01038ee3022",
+      "file": "apps\\web\\src\\panels\\neural-core\\semanticFingerprint.test.ts",
+      "kind": "variable",
+      "name": "colorTs",
+      "start": 59,
+      "end": 59
+    },
+    {
+      "id": "e682492687b58ace4d6d760446cb0e86bf22ef0418dddf1530fb20b393ee4d4b",
+      "file": "apps\\web\\src\\panels\\neural-core\\semanticFingerprint.test.ts",
+      "kind": "variable",
+      "name": "colorMd",
+      "start": 60,
+      "end": 60
+    },
+    {
+      "id": "cf77195cb61299598456e57b7fd6d87bc06a1a7d9ace4f6ab84249a93013345f",
+      "file": "apps\\web\\src\\panels\\neural-core\\semanticFingerprint.test.ts",
+      "kind": "variable",
+      "name": "colorJson",
+      "start": 61,
+      "end": 61
+    },
+    {
+      "id": "4907c32f98357e2a7e5b3a737785ee05f392a91aac8c08d76500ad1c5ca6c16f",
+      "file": "apps\\web\\src\\panels\\neural-core\\semanticFingerprint.test.ts",
+      "kind": "variable",
+      "name": "colorCss",
+      "start": 62,
+      "end": 62
+    },
+    {
+      "id": "1b005a7acf6b8e4226b6be8a667ab435d2c9c2d1f570f17579c4400f9a078945",
+      "file": "apps\\web\\src\\panels\\neural-core\\semanticFingerprint.test.ts",
+      "kind": "variable",
+      "name": "mockNodes",
+      "start": 76,
+      "end": 100
+    },
+    {
+      "id": "50b26a4526e40fa386f53b9a37ac351c670db72c8cc338e45aabe1011d90a941",
+      "file": "apps\\web\\src\\panels\\neural-core\\semanticFingerprint.test.ts",
+      "kind": "variable",
+      "name": "mockEdges",
+      "start": 102,
+      "end": 115
+    },
+    {
+      "id": "724a050c51653c5ab11058db4febaf83289e13d7ac40c3b0023bbb6d8c91b31f",
+      "file": "apps\\web\\src\\panels\\neural-core\\semanticFingerprint.test.ts",
+      "kind": "variable",
+      "name": "fp1",
+      "start": 118,
+      "end": 118
+    },
+    {
+      "id": "2b2f782f620a828e5b68dcfe8eb8a524a2a9594d0ab4e0d113c413aeec26cfe4",
+      "file": "apps\\web\\src\\panels\\neural-core\\semanticFingerprint.test.ts",
+      "kind": "variable",
+      "name": "fp2",
+      "start": 119,
+      "end": 119
+    },
+    {
+      "id": "2613d995115dd3fd1ab7882ee970b1b630a81883614e255c5d8461f506419930",
+      "file": "apps\\web\\src\\panels\\neural-core\\semanticFingerprint.test.ts",
+      "kind": "variable",
+      "name": "fpOriginal",
+      "start": 131,
+      "end": 131
+    },
+    {
+      "id": "a58029e1018732d16c1bf8b0d08647c2c9da5e4f45d8f9194cd6e39379ab6149",
+      "file": "apps\\web\\src\\panels\\neural-core\\semanticFingerprint.test.ts",
+      "kind": "variable",
+      "name": "tamperedNodes",
+      "start": 132,
+      "end": 139
+    },
+    {
+      "id": "368d1c832f1e8ef37b48ef09fef76c22c9c8383a2d58b887359ec6b81924aa7d",
+      "file": "apps\\web\\src\\panels\\neural-core\\semanticFingerprint.test.ts",
+      "kind": "variable",
+      "name": "fpTampered",
+      "start": 140,
+      "end": 140
+    },
+    {
+      "id": "90b209e739134e920f26b9482e405e9a6d0a1e501d8627da94ed52e51a309de4",
+      "file": "apps\\web\\src\\panels\\neural-core\\semanticFingerprint.test.ts",
+      "kind": "variable",
+      "name": "nodes",
+      "start": 148,
+      "end": 169
+    },
+    {
+      "id": "f882d082e26ddc7e5c030b5c49695136aa248a813ae8c07ffa19ee5389119898",
+      "file": "apps\\web\\src\\panels\\neural-core\\semanticFingerprint.test.ts",
+      "kind": "variable",
+      "name": "edges",
+      "start": 170,
+      "end": 173
+    },
+    {
+      "id": "96018613d7a212abedfd088c3c03f83a248f37063647fd32a2f2295d4b47a799",
+      "file": "apps\\web\\src\\panels\\neural-core\\semanticFingerprint.test.ts",
+      "kind": "variable",
+      "name": "rels",
+      "start": 176,
+      "end": 176
+    },
+    {
+      "id": "7e6318ff9cdf528f35a4b15d09a3d47bcb0b3216c359688bfab49ae787e1855e",
+      "file": "apps\\web\\src\\panels\\neural-core\\semanticFingerprint.test.ts",
+      "kind": "variable",
+      "name": "mesh",
+      "start": 184,
+      "end": 193
+    },
+    {
+      "id": "d7f5975bc723b10c65cf759febe2144d5d68ce11ec8a3b02f889d86fc64d7a01",
+      "file": "apps\\web\\src\\panels\\neural-core\\semanticFingerprint.test.ts",
+      "kind": "file",
+      "name": "semanticFingerprint.test.ts",
+      "start": 1,
+      "end": 206
+    },
+    {
+      "id": "bd40eae6f81bab774b8153c220b872316919e0f082288cf98867854911b9e0b6",
+      "file": "apps\\web\\src\\panels\\neural-core\\shaders.wgsl.ts",
+      "kind": "variable",
+      "name": "GEOMETRY_RENDER_WGSL",
+      "start": 1,
+      "end": 46
+    },
+    {
+      "id": "de8324765a96f5561a76c8609804334310353f58ce7e86c79ce0d0676e117805",
+      "file": "apps\\web\\src\\panels\\neural-core\\shaders.wgsl.ts",
+      "kind": "file",
+      "name": "shaders.wgsl.ts",
+      "start": 1,
+      "end": 47
+    },
+    {
+      "id": "3d85419d31a3960b105dde189adbb168db21273ddc310d7dbd6f5c4af62d37aa",
+      "file": "apps\\web\\src\\panels\\neural-core\\types.ts",
+      "kind": "file",
+      "name": "types.ts",
+      "start": 1,
+      "end": 28
+    },
+    {
+      "id": "5e13dd82df23f5d15e351f21b21246cb9c7873d67a6ae8a1ddc3d4b173eb32c8",
+      "file": "apps\\web\\src\\panels\\neural-core\\useNeuralCoreState.ts",
+      "kind": "function",
+      "name": "useNeuralCoreState",
+      "start": 5,
+      "end": 159
+    },
+    {
+      "id": "1780fb62a99f213ac1b109e230900d7586d35509ba9fd8e87b0397b5797e9c7c",
+      "file": "apps\\web\\src\\panels\\neural-core\\useNeuralCoreState.ts",
+      "kind": "variable",
+      "name": "activeWorkspace",
+      "start": 6,
+      "end": 6
+    },
+    {
+      "id": "f543569699611c64db1d30adaa5fc484217e35f46322640d11385c60980e2261",
+      "file": "apps\\web\\src\\panels\\neural-core\\useNeuralCoreState.ts",
+      "kind": "variable",
+      "name": "mcpMetrics",
+      "start": 7,
+      "end": 7
+    },
+    {
+      "id": "97026de138e22608ef236fe507c7f12282c783c53defe9a29c6f5220b28208b0",
+      "file": "apps\\web\\src\\panels\\neural-core\\useNeuralCoreState.ts",
+      "kind": "variable",
+      "name": "activeCalls",
+      "start": 8,
+      "end": 8
+    },
+    {
+      "id": "99e8dc047bd1aa9c00ae744fcc49b6619691af9a968eb92d1f7a4718a0965972",
+      "file": "apps\\web\\src\\panels\\neural-core\\useNeuralCoreState.ts",
+      "kind": "variable",
+      "name": "connectionStatus",
+      "start": 9,
+      "end": 9
+    },
+    {
+      "id": "3997f6be0fce4c651a7fe2b10dc4cc2500f029d35ea26f19cd853fb142d1c14b",
+      "file": "apps\\web\\src\\panels\\neural-core\\useNeuralCoreState.ts",
+      "kind": "variable",
+      "name": "lastMetricCountRef",
+      "start": 11,
+      "end": 11
+    },
+    {
+      "id": "3870b377444340ef7cca40b28249e60f8c92d7d2d1850c32ff70cbb92f45ce29",
+      "file": "apps\\web\\src\\panels\\neural-core\\useNeuralCoreState.ts",
+      "kind": "variable",
+      "name": "state",
+      "start": 16,
+      "end": 143
+    },
+    {
+      "id": "ddd13a4b5750d7d2d3f393aa8b34e9db6e8e1cb7e3226f8b7b5b55c338a2564c",
+      "file": "apps\\web\\src\\panels\\neural-core\\useNeuralCoreState.ts",
+      "kind": "variable",
+      "name": "activity",
+      "start": 17,
+      "end": 17
+    },
+    {
+      "id": "df6d2f5af51cb163a47288439edd33b12de3d4f1644adcd71b09badcb56d1022",
+      "file": "apps\\web\\src\\panels\\neural-core\\useNeuralCoreState.ts",
+      "kind": "variable",
+      "name": "intensity",
+      "start": 18,
+      "end": 18
+    },
+    {
+      "id": "1d68a410c17885512f73bf0c67516994a81f379aad1c9158c33c5d11a9bd8a9a",
+      "file": "apps\\web\\src\\panels\\neural-core\\useNeuralCoreState.ts",
+      "kind": "variable",
+      "name": "activeToolName",
+      "start": 19,
+      "end": 19
+    },
+    {
+      "id": "5391d7b68581c6f229ff7cd5848424e8fb2c640759ce3074e2ff53293b134469",
+      "file": "apps\\web\\src\\panels\\neural-core\\useNeuralCoreState.ts",
+      "kind": "variable",
+      "name": "activeRagQuery",
+      "start": 20,
+      "end": 20
+    },
+    {
+      "id": "79489238ef387c65d1f8213b0ab0b89ef72e5a934d491dd8b67fb27d28c857f1",
+      "file": "apps\\web\\src\\panels\\neural-core\\useNeuralCoreState.ts",
+      "kind": "variable",
+      "name": "activeRagToolName",
+      "start": 21,
+      "end": 21
+    },
+    {
+      "id": "3275a17e7fb442d6285806d23acbe035d76ce12e51341a0ec12a9659d2e780db",
+      "file": "apps\\web\\src\\panels\\neural-core\\useNeuralCoreState.ts",
+      "kind": "variable",
+      "name": "isRagSearching",
+      "start": 22,
+      "end": 22
+    },
+    {
+      "id": "ecadc077ec8fe6d22edc879b55611f1d30d3070fc9725a7a4215516588cd6847",
+      "file": "apps\\web\\src\\panels\\neural-core\\useNeuralCoreState.ts",
+      "kind": "variable",
+      "name": "toolArgs",
+      "start": 23,
+      "end": 23
+    },
+    {
+      "id": "dd0e06a207d9641e6eb72a531f0bcc9c2b09fe0d4bca130b6e671f77106aca6a",
+      "file": "apps\\web\\src\\panels\\neural-core\\useNeuralCoreState.ts",
+      "kind": "variable",
+      "name": "runningCallKeys",
+      "start": 25,
+      "end": 25
+    },
+    {
+      "id": "9b0dff2dadfa547911a77161edcab4ffdaab975d7247af2f8dfe283dcb95ca32",
+      "file": "apps\\web\\src\\panels\\neural-core\\useNeuralCoreState.ts",
+      "kind": "variable",
+      "name": "firstKey",
+      "start": 27,
+      "end": 27
+    },
+    {
+      "id": "4d4cdec759714c086e1d26a70846fa4dfd43805f039887821979cef5ea18937c",
+      "file": "apps\\web\\src\\panels\\neural-core\\useNeuralCoreState.ts",
+      "kind": "variable",
+      "name": "latest",
+      "start": 35,
+      "end": 35
+    },
+    {
+      "id": "820234b3d4860177d9a82a09f70c72d0717779550ecd2cf378feb7ccef751d0c",
+      "file": "apps\\web\\src\\panels\\neural-core\\useNeuralCoreState.ts",
+      "kind": "variable",
+      "name": "age",
+      "start": 37,
+      "end": 37
+    },
+    {
+      "id": "fe2bf833c9f92189b8d842b03d678021e7d8e0cd714307c5595add7906f7924b",
+      "file": "apps\\web\\src\\panels\\neural-core\\useNeuralCoreState.ts",
+      "kind": "variable",
+      "name": "activeChatTool",
+      "start": 47,
+      "end": 47
+    },
+    {
+      "id": "7d3c2824662c5c60d42f0f68ca4e478cf8cda404c0f903cd80045e769f3c60c3",
+      "file": "apps\\web\\src\\panels\\neural-core\\useNeuralCoreState.ts",
+      "kind": "variable",
+      "name": "activeChatFilePath",
+      "start": 48,
+      "end": 48
+    },
+    {
+      "id": "f461844c74a29b3fca89acc4547ee1da0995cdeb763782962f79b8e61ff46c6a",
+      "file": "apps\\web\\src\\panels\\neural-core\\useNeuralCoreState.ts",
+      "kind": "variable",
+      "name": "activeChatPivotClass",
+      "start": 49,
+      "end": 49
+    },
+    {
+      "id": "34b6a9d8fde6816233ef51b3e904660bfcff7cf51972bb302c9db227ca7dbba5",
+      "file": "apps\\web\\src\\panels\\neural-core\\useNeuralCoreState.ts",
+      "kind": "variable",
+      "name": "toolLower",
+      "start": 53,
+      "end": 53
+    },
+    {
+      "id": "d738d84e9d264d9de43a7074957507dcde3b9a5d465987e06346a7b6361384ef",
+      "file": "apps\\web\\src\\panels\\neural-core\\useNeuralCoreState.ts",
+      "kind": "variable",
+      "name": "rawPath",
+      "start": 67,
+      "end": 69
+    },
+    {
+      "id": "e46d99d62e142b031d92f2bd2a5575ce89d706fa6bf53f49d26395996fd18e04",
+      "file": "apps\\web\\src\\panels\\neural-core\\useNeuralCoreState.ts",
+      "kind": "variable",
+      "name": "fileName",
+      "start": 72,
+      "end": 72
+    },
+    {
+      "id": "798113b12d92170e4ddf4823c34fd294827c80de0822b90a9c61e412d8d140d6",
+      "file": "apps\\web\\src\\panels\\neural-core\\useNeuralCoreState.ts",
+      "kind": "variable",
+      "name": "rawTarget",
+      "start": 76,
+      "end": 78
+    },
+    {
+      "id": "4cc868f8cad8b5f8e18a92627a29d1f53bd269fbc431b224c42ef1f4ffbe58b6",
+      "file": "apps\\web\\src\\panels\\neural-core\\useNeuralCoreState.ts",
+      "kind": "variable",
+      "name": "cleanTarget",
+      "start": 80,
+      "end": 80
+    },
+    {
+      "id": "843dfae2c15af820964bced208b8bed685ddac63cd7e6e1442cb82adbdcf1916",
+      "file": "apps\\web\\src\\panels\\neural-core\\useNeuralCoreState.ts",
+      "kind": "variable",
+      "name": "norm",
+      "start": 82,
+      "end": 82
+    },
+    {
+      "id": "e651d234eed4875d896e59252855c2f7317acd2258a2a10ae108b7ed879ffce8",
+      "file": "apps\\web\\src\\panels\\neural-core\\useNeuralCoreState.ts",
+      "kind": "variable",
+      "name": "fileName",
+      "start": 84,
+      "end": 84
+    },
+    {
+      "id": "6566c39365d1fc52d3f3c35df4d85b6db8a8a2e497b3d6c5fd986b37af689c26",
+      "file": "apps\\web\\src\\panels\\neural-core\\useNeuralCoreState.ts",
+      "kind": "variable",
+      "name": "lower",
+      "start": 95,
+      "end": 95
+    },
+    {
+      "id": "63a1efb24776d8c93e4d27facafb8f8dd4460f758a166b36766abf9dd7670fbc",
+      "file": "apps\\web\\src\\panels\\neural-core\\useNeuralCoreState.ts",
+      "kind": "variable",
+      "name": "isBash",
+      "start": 118,
+      "end": 120
+    },
+    {
+      "id": "aa8fd9dd43e6d6abad985ab0686f398bab0695fe7b900784af033a9b533e50fb",
+      "file": "apps\\web\\src\\panels\\neural-core\\useNeuralCoreState.ts",
+      "kind": "file",
+      "name": "useNeuralCoreState.ts",
+      "start": 1,
+      "end": 160
+    }
+  ]
+}

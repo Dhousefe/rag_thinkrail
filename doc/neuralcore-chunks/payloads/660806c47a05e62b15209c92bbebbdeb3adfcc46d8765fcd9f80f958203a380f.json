@@ -1,0 +1,13 @@
+{
+  "id": "660806c47a05e62b15209c92bbebbdeb3adfcc46d8765fcd9f80f958203a380f",
+  "text": "\t};\n}\n\n// 3. Gerador dos Anéis Giroscópicos Cardânicos (Gimbal Rings)\nexport function createGimbalRingsWireframe(\n\tradii: [number, number, number],\n\tsegments = 48,\n): GeometryMeshData {\n\tconst vertexFloats: number[] = [];\n\tconst edgeIndices: number[] = [];\n\tlet vertexOffset = 0;\n\n\tconst axes: Array<{\n\t\taxis: \"xy\" | \"yz\" | \"xz\";\n\t\tr: number;\n\t\tcolor: [number, number, number, number];\n\t}> = [\n\t\t{ axis: \"xy\", r: radii[0], color: [0.0, 0.9, 1.0, 0.7] }, // Pitch ring (Ciano)\n\t\t{ axis: \"yz\", r: radii[1], color: [0.8, 0.2, 1.0, 0.7] }, // Roll ring (Magenta)\n\t\t{ axis: \"xz\", r: radii[2], color: [1.0, 0.75, 0.0, 0.8] }, // Yaw ring (Ouro/Âmbar)\n\t];\n\n\tfor (const item of axes) {\n\t\tconst startIdx = vertexOffset;\n\t\tconst [cr, cg, cb, ca] = item.color;\n\t\tfor (let i = 0; i < segments; i++) {\n\t\t\tconst theta = (i / segments) * Math.PI * 2;\n\t\t\tconst c = Math.cos(theta) * item.r;\n\t\t\tconst s = Math.sin(theta) * item.r;\n\n\t\t\tlet x = 0;\n\t\t\tlet y = 0;\n\t\t\tlet z = 0;\n\t\t\tif (item.axis === \"xy\") {\n\t\t\t\tx = c;\n\t\t\t\ty = s;\n\t\t\t\tz = 0;\n\t\t\t} else if (item.axis === \"yz\") {\n\t\t\t\tx = 0;\n\t\t\t\ty = c;\n\t\t\t\tz = s;\n\t\t\t} else {\n\t\t\t\tx = c;\n\t\t\t\ty = 0;\n\t\t\t\tz = s;\n\t\t\t}\n\n\t\t\tvertexFloats.push(x, y, z, cr, cg, cb, ca);\n\n\t\t\tconst next = startIdx + ((i + 1) % segments);\n\t\t\tedgeIndices.push(vertexOffset, next);\n\t\t\tvertexOffset++;\n\t\t}\n\t}\n\n\treturn {\n\t\tvertices: new Float32Array(vertexFloats),\n\t\tindices: new Uint16Array(edgeIndices),\n\t\tcount: edgeIndices.length,\n\t};\n}\n\n// 4. Gerador de Feixes e Satélites de Ferramentas / MCP\nexport function createToolNodeSatellites(count = 6, orbitRadius = 2.4): GeometryMeshData {",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+    "kind": "function",
+    "name": "createGimbalRingsWireframe",
+    "start_line": 108,
+    "end_line": 164,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

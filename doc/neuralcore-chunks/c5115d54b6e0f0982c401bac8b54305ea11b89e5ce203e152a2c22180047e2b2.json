@@ -1,0 +1,12 @@
+{
+  "id": "c5115d54b6e0f0982c401bac8b54305ea11b89e5ce203e152a2c22180047e2b2",
+  "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "kind": "variable",
+  "name": "r",
+  "start_line": 996,
+  "end_line": 996,
+  "content": "\t\t\t\tedgeIndices.push(base + eq, base + nextEq); // Anel equatorial\n\t\t\t}\n\t\t} else if (polyKind === \"diamond\") {\n\t\t\t// Diamante Duplo Alongado (Scripts e Automação): 6 vértices alongados no eixo Y\n\t\t\tconst r = s * 0.75;\n\t\t\tconst h = s * 1.6;\n\t\t\tconst pts: [number, number, number][] = [\n\t\t\t\t[cx, cy + h, cz],",
+  "token_estimate": 77,
+  "created_at": 1794331101048
+}

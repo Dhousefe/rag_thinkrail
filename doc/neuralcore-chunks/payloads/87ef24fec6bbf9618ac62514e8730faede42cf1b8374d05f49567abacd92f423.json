@@ -1,0 +1,13 @@
+{
+  "id": "87ef24fec6bbf9618ac62514e8730faede42cf1b8374d05f49567abacd92f423",
+  "text": "\t\t\t}\n\t\t}\n\t}\n\n\tpublic stop() {\n\t\tthis.isRunning = false;\n\t\tif (this.animationFrameId !== null) {\n\t\t\tcancelAnimationFrame(this.animationFrameId);\n\t\t\tthis.animationFrameId = null;\n\t\t}\n\t}\n}\n",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+    "kind": "method",
+    "name": "NeuralCoreEngine.stop",
+    "start_line": 1204,
+    "end_line": 1210,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

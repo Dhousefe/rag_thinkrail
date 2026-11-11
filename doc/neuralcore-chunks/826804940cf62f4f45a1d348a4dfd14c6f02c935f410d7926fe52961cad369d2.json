@@ -1,0 +1,12 @@
+{
+  "id": "826804940cf62f4f45a1d348a4dfd14c6f02c935f410d7926fe52961cad369d2",
+  "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "kind": "variable",
+  "name": "minDist",
+  "start_line": 366,
+  "end_line": 366,
+  "content": "\t}\n\n\t// 30 Arestas que conectam vértices com distância pentagonal áurea mínima\n\tconst edgeIndices: number[] = [];\n\tconst minDist = (2.0 / phi) * (radius / Math.sqrt(3));\n\tconst threshold = minDist * 1.15;\n\n\tfor (let i = 0; i < rawVertices.length; i++) {",
+  "token_estimate": 64,
+  "created_at": 1794331101007
+}

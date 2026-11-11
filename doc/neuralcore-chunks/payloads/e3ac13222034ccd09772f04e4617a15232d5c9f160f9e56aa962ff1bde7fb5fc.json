@@ -1,0 +1,13 @@
+{
+  "id": "e3ac13222034ccd09772f04e4617a15232d5c9f160f9e56aa962ff1bde7fb5fc",
+  "text": "\n\t/**\n\t * Limpa o snapshot salvo sem restaurar.\n\t */\n\tpublic clearCameraSnapshot() {\n\t\tthis.cameraSnapshot = null;\n\t}\n\n\tpublic reset() {\n\t\tthis.flyTarget = {",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\cameraController.ts",
+    "kind": "method",
+    "name": "OrbitCameraController.clearCameraSnapshot",
+    "start_line": 265,
+    "end_line": 267,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

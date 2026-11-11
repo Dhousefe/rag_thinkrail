@@ -1,0 +1,13 @@
+{
+  "id": "62bf1b33f5f792ddc64f644114c7b72ead987ff3a3a4d86122987b6abcf36874",
+  "text": "\t\t\t\tconst panFactor = Math.max(0.001, this.distance * 0.0016);\n\n\t\t\t\t// Vetor Right da câmera\n\t\t\t\tconst rightX = Math.cos(this.theta);\n\t\t\t\tconst rightZ = -Math.sin(this.theta);\n\n\t\t\t\t// Vetor Up da câmera\n\t\t\t\tconst upX = -Math.sin(this.phi) * Math.sin(this.theta);",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\cameraController.ts",
+    "kind": "variable",
+    "name": "rightZ",
+    "start_line": 73,
+    "end_line": 73,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

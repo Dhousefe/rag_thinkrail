@@ -1,0 +1,13 @@
+{
+  "id": "6e968e7e6ac353014d82ec9bf097596362dc951e2ec1c08c9820a40f13827727",
+  "text": "\t\tconst rangeInv = 1.0 / (near - far);\n\n\t\t// Termos exatos da linha 2 da matriz de projeção P (sem distorção de -z0)\n\t\tconst p22 = far * rangeInv;\n\t\tconst p23 = near * far * rangeInv;\n\n\t\tconst out = new Float32Array(16);\n\t\tout[0] = (f / aspect) * x0;",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+    "kind": "variable",
+    "name": "p23",
+    "start_line": 688,
+    "end_line": 688,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "id": "007ee884f4505c4c6142e3be4c25f4ce31c166ec83620836f97a3f39540d3289",
+  "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "kind": "variable",
+  "name": "z",
+  "start_line": 360,
+  "end_line": 360,
+  "content": "\tfor (const [vx, vy, vz] of rawVertices) {\n\t\tconst len = Math.sqrt(vx * vx + vy * vy + vz * vz || 1);\n\t\tconst x = (vx / len) * radius;\n\t\tconst y = (vy / len) * radius;\n\t\tconst z = (vz / len) * radius;\n\t\tvertexFloats.push(x, y, z, 0.3, 1.0, 0.7, 0.88); // Esmeralda / Jade Geométrico\n\t}\n",
+  "token_estimate": 72,
+  "created_at": 1794331101006
+}

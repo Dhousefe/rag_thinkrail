@@ -1,0 +1,12 @@
+{
+  "id": "e9d009ce1802821f7ba80dd70968a2826ad63650ef472c8b0f639655260732be",
+  "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "kind": "variable",
+  "name": "x1",
+  "start_line": 1314,
+  "end_line": 1314,
+  "content": "\t\t\t\t\tfor (let st = 0; st < steps; st++) {\n\t\t\t\t\t\tconst u1 = (seg * steps + st) / (totalSegments * steps);\n\t\t\t\t\t\tconst u2 = (seg * steps + st + 1) / (totalSegments * steps);\n\n\t\t\t\t\t\tconst x1 = pStart[0] + (pEnd[0] - pStart[0]) * (st / steps);\n\t\t\t\t\t\tconst y1 = pStart[1] + (pEnd[1] - pStart[1]) * (st / steps);\n\t\t\t\t\t\tconst z1 = pStart[2] + (pEnd[2] - pStart[2]) * (st / steps);\n",
+  "token_estimate": 94,
+  "created_at": 1794331101072
+}

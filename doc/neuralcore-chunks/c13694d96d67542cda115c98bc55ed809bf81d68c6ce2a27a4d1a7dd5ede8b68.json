@@ -1,0 +1,12 @@
+{
+  "id": "c13694d96d67542cda115c98bc55ed809bf81d68c6ce2a27a4d1a7dd5ede8b68",
+  "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "kind": "variable",
+  "name": "eq",
+  "start_line": 988,
+  "end_line": 988,
+  "content": "\t\t\t\t);\n\t\t\t\tvOffset++;\n\t\t\t}\n\t\t\tfor (let k = 0; k < 6; k++) {\n\t\t\t\tconst eq = 2 + k;\n\t\t\t\tconst nextEq = 2 + ((k + 1) % 6);\n\t\t\t\tedgeIndices.push(base + 0, base + eq); // Ápice sup -> eq\n\t\t\t\tedgeIndices.push(base + 1, base + eq); // Ápice inf -> eq",
+  "token_estimate": 61,
+  "created_at": 1794331101047
+}

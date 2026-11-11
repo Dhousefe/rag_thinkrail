@@ -1,0 +1,13 @@
+{
+  "id": "832f9caa600f497433f234fe0bc1fd326b71154b4091edf00019030d5fcc14ca",
+  "text": "\t\tthis.gimbalMesh = createGimbalRingsWireframe([1.9, 2.3, 2.7], 64);\n\t\tthis.satelliteMesh = createToolNodeSatellites(6, 3.2);\n\t}\n\n\tprivate generatePrimaryMesh(shape: GeometryShapeType, angle: number): GeometryMeshData {\n\t\tswitch (shape) {\n\t\t\tcase \"tesseract\":\n\t\t\t\treturn createTesseractWireframe(1.2, angle * 0.7);\n\t\t\tcase \"icosahedron\":\n\t\t\t\treturn createIcosahedronWireframe(1.3);\n\t\t\tcase \"merkaba\":\n\t\t\t\treturn createMerkabaWireframe(1.3);\n\t\t\tcase \"torus\":\n\t\t\t\treturn createTorusWireframe(1.3, 0.45, 24, 16);\n\t\t\tcase \"dodecahedron\":\n\t\t\t\treturn createDodecahedronWireframe(1.25);\n\t\t\tdefault:\n\t\t\t\treturn createTesseractWireframe(1.2, 0);\n\t\t}\n\t}\n\n\tpublic setShape(shape: GeometryShapeType) {\n\t\tthis.activeShape = shape;",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+    "kind": "method",
+    "name": "NeuralCoreEngine.generatePrimaryMesh",
+    "start_line": 117,
+    "end_line": 132,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

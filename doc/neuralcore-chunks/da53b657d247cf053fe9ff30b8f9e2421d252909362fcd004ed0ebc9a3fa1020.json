@@ -1,0 +1,12 @@
+{
+  "id": "da53b657d247cf053fe9ff30b8f9e2421d252909362fcd004ed0ebc9a3fa1020",
+  "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "kind": "variable",
+  "name": "edgeIndices",
+  "start_line": 280,
+  "end_line": 280,
+  "content": "\tradarRings = 24,\n\ttubeSegments = 16,\n): GeometryMeshData {\n\tconst vertexFloats: number[] = [];\n\tconst edgeIndices: number[] = [];\n\tlet vOffset = 0;\n\n\tfor (let i = 0; i < radarRings; i++) {",
+  "token_estimate": 48,
+  "created_at": 1794331100996
+}

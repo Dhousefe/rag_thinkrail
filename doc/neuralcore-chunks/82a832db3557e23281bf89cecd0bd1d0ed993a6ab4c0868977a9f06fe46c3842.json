@@ -1,0 +1,12 @@
+{
+  "id": "82a832db3557e23281bf89cecd0bd1d0ed993a6ab4c0868977a9f06fe46c3842",
+  "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "kind": "variable",
+  "name": "dirX",
+  "start_line": 641,
+  "end_line": 641,
+  "content": "\t\tconst eyeY = ty0 + distance * Math.sin(phi);\n\t\tconst eyeZ = tz0 + distance * Math.cos(phi) * Math.cos(theta);\n\n\t\t// Vetor Z (forward/depth da câmera apontando para trás da direção de visão - Right Handed)\n\t\tconst dirX = eyeX - tx0;\n\t\tconst dirY = eyeY - ty0;\n\t\tconst dirZ = eyeZ - tz0;\n\t\tconst zLen = Math.hypot(dirX, dirY, dirZ) || 1;",
+  "token_estimate": 85,
+  "created_at": 1794331101121
+}

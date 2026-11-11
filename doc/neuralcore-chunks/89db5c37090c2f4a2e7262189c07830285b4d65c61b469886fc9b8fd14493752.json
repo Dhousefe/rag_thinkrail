@@ -1,0 +1,12 @@
+{
+  "id": "89db5c37090c2f4a2e7262189c07830285b4d65c61b469886fc9b8fd14493752",
+  "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "kind": "variable",
+  "name": "depth",
+  "start_line": 878,
+  "end_line": 878,
+  "content": "\n\t\t\tconst rx = vx * cosO - vz * sinO;\n\t\t\tconst rz = vx * sinO + vz * cosO;\n\t\t\tconst ry = vy * cosPhi - rz * sinPhi;\n\t\t\tconst depth = Math.max(0.2, baseDist + (vy * sinPhi + rz * cosPhi) * 0.45);\n\n\t\t\tconst px = cx + (rx / depth) * scale * 5.6;\n\t\t\tconst py = cy - (ry / depth) * scale * 5.6;",
+  "token_estimate": 73,
+  "created_at": 1794331101148
+}

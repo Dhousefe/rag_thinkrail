@@ -1,0 +1,12 @@
+{
+  "id": "c80128fe0b1dfe7b81302601f488c45a58af419363a72500678afc81ffb7608b",
+  "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "kind": "variable",
+  "name": "dist",
+  "start_line": 380,
+  "end_line": 380,
+  "content": "\t\t\tconst vzj = vertexFloats[j * 7 + 2] ?? 0;\n\t\t\tconst dx = vxi - vxj;\n\t\t\tconst dy = vyi - vyj;\n\t\t\tconst dz = vzi - vzj;\n\t\t\tconst dist = Math.sqrt(dx * dx + dy * dy + dz * dz);\n\t\t\tif (dist < threshold) {\n\t\t\t\tedgeIndices.push(i, j);\n\t\t\t}",
+  "token_estimate": 59,
+  "created_at": 1794331101011
+}

@@ -1,0 +1,12 @@
+{
+  "id": "3076053cff5f373b4a40191ef98e68eba086e443009911e92728499a4c67f3d6",
+  "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "kind": "variable",
+  "name": "initialLabelX",
+  "start_line": 966,
+  "end_line": 966,
+  "content": "\t\t\tconst nameParts = (node.relPath || node.id).split(/[/\\\\]/);\n\t\t\tconst cleanLabel = nameParts[nameParts.length - 1] || node.id;\n\n\t\t\t// Posição base do rótulo: SEMPRE ACIMA do polígono em questão (offset inicial -22px em Y)\n\t\t\tconst initialLabelX = proj.px;\n\t\t\tconst initialLabelY = proj.py - 22;\n\n\t\t\tcandidateLabels.push({",
+  "token_estimate": 81,
+  "created_at": 1794331101157
+}

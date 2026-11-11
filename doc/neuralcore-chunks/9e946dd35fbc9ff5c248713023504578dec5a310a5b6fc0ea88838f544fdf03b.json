@@ -1,0 +1,12 @@
+{
+  "id": "9e946dd35fbc9ff5c248713023504578dec5a310a5b6fc0ea88838f544fdf03b",
+  "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "kind": "variable",
+  "name": "pts",
+  "start_line": 1067,
+  "end_line": 1074,
+  "content": "\t\t\t];\n\t\t\tfor (const e of icoEdges) edgeIndices.push(base + e);\n\t\t} else {\n\t\t\t// Octaedro Padrão (TypeScript .ts / Kotlin / Java): 6 vértices, 12 arestas\n\t\t\tconst pts: [number, number, number][] = [\n\t\t\t\t[cx, cy + s, cz],\n\t\t\t\t[cx, cy - s, cz],\n\t\t\t\t[cx + s, cy, cz],\n\t\t\t\t[cx - s, cy, cz],\n\t\t\t\t[cx, cy, cz + s],\n\t\t\t\t[cx, cy, cz - s],\n\t\t\t];\n\t\t\tfor (const [ptX, ptY, ptZ] of pts) {\n\t\t\t\tvertexFloats.push(ptX, ptY, ptZ, colR, colG, colB, colA);\n\t\t\t\tvOffset++;",
+  "token_estimate": 113,
+  "created_at": 1794331101053
+}

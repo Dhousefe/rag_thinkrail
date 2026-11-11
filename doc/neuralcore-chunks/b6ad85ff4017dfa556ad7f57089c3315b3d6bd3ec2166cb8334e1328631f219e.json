@@ -1,0 +1,12 @@
+{
+  "id": "b6ad85ff4017dfa556ad7f57089c3315b3d6bd3ec2166cb8334e1328631f219e",
+  "file": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreFingerprintCard.tsx",
+  "path": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreFingerprintCard.tsx",
+  "kind": "variable",
+  "name": "handleCopyHash",
+  "start_line": 23,
+  "end_line": 30,
+  "content": "\tonClose,\n}: NeuralCoreFingerprintCardProps) {\n\tconst [copied, setCopied] = useState(false);\n\n\tconst handleCopyHash = () => {\n\t\tif (navigator.clipboard) {\n\t\t\tnavigator.clipboard.writeText(fingerprint.fingerprintHash);\n\t\t\tsetCopied(true);\n\t\t\ttoast.success(\"Impressão digital copiada\", fingerprint.shortHash);\n\t\t\tsetTimeout(() => setCopied(false), 2000);\n\t\t}\n\t};\n\n\treturn (\n\t\t<div className=\"flex flex-col gap-8 rounded-lg border border-feedback-success-muted bg-container-elevated-bg p-12 text-text-default shadow-2xl backdrop-blur-md max-w-[420px] pointer-events-auto transition-all animate-in fade-in duration-200\">",
+  "token_estimate": 154,
+  "created_at": 1794331100913
+}

@@ -1,0 +1,12 @@
+{
+  "id": "1beab5d8ffef8ee09ed9e9437fea66911afdfb7a5e3f0e34c7fb24a7cc2c70e2",
+  "file": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreSearchBox.tsx",
+  "path": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreSearchBox.tsx",
+  "kind": "variable",
+  "name": "filteredChunks",
+  "start_line": 134,
+  "end_line": 146,
+  "content": "\t\t\treturn true;\n\t\t});\n\t}, [searchMatches, categoryFilter]);\n\n\tconst filteredChunks = useMemo(() => {\n\t\tif (categoryFilter === \"all\") return searchChunks;\n\t\treturn searchChunks.filter((c) => {\n\t\t\tconst k = (c.chunkKind || \"\").toLowerCase();\n\t\t\tif (categoryFilter === \"class\") return k.includes(\"class\") || k.includes(\"struct\");\n\t\t\tif (categoryFilter === \"function\") return k.includes(\"func\") || k.includes(\"method\");\n\t\t\tif (categoryFilter === \"variable\")\n\t\t\t\treturn k.includes(\"const\") || k.includes(\"var\") || k.includes(\"field\");\n\t\t\tif (categoryFilter === \"type\")\n\t\t\t\treturn k.includes(\"type\") || k.includes(\"interface\") || k.includes(\"enum\");\n\t\t\treturn true;\n\t\t});\n\t}, [searchChunks, categoryFilter]);\n\n\t// Reseta índice ao alterar busca\n\tuseEffect(() => {",
+  "token_estimate": 190,
+  "created_at": 1794331100933
+}

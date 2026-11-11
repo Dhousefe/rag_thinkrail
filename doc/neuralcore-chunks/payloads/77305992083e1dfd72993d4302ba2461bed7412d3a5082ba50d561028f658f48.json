@@ -1,0 +1,13 @@
+{
+  "id": "77305992083e1dfd72993d4302ba2461bed7412d3a5082ba50d561028f658f48",
+  "text": "\t\t\tthis.rebuildVectorMesh();\n\t\t}\n\t}\n\n\tpublic setSelectedNode(index: number | null) {\n\t\tif (this.selectedNodeIndex !== index) {\n\t\t\tthis.selectedNodeIndex = index;\n\t\t\tthis.rebuildVectorMesh(performance.now() / 1000);\n\t\t}\n\t}\n\n\tprivate rebuildVectorMesh(overrideAnimTime?: number) {\n\t\tif (this.vectorNodes.length === 0) {",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+    "kind": "method",
+    "name": "NeuralCoreEngine.setSelectedNode",
+    "start_line": 255,
+    "end_line": 260,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "id": "6c2978cd9c13aad67b013b6ca56ef1846c00f7e817c68c1c54c37f32a5a53e74",
+  "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "kind": "variable",
+  "name": "vx",
+  "start_line": 1137,
+  "end_line": 1137,
+  "content": "\t\tif (this.showVectorConstellation && this.vectorNodes.length > 0) {\n\t\t\tconst [tx0, ty0, tz0] = this.cameraOrbit.target || [0, 0, 0];\n\t\t\tfor (let i = 0; i < this.vectorNodes.length; i++) {\n\t\t\t\tconst node = this.vectorNodes[i]!;\n\t\t\t\tconst vx = node.position[0] - tx0;\n\t\t\t\tconst vy = node.position[1] - ty0;\n\t\t\t\tconst vz = node.position[2] - tz0;\n\t\t\t\tconst rx = vx * cosO - vz * sinO;",
+  "token_estimate": 96,
+  "created_at": 1794331101174
+}

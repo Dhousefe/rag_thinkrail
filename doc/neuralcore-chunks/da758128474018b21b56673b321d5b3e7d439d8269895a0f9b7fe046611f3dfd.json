@@ -1,0 +1,12 @@
+{
+  "id": "da758128474018b21b56673b321d5b3e7d439d8269895a0f9b7fe046611f3dfd",
+  "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "kind": "variable",
+  "name": "trColB",
+  "start_line": 1170,
+  "end_line": 1170,
+  "content": "\t\t\t\tn2.module.includes(\":\") &&\n\t\t\t\tn1.module.split(\":\")[0] !== n2.module.split(\":\")[0];\n\t\t\tlet trColR = isCrossProject ? 1.0 : 0.15;\n\t\t\tlet trColG = isCrossProject ? 0.75 : 0.85;\n\t\t\tlet trColB = isCrossProject ? 0.2 : 0.95;\n\n\t\t\tif (isConnectedToSelected) {\n\t\t\t\tconst otherIdx = edge.source === selectedNodeIndex ? edge.target : edge.source;",
+  "token_estimate": 85,
+  "created_at": 1794331101063
+}

@@ -1,0 +1,13 @@
+{
+  "id": "4dc8d41736b58b5d4faf95d3e46427c9a9fe066331292e5f550837c3e4551df2",
+  "text": "\t\t\t}\n\t\t\tconst [vx0, vy0, vz0] = node.position;\n\t\t\tconst vx = vx0 - tx0;\n\t\t\tconst vy = vy0 - ty0;\n\t\t\tconst vz = vz0 - tz0;\n\n\t\t\t// Projeção da rotação orbital da câmera\n\t\t\tconst rx = vx * cosO - vz * sinO;",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+    "kind": "variable",
+    "name": "vz",
+    "start_line": 771,
+    "end_line": 771,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

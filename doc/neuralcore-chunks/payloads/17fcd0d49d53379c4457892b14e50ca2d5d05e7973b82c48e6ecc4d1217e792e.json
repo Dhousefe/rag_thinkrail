@@ -1,0 +1,13 @@
+{
+  "id": "17fcd0d49d53379c4457892b14e50ca2d5d05e7973b82c48e6ecc4d1217e792e",
+  "text": "\t\tconst zoomFactor = 5.6 / baseDist;\n\n\t\t// 1. Projeção da Forma Primária no Canvas2D (apenas se habilitada)\n\t\tif (this.showCentralPolygon) {\n\t\t\tconst m = this.generatePrimaryMesh(this.activeShape, this.angleRotation);\n\t\t\tctx.lineWidth = 1.5;\n\t\t\tctx.strokeStyle = this.telemetry.activity === \"thinking\" ? \"magenta\" : \"cyan\";\n",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+    "kind": "variable",
+    "name": "m",
+    "start_line": 1060,
+    "end_line": 1060,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

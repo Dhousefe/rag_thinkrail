@@ -1,0 +1,13 @@
+{
+  "id": "a5dcd3526197835c32065229a50edc3556899b063e8683c271dc250d1b2a02d7",
+  "text": "\t\t\t\treturn k.includes(\"func\") || k.includes(\"method\");\n\t\t\t});\n\t\t} else if (activeFilter === \"vars\") {\n\t\t\tlist = list.filter((c) => {\n\t\t\t\tconst k = (c.chunkKind || \"\").toLowerCase();\n\t\t\t\treturn k.includes(\"var\") || k.includes(\"const\") || k.includes(\"field\");\n\t\t\t});\n\t\t} else if (activeFilter === \"types\") {",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreChunksView.tsx",
+    "kind": "variable",
+    "name": "k",
+    "start_line": 51,
+    "end_line": 51,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

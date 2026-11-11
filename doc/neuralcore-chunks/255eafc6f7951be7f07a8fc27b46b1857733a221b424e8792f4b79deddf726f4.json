@@ -1,0 +1,12 @@
+{
+  "id": "255eafc6f7951be7f07a8fc27b46b1857733a221b424e8792f4b79deddf726f4",
+  "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "kind": "variable",
+  "name": "mpx",
+  "start_line": 1182,
+  "end_line": 1182,
+  "content": "\t\t\t\t\t\tconst mrx = mx * cosO - mz * sinO;\n\t\t\t\t\t\tconst mrz = mx * sinO + mz * cosO;\n\t\t\t\t\t\tconst mry = my * cosPhi - mrz * sinPhi;\n\t\t\t\t\t\tconst md = Math.max(0.2, baseDist + (my * sinPhi + mrz * cosPhi) * 0.45);\n\t\t\t\t\t\tconst mpx = cx + (mrx / md) * scale * 5.6;\n\t\t\t\t\t\tconst mpy = cy - (mry / md) * scale * 5.6;\n\n\t\t\t\t\t\t// Linha radial",
+  "token_estimate": 82,
+  "created_at": 1794331101184
+}

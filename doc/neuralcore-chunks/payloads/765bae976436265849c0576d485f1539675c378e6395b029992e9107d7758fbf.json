@@ -1,0 +1,13 @@
+{
+  "id": "765bae976436265849c0576d485f1539675c378e6395b029992e9107d7758fbf",
+  "text": "\t\t\tvertexFloats.push(cx, cy - h, cz, colR, colG, colB, colA);\n\t\t\tvOffset += 2;\n\t\t\t// Anel equatorial de 6 vértices\n\t\t\tfor (let k = 0; k < 6; k++) {\n\t\t\t\tconst ang = (k / 6) * Math.PI * 2;\n\t\t\t\tvertexFloats.push(\n\t\t\t\t\tcx + Math.cos(ang) * r,\n\t\t\t\t\tcy,",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+    "kind": "variable",
+    "name": "ang",
+    "start_line": 975,
+    "end_line": 975,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

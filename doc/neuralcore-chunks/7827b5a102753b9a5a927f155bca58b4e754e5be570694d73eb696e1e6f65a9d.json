@@ -1,0 +1,12 @@
+{
+  "id": "7827b5a102753b9a5a927f155bca58b4e754e5be570694d73eb696e1e6f65a9d",
+  "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "kind": "variable",
+  "name": "angle",
+  "start_line": 173,
+  "end_line": 173,
+  "content": "\tconst edgeIndices: number[] = [];\n\tlet vOffset = 0;\n\n\tfor (let i = 0; i < count; i++) {\n\t\tconst angle = (i / count) * Math.PI * 2;\n\t\tconst cx = Math.cos(angle) * orbitRadius;\n\t\tconst cy = Math.sin(angle * 2) * 0.4;\n\t\tconst cz = Math.sin(angle) * orbitRadius;",
+  "token_estimate": 65,
+  "created_at": 1794331100989
+}

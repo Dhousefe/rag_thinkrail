@@ -1,0 +1,12 @@
+{
+  "id": "60ae6d7d87ba12ca78112e44c6e85f647cc5fa50bd67319f78f796bd18e11bf3",
+  "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "kind": "variable",
+  "name": "z",
+  "start_line": 295,
+  "end_line": 295,
+  "content": "\t\t\tconst sv = Math.sin(v);\n\n\t\t\tconst x = (majorRadius + minorRadius * cv) * cu;\n\t\t\tconst y = minorRadius * sv;\n\t\t\tconst z = (majorRadius + minorRadius * cv) * su;\n\n\t\t\t// Gradiente espectral de vórtice (Ciano a Violeta)\n\t\t\tconst t = i / radarRings;",
+  "token_estimate": 62,
+  "created_at": 1794331100999
+}

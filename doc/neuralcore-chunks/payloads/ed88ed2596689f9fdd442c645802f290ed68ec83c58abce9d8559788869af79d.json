@@ -1,0 +1,13 @@
+{
+  "id": "ed88ed2596689f9fdd442c645802f290ed68ec83c58abce9d8559788869af79d",
+  "text": "\tconst edgeIndices: number[] = [];\n\tlet vOffset = 0;\n\n\tfor (let i = 0; i < radarRings; i++) {\n\t\tconst u = (i / radarRings) * Math.PI * 2;\n\t\tconst cu = Math.cos(u);\n\t\tconst su = Math.sin(u);\n",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+    "kind": "variable",
+    "name": "u",
+    "start_line": 284,
+    "end_line": 284,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

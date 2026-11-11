@@ -1,0 +1,12 @@
+{
+  "id": "6b1e1e38e992642ad8da25b560a51f0e36fa89b5fc6bc5eabafa73c86a12f6fe",
+  "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "kind": "variable",
+  "name": "vertexFloats",
+  "start_line": 29,
+  "end_line": 29,
+  "content": "\tconst cosA = Math.cos(angle4D);\n\tconst sinA = Math.sin(angle4D);\n\tconst projDistance = 2.2;\n\n\tconst vertexFloats: number[] = [];\n\tfor (const [px0, py0, pz0, pw0] of v4) {\n\t\t// Rotação no plano XW\n\t\tconst x = px0 * cosA - pw0 * sinA;",
+  "token_estimate": 59,
+  "created_at": 1794331100975
+}

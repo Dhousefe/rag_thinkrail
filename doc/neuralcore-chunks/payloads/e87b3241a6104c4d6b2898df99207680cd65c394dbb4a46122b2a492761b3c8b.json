@@ -1,0 +1,13 @@
+{
+  "id": "e87b3241a6104c4d6b2898df99207680cd65c394dbb4a46122b2a492761b3c8b",
+  "text": "\ttubeSegments = 16,\n): GeometryMeshData {\n\tconst vertexFloats: number[] = [];\n\tconst edgeIndices: number[] = [];\n\tlet vOffset = 0;\n\n\tfor (let i = 0; i < radarRings; i++) {\n\t\tconst u = (i / radarRings) * Math.PI * 2;",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+    "kind": "variable",
+    "name": "vOffset",
+    "start_line": 281,
+    "end_line": 281,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

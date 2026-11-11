@@ -1,0 +1,12 @@
+{
+  "id": "b8d6beb9043f02b86eb08b259f3e74d4f58ab9d62f4170d8c4dcf1fa4b382309",
+  "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "kind": "variable",
+  "name": "baseDist",
+  "start_line": 1055,
+  "end_line": 1055,
+  "content": "\t\tconst cx = w / 2;\n\t\tconst cy = h / 2;\n\t\tconst scale = Math.min(w, h) * 0.22;\n\n\t\tconst baseDist = Math.max(1.0, this.cameraOrbit.distance);\n\t\tconst zoomFactor = 5.6 / baseDist;\n\n\t\t// 1. Projeção da Forma Primária no Canvas2D (apenas se habilitada)",
+  "token_estimate": 62,
+  "created_at": 1794331101163
+}

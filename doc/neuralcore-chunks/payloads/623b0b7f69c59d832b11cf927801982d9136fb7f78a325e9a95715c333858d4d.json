@@ -1,0 +1,13 @@
+{
+  "id": "623b0b7f69c59d832b11cf927801982d9136fb7f78a325e9a95715c333858d4d",
+  "text": "\n\t// 1. Distribuição de tipos de arquivo\n\tconst typeDistribution: Record<string, number> = {};\n\tfor (const n of nodes) {\n\t\tconst kind = getPolygonKindForFile(n.fileExtension || n.relPath || n.path);\n\t\ttypeDistribution[kind] = (typeDistribution[kind] || 0) + 1;\n\t}\n",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+    "kind": "variable",
+    "name": "kind",
+    "start_line": 637,
+    "end_line": 637,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

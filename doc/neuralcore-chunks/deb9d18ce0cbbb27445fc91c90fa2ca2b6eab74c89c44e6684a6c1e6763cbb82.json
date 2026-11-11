@@ -1,0 +1,12 @@
+{
+  "id": "deb9d18ce0cbbb27445fc91c90fa2ca2b6eab74c89c44e6684a6c1e6763cbb82",
+  "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "kind": "variable",
+  "name": "totalSegments",
+  "start_line": 1304,
+  "end_line": 1304,
+  "content": "\t\t\t\t\t[nx, ny, nz], // Conexão vertical ao nó relacionado\n\t\t\t\t];\n\n\t\t\t\t// Desenha a linha subdividida em segmentos com onda de pulso viajante (fluxo direcional)\n\t\t\t\tconst totalSegments = waypoints.length - 1;\n\t\t\t\tfor (let seg = 0; seg < totalSegments; seg++) {\n\t\t\t\t\tconst pStart = waypoints[seg]!;\n\t\t\t\t\tconst pEnd = waypoints[seg + 1]!;",
+  "token_estimate": 84,
+  "created_at": 1794331101069
+}

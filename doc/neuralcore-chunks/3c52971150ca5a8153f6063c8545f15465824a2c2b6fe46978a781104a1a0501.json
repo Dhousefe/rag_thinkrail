@@ -1,0 +1,12 @@
+{
+  "id": "3c52971150ca5a8153f6063c8545f15465824a2c2b6fe46978a781104a1a0501",
+  "file": "apps\\web\\src\\panels\\neural-core\\resolvePivotNode.test.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\resolvePivotNode.test.ts",
+  "kind": "variable",
+  "name": "result",
+  "start_line": 49,
+  "end_line": 49,
+  "content": "\t\texpect(result?.qualifiedName).toBe(\"NeuralCoreEngine\");\n\t});\n\n\tit(\"resolves Windows backslash paths correctly\", () => {\n\t\tconst result = resolvePivotNode(\"apps\\\\web\\\\src\\\\panels\\\\NeuralCorePanel.tsx\", mockNodes);\n\t\texpect(result?.id).toBe(\"node-1\");\n\t});\n",
+  "token_estimate": 65,
+  "created_at": 1794331101187
+}

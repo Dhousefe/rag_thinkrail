@@ -1,0 +1,12 @@
+{
+  "id": "e356a51a8b41d1a2c840f2fdcb093a2db126174a3566643dafbda8a8f8b90ea6",
+  "file": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreSearchBox.tsx",
+  "path": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreSearchBox.tsx",
+  "kind": "variable",
+  "name": "item",
+  "start_line": 174,
+  "end_line": 174,
+  "content": "\t\t\tsetSelectedIndex((prev) => (prev - 1 + totalItems) % totalItems);\n\t\t} else if (e.key === \"Enter\") {\n\t\t\te.preventDefault();\n\t\t\tif (searchDropdownTab === \"nodes\") {\n\t\t\t\tconst item = filteredNodes[selectedIndex];\n\t\t\t\tif (item) {\n\t\t\t\t\tonSelectNode(item);\n\t\t\t\t\tsetIsSearchOpen(false);",
+  "token_estimate": 71,
+  "created_at": 1794331100934
+}

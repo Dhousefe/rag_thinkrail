@@ -1,0 +1,12 @@
+{
+  "id": "d44e21f114a74541db88e7e5c3a7ed147f909f9a0a65d7558771bfceefb52163",
+  "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "kind": "variable",
+  "name": "md",
+  "start_line": 1181,
+  "end_line": 1181,
+  "content": "\n\t\t\t\t\t\tconst mrx = mx * cosO - mz * sinO;\n\t\t\t\t\t\tconst mrz = mx * sinO + mz * cosO;\n\t\t\t\t\t\tconst mry = my * cosPhi - mrz * sinPhi;\n\t\t\t\t\t\tconst md = Math.max(0.2, baseDist + (my * sinPhi + mrz * cosPhi) * 0.45);\n\t\t\t\t\t\tconst mpx = cx + (mrx / md) * scale * 5.6;\n\t\t\t\t\t\tconst mpy = cy - (mry / md) * scale * 5.6;\n",
+  "token_estimate": 77,
+  "created_at": 1794331101183
+}

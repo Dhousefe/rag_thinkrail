@@ -1,0 +1,12 @@
+{
+  "id": "4fac9b500f3d2cdd7d397de26be18424a95ecdcd54abd6c998a3e8421c0c4cc3",
+  "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "kind": "variable",
+  "name": "typeNeighbors",
+  "start_line": 727,
+  "end_line": 727,
+  "content": "\tedges: VectorEdgeInput[],\n): VectorRelationInfo {\n\tconst directNeighbors = new Set<number>();\n\tconst callNeighbors = new Set<number>();\n\tconst typeNeighbors = new Set<number>();\n\tconst importNeighbors = new Set<number>();\n\n\tif (selectedIndex === null || selectedIndex < 0 || selectedIndex >= nodes.length) {",
+  "token_estimate": 77,
+  "created_at": 1794331101028
+}

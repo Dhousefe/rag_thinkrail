@@ -1,0 +1,12 @@
+{
+  "id": "1b86caa3257a329356be0c8b5552619dda6773aed231acf416a1b905d1955a95",
+  "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "kind": "variable",
+  "name": "vertexOffset",
+  "start_line": 114,
+  "end_line": 114,
+  "content": "\tsegments = 48,\n): GeometryMeshData {\n\tconst vertexFloats: number[] = [];\n\tconst edgeIndices: number[] = [];\n\tlet vertexOffset = 0;\n\n\tconst axes: Array<{\n\t\taxis: \"xy\" | \"yz\" | \"xz\";",
+  "token_estimate": 46,
+  "created_at": 1794331100984
+}

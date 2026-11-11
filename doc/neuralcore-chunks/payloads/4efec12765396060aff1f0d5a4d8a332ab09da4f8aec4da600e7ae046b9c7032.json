@@ -1,0 +1,13 @@
+{
+  "id": "4efec12765396060aff1f0d5a4d8a332ab09da4f8aec4da600e7ae046b9c7032",
+  "text": "\n\tpublic updateTween() {\n\t\tif (!this.flyTarget) return;\n\t\tconst diffT = this.flyTarget.theta - this.theta;\n\t\tconst diffP = this.flyTarget.phi - this.phi;\n\t\tconst diffD = this.flyTarget.distance - this.distance;\n\t\tconst diffTx = this.flyTarget.targetX - this.target[0];\n\t\tconst diffTy = this.flyTarget.targetY - this.target[1];",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\cameraController.ts",
+    "kind": "variable",
+    "name": "diffP",
+    "start_line": 194,
+    "end_line": 194,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

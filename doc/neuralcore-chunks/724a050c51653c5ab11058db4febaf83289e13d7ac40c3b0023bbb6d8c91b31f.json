@@ -1,0 +1,12 @@
+{
+  "id": "724a050c51653c5ab11058db4febaf83289e13d7ac40c3b0023bbb6d8c91b31f",
+  "file": "apps\\web\\src\\panels\\neural-core\\semanticFingerprint.test.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\semanticFingerprint.test.ts",
+  "kind": "variable",
+  "name": "fp1",
+  "start_line": 118,
+  "end_line": 118,
+  "content": "\t\t\t},\n\t\t];\n\n\t\tit(\"calcula impressão digital semântica determinística para o repositório\", () => {\n\t\t\tconst fp1 = computeSemanticFingerprint(mockNodes, mockEdges);\n\t\t\tconst fp2 = computeSemanticFingerprint(mockNodes, mockEdges);\n\n\t\t\texpect(fp1.fingerprintHash).toBe(fp2.fingerprintHash);",
+  "token_estimate": 72,
+  "created_at": 1794331101201
+}

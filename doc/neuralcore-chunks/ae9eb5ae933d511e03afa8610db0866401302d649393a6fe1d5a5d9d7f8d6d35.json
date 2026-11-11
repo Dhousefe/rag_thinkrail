@@ -1,0 +1,12 @@
+{
+  "id": "ae9eb5ae933d511e03afa8610db0866401302d649393a6fe1d5a5d9d7f8d6d35",
+  "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "kind": "variable",
+  "name": "selectedNode",
+  "start_line": 734,
+  "end_line": 734,
+  "content": "\tif (selectedIndex === null || selectedIndex < 0 || selectedIndex >= nodes.length) {\n\t\treturn { directNeighbors, callNeighbors, typeNeighbors, importNeighbors };\n\t}\n\n\tconst selectedNode = nodes[selectedIndex];\n\tif (!selectedNode) {\n\t\treturn { directNeighbors, callNeighbors, typeNeighbors, importNeighbors };\n\t}",
+  "token_estimate": 78,
+  "created_at": 1794331101028
+}

@@ -1,0 +1,13 @@
+{
+  "id": "b81e0a401bce2707db695d54bd0303fb60913c74c25a0ae87f3d333ec23582a2",
+  "text": "\t\tconst vyi = vertexFloats[i * 7 + 1] ?? 0;\n\t\tconst vzi = vertexFloats[i * 7 + 2] ?? 0;\n\t\tfor (let j = i + 1; j < rawVertices.length; j++) {\n\t\t\tconst vxj = vertexFloats[j * 7] ?? 0;\n\t\t\tconst vyj = vertexFloats[j * 7 + 1] ?? 0;\n\t\t\tconst vzj = vertexFloats[j * 7 + 2] ?? 0;\n\t\t\tconst dx = vxi - vxj;\n\t\t\tconst dy = vyi - vyj;",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+    "kind": "variable",
+    "name": "vyj",
+    "start_line": 375,
+    "end_line": 375,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

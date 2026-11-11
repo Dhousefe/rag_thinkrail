@@ -1,0 +1,12 @@
+{
+  "id": "8b67ff2d52114f37c1b3862ca01c4ecc40215d331db5752a69e9d1400cc21c61",
+  "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "kind": "variable",
+  "name": "z0",
+  "start_line": 645,
+  "end_line": 645,
+  "content": "\t\tconst dirX = eyeX - tx0;\n\t\tconst dirY = eyeY - ty0;\n\t\tconst dirZ = eyeZ - tz0;\n\t\tconst zLen = Math.hypot(dirX, dirY, dirZ) || 1;\n\t\tconst z0 = dirX / zLen;\n\t\tconst z1 = dirY / zLen;\n\t\tconst z2 = dirZ / zLen;\n",
+  "token_estimate": 53,
+  "created_at": 1794331101122
+}

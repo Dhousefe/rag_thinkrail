@@ -1,0 +1,12 @@
+{
+  "id": "b420cadf8e0501595da2522e2c5d6c2cc4aa0dd053113b394586b501b0a30a8e",
+  "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "kind": "variable",
+  "name": "alpha1",
+  "start_line": 1325,
+  "end_line": 1325,
+  "content": "\n\t\t\t\t\t\t// Onda senoidal viajante no tempo animTime mostrando a direção do fluxo de dependência\n\t\t\t\t\t\tconst wave1 = Math.sin(animTime * 6.5 - u1 * Math.PI * 4.0);\n\t\t\t\t\t\tconst wave2 = Math.sin(animTime * 6.5 - u2 * Math.PI * 4.0);\n\t\t\t\t\t\tconst alpha1 = Math.max(0.2, 0.45 + wave1 * 0.55);\n\t\t\t\t\t\tconst alpha2 = Math.max(0.2, 0.45 + wave2 * 0.55);\n\n\t\t\t\t\t\tconst lIdx = vOffset;",
+  "token_estimate": 93,
+  "created_at": 1794331101076
+}

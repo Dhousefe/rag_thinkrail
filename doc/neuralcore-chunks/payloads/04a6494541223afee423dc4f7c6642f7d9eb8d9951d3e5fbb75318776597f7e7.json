@@ -1,0 +1,13 @@
+{
+  "id": "04a6494541223afee423dc4f7c6642f7d9eb8d9951d3e5fbb75318776597f7e7",
+  "text": "\t};\n}\n\n// 5. Gerador da Stella Octangula (Merkaba / Dois Tetraedros Sagrados Entrelaçados)\nexport function createMerkabaWireframe(scale = 1.2): GeometryMeshData {\n\tconst vertexFloats: number[] = [];\n\tconst edgeIndices: number[] = [];\n\n\t// Tetraedro 1 (Vértices dourados/âmbar com energia ascendente)\n\tconst t1: [number, number, number][] = [\n\t\t[1, 1, 1],\n\t\t[1, -1, -1],\n\t\t[-1, 1, -1],\n\t\t[-1, -1, 1],\n\t];\n\tfor (const [vx, vy, vz] of t1) {\n\t\tvertexFloats.push(\n\t\t\tvx * scale * 0.8,\n\t\t\tvy * scale * 0.8,\n\t\t\tvz * scale * 0.8,\n\t\t\t1.0,\n\t\t\t0.8,\n\t\t\t0.2,\n\t\t\t0.95, // Ouro Solar\n\t\t);\n\t}\n\n\t// Arestas do Tetraedro 1\n\tconst t1Edges = [0, 1, 0, 2, 0, 3, 1, 2, 2, 3, 3, 1];\n\tedgeIndices.push(...t1Edges);\n\n\t// Tetraedro 2 (Invertido, Ciano/Azul elétrico com energia descendente)\n\tconst t2: [number, number, number][] = [\n\t\t[-1, -1, -1],\n\t\t[-1, 1, 1],\n\t\t[1, -1, 1],\n\t\t[1, 1, -1],\n\t];\n\tfor (const [vx, vy, vz] of t2) {\n\t\tvertexFloats.push(\n\t\t\tvx * scale * 0.8,\n\t\t\tvy * scale * 0.8,\n\t\t\tvz * scale * 0.8,\n\t\t\t0.0,\n\t\t\t0.85,\n\t\t\t1.0,\n\t\t\t0.95, // Ciano Elétrico\n\t\t);\n\t}\n\n\t// Arestas do Tetraedro 2 (offset 4)\n\tfor (const e of t1Edges) {\n\t\tedgeIndices.push(e + 4);\n\t}\n\n\t// Arestas de Harmonia Sagrada conectando os centros das faces opostas\n\tconst harmEdges = [0, 5, 0, 6, 0, 7, 4, 1, 4, 2, 4, 3];\n\tedgeIndices.push(...harmEdges);\n\n\treturn {\n\t\tvertices: new Float32Array(vertexFloats),\n\t\tindices: new Uint16Array(edgeIndices),\n\t\tcount: edgeIndices.length,\n\t};\n}\n\n// 6. Gerador do Torus de Vórtice Harmônico (Torus Wireframe)\nexport function createTorusWireframe(",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+    "kind": "function",
+    "name": "createMerkabaWireframe",
+    "start_line": 210,
+    "end_line": 270,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

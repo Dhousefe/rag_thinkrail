@@ -1,0 +1,12 @@
+{
+  "id": "65c6a002dfb048aa24a23d553dd9f8ef64d4b6197cf5e2c3b2c8252d816564e0",
+  "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "kind": "variable",
+  "name": "eStr",
+  "start_line": 670,
+  "end_line": 670,
+  "content": "\t\t}\n\t}\n\n\tfor (const e of edges) {\n\t\tconst eStr = `${e.source}->${e.target}:${e.kind || \"\"}:${(e.similarity || 0).toFixed(2)}`;\n\t\tfor (let i = 0; i < eStr.length; i++) {\n\t\t\tconst c = eStr.charCodeAt(i);\n\t\t\th1 = Math.imul(h1 ^ c, 2246822519);",
+  "token_estimate": 60,
+  "created_at": 1794331101021
+}

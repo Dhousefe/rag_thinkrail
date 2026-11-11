@@ -1,0 +1,12 @@
+{
+  "id": "5ed68f4e062aea0ebf5549f57cc35458807780644431d73c89023ba0af1bf83d",
+  "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "kind": "variable",
+  "name": "vy",
+  "start_line": 872,
+  "end_line": 872,
+  "content": "\t\t\t\tcontinue;\n\t\t\t}\n\t\t\tconst [vx0, vy0, vz0] = node.position;\n\t\t\tconst vx = vx0 - tx0;\n\t\t\tconst vy = vy0 - ty0;\n\t\t\tconst vz = vz0 - tz0;\n\n\t\t\tconst rx = vx * cosO - vz * sinO;",
+  "token_estimate": 44,
+  "created_at": 1794331101146
+}

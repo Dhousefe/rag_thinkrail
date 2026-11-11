@@ -1,0 +1,12 @@
+{
+  "id": "65762e5d57e9649257b37e40ae4dbe769206ea8fb97e09242ca43f5447b69b5c",
+  "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "kind": "variable",
+  "name": "nextRing",
+  "start_line": 309,
+  "end_line": 309,
+  "content": "\t\t\tconst nextLong = i * tubeSegments + ((j + 1) % tubeSegments);\n\t\t\tedgeIndices.push(vOffset, nextLong);\n\n\t\t\t// Aresta circular (ao redor do anel principal)\n\t\t\tconst nextRing = ((i + 1) % radarRings) * tubeSegments + j;\n\t\t\tedgeIndices.push(vOffset, nextRing);\n\n\t\t\tvOffset++;",
+  "token_estimate": 69,
+  "created_at": 1794331101002
+}

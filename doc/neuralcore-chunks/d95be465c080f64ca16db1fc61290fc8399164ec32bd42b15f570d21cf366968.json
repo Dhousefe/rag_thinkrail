@@ -1,0 +1,12 @@
+{
+  "id": "d95be465c080f64ca16db1fc61290fc8399164ec32bd42b15f570d21cf366968",
+  "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "kind": "variable",
+  "name": "otherIdx",
+  "start_line": 749,
+  "end_line": 749,
+  "content": "\tconst selectedQName = (selectedNode.qualifiedName || selectedBaseName).toLowerCase();\n\n\t// 1. Mapeamento via arestas k-NN / dependências existentes\n\tfor (const edge of edges) {\n\t\tlet otherIdx: number | null = null;\n\t\tif (edge.source === selectedIndex) {\n\t\t\totherIdx = edge.target;\n\t\t} else if (edge.target === selectedIndex) {",
+  "token_estimate": 82,
+  "created_at": 1794331101030
+}

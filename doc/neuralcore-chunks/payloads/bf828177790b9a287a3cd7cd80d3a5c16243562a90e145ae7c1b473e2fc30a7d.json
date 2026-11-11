@@ -1,0 +1,13 @@
+{
+  "id": "bf828177790b9a287a3cd7cd80d3a5c16243562a90e145ae7c1b473e2fc30a7d",
+  "text": "\t\t];\n\n\t\tconst query = \"camera dragging\";\n\t\tconst terms = query.toLowerCase().split(/\\s+/).filter(Boolean);\n\t\tconst filtered = chunks.filter((c) => {\n\t\t\tconst name = (c.qualifiedName || \"\").toLowerCase();\n\t\t\tconst content = (c.content || \"\").toLowerCase();\n\t\t\tconst path = (c.path || \"\").toLowerCase();\n\t\t\treturn terms.every((t) => name.includes(t) || content.includes(t) || path.includes(t));\n\t\t});\n\n\t\texpect(filtered.length).toBe(1);\n\t\texpect(filtered[0]?.id).toBe(\"c-1\");",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\components\\searchBox.test.ts",
+    "kind": "variable",
+    "name": "filtered",
+    "start_line": 92,
+    "end_line": 97,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

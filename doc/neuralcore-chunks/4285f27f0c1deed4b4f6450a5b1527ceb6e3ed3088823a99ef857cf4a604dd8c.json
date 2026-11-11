@@ -1,0 +1,12 @@
+{
+  "id": "4285f27f0c1deed4b4f6450a5b1527ceb6e3ed3088823a99ef857cf4a604dd8c",
+  "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "kind": "variable",
+  "name": "scale",
+  "start_line": 1053,
+  "end_line": 1053,
+  "content": "\t\tctx.globalAlpha = 1.0;\n\n\t\tconst cx = w / 2;\n\t\tconst cy = h / 2;\n\t\tconst scale = Math.min(w, h) * 0.22;\n\n\t\tconst baseDist = Math.max(1.0, this.cameraOrbit.distance);\n\t\tconst zoomFactor = 5.6 / baseDist;",
+  "token_estimate": 51,
+  "created_at": 1794331101162
+}

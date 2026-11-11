@@ -1,0 +1,13 @@
+{
+  "id": "ac28b0b7789efbafaf7646de8e67bd6309a0b28f13d18c671ed1595f29ff0f51",
+  "text": "\t\t\t\t// Pan 3D: translada o target ao longo dos vetores de câmera (Right e Up)\n\t\t\t\tconst panFactor = Math.max(0.001, this.distance * 0.0016);\n\n\t\t\t\t// Vetor Right da câmera\n\t\t\t\tconst rightX = Math.cos(this.theta);\n\t\t\t\tconst rightZ = -Math.sin(this.theta);\n\n\t\t\t\t// Vetor Up da câmera",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\cameraController.ts",
+    "kind": "variable",
+    "name": "rightX",
+    "start_line": 72,
+    "end_line": 72,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

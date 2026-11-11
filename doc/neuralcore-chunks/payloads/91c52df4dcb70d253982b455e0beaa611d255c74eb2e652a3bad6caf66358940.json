@@ -1,0 +1,13 @@
+{
+  "id": "91c52df4dcb70d253982b455e0beaa611d255c74eb2e652a3bad6caf66358940",
+  "text": "\t];\n\n\tit(\"encontra nós pelo nome do método contido\", () => {\n\t\tconst q = \"wasJustDragging\";\n\t\tconst matches = mockNodes.filter((n) => {\n\t\t\tconst qn = (n.qualifiedName || \"\").toLowerCase();\n\t\t\tconst hasMethod = (n.methods || []).some(\n\t\t\t\t(m) =>\n\t\t\t\t\tm.name.toLowerCase().includes(q.toLowerCase()) ||\n\t\t\t\t\t(m.signature || \"\").toLowerCase().includes(q.toLowerCase()),\n\t\t\t);\n\t\t\treturn qn.includes(q.toLowerCase()) || hasMethod;\n\t\t});\n\n\t\texpect(matches.length).toBe(1);\n\t\texpect(matches[0]?.qualifiedName).toBe(\"OrbitCameraController\");",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\components\\searchBox.test.ts",
+    "kind": "variable",
+    "name": "matches",
+    "start_line": 54,
+    "end_line": 62,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

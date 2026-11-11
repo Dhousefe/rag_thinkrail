@@ -1,0 +1,13 @@
+{
+  "id": "876ccc944ba8629bc6fc8766ac7b3937d6721f845e685f7bbdfd6d0f7c8d0450",
+  "text": "\n\tfor (let i = 0; i < radarRings; i++) {\n\t\tconst u = (i / radarRings) * Math.PI * 2;\n\t\tconst cu = Math.cos(u);\n\t\tconst su = Math.sin(u);\n\n\t\tfor (let j = 0; j < tubeSegments; j++) {\n\t\t\tconst v = (j / tubeSegments) * Math.PI * 2;",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+    "kind": "variable",
+    "name": "su",
+    "start_line": 286,
+    "end_line": 286,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

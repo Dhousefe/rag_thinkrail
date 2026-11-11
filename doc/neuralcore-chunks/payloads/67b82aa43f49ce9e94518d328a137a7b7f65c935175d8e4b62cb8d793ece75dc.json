@@ -1,0 +1,13 @@
+{
+  "id": "67b82aa43f49ce9e94518d328a137a7b7f65c935175d8e4b62cb8d793ece75dc",
+  "text": "\t\t\tconst vy = vy0 - ty0;\n\t\t\tconst vz = vz0 - tz0;\n\n\t\t\t// Projeção da rotação orbital da câmera\n\t\t\tconst rx = vx * cosO - vz * sinO;\n\t\t\tconst rz = vx * sinO + vz * cosO;\n\t\t\tconst ry = vy * cosPhi - rz * sinPhi;\n\t\t\tconst depth = Math.max(0.2, baseDist + (vy * sinPhi + rz * cosPhi) * 0.45);",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+    "kind": "variable",
+    "name": "rx",
+    "start_line": 774,
+    "end_line": 774,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

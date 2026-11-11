@@ -1,0 +1,12 @@
+{
+  "id": "6bb9b2cd7cc454e83e5dbc39c20d48e9e83cdfcc1b3edde6ce27343d818a6f60",
+  "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "kind": "variable",
+  "name": "safeD",
+  "start_line": 1010,
+  "end_line": 1010,
+  "content": "\t\t\t\tconst dy = item.y - otherProj.py;\n\t\t\t\tconst dist = Math.sqrt(dx * dx + dy * dy);\n\n\t\t\t\tif (dist < minSafeLabelDist) {\n\t\t\t\t\tconst safeD = Math.max(dist, 1.0);\n\t\t\t\t\tconst overlap = minSafeLabelDist - safeD;\n\t\t\t\t\tconst repulseStrength = overlap / minSafeLabelDist;\n",
+  "token_estimate": 67,
+  "created_at": 1794331101159
+}

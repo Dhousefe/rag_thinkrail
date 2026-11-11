@@ -1,0 +1,12 @@
+{
+  "id": "a4e229c4f67ef61645b0efc8ab8e346e6811049d5c6441c70505f7e5a4c2ff1f",
+  "file": "apps\\web\\src\\panels\\neural-core\\resolvePivotNode.test.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\resolvePivotNode.test.ts",
+  "kind": "variable",
+  "name": "mockNodes",
+  "start_line": 6,
+  "end_line": 40,
+  "content": "import type { HermesVectorNode } from \"@thinkrail/contracts\";\nimport { resolvePivotNode } from \"./resolvePivotNode\";\n\ndescribe(\"resolvePivotNode\", () => {\n\tconst mockNodes: HermesVectorNode[] = [\n\t\t{\n\t\t\tid: \"node-1\",\n\t\t\tpath: \"D:/Projet_Thinkrail/source/thinkrail/apps/web/src/panels/NeuralCorePanel.tsx\",\n\t\t\trelPath: \"apps/web/src/panels/NeuralCorePanel.tsx\",\n\t\t\tqualifiedName: \"NeuralCorePanel\",\n\t\t\tchunkKind: \"function\",\n\t\t\tmodule: \"apps/web\",\n\t\t\tposition: [0, 10, 0],\n\t\t\ttokenEstimate: 500,\n\t\t\tcontentSnippet: \"export function NeuralCorePanel() {...}\",\n\t\t},\n\t\t{\n\t\t\tid: \"node-2\",\n\t\t\tpath: \"D:/Projet_Thinkrail/source/thinkrail/apps/web/src/panels/neural-core/neuralEngine.ts\",\n\t\t\trelPath: \"apps/web/src/panels/neural-core/neuralEngine.ts\",\n\t\t\tqualifiedName: \"NeuralCoreEngine\",\n\t\t\tchunkKind: \"class\",\n\t\t\tmodule: \"apps/web\",\n\t\t\tposition: [10, 20, 5],\n\t\t\ttokenEstimate: 1200,\n\t\t\tcontentSnippet: \"export class NeuralCoreEngine {...}\",\n\t\t},\n\t\t{\n\t\t\tid: \"node-3\",\n\t\t\tpath: \"D:/Projet_Thinkrail/source/thinkrail/apps/web/src/panels/neural-core/neuralEngine.ts\",\n\t\t\trelPath: \"apps/web/src/panels/neural-core/neuralEngine.ts\",\n\t\t\tqualifiedName: \"NeuralCoreEngine.init\",\n\t\t\tchunkKind: \"method\",\n\t\t\tmodule: \"apps/web\",\n\t\t\tposition: [12, 22, 6],\n\t\t\ttokenEstimate: 200,\n\t\t\tcontentSnippet: \"async init() {...}\",\n\t\t},\n\t];\n\n\tit(\"prioritizes class chunkKind when multiple nodes belong to the same file\", () => {\n\t\tconst result = resolvePivotNode(\"apps/web/src/panels/neural-core/neuralEngine.ts\", mockNodes);",
+  "token_estimate": 374,
+  "created_at": 1794331101186
+}

@@ -1,0 +1,12 @@
+{
+  "id": "568d7fdb28c15de1826de5f86c0598d470f3a2ea2a8ce573c35f9d0990c02ee6",
+  "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "kind": "variable",
+  "name": "qn",
+  "start_line": 236,
+  "end_line": 236,
+  "content": "\t\t\tif (!q) {\n\t\t\t\tn.isMatchedBySearch = false;\n\t\t\t} else {\n\t\t\t\tconst p = (n.path || \"\").toLowerCase();\n\t\t\t\tconst qn = (n.relPath || \"\").toLowerCase();\n\t\t\t\tconst id = (n.id || \"\").toLowerCase();\n\t\t\t\tconst hasMatchingMethod = (n.methods || []).some(\n\t\t\t\t\t(m) => m.name.toLowerCase().includes(q) || (m.signature || \"\").toLowerCase().includes(q),",
+  "token_estimate": 86,
+  "created_at": 1794331101108
+}

@@ -1,0 +1,12 @@
+{
+  "id": "1b13d2d0cb5ca1f4bd3f37d758ee982c6b0981b659bf1fe9ec6aec458d1f4b63",
+  "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "kind": "variable",
+  "name": "vx",
+  "start_line": 769,
+  "end_line": 769,
+  "content": "\t\t\tif (this.visibleModules.size > 0 && !this.visibleModules.has(node.module)) {\n\t\t\t\tcontinue;\n\t\t\t}\n\t\t\tconst [vx0, vy0, vz0] = node.position;\n\t\t\tconst vx = vx0 - tx0;\n\t\t\tconst vy = vy0 - ty0;\n\t\t\tconst vz = vz0 - tz0;\n",
+  "token_estimate": 54,
+  "created_at": 1794331101137
+}

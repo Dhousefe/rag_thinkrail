@@ -1,0 +1,12 @@
+{
+  "id": "46b7080e25088a681f9bf28204824407dd1504df82c7548d6cbafe32f94da1fb",
+  "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "kind": "variable",
+  "name": "sinPhi",
+  "start_line": 846,
+  "end_line": 846,
+  "content": "\n\t\tconst cosO = Math.cos(this.cameraOrbit.theta);\n\t\tconst sinO = Math.sin(this.cameraOrbit.theta);\n\t\tconst cosPhi = Math.cos(this.cameraOrbit.phi);\n\t\tconst sinPhi = Math.sin(this.cameraOrbit.phi);\n\t\tconst baseDist = Math.max(1.0, this.cameraOrbit.distance);\n\t\tconst [tx0, ty0, tz0] = this.cameraOrbit.target || [0, 0, 0];\n",
+  "token_estimate": 81,
+  "created_at": 1794331101144
+}

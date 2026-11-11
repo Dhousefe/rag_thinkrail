@@ -1,0 +1,12 @@
+{
+  "id": "f15c5da693f4c6ca6f9f8cf91df4c90815f438567c906e2087139b537a547388",
+  "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "kind": "method",
+  "name": "NeuralCoreEngine.setActivity",
+  "start_line": 463,
+  "end_line": 466,
+  "content": "\tpublic triggerShockwave() {\n\t\tthis.telemetry.shockwavePulse = 1.0;\n\t}\n\n\tpublic setActivity(activity: NeuralActivityState, intensity = 0.5) {\n\t\tthis.telemetry.activity = activity;\n\t\tthis.telemetry.intensity = Math.min(1.0, Math.max(0.1, intensity));\n\t}\n\n\tpublic start() {\n\t\tif (this.isRunning) return;",
+  "token_estimate": 76,
+  "created_at": 1794331101101
+}

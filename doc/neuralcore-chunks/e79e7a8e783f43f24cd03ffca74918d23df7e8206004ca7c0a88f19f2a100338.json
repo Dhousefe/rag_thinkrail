@@ -1,0 +1,12 @@
+{
+  "id": "e79e7a8e783f43f24cd03ffca74918d23df7e8206004ca7c0a88f19f2a100338",
+  "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "kind": "variable",
+  "name": "x",
+  "start_line": 134,
+  "end_line": 134,
+  "content": "\t\t\tconst theta = (i / segments) * Math.PI * 2;\n\t\t\tconst c = Math.cos(theta) * item.r;\n\t\t\tconst s = Math.sin(theta) * item.r;\n\n\t\t\tlet x = 0;\n\t\t\tlet y = 0;\n\t\t\tlet z = 0;\n\t\t\tif (item.axis === \"xy\") {",
+  "token_estimate": 49,
+  "created_at": 1794331100986
+}

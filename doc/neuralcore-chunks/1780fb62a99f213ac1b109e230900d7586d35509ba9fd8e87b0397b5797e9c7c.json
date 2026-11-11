@@ -1,0 +1,12 @@
+{
+  "id": "1780fb62a99f213ac1b109e230900d7586d35509ba9fd8e87b0397b5797e9c7c",
+  "file": "apps\\web\\src\\panels\\neural-core\\useNeuralCoreState.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\useNeuralCoreState.ts",
+  "kind": "variable",
+  "name": "activeWorkspace",
+  "start_line": 6,
+  "end_line": 6,
+  "content": "import { selectActiveWorkspace, useAppStore } from \"@/store\";\nimport type { NeuralActivityState, NeuralTelemetryState } from \"./types\";\n\nexport function useNeuralCoreState() {\n\tconst activeWorkspace = useAppStore(selectActiveWorkspace);\n\tconst mcpMetrics = useAppStore((s) => s.mcpTelemetry.metrics);\n\tconst activeCalls = useAppStore((s) => s.mcpTelemetry.activeCalls);\n\tconst connectionStatus = useAppStore((s) => s.status);",
+  "token_estimate": 107,
+  "created_at": 1794331101208
+}

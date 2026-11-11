@@ -1,0 +1,13 @@
+{
+  "id": "4bb8b83c512f909f2bf93bbd7191c290efb133e184c3fc1819610a2a94ea7947",
+  "text": "\t\t\tconst cv = Math.cos(v);\n\t\t\tconst sv = Math.sin(v);\n\n\t\t\tconst x = (majorRadius + minorRadius * cv) * cu;\n\t\t\tconst y = minorRadius * sv;\n\t\t\tconst z = (majorRadius + minorRadius * cv) * su;\n\n\t\t\t// Gradiente espectral de vórtice (Ciano a Violeta)",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+    "kind": "variable",
+    "name": "y",
+    "start_line": 294,
+    "end_line": 294,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

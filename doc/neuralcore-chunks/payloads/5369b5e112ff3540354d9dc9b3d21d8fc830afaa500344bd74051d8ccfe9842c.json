@@ -1,0 +1,13 @@
+{
+  "id": "5369b5e112ff3540354d9dc9b3d21d8fc830afaa500344bd74051d8ccfe9842c",
+  "text": "\t\t\t},\n\t\t];\n\n\t\tconst query = \"camera dragging\";\n\t\tconst terms = query.toLowerCase().split(/\\s+/).filter(Boolean);\n\t\tconst filtered = chunks.filter((c) => {\n\t\t\tconst name = (c.qualifiedName || \"\").toLowerCase();\n\t\t\tconst content = (c.content || \"\").toLowerCase();",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\components\\searchBox.test.ts",
+    "kind": "variable",
+    "name": "terms",
+    "start_line": 91,
+    "end_line": 91,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

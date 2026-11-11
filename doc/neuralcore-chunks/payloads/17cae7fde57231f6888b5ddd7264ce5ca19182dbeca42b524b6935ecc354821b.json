@@ -1,0 +1,13 @@
+{
+  "id": "17cae7fde57231f6888b5ddd7264ce5ca19182dbeca42b524b6935ecc354821b",
+  "text": "\t\t};\n\t\tthis.onUpdate?.();\n\t}\n\n\tpublic zoomIn() {\n\t\tthis.flyTarget = null;\n\t\tthis.distance = Math.max(0.3, this.distance * 0.78);\n\t\tthis.onUpdate?.();\n\t}\n\n\tpublic zoomOut() {\n\t\tthis.flyTarget = null;",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\cameraController.ts",
+    "kind": "method",
+    "name": "OrbitCameraController.zoomIn",
+    "start_line": 166,
+    "end_line": 170,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

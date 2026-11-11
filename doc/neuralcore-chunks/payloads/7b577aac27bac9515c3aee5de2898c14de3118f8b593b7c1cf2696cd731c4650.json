@@ -1,0 +1,13 @@
+{
+  "id": "7b577aac27bac9515c3aee5de2898c14de3118f8b593b7c1cf2696cd731c4650",
+  "text": "\t\t\tif (isUnrelated) continue;\n\n\t\t\tconst isHovered = i === this.highlightedNodeIndex;\n\t\t\tconst isMatched = Boolean(node.isMatchedBySearch);\n\t\t\tconst isSearchingTarget = this.searchingNodeId === node.id;\n\t\t\tconst methodsCount = node.methods?.length || 0;\n\n\t\t\t// Determina a tag de relação para classes conectadas ao nó selecionado",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+    "kind": "variable",
+    "name": "isSearchingTarget",
+    "start_line": 921,
+    "end_line": 921,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

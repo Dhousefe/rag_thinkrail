@@ -1,0 +1,12 @@
+{
+  "id": "833ae9a2b637dd31bdf94391b17465c0f7bf99cd2b106fd1991e50a233650dca",
+  "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "kind": "variable",
+  "name": "selectedBaseName",
+  "start_line": 740,
+  "end_line": 744,
+  "content": "\t\treturn { directNeighbors, callNeighbors, typeNeighbors, importNeighbors };\n\t}\n\n\tconst selectedNormRel = (selectedNode.relPath || selectedNode.path || \"\").toLowerCase();\n\tconst selectedBaseName =\n\t\tselectedNormRel\n\t\t\t.split(\"/\")\n\t\t\t.pop()\n\t\t\t?.replace(/\\.[^.]+$/, \"\") || \"\";\n\tconst selectedQName = (selectedNode.qualifiedName || selectedBaseName).toLowerCase();\n\n\t// 1. Mapeamento via arestas k-NN / dependências existentes",
+  "token_estimate": 106,
+  "created_at": 1794331101029
+}

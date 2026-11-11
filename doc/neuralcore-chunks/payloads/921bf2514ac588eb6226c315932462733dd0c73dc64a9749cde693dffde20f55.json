@@ -1,0 +1,13 @@
+{
+  "id": "921bf2514ac588eb6226c315932462733dd0c73dc64a9749cde693dffde20f55",
+  "text": "\n\t\t\t\tif (dist < minSafeLabelDist) {\n\t\t\t\t\tconst safeD = Math.max(dist, 1.0);\n\t\t\t\t\tconst overlap = minSafeLabelDist - safeD;\n\t\t\t\t\tconst repulseStrength = overlap / minSafeLabelDist;\n\n\t\t\t\t\tconst nx = dx / safeD;\n\t\t\t\t\tconst ny = dy < 0 ? dy / safeD : -0.85;",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+    "kind": "variable",
+    "name": "repulseStrength",
+    "start_line": 1012,
+    "end_line": 1012,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

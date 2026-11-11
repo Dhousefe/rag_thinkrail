@@ -1,0 +1,12 @@
+{
+  "id": "4dde4774682663ef9b6ccceae4dfdf6770eba3c5d89975dbe1b3d8df7834d15a",
+  "file": "apps\\web\\src\\panels\\neural-core\\cameraController.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\cameraController.ts",
+  "kind": "method",
+  "name": "OrbitCameraController.reset",
+  "start_line": 269,
+  "end_line": 279,
+  "content": "\tpublic clearCameraSnapshot() {\n\t\tthis.cameraSnapshot = null;\n\t}\n\n\tpublic reset() {\n\t\tthis.flyTarget = {\n\t\t\ttargetX: 0,\n\t\t\ttargetY: 0,\n\t\t\ttargetZ: 0,\n\t\t\ttheta: 0.6,\n\t\t\tphi: 0.45,\n\t\t\tdistance: 5.2,\n\t\t};\n\t\tthis.onUpdate?.();\n\t}\n\n\t/**\n\t * Enquadra perfeitamente todos os nós informados dentro do campo de visão da câmera,",
+  "token_estimate": 80,
+  "created_at": 1794331100876
+}

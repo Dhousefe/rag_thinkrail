@@ -1,0 +1,12 @@
+{
+  "id": "143413a0cbe1165a29872405c99876c20264a6440261f18dca794af8ed5fedd8",
+  "file": "apps\\web\\src\\panels\\neural-core\\cameraController.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\cameraController.ts",
+  "kind": "method",
+  "name": "OrbitCameraController.panDown",
+  "start_line": 150,
+  "end_line": 152,
+  "content": "\tpublic panUp(step = 120) {\n\t\tthis.panBy(0, step);\n\t}\n\n\tpublic panDown(step = 120) {\n\t\tthis.panBy(0, -step);\n\t}\n\n\tpublic setPcbTopView() {\n\t\tthis.flyTarget = {",
+  "token_estimate": 40,
+  "created_at": 1794331100872
+}

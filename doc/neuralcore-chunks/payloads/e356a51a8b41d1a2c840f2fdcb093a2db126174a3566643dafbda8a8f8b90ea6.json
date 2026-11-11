@@ -1,0 +1,13 @@
+{
+  "id": "e356a51a8b41d1a2c840f2fdcb093a2db126174a3566643dafbda8a8f8b90ea6",
+  "text": "\t\t\tsetSelectedIndex((prev) => (prev - 1 + totalItems) % totalItems);\n\t\t} else if (e.key === \"Enter\") {\n\t\t\te.preventDefault();\n\t\t\tif (searchDropdownTab === \"nodes\") {\n\t\t\t\tconst item = filteredNodes[selectedIndex];\n\t\t\t\tif (item) {\n\t\t\t\t\tonSelectNode(item);\n\t\t\t\t\tsetIsSearchOpen(false);",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreSearchBox.tsx",
+    "kind": "variable",
+    "name": "item",
+    "start_line": 174,
+    "end_line": 174,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

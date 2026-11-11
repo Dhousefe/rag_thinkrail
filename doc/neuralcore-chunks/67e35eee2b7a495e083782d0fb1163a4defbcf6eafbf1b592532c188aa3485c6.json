@@ -1,0 +1,12 @@
+{
+  "id": "67e35eee2b7a495e083782d0fb1163a4defbcf6eafbf1b592532c188aa3485c6",
+  "file": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreSearchBox.tsx",
+  "path": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreSearchBox.tsx",
+  "kind": "variable",
+  "name": "isCurrent",
+  "start_line": 392,
+  "end_line": 392,
+  "content": "\t\t\t\t\t\t) : filteredChunks.length > 0 ? (\n\t\t\t\t\t\t\tfilteredChunks.map((chunk, idx) => {\n\t\t\t\t\t\t\t\tconst badge = getSymbolKindBadge(chunk.chunkKind);\n\t\t\t\t\t\t\t\tconst IconComp = badge.icon;\n\t\t\t\t\t\t\t\tconst isCurrent = idx === selectedIndex;\n\t\t\t\t\t\t\t\treturn (\n\t\t\t\t\t\t\t\t\t<button\n\t\t\t\t\t\t\t\t\t\ttype=\"button\"",
+  "token_estimate": 72,
+  "created_at": 1794331100939
+}

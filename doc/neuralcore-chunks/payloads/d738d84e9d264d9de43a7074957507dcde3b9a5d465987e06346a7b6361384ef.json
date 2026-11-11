@@ -1,0 +1,13 @@
+{
+  "id": "d738d84e9d264d9de43a7074957507dcde3b9a5d465987e06346a7b6361384ef",
+  "text": "\t\t\t\tactiveChatTool = \"rag\";\n\t\t\t}\n\n\t\t\tif (toolArgs && typeof toolArgs === \"object\") {\n\t\t\t\tconst rawPath = (toolArgs.path || toolArgs.file || toolArgs.target_path) as\n\t\t\t\t\t| string\n\t\t\t\t\t| undefined;\n\t\t\t\tif (rawPath && typeof rawPath === \"string\") {\n\t\t\t\t\tactiveChatFilePath = rawPath.replace(/\\\\/g, \"/\");\n\t\t\t\t\tconst fileName = activeChatFilePath.split(\"/\").pop() || \"\";",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\useNeuralCoreState.ts",
+    "kind": "variable",
+    "name": "rawPath",
+    "start_line": 67,
+    "end_line": 69,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

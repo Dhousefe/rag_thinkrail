@@ -1,0 +1,12 @@
+{
+  "id": "9b0dff2dadfa547911a77161edcab4ffdaab975d7247af2f8dfe283dcb95ca32",
+  "file": "apps\\web\\src\\panels\\neural-core\\useNeuralCoreState.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\useNeuralCoreState.ts",
+  "kind": "variable",
+  "name": "firstKey",
+  "start_line": 27,
+  "end_line": 27,
+  "content": "\t\tlet toolArgs: any;\n\n\t\tconst runningCallKeys = Object.keys(activeCalls);\n\t\tif (runningCallKeys.length > 0) {\n\t\t\tconst firstKey = runningCallKeys[0];\n\t\t\tif (firstKey && activeCalls[firstKey]) {\n\t\t\t\tactivity = \"tool_exec\";\n\t\t\t\tintensity = 1.0;",
+  "token_estimate": 61,
+  "created_at": 1794331101213
+}

@@ -1,0 +1,12 @@
+{
+  "id": "5618d30312a93b4c70469124f1c67d672cc784c4a3ba8fa6195c4c6a6c86af17",
+  "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "kind": "variable",
+  "name": "t2",
+  "start_line": 1021,
+  "end_line": 1026,
+  "content": "\t\t\t\t[cx + d, cy - d, cz - d],\n\t\t\t\t[cx - d, cy + d, cz - d],\n\t\t\t\t[cx - d, cy - d, cz + d],\n\t\t\t];\n\t\t\tconst t2: [number, number, number][] = [\n\t\t\t\t[cx - d, cy - d, cz - d],\n\t\t\t\t[cx - d, cy + d, cz + d],\n\t\t\t\t[cx + d, cy - d, cz + d],\n\t\t\t\t[cx + d, cy + d, cz - d],\n\t\t\t];\n\t\t\tfor (const [ptX, ptY, ptZ] of [...t1, ...t2]) {\n\t\t\t\tvertexFloats.push(ptX, ptY, ptZ, colR, colG, colB, colA);\n\t\t\t\tvOffset++;",
+  "token_estimate": 99,
+  "created_at": 1794331101051
+}

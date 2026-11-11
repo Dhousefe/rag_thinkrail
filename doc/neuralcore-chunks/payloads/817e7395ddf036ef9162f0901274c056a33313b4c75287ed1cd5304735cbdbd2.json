@@ -1,0 +1,13 @@
+{
+  "id": "817e7395ddf036ef9162f0901274c056a33313b4c75287ed1cd5304735cbdbd2",
+  "text": "\t\t\tthis.uploadPrimaryMesh();\n\t\t}\n\t}\n\n\tpublic toggleVectorConstellation(show?: boolean) {\n\t\tthis.showVectorConstellation = show !== undefined ? show : !this.showVectorConstellation;\n\t}\n\n\tpublic setShowPcbLines(show: boolean) {\n\t\tthis.showPcbLines = show;",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+    "kind": "method",
+    "name": "NeuralCoreEngine.toggleVectorConstellation",
+    "start_line": 142,
+    "end_line": 144,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

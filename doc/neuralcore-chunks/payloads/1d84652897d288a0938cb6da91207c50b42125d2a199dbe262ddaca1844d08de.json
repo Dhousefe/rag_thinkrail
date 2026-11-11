@@ -1,0 +1,13 @@
+{
+  "id": "1d84652897d288a0938cb6da91207c50b42125d2a199dbe262ddaca1844d08de",
+  "text": "\t\t\tfor (const otherProj of allProjectedNodes) {\n\t\t\t\tif (otherProj.index === item.index) continue;\n\n\t\t\t\tconst dx = item.x - otherProj.px;\n\t\t\t\tconst dy = item.y - otherProj.py;\n\t\t\t\tconst dist = Math.sqrt(dx * dx + dy * dy);\n\n\t\t\t\tif (dist < minSafeLabelDist) {",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+    "kind": "variable",
+    "name": "dy",
+    "start_line": 1006,
+    "end_line": 1006,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

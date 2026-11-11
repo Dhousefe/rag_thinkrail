@@ -1,0 +1,12 @@
+{
+  "id": "b9176c3edc60941a8b81d2c8507902d083cf1804ba5be0fad2cee70e58f617c3",
+  "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "kind": "variable",
+  "name": "zLen",
+  "start_line": 644,
+  "end_line": 644,
+  "content": "\t\t// Vetor Z (forward/depth da câmera apontando para trás da direção de visão - Right Handed)\n\t\tconst dirX = eyeX - tx0;\n\t\tconst dirY = eyeY - ty0;\n\t\tconst dirZ = eyeZ - tz0;\n\t\tconst zLen = Math.hypot(dirX, dirY, dirZ) || 1;\n\t\tconst z0 = dirX / zLen;\n\t\tconst z1 = dirY / zLen;\n\t\tconst z2 = dirZ / zLen;",
+  "token_estimate": 76,
+  "created_at": 1794331101122
+}

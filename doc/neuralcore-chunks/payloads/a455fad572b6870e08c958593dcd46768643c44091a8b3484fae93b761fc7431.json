@@ -1,0 +1,13 @@
+{
+  "id": "a455fad572b6870e08c958593dcd46768643c44091a8b3484fae93b761fc7431",
+  "text": "\t\t\tif (z < minZ) minZ = z;\n\t\t\tif (z > maxZ) maxZ = z;\n\t\t}\n\n\t\tconst centerX = (minX + maxX) / 2;\n\t\tconst centerY = (minY + maxY) / 2;\n\t\tconst centerZ = (minZ + maxZ) / 2;\n",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\cameraController.ts",
+    "kind": "variable",
+    "name": "centerX",
+    "start_line": 304,
+    "end_line": 304,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

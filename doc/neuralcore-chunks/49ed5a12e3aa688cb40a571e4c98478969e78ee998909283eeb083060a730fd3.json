@@ -1,0 +1,12 @@
+{
+  "id": "49ed5a12e3aa688cb40a571e4c98478969e78ee998909283eeb083060a730fd3",
+  "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "kind": "variable",
+  "name": "isHighlight",
+  "start_line": 1147,
+  "end_line": 1147,
+  "content": "\t\t\t\tconst d = Math.max(0.2, baseDist + (vy * sinPhi + rz * cosPhi) * 0.45);\n\t\t\t\tconst px = cx + (rx / d) * scale * 5.6;\n\t\t\t\tconst py = cy - (ry / d) * scale * 5.6;\n\n\t\t\t\tconst isHighlight = i === this.highlightedNodeIndex;\n\t\t\t\tconst isMatched = Boolean(node.isMatchedBySearch);\n\n\t\t\t\tif (isMatched) {",
+  "token_estimate": 75,
+  "created_at": 1794331101178
+}

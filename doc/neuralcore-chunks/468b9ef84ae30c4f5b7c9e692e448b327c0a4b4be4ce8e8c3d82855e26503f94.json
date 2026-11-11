@@ -1,0 +1,12 @@
+{
+  "id": "468b9ef84ae30c4f5b7c9e692e448b327c0a4b4be4ce8e8c3d82855e26503f94",
+  "file": "apps\\web\\src\\panels\\neural-core\\cameraController.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\cameraController.ts",
+  "kind": "variable",
+  "name": "zoomStep",
+  "start_line": 104,
+  "end_line": 104,
+  "content": "\t\t\t(e) => {\n\t\t\t\te.preventDefault();\n\t\t\t\tthis.flyTarget = null;\n\t\t\t\t// Zoom responsivo e progressivo: amplo alcance [0.3 a 60.0]\n\t\t\t\tconst zoomStep = (e.deltaY > 0 ? 1 : -1) * Math.max(0.08, this.distance * 0.09);\n\t\t\t\tthis.distance = Math.max(0.3, Math.min(60.0, this.distance + zoomStep));\n\t\t\t\tthis.onUpdate?.();\n\t\t\t},",
+  "token_estimate": 80,
+  "created_at": 1794331100880
+}

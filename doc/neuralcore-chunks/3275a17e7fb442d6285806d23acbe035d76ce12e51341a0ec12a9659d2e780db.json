@@ -1,0 +1,12 @@
+{
+  "id": "3275a17e7fb442d6285806d23acbe035d76ce12e51341a0ec12a9659d2e780db",
+  "file": "apps\\web\\src\\panels\\neural-core\\useNeuralCoreState.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\useNeuralCoreState.ts",
+  "kind": "variable",
+  "name": "isRagSearching",
+  "start_line": 22,
+  "end_line": 22,
+  "content": "\t\tlet intensity = 0.0;\n\t\tlet activeToolName: string | undefined;\n\t\tlet activeRagQuery: string | undefined;\n\t\tlet activeRagToolName: string | undefined;\n\t\tlet isRagSearching = false;\n\t\tlet toolArgs: any;\n\n\t\tconst runningCallKeys = Object.keys(activeCalls);",
+  "token_estimate": 64,
+  "created_at": 1794331101212
+}

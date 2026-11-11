@@ -1,0 +1,12 @@
+{
+  "id": "a5a56053e88ed7586bb5c6584b06f60652ecc6edfd2f605f7e6c31072da25b9d",
+  "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "kind": "variable",
+  "name": "edgeIndices",
+  "start_line": 365,
+  "end_line": 365,
+  "content": "\t\tvertexFloats.push(x, y, z, 0.3, 1.0, 0.7, 0.88); // Esmeralda / Jade Geométrico\n\t}\n\n\t// 30 Arestas que conectam vértices com distância pentagonal áurea mínima\n\tconst edgeIndices: number[] = [];\n\tconst minDist = (2.0 / phi) * (radius / Math.sqrt(3));\n\tconst threshold = minDist * 1.15;\n",
+  "token_estimate": 72,
+  "created_at": 1794331101006
+}

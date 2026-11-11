@@ -1,0 +1,12 @@
+{
+  "id": "0c262e7ac9eef37791f9d9056666ad2728b82d0aed8fe17f8ccc2a2339f51d4f",
+  "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "kind": "variable",
+  "name": "vxi",
+  "start_line": 370,
+  "end_line": 370,
+  "content": "\tconst minDist = (2.0 / phi) * (radius / Math.sqrt(3));\n\tconst threshold = minDist * 1.15;\n\n\tfor (let i = 0; i < rawVertices.length; i++) {\n\t\tconst vxi = vertexFloats[i * 7] ?? 0;\n\t\tconst vyi = vertexFloats[i * 7 + 1] ?? 0;\n\t\tconst vzi = vertexFloats[i * 7 + 2] ?? 0;\n\t\tfor (let j = i + 1; j < rawVertices.length; j++) {",
+  "token_estimate": 80,
+  "created_at": 1794331101007
+}

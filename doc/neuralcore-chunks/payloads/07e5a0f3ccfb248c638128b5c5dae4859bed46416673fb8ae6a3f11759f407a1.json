@@ -1,0 +1,13 @@
+{
+  "id": "07e5a0f3ccfb248c638128b5c5dae4859bed46416673fb8ae6a3f11759f407a1",
+  "text": "\t\t\tfor (const e of tetEdges) edgeIndices.push(base + e);\n\t\t} else if (polyKind === \"prism\") {\n\t\t\t// Prisma Triangular (Scripts/Shell): 6 vértices, 9 arestas\n\t\t\tconst r = s * 1.1;\n\t\t\tconst h = s * 1.2;\n\t\t\tfor (let tri = -1; tri <= 1; tri += 2) {\n\t\t\t\tfor (let a = 0; a < 3; a++) {\n\t\t\t\t\tconst angle = (a / 3) * Math.PI * 2;",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+    "kind": "variable",
+    "name": "h",
+    "start_line": 947,
+    "end_line": 947,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

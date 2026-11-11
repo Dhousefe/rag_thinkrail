@@ -1,0 +1,13 @@
+{
+  "id": "d6fa358eb623dcb4f43d71bad27853b3e73b71592e7c19b1ff2b5a2b0afae882",
+  "text": "export function NeuralCoreChunksView({ chunks, isLoading }: NeuralCoreChunksViewProps) {\n\tconst [activeFilter, setActiveFilter] = useState<ChunkFilterCategory>(\"all\");\n\tconst [searchQuery, setSearchQuery] = useState(\"\");\n\n\tconst filteredChunks = useMemo(() => {\n\t\tlet list = chunks;\n\t\tif (activeFilter === \"methods\") {\n\t\t\tlist = list.filter((c) => {\n\t\t\t\tconst k = (c.chunkKind || \"\").toLowerCase();\n\t\t\t\treturn k.includes(\"func\") || k.includes(\"method\");\n\t\t\t});\n\t\t} else if (activeFilter === \"vars\") {\n\t\t\tlist = list.filter((c) => {\n\t\t\t\tconst k = (c.chunkKind || \"\").toLowerCase();\n\t\t\t\treturn k.includes(\"var\") || k.includes(\"const\") || k.includes(\"field\");\n\t\t\t});\n\t\t} else if (activeFilter === \"types\") {\n\t\t\tlist = list.filter((c) => {\n\t\t\t\tconst k = (c.chunkKind || \"\").toLowerCase();\n\t\t\t\treturn k.includes(\"type\") || k.includes(\"interface\") || k.includes(\"enum\");\n\t\t\t});\n\t\t}\n\n\t\tif (searchQuery.trim().length > 0) {\n\t\t\tconst q = searchQuery.toLowerCase().trim();\n\t\t\tconst terms = q.split(/\\s+/).filter(Boolean);\n\t\t\tlist = list.filter((c) => {\n\t\t\t\tconst name = (c.qualifiedName || c.relPath || \"\").toLowerCase();\n\t\t\t\tconst sig = (c.signature || \"\").toLowerCase();\n\t\t\t\tconst content = (c.content || \"\").toLowerCase();\n\t\t\t\tconst kind = (c.chunkKind || \"\").toLowerCase();\n\t\t\t\treturn terms.every(\n\t\t\t\t\t(term) =>\n\t\t\t\t\t\tname.includes(term) ||\n\t\t\t\t\t\tsig.includes(term) ||\n\t\t\t\t\t\tcontent.includes(term) ||\n\t\t\t\t\t\tkind.includes(term),\n\t\t\t\t);\n\t\t\t});\n\t\t}\n\n\t\treturn list;\n\t}, [chunks, activeFilter, searchQuery]);\n\n\tif (isLoading) {\n\t\treturn (",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreChunksView.tsx",
+    "kind": "variable",
+    "name": "filteredChunks",
+    "start_line": 42,
+    "end_line": 80,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "id": "a55e7ba2638f7e377c28195aa9861d70c601318d5d02de6a5f98ab95abda39ab",
+  "text": "\t\t\t\t\t\t\t)\n\t\t\t\t\t\t) : filteredChunks.length > 0 ? (\n\t\t\t\t\t\t\tfilteredChunks.map((chunk, idx) => {\n\t\t\t\t\t\t\t\tconst badge = getSymbolKindBadge(chunk.chunkKind);\n\t\t\t\t\t\t\t\tconst IconComp = badge.icon;\n\t\t\t\t\t\t\t\tconst isCurrent = idx === selectedIndex;\n\t\t\t\t\t\t\t\treturn (\n\t\t\t\t\t\t\t\t\t<button",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreSearchBox.tsx",
+    "kind": "variable",
+    "name": "IconComp",
+    "start_line": 391,
+    "end_line": 391,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

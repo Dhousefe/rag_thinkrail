@@ -1,0 +1,12 @@
+{
+  "id": "117e246f183aedee153748458f3e2b8900038c9009cbf01df2ca55c4c1c3bf67",
+  "file": "apps\\web\\src\\panels\\neural-core\\cameraController.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\cameraController.ts",
+  "kind": "variable",
+  "name": "panFactor",
+  "start_line": 121,
+  "end_line": 121,
+  "content": "\t}\n\n\tpublic panBy(deltaX: number, deltaY: number) {\n\t\tthis.flyTarget = null;\n\t\tconst panFactor = Math.max(0.001, this.distance * 0.0022);\n\n\t\t// Vetor Right da câmera no plano horizontal\n\t\tconst rightX = Math.cos(this.theta);",
+  "token_estimate": 56,
+  "created_at": 1794331100881
+}

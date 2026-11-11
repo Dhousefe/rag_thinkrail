@@ -1,0 +1,12 @@
+{
+  "id": "5be3c6c5211b0d338a4460fed3f51606a7b8c69643caddf2a7155ff2c17ececc",
+  "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "kind": "variable",
+  "name": "midZ",
+  "start_line": 1212,
+  "end_line": 1212,
+  "content": "\t\t\t// Trilha ímpar desvia primeiro em X, trilha par desvia primeiro em Z.\n\t\t\t// Isso divide o tráfego espacial pela metade, impedindo linhas colineares cruzadas.\n\t\t\tconst routeOrder = (edge.source + edge.target) % 2 === 0;\n\t\t\tconst midX = p1[0] + (p2[0] - p1[0]) * (0.45 + (pairHash % 3) * 0.05);\n\t\t\tconst midZ = p1[2] + (p2[2] - p1[2]) * (0.45 + (pairHash % 3) * 0.05);\n\n\t\t\t// Segmentos da trilha PCB com vias anti-transfixação:\n\t\t\tconst tracePts: [number, number, number][] = routeOrder",
+  "token_estimate": 122,
+  "created_at": 1794331101064
+}

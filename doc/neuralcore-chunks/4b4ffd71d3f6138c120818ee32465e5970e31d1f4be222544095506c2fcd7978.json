@@ -1,0 +1,12 @@
+{
+  "id": "4b4ffd71d3f6138c120818ee32465e5970e31d1f4be222544095506c2fcd7978",
+  "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "kind": "variable",
+  "name": "vy",
+  "start_line": 1138,
+  "end_line": 1138,
+  "content": "\t\t\tconst [tx0, ty0, tz0] = this.cameraOrbit.target || [0, 0, 0];\n\t\t\tfor (let i = 0; i < this.vectorNodes.length; i++) {\n\t\t\t\tconst node = this.vectorNodes[i]!;\n\t\t\t\tconst vx = node.position[0] - tx0;\n\t\t\t\tconst vy = node.position[1] - ty0;\n\t\t\t\tconst vz = node.position[2] - tz0;\n\t\t\t\tconst rx = vx * cosO - vz * sinO;\n\t\t\t\tconst rz = vx * sinO + vz * cosO;",
+  "token_estimate": 88,
+  "created_at": 1794331101175
+}

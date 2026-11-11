@@ -1,0 +1,12 @@
+{
+  "id": "fd2cb28f0a20efdc2f57d934bec0374b82ceee2c709f75685bfeffbb3dd40d97",
+  "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "kind": "variable",
+  "name": "base",
+  "start_line": 914,
+  "end_line": 914,
+  "content": "\t\t}\n\t\tconst [colR, colG, colB, colA] = col;\n\n\t\tconst polyKind = getPolygonKindForFile(n.fileExtension || n.relPath || n.path);\n\t\tconst base = vOffset;\n\n\t\tif (polyKind === \"cube\") {\n\t\t\t// Cubo 3D (TypeScript/React): 8 vértices, 12 arestas",
+  "token_estimate": 60,
+  "created_at": 1794331101041
+}

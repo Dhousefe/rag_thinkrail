@@ -1,0 +1,12 @@
+{
+  "id": "5ad0d215b4e0efdea7e682af5bf39c7b570b7ee97aaf40079170ba5114d66d70",
+  "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "kind": "variable",
+  "name": "other",
+  "start_line": 774,
+  "end_line": 774,
+  "content": "\n\t// 2. Mapeamento Semântico no Código / AST: relações por imports, callers e types de métodos\n\tfor (let i = 0; i < nodes.length; i++) {\n\t\tif (i === selectedIndex) continue;\n\t\tconst other = nodes[i];\n\t\tif (!other) continue;\n\n\t\tconst otherNormRel = (other.relPath || other.path || \"\").toLowerCase();",
+  "token_estimate": 75,
+  "created_at": 1794331101030
+}

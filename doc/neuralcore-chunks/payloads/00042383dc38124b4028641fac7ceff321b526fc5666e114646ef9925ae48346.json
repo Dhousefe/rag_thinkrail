@@ -1,0 +1,13 @@
+{
+  "id": "00042383dc38124b4028641fac7ceff321b526fc5666e114646ef9925ae48346",
+  "text": "\t// Filtra itens com base na faceta selecionada\n\tconst filteredNodes = useMemo(() => {\n\t\tif (categoryFilter === \"all\") return searchMatches;\n\t\treturn searchMatches.filter((n) => {\n\t\t\tconst k = (n.chunkKind || \"\").toLowerCase();\n\t\t\tif (categoryFilter === \"class\") {\n\t\t\t\treturn (\n\t\t\t\t\tk.includes(\"class\") || k.includes(\"struct\") || k.includes(\"impl\") || k.includes(\"model\")",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreSearchBox.tsx",
+    "kind": "variable",
+    "name": "k",
+    "start_line": 98,
+    "end_line": 98,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

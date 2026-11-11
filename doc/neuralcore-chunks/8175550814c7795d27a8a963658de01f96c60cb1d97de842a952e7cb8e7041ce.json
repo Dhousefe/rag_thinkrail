@@ -1,0 +1,12 @@
+{
+  "id": "8175550814c7795d27a8a963658de01f96c60cb1d97de842a952e7cb8e7041ce",
+  "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "kind": "variable",
+  "name": "dy",
+  "start_line": 783,
+  "end_line": 783,
+  "content": "\t\t\tconst px = cx + (rx / depth) * scale * 5.6;\n\t\t\tconst py = cy - (ry / depth) * scale * 5.6;\n\n\t\t\tconst dx = screenX - px;\n\t\t\tconst dy = screenY - py;\n\t\t\tconst d = Math.sqrt(dx * dx + dy * dy);\n\n\t\t\t// Raio aparente do polígono 3D projetado na tela:",
+  "token_estimate": 62,
+  "created_at": 1794331101140
+}

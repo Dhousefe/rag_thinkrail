@@ -1,0 +1,12 @@
+{
+  "id": "be6a63890f7631ae5f54e7f8526ef168d13100e2594d2e55b68b03f63a0140c3",
+  "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "kind": "variable",
+  "name": "tz",
+  "start_line": 677,
+  "end_line": 677,
+  "content": "\n\t\t// Componentes de translação da visão V: -dot(axis, eye)\n\t\tconst tx = -(x0 * eyeX + x1 * eyeY + x2 * eyeZ);\n\t\tconst ty = -(y0 * eyeX + y1 * eyeY + y2 * eyeZ);\n\t\tconst tz = -(z0 * eyeX + z1 * eyeY + z2 * eyeZ);\n\n\t\t// Projeção perspectiva WebGPU (NDC z in [0, 1]) com frustum amplo e estável\n\t\tconst fov = Math.PI / 4;",
+  "token_estimate": 80,
+  "created_at": 1794331101128
+}

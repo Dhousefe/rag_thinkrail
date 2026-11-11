@@ -1,0 +1,13 @@
+{
+  "id": "3d85419d31a3960b105dde189adbb168db21273ddc310d7dbd6f5c4af62d37aa",
+  "text": "",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\types.ts",
+    "kind": "file",
+    "name": "types.ts",
+    "start_line": 1,
+    "end_line": 28,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

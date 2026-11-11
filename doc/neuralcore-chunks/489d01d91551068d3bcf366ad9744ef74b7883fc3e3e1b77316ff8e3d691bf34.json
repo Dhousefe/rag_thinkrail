@@ -1,0 +1,12 @@
+{
+  "id": "489d01d91551068d3bcf366ad9744ef74b7883fc3e3e1b77316ff8e3d691bf34",
+  "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "kind": "variable",
+  "name": "polyKind",
+  "start_line": 913,
+  "end_line": 913,
+  "content": "\t\t\tcol = resolveFileTypeColor(n.fileExtension || n.relPath || n.path, n.module);\n\t\t}\n\t\tconst [colR, colG, colB, colA] = col;\n\n\t\tconst polyKind = getPolygonKindForFile(n.fileExtension || n.relPath || n.path);\n\t\tconst base = vOffset;\n\n\t\tif (polyKind === \"cube\") {",
+  "token_estimate": 66,
+  "created_at": 1794331101041
+}

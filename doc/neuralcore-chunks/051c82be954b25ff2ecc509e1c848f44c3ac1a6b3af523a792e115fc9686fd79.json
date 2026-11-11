@@ -1,0 +1,12 @@
+{
+  "id": "051c82be954b25ff2ecc509e1c848f44c3ac1a6b3af523a792e115fc9686fd79",
+  "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "kind": "variable",
+  "name": "out",
+  "start_line": 690,
+  "end_line": 690,
+  "content": "\t\t// Termos exatos da linha 2 da matriz de projeção P (sem distorção de -z0)\n\t\tconst p22 = far * rangeInv;\n\t\tconst p23 = near * far * rangeInv;\n\n\t\tconst out = new Float32Array(16);\n\t\tout[0] = (f / aspect) * x0;\n\t\tout[1] = f * y0;\n\t\tout[2] = p22 * z0;",
+  "token_estimate": 63,
+  "created_at": 1794331101131
+}

@@ -1,0 +1,12 @@
+{
+  "id": "66749ede075c49ae2ff6157ab80c32e6cd089feea61add0966357156de4b3cdc",
+  "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "kind": "variable",
+  "name": "zoomFactor",
+  "start_line": 1056,
+  "end_line": 1056,
+  "content": "\t\tconst cy = h / 2;\n\t\tconst scale = Math.min(w, h) * 0.22;\n\n\t\tconst baseDist = Math.max(1.0, this.cameraOrbit.distance);\n\t\tconst zoomFactor = 5.6 / baseDist;\n\n\t\t// 1. Projeção da Forma Primária no Canvas2D (apenas se habilitada)\n\t\tif (this.showCentralPolygon) {",
+  "token_estimate": 66,
+  "created_at": 1794331101164
+}

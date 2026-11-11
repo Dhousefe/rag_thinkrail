@@ -1,0 +1,13 @@
+{
+  "id": "4c18c45efba7b3f36a0137bf62ddadff817d27d1fe5a074d3245d421984a8fc9",
+  "text": "\n\t\treturn out;\n\t}\n\n\tprivate createRotationMatrix(ax: number, ay: number): Float32Array {\n\t\tconst out = new Float32Array(16);\n\t\tconst cx = Math.cos(ax);\n\t\tconst sx = Math.sin(ax);\n\t\tconst cy = Math.cos(ay);\n\t\tconst sy = Math.sin(ay);\n\n\t\tout[0] = cy;\n\t\tout[2] = sy;\n\t\tout[5] = cx;\n\t\tout[6] = -sx;\n\t\tout[8] = -sy;\n\t\tout[9] = sx * cy;\n\t\tout[10] = cx * cy;\n\t\tout[15] = 1.0;\n\t\treturn out;\n\t}\n\n\t/**\n\t * Detecta com precisão determinística o polígono vetorial sob as coordenadas da tela (mouse hover / clique).",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+    "kind": "method",
+    "name": "NeuralCoreEngine.createRotationMatrix",
+    "start_line": 714,
+    "end_line": 730,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

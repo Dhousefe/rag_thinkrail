@@ -1,0 +1,12 @@
+{
+  "id": "5441cb193105900d54483400888be08fd1c00a69f3f0a072f84a950901f9cee8",
+  "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "kind": "variable",
+  "name": "edgeIndices",
+  "start_line": 48,
+  "end_line": 48,
+  "content": "\t\tvertexFloats.push(px, py, pz, 0.0, 0.85, 1.0, 0.9);\n\t}\n\n\t// 32 Arestas conectando os vértices que diferem em exatamente 1 bit\n\tconst edgeIndices: number[] = [];\n\tfor (let i = 0; i < 16; i++) {\n\t\tfor (let bit = 0; bit < 4; bit++) {\n\t\t\tconst j = i ^ (1 << bit);",
+  "token_estimate": 66,
+  "created_at": 1794331100978
+}

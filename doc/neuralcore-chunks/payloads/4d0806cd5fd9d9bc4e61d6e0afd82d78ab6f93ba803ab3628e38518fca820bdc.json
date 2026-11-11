@@ -1,0 +1,13 @@
+{
+  "id": "4d0806cd5fd9d9bc4e61d6e0afd82d78ab6f93ba803ab3628e38518fca820bdc",
+  "text": "\tprivate calculateViewProjMatrix(aspect: number): Float32Array {\n\t\tconst { theta, phi, distance, target } = this.cameraOrbit;\n\t\tconst tx0 = target ? target[0] : 0;\n\t\tconst ty0 = target ? target[1] : 0;\n\t\tconst tz0 = target ? target[2] : 0;\n\n\t\tconst eyeX = tx0 + distance * Math.cos(phi) * Math.sin(theta);\n\t\tconst eyeY = ty0 + distance * Math.sin(phi);",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+    "kind": "variable",
+    "name": "tz0",
+    "start_line": 634,
+    "end_line": 634,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

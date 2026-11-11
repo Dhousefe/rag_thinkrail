@@ -1,0 +1,12 @@
+{
+  "id": "32d4290a94b68bd968f446cf90c5732f652e4b9947b865faa1a75670df3fdcc1",
+  "file": "apps\\web\\src\\panels\\neural-core\\cameraController.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\cameraController.ts",
+  "kind": "class",
+  "name": "OrbitCameraController",
+  "start_line": 1,
+  "end_line": 328,
+  "content": "",
+  "token_estimate": 0,
+  "created_at": 1794331100868
+}

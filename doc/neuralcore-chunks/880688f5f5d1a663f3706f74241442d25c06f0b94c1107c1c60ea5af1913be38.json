@@ -1,0 +1,12 @@
+{
+  "id": "880688f5f5d1a663f3706f74241442d25c06f0b94c1107c1c60ea5af1913be38",
+  "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "kind": "variable",
+  "name": "distCursor",
+  "start_line": 938,
+  "end_line": 938,
+  "content": "\t\t\tlet isWithinCursorRadius = false;\n\t\t\tif (cursor) {\n\t\t\t\tconst cdx = proj.px - cursor.x;\n\t\t\t\tconst cdy = proj.py - cursor.y;\n\t\t\t\tconst distCursor = Math.sqrt(cdx * cdx + cdy * cdy);\n\t\t\t\tif (distCursor <= cursorRadiusPx) {\n\t\t\t\t\tisWithinCursorRadius = true;\n\t\t\t\t}",
+  "token_estimate": 66,
+  "created_at": 1794331101155
+}

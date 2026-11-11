@@ -1,0 +1,13 @@
+{
+  "id": "d6e0dcdbb917d0a08d8973b6c643758ec86201517c7ba22ac20f2a4d17d86d5e",
+  "text": "\t\tconst isUnrelated = hasActiveSelection && !isSelected && !isRelated;\n\n\t\tconst isHighlight = i === highlightedNodeIndex;\n\t\tconst isMatched = Boolean(n.isMatchedBySearch);\n\t\tconst isSearchingTarget = Boolean(searchingAnim && searchingAnim.nodeId === n.id);\n\n\t\t// Tamanho base reduzido e harmonioso para visual limpo sem sobreposição\n\t\tlet s = 0.024;",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+    "kind": "variable",
+    "name": "isSearchingTarget",
+    "start_line": 853,
+    "end_line": 853,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

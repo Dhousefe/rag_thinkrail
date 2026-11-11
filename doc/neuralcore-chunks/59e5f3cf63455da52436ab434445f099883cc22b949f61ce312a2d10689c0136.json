@@ -1,0 +1,12 @@
+{
+  "id": "59e5f3cf63455da52436ab434445f099883cc22b949f61ce312a2d10689c0136",
+  "file": "apps\\web\\src\\panels\\neural-core\\resolvePivotNode.test.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\resolvePivotNode.test.ts",
+  "kind": "variable",
+  "name": "result",
+  "start_line": 54,
+  "end_line": 54,
+  "content": "\t\texpect(result?.id).toBe(\"node-1\");\n\t});\n\n\tit(\"resolves by base class name when full path is truncated or relative\", () => {\n\t\tconst result = resolvePivotNode(\"neuralEngine.ts\", mockNodes);\n\t\texpect(result?.id).toBe(\"node-2\");\n\t});\n",
+  "token_estimate": 59,
+  "created_at": 1794331101187
+}

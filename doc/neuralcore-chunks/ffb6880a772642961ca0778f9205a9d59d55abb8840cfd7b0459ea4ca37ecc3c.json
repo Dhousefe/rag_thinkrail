@@ -1,0 +1,12 @@
+{
+  "id": "ffb6880a772642961ca0778f9205a9d59d55abb8840cfd7b0459ea4ca37ecc3c",
+  "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "kind": "variable",
+  "name": "isEdgeUnrelated",
+  "start_line": 1150,
+  "end_line": 1150,
+  "content": "\n\t\t\tconst isConnectedToSelected =\n\t\t\t\thasActiveSelection &&\n\t\t\t\t(edge.source === selectedNodeIndex || edge.target === selectedNodeIndex);\n\t\t\tconst isEdgeUnrelated = hasActiveSelection && !isConnectedToSelected;\n\n\t\t\tconst p1 = n1.position;\n\t\t\tconst p2 = n2.position;",
+  "token_estimate": 67,
+  "created_at": 1794331101059
+}

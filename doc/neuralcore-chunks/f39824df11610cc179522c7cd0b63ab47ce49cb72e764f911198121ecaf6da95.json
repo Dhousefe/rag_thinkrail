@@ -1,0 +1,12 @@
+{
+  "id": "f39824df11610cc179522c7cd0b63ab47ce49cb72e764f911198121ecaf6da95",
+  "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "kind": "variable",
+  "name": "r",
+  "start_line": 899,
+  "end_line": 899,
+  "content": "\t\t\tcol = [baseMod[0] * 0.65, baseMod[1] * 0.65, baseMod[2] * 0.65, 0.22];\n\t\t} else if (isSearchingTarget && searchingAnim) {\n\t\t\t// Transição de cor gradativa: do ciano vibrante ao magenta e ouro esmeralda vivo\n\t\t\tconst p = Math.max(0, Math.min(1, searchingAnim.animProgress));\n\t\t\tconst r = 0.1 + p * 0.9;\n\t\t\tconst g = 0.9 - Math.sin(p * Math.PI) * 0.4 + p * 0.3;\n\t\t\tconst b = 1.0 - p * 0.85;\n\t\t\tcol = [Math.min(1, r), Math.min(1, g), Math.min(1, b), 1.0];",
+  "token_estimate": 114,
+  "created_at": 1794331101040
+}

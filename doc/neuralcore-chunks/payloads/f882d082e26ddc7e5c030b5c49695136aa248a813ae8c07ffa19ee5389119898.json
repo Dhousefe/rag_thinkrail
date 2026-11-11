@@ -1,0 +1,13 @@
+{
+  "id": "f882d082e26ddc7e5c030b5c49695136aa248a813ae8c07ffa19ee5389119898",
+  "text": "\t\t\t\tmodule: \"apps/web\",\n\t\t\t\tposition: [-1, 0, 1] as [number, number, number],\n\t\t\t},\n\t\t];\n\t\tconst edges = [\n\t\t\t{ source: 0, target: 1, kind: \"calls\" as const, similarity: 0.9 },\n\t\t\t{ source: 0, target: 2, kind: \"imports\" as const, similarity: 0.8 },\n\t\t];\n\n\t\tit(\"identifica vizinhos e tipos de relação na seleção do nó\", () => {\n\t\t\tconst rels = computeNodeRelations(0, nodes, edges);",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\semanticFingerprint.test.ts",
+    "kind": "variable",
+    "name": "edges",
+    "start_line": 170,
+    "end_line": 173,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

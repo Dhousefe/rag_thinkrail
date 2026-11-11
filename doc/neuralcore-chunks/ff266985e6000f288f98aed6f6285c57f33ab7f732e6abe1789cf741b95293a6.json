@@ -1,0 +1,12 @@
+{
+  "id": "ff266985e6000f288f98aed6f6285c57f33ab7f732e6abe1789cf741b95293a6",
+  "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "kind": "variable",
+  "name": "upY",
+  "start_line": 651,
+  "end_line": 651,
+  "content": "\t\tconst z2 = dirZ / zLen;\n\n\t\t// Vetor Up de referência com proteção contra singularidade de Gimbal Lock em vista zenital (|phi| -> pi/2)\n\t\tlet upX = 0;\n\t\tlet upY = 1;\n\t\tlet upZ = 0;\n\t\tif (Math.abs(z0) < 0.0001 && Math.abs(z2) < 0.0001) {\n\t\t\t// Se a câmera estiver alinhada verticalmente com o eixo Y, usa o vetor Z como up secundário",
+  "token_estimate": 84,
+  "created_at": 1794331101123
+}

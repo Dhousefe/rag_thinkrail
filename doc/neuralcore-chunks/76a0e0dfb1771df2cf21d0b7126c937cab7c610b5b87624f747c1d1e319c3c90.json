@@ -1,0 +1,12 @@
+{
+  "id": "76a0e0dfb1771df2cf21d0b7126c937cab7c610b5b87624f747c1d1e319c3c90",
+  "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "kind": "variable",
+  "name": "relations",
+  "start_line": 838,
+  "end_line": 838,
+  "content": "\tconst edgeIndices: number[] = [];\n\tlet vOffset = 0;\n\n\t// Calcula relações e dependências caso haja polígono selecionado\n\tconst relations = computeNodeRelations(selectedNodeIndex, nodes, edges);\n\tconst hasActiveSelection =\n\t\tselectedNodeIndex !== null && selectedNodeIndex >= 0 && selectedNodeIndex < nodes.length;\n",
+  "token_estimate": 79,
+  "created_at": 1794331101035
+}

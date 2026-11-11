@@ -1,0 +1,13 @@
+{
+  "id": "a39243d5aa2aff377a67ecc499be6da53bf8c6ef4a84b96b30d9c05a7e64385f",
+  "text": "\t\t\t\t\t>\n\t\t\t\t\t\t{searchDropdownTab === \"nodes\" ? (\n\t\t\t\t\t\t\tfilteredNodes.length > 0 ? (\n\t\t\t\t\t\t\t\tfilteredNodes.map((n, idx) => {\n\t\t\t\t\t\t\t\t\tconst modStyle = getModuleClasses(n.module);\n\t\t\t\t\t\t\t\t\tconst badge = getSymbolKindBadge(n.chunkKind);\n\t\t\t\t\t\t\t\t\tconst IconComp = badge.icon;\n\t\t\t\t\t\t\t\t\tconst isCurrent = idx === selectedIndex;",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreSearchBox.tsx",
+    "kind": "variable",
+    "name": "modStyle",
+    "start_line": 298,
+    "end_line": 298,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

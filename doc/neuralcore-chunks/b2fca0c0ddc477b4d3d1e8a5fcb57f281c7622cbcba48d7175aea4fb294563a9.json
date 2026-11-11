@@ -1,0 +1,12 @@
+{
+  "id": "b2fca0c0ddc477b4d3d1e8a5fcb57f281c7622cbcba48d7175aea4fb294563a9",
+  "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "kind": "variable",
+  "name": "isMatched",
+  "start_line": 920,
+  "end_line": 920,
+  "content": "\t\t\t// Se houver seleção ativa, suprime nós não relacionados\n\t\t\tif (isUnrelated) continue;\n\n\t\t\tconst isHovered = i === this.highlightedNodeIndex;\n\t\t\tconst isMatched = Boolean(node.isMatchedBySearch);\n\t\t\tconst isSearchingTarget = this.searchingNodeId === node.id;\n\t\t\tconst methodsCount = node.methods?.length || 0;\n",
+  "token_estimate": 79,
+  "created_at": 1794331101152
+}

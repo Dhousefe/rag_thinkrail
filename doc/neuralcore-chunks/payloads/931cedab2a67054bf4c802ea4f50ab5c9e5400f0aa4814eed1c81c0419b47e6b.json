@@ -1,0 +1,13 @@
+{
+  "id": "931cedab2a67054bf4c802ea4f50ab5c9e5400f0aa4814eed1c81c0419b47e6b",
+  "text": "\t\t\t\t? this.vectorNodes.filter((n) => this.visibleModules.has(n.module))\n\t\t\t\t: this.vectorNodes;\n\n\t\tconst now = performance.now();\n\t\tconst elapsed = now - this.searchAnimStartTime;\n\t\tconst searchingAnim = this.searchingNodeId\n\t\t\t? {\n\t\t\t\t\tnodeId: this.searchingNodeId,",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+    "kind": "variable",
+    "name": "elapsed",
+    "start_line": 273,
+    "end_line": 273,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

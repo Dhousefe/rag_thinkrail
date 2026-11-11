@@ -1,0 +1,13 @@
+{
+  "id": "9ec653463ee816f2cbcd8d41b4f9709a93a2ee61736706fe345cc85542513508",
+  "text": "\t\thash |= 0;\n\t}\n\tconst hue = Math.abs(hash % 360);\n\t// Converte HSV para RGB básico para cor viva\n\tconst h = hue / 60;\n\tconst c = 0.85;\n\tconst x = c * (1 - Math.abs((h % 2) - 1));\n\tlet r = 0;",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+    "kind": "variable",
+    "name": "h",
+    "start_line": 459,
+    "end_line": 459,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

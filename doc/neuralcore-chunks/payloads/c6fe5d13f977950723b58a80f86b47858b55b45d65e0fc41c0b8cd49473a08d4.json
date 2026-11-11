@@ -1,0 +1,13 @@
+{
+  "id": "c6fe5d13f977950723b58a80f86b47858b55b45d65e0fc41c0b8cd49473a08d4",
+  "text": "",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\resolvePivotNode.ts",
+    "kind": "file",
+    "name": "resolvePivotNode.ts",
+    "start_line": 1,
+    "end_line": 65,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

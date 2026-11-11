@@ -1,0 +1,12 @@
+{
+  "id": "dc25b443a0357a525cd80228be054bd9ce0fa6e3207524cf69edd2ce7f099eb5",
+  "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "kind": "variable",
+  "name": "mz",
+  "start_line": 1094,
+  "end_line": 1094,
+  "content": "\t\t\t\tconst mRadius = m.orbitRadius ?? 0.16;\n\n\t\t\t\tconst mx = cx + Math.cos(mAngle) * mRadius;\n\t\t\t\tconst my = cy + Math.sin(mAngle) * 0.45 * mRadius;\n\t\t\t\tconst mz = cz + Math.sin(mAngle) * mRadius;\n\n\t\t\t\t// Micro-diamante para a função na sub-órbita\n\t\t\t\tconst ms = s * 0.38;",
+  "token_estimate": 68,
+  "created_at": 1794331101056
+}

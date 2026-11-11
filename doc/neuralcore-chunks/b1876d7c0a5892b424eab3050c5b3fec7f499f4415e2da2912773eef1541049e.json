@@ -1,0 +1,12 @@
+{
+  "id": "b1876d7c0a5892b424eab3050c5b3fec7f499f4415e2da2912773eef1541049e",
+  "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "kind": "variable",
+  "name": "w",
+  "start_line": 837,
+  "end_line": 837,
+  "content": "\t\trelationKind?: \"CALLER\" | \"IMPORT\" | \"TYPE\" | \"DEPENDENCY\" | undefined;\n\t}> {\n\t\tif (!this.showVectorConstellation || this.vectorNodes.length === 0) return [];\n\n\t\tconst w = this.canvas.clientWidth || this.canvas.width;\n\t\tconst h = this.canvas.clientHeight || this.canvas.height;\n\t\tconst cx = w / 2;\n\t\tconst cy = h / 2;",
+  "token_estimate": 80,
+  "created_at": 1794331101141
+}

@@ -1,0 +1,12 @@
+{
+  "id": "20560dce4962e715980dadb0984c27b6f4c28486829c9f4cb5bc00861489cfb8",
+  "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "kind": "variable",
+  "name": "selectedNormRel",
+  "start_line": 739,
+  "end_line": 739,
+  "content": "\tif (!selectedNode) {\n\t\treturn { directNeighbors, callNeighbors, typeNeighbors, importNeighbors };\n\t}\n\n\tconst selectedNormRel = (selectedNode.relPath || selectedNode.path || \"\").toLowerCase();\n\tconst selectedBaseName =\n\t\tselectedNormRel\n\t\t\t.split(\"/\")",
+  "token_estimate": 63,
+  "created_at": 1794331101029
+}

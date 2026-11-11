@@ -1,0 +1,12 @@
+{
+  "id": "1fce1bf31639d41c2442c8c2c60406c3d2242857005c913d4eccf16b66ee3d49",
+  "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "kind": "variable",
+  "name": "h3",
+  "start_line": 654,
+  "end_line": 654,
+  "content": "\n\t// 3. Hash determinístico baseado em nós, métodos, coordenadas vetoriais e arestas\n\tlet h1 = 0xdeadbeef;\n\tlet h2 = 0x41c64e6d;\n\tlet h3 = 0x9e3779b9;\n\tlet h4 = 0x85ebca6b;\n\n\tconst sortedNodes = [...nodes].sort((a, b) => (a.id || \"\").localeCompare(b.id || \"\"));",
+  "token_estimate": 66,
+  "created_at": 1794331101020
+}

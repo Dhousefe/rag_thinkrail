@@ -1,0 +1,13 @@
+{
+  "id": "b4e3529270fdab8fd4a2fed085a3e1539b1e01831646428f23e25706ba1e4c11",
+  "text": "\tlet vOffset = 0;\n\n\tfor (let i = 0; i < count; i++) {\n\t\tconst angle = (i / count) * Math.PI * 2;\n\t\tconst cx = Math.cos(angle) * orbitRadius;\n\t\tconst cy = Math.sin(angle * 2) * 0.4;\n\t\tconst cz = Math.sin(angle) * orbitRadius;\n",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+    "kind": "variable",
+    "name": "cx",
+    "start_line": 174,
+    "end_line": 174,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

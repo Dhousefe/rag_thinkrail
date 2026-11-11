@@ -1,0 +1,13 @@
+{
+  "id": "a2e361a04b481fd8eef85c7fb42196229679168891a2bca0baeb949fec94e0b6",
+  "text": "\n\t\t\tctx.beginPath();\n\t\t\tfor (let i = 0; i < m.indices.length; i += 2) {\n\t\t\t\tconst p1 = projectedPts[m.indices[i]!]!;\n\t\t\t\tconst p2 = projectedPts[m.indices[i + 1]!]!;\n\t\t\t\tif (p1 && p2) {\n\t\t\t\t\tctx.moveTo(p1[0], p1[1]);\n\t\t\t\t\tctx.lineTo(p2[0], p2[1]);",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+    "kind": "variable",
+    "name": "p2",
+    "start_line": 1088,
+    "end_line": 1088,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

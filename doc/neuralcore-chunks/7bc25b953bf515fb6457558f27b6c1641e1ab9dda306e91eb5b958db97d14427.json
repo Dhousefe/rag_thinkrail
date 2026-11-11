@@ -1,0 +1,12 @@
+{
+  "id": "7bc25b953bf515fb6457558f27b6c1641e1ab9dda306e91eb5b958db97d14427",
+  "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "kind": "method",
+  "name": "NeuralCoreEngine.triggerShockwave",
+  "start_line": 459,
+  "end_line": 461,
+  "content": "\t\t\tentries: [{ binding: 0, resource: { buffer: this.cameraBuffer } }],\n\t\t});\n\t}\n\n\tpublic triggerShockwave() {\n\t\tthis.telemetry.shockwavePulse = 1.0;\n\t}\n\n\tpublic setActivity(activity: NeuralActivityState, intensity = 0.5) {\n\t\tthis.telemetry.activity = activity;",
+  "token_estimate": 65,
+  "created_at": 1794331101101
+}

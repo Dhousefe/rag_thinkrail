@@ -1,0 +1,12 @@
+{
+  "id": "cacd71b67935173fad43324cc6e12d3ce6d9390c5068132c40d03aee1df98a15",
+  "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "kind": "variable",
+  "name": "projectedPts",
+  "start_line": 1070,
+  "end_line": 1070,
+  "content": "\t\t\tconst cosPhi = Math.cos(this.cameraOrbit.phi);\n\t\t\tconst sinPhi = Math.sin(this.cameraOrbit.phi);\n\n\t\t\tconst vertexCount = m.vertices.length / 7;\n\t\t\tconst projectedPts: Array<[number, number]> = [];\n\t\t\tfor (let i = 0; i < vertexCount; i++) {\n\t\t\t\tconst off = i * 7;\n\t\t\t\tconst x = m.vertices[off + 0]!;",
+  "token_estimate": 76,
+  "created_at": 1794331101167
+}

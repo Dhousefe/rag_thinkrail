@@ -1,0 +1,12 @@
+{
+  "id": "0568d14ed55ce2bf4899af31eb716a971b84514140a808b84058e3b5f4dc96a9",
+  "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "kind": "variable",
+  "name": "h",
+  "start_line": 747,
+  "end_line": 747,
+  "content": "\t\tif (!this.showVectorConstellation || this.vectorNodes.length === 0) return null;\n\n\t\t// Usa as dimensões CSS reais do canvas para coincidir exatamente com os ponteiros do mouse\n\t\tconst w = this.canvas.clientWidth || this.canvas.width;\n\t\tconst h = this.canvas.clientHeight || this.canvas.height;\n\t\tconst cx = w / 2;\n\t\tconst cy = h / 2;\n\t\tconst scale = Math.min(w, h) * 0.22;",
+  "token_estimate": 94,
+  "created_at": 1794331101133
+}

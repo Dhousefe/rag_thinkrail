@@ -1,0 +1,13 @@
+{
+  "id": "8f9f0b8308cb66aa17d70137eb2969f3346e6555737ca1cc45fdd9f09a21f5c0",
+  "text": "\t\t}\n\n\t\t// 1.1 Renderização de Sub-Órbita de Métodos/Funções para Classes AST\n\t\tif (n.methods && n.methods.length > 0) {\n\t\t\tconst totalM = n.methods.length;\n\t\t\tfor (let mIdx = 0; mIdx < totalM; mIdx++) {\n\t\t\t\tconst m = n.methods[mIdx];\n\t\t\t\tif (!m) continue;",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+    "kind": "variable",
+    "name": "totalM",
+    "start_line": 1085,
+    "end_line": 1085,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

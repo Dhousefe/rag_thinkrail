@@ -1,0 +1,13 @@
+{
+  "id": "b3c0813ca182bb44845a4bc015edf5746c36bb903e9090a6c679e9d2c2d77e47",
+  "text": "\t\t[phi, 0, -invPhi],\n\t\t[phi, 0, invPhi],\n\t];\n\n\tconst vertexFloats: number[] = [];\n\tfor (const [vx, vy, vz] of rawVertices) {\n\t\tconst len = Math.sqrt(vx * vx + vy * vy + vz * vz || 1);\n\t\tconst x = (vx / len) * radius;",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+    "kind": "variable",
+    "name": "vertexFloats",
+    "start_line": 355,
+    "end_line": 355,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

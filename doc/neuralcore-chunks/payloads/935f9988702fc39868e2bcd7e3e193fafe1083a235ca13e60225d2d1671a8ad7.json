@@ -1,0 +1,13 @@
+{
+  "id": "935f9988702fc39868e2bcd7e3e193fafe1083a235ca13e60225d2d1671a8ad7",
+  "text": "\t\t\tfor (const [ptX, ptY, ptZ] of pts) {\n\t\t\t\tvertexFloats.push(ptX, ptY, ptZ, colR, colG, colB, colA);\n\t\t\t\tvOffset++;\n\t\t\t}\n\t\t\tconst dEdges = [0, 2, 0, 3, 0, 4, 0, 5, 1, 2, 1, 3, 1, 4, 1, 5, 2, 4, 4, 3, 3, 5, 5, 2];\n\t\t\tfor (const e of dEdges) edgeIndices.push(base + e);\n\t\t} else if (polyKind === \"star_octahedron\") {\n\t\t\t// Merkaba / Octaedro Estrelado (Estilos CSS/SCSS): dois tetraedros interpenetrados",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+    "kind": "variable",
+    "name": "dEdges",
+    "start_line": 1010,
+    "end_line": 1010,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

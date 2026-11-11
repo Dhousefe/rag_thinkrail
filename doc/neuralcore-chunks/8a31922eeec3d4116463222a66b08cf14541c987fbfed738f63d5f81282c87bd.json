@@ -1,0 +1,12 @@
+{
+  "id": "8a31922eeec3d4116463222a66b08cf14541c987fbfed738f63d5f81282c87bd",
+  "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "kind": "variable",
+  "name": "baseDist",
+  "start_line": 847,
+  "end_line": 847,
+  "content": "\t\tconst cosO = Math.cos(this.cameraOrbit.theta);\n\t\tconst sinO = Math.sin(this.cameraOrbit.theta);\n\t\tconst cosPhi = Math.cos(this.cameraOrbit.phi);\n\t\tconst sinPhi = Math.sin(this.cameraOrbit.phi);\n\t\tconst baseDist = Math.max(1.0, this.cameraOrbit.distance);\n\t\tconst [tx0, ty0, tz0] = this.cameraOrbit.target || [0, 0, 0];\n\n\t\tconst hasActiveSelection =",
+  "token_estimate": 88,
+  "created_at": 1794331101144
+}

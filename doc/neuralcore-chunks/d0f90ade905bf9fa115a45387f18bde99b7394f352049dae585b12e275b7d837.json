@@ -1,0 +1,12 @@
+{
+  "id": "d0f90ade905bf9fa115a45387f18bde99b7394f352049dae585b12e275b7d837",
+  "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "kind": "variable",
+  "name": "baseIdx",
+  "start_line": 1233,
+  "end_line": 1233,
+  "content": "\t\t\t\t\t\t[p2[0], traceY, p2[2]],\n\t\t\t\t\t\t[p2[0], p2[1], p2[2]],\n\t\t\t\t\t];\n\n\t\t\tconst baseIdx = vOffset;\n\t\t\tfor (const [tx, ty, tz] of tracePts) {\n\t\t\t\tvertexFloats.push(tx, ty, tz, trColR, trColG, trColB, alpha);\n\t\t\t\tvOffset++;",
+  "token_estimate": 55,
+  "created_at": 1794331101065
+}

@@ -1,0 +1,12 @@
+{
+  "id": "c870fca6ad6a899fa4004adb07a90b60f63974c4caf38d3bd599a53c0f379404",
+  "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "kind": "variable",
+  "name": "edgeIndices",
+  "start_line": 169,
+  "end_line": 169,
+  "content": "\n// 4. Gerador de Feixes e Satélites de Ferramentas / MCP\nexport function createToolNodeSatellites(count = 6, orbitRadius = 2.4): GeometryMeshData {\n\tconst vertexFloats: number[] = [];\n\tconst edgeIndices: number[] = [];\n\tlet vOffset = 0;\n\n\tfor (let i = 0; i < count; i++) {",
+  "token_estimate": 69,
+  "created_at": 1794331100989
+}

@@ -1,0 +1,13 @@
+{
+  "id": "d3670a6e38c0ebf72796d5fa3098fa9b9e553af7e945deacd361d4af803bada8",
+  "text": "\t}\n\n\tprivate renderGeometricCanvas2D() {\n\t\tif (!this.ctx2d) return;\n\t\tconst ctx = this.ctx2d;\n\t\tconst w = this.canvas.width;\n\t\tconst h = this.canvas.height;\n",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+    "kind": "variable",
+    "name": "ctx",
+    "start_line": 1042,
+    "end_line": 1042,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

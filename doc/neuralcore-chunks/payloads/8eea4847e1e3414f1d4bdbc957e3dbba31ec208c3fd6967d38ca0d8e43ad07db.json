@@ -1,0 +1,13 @@
+{
+  "id": "8eea4847e1e3414f1d4bdbc957e3dbba31ec208c3fd6967d38ca0d8e43ad07db",
+  "text": "\t\t\t\t\t}\n\t\t\t\t}\n\n\t\t\t\t// Indicador direcional de fluxo na chegada ao nó vizinho (Micro-flecha ou anel direcional 3D)\n\t\t\t\tconst arrBase = vOffset;\n\t\t\t\tconst arrSize = 0.018;\n\t\t\t\tconst arrPulse = 0.5 + Math.sin(animTime * 8.0) * 0.5;\n\t\t\t\tconst arrAlpha = Math.max(0.4, arrPulse);",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+    "kind": "variable",
+    "name": "arrBase",
+    "start_line": 1337,
+    "end_line": 1337,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

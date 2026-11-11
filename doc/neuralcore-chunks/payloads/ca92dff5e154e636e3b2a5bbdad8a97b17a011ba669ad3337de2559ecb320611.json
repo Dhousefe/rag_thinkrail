@@ -1,0 +1,13 @@
+{
+  "id": "ca92dff5e154e636e3b2a5bbdad8a97b17a011ba669ad3337de2559ecb320611",
+  "text": "\t\t\t\t\t\tvOffset++;\n\t\t\t\t\t}\n\t\t\t\t}\n\t\t\t}\n\t\t\tconst cubeEdges = [0, 1, 1, 3, 3, 2, 2, 0, 4, 5, 5, 7, 7, 6, 6, 4, 0, 4, 1, 5, 2, 6, 3, 7];\n\t\t\tfor (const e of cubeEdges) edgeIndices.push(base + e);\n\t\t} else if (polyKind === \"tetrahedron\") {\n\t\t\t// Tetraedro Sagrado (Markdown/Docs): 4 vértices, 6 arestas",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+    "kind": "variable",
+    "name": "cubeEdges",
+    "start_line": 927,
+    "end_line": 927,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

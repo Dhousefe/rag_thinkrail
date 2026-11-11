@@ -1,0 +1,12 @@
+{
+  "id": "cb8d95ad7a4b962f6239405836a0c23d4bd4a3207ef035965b6d93761a66dfcf",
+  "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "kind": "variable",
+  "name": "p",
+  "start_line": 235,
+  "end_line": 235,
+  "content": "\t\tfor (const n of this.vectorNodes) {\n\t\t\tif (!q) {\n\t\t\t\tn.isMatchedBySearch = false;\n\t\t\t} else {\n\t\t\t\tconst p = (n.path || \"\").toLowerCase();\n\t\t\t\tconst qn = (n.relPath || \"\").toLowerCase();\n\t\t\t\tconst id = (n.id || \"\").toLowerCase();\n\t\t\t\tconst hasMatchingMethod = (n.methods || []).some(",
+  "token_estimate": 71,
+  "created_at": 1794331101107
+}

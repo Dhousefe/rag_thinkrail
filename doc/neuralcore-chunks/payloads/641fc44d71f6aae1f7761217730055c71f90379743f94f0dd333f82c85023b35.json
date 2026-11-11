@@ -1,0 +1,13 @@
+{
+  "id": "641fc44d71f6aae1f7761217730055c71f90379743f94f0dd333f82c85023b35",
+  "text": "\t\tedgeIndices.push(e + 4);\n\t}\n\n\t// Arestas de Harmonia Sagrada conectando os centros das faces opostas\n\tconst harmEdges = [0, 5, 0, 6, 0, 7, 4, 1, 4, 2, 4, 3];\n\tedgeIndices.push(...harmEdges);\n\n\treturn {",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+    "kind": "variable",
+    "name": "harmEdges",
+    "start_line": 262,
+    "end_line": 262,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

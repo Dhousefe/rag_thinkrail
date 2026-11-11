@@ -1,0 +1,12 @@
+{
+  "id": "316bd815d62d184963471e841fc274ca11105e82fccdbfce62c0e212e27c75c2",
+  "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "kind": "variable",
+  "name": "format",
+  "start_line": 347,
+  "end_line": 347,
+  "content": "\t\t\t\tconst adapter = await (navigator as any).gpu.requestAdapter();\n\t\t\t\tif (adapter) {\n\t\t\t\t\tthis.device = await adapter.requestDevice();\n\t\t\t\t\tthis.context = this.canvas.getContext(\"webgpu\") as unknown as GPUCanvasContext;\n\t\t\t\t\tconst format = (navigator as any).gpu.getPreferredCanvasFormat();\n\t\t\t\t\tthis.context.configure({\n\t\t\t\t\t\tdevice: this.device!,\n\t\t\t\t\t\tformat,",
+  "token_estimate": 91,
+  "created_at": 1794331101112
+}

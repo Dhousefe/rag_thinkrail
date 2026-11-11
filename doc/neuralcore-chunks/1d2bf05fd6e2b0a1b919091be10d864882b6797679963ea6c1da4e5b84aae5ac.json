@@ -1,0 +1,12 @@
+{
+  "id": "1d2bf05fd6e2b0a1b919091be10d864882b6797679963ea6c1da4e5b84aae5ac",
+  "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "kind": "method",
+  "name": "NeuralCoreEngine.uploadVectorMesh",
+  "start_line": 319,
+  "end_line": 338,
+  "content": "\t\t}\n\t\tthis.device.queue.writeBuffer(this.primaryIBuffer, 0, this.primaryMesh.indices as any);\n\t}\n\n\tprivate uploadVectorMesh() {\n\t\tif (!this.device || !this.vectorMesh) return;\n\t\tif (!this.vectorVBuffer || this.vectorVBuffer.size < this.vectorMesh.vertices.byteLength) {\n\t\t\tthis.vectorVBuffer?.destroy();\n\t\t\tthis.vectorVBuffer = this.device.createBuffer({\n\t\t\t\tsize: Math.max(262144, this.vectorMesh.vertices.byteLength * 2),\n\t\t\t\tusage: GPU_BUFFER_USAGE.VERTEX | GPU_BUFFER_USAGE.COPY_DST,\n\t\t\t});\n\t\t}\n\t\tthis.device.queue.writeBuffer(this.vectorVBuffer, 0, this.vectorMesh.vertices as any);\n\n\t\tif (!this.vectorIBuffer || this.vectorIBuffer.size < this.vectorMesh.indices.byteLength) {\n\t\t\tthis.vectorIBuffer?.destroy();\n\t\t\tthis.vectorIBuffer = this.device.createBuffer({\n\t\t\t\tsize: Math.max(131072, this.vectorMesh.indices.byteLength * 2),\n\t\t\t\tusage: GPU_BUFFER_USAGE.INDEX | GPU_BUFFER_USAGE.COPY_DST,\n\t\t\t});\n\t\t}\n\t\tthis.device.queue.writeBuffer(this.vectorIBuffer, 0, this.vectorMesh.indices as any);\n\t}\n\n\tasync init(): Promise<boolean> {\n\t\tif (\"gpu\" in navigator) {",
+  "token_estimate": 266,
+  "created_at": 1794331101099
+}

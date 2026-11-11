@@ -1,0 +1,13 @@
+{
+  "id": "8ae7bb1e70e54566011a7198832b77bf3d960eafc21ce0dfb21398502d2de19f",
+  "text": "\tconst [searchDropdownTab, setSearchDropdownTab] = useState<\"nodes\" | \"chunks\">(\"nodes\");\n\tconst [categoryFilter, setCategoryFilter] = useState<SymbolCategoryFilter>(\"all\");\n\tconst [selectedIndex, setSelectedIndex] = useState(0);\n\tconst listContainerRef = useRef<HTMLDivElement | null>(null);\n\tconst containerRef = useRef<HTMLDivElement | null>(null);\n\n\t// Fecha o dropdown se o usuário clicar fora do componente\n\tuseEffect(() => {",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\components\\NeuralCoreSearchBox.tsx",
+    "kind": "variable",
+    "name": "containerRef",
+    "start_line": 78,
+    "end_line": 78,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

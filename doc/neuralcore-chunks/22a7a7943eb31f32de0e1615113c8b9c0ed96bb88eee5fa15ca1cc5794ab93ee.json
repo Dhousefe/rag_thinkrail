@@ -1,0 +1,12 @@
+{
+  "id": "22a7a7943eb31f32de0e1615113c8b9c0ed96bb88eee5fa15ca1cc5794ab93ee",
+  "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "kind": "variable",
+  "name": "z",
+  "start_line": 1075,
+  "end_line": 1075,
+  "content": "\t\t\tfor (let i = 0; i < vertexCount; i++) {\n\t\t\t\tconst off = i * 7;\n\t\t\t\tconst x = m.vertices[off + 0]!;\n\t\t\t\tconst y = m.vertices[off + 1]!;\n\t\t\t\tconst z = m.vertices[off + 2]!;\n\n\t\t\t\tconst rx = x * cosO - z * sinO;\n\t\t\t\tconst rz = x * sinO + z * cosO;",
+  "token_estimate": 62,
+  "created_at": 1794331101169
+}

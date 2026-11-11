@@ -7,6 +7,7 @@
  */
 
 import { cpSync, existsSync, mkdirSync, readdirSync, readFileSync, renameSync, rmSync, statSync, writeFileSync } from "node:fs";
+import { createHash } from "node:crypto";
 import { homedir } from "node:os";
 import { basename, join } from "node:path";
 import { Database } from "bun:sqlite";
@@ -14,6 +15,13 @@ import { Database } from "bun:sqlite";
 const userHome = process.env.USERPROFILE || homedir();
 const hermesHome = join(userHome, ".hermes");
 const projectsDir = join(hermesHome, "projects");
+
+// Garantir que a pasta de projetos exista (cross-OS): cria de forma idempotente no startup
+try {
+	mkdirSync(projectsDir, { recursive: true });
+} catch (e) {
+	console.error("[hermes-mcp] erro ao criar projects dir:", (e as Error).message);
+}
 const activeProjectsFile = join(hermesHome, "active_projects.json");
 const agentSkillsDir = join(userHome, ".agents", "skills");
 const disabledSkillsDir = join(userHome, ".agents", "disabled_skills");
@@ -869,6 +877,154 @@ function handleProjectManager(action: string, slug?: string): string {
 	}
 }
 
+// Handler para upsert de chunk via MCP
+function handleUpsertChunk(params: any): string {
+	try {
+		const project = (params.project || getActiveSlugs()[0] || "project-thinkrail").toString();
+		const chunkId = (params.chunk_id || params.chunkId || params.id || "").toString();
+		if (!chunkId) return "Erro: parâmetro 'chunk_id' obrigatório.";
+
+		const projectDir = join(projectsDir, project);
+		try { mkdirSync(projectDir, { recursive: true }); } catch {}
+		const dbPath = join(projectDir, "hermes.db");
+
+		const db = new Database(dbPath);
+		db.run("PRAGMA journal_mode = WAL;");
+		db.run("PRAGMA synchronous = NORMAL;");
+
+		// Garante tabelas mínimas
+		db.run(`CREATE TABLE IF NOT EXISTS l2j_files (
+			id TEXT PRIMARY KEY,
+			project_name TEXT NOT NULL,
+			path TEXT NOT NULL,
+			sha256 TEXT NOT NULL,
+			mtime_ms INTEGER NOT NULL,
+			indexed_at INTEGER NOT NULL
+		);`);
+
+		db.run(`CREATE TABLE IF NOT EXISTS l2j_chunks (
+			id TEXT PRIMARY KEY,
+			file_id TEXT NOT NULL,
+			symbol_id TEXT,
+			project_name TEXT NOT NULL,
+			path TEXT NOT NULL,
+			chunk_kind TEXT NOT NULL,
+			package_name TEXT,
+			qualified_name TEXT NOT NULL,
+			signature TEXT,
+			content TEXT NOT NULL,
+			keywords TEXT,
+			start_line INTEGER,
+			end_line INTEGER,
+			token_estimate INTEGER,
+			embedding_model TEXT,
+			embedding_dim INTEGER,
+			created_at INTEGER NOT NULL
+		);`);
+
+		db.run(`CREATE TABLE IF NOT EXISTS l2j_embeddings_cache (
+			rowid INTEGER PRIMARY KEY,
+			cache_key TEXT,
+			model TEXT,
+			dim INTEGER,
+			vector_blob BLOB,
+			created_at INTEGER
+		);`);
+
+		db.run(`CREATE VIRTUAL TABLE IF NOT EXISTS l2j_chunk_fts USING fts5(
+			chunk_id UNINDEXED,
+			project_name UNINDEXED,
+			file_id UNINDEXED,
+			path UNINDEXED,
+			qualified_name,
+			signature,
+			content,
+			keywords,
+			tokenize = 'porter unicode61'
+		);`);
+
+		const meta = params.metadata || {};
+		const filePath = (meta.path || meta.file || meta.filePath || "").toString();
+		const content = (params.content || params.text || "").toString();
+		const qualifiedName = (meta.qualified_name || meta.qualifiedName || meta.symbol || "").toString();
+		const signature = (meta.signature || "").toString();
+		const startLine = meta.start_line || meta.startLine || null;
+		const endLine = meta.end_line || meta.endLine || null;
+		const tokenEstimate = meta.token_estimate || Math.max(1, Math.ceil(content.length / 4));
+		const chunkKind = (params.chunk_kind || meta.chunk_kind || "code").toString();
+		const now = Date.now();
+
+		// Determina file_id como sha256(project|path) para compatibilidade com reindex
+		const fileIdSeed = `${project}|${filePath}`;
+		const fileId = createHash("sha256").update(fileIdSeed).digest("hex");
+		const fileSha = createHash("sha256").update(content || filePath).digest("hex");
+
+		// Inserir/atualizar l2j_files (registro leve)
+		db.run(
+			`INSERT OR REPLACE INTO l2j_files(id, project_name, path, sha256, mtime_ms, indexed_at)
+			 VALUES (?, ?, ?, ?, ?, ?);`,
+			[fileId, project, filePath || "", fileSha, now, now],
+		);
+
+		// Remove qualquer chunk FTS pré-existente com mesmo id
+		try { db.run("DELETE FROM l2j_chunk_fts WHERE chunk_id = ?;", chunkId); } catch {}
+		try { db.run("DELETE FROM l2j_chunks WHERE id = ?;", chunkId); } catch {}
+
+		// Insere o chunk principal
+		db.run(
+			`INSERT OR REPLACE INTO l2j_chunks(id, file_id, symbol_id, project_name, path, chunk_kind, package_name, qualified_name, signature, content, keywords, start_line, end_line, token_estimate, embedding_model, embedding_dim, created_at)
+			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`,
+			[
+				chunkId,
+				fileId,
+				null,
+				project,
+				filePath || "",
+				chunkKind,
+				"",
+				qualifiedName || filePath || chunkId,
+				signature || "",
+				content || "",
+				"",
+				startLine,
+				endLine,
+				tokenEstimate,
+				(params.embedding_model || "jina-embeddings-v2-base-code"),
+				(params.embedding && Array.isArray(params.embedding)) ? params.embedding.length : (params.embedding_dim || 0),
+				now,
+			],
+		);
+
+		// Atualiza FTS
+		db.run(
+			`INSERT INTO l2j_chunk_fts(chunk_id, project_name, file_id, path, qualified_name, signature, content, keywords)
+			 VALUES (?, ?, ?, ?, ?, ?, ?, ?);`,
+			[chunkId, project, fileId, filePath || "", qualifiedName || filePath || "", signature || "", content || "", ""],
+		);
+
+		// Se embedding fornecido, insere em l2j_embeddings_cache
+		if (params.embedding && Array.isArray(params.embedding) && params.embedding.length > 0) {
+			try {
+				const f32 = new Float32Array(params.embedding);
+				const blob = Buffer.from(f32.buffer);
+				// Use INSERT OR REPLACE para evitar UNIQUE constraint failures em cache_key
+				db.run(
+					`INSERT OR REPLACE INTO l2j_embeddings_cache(cache_key, model, dim, vector_blob, created_at) VALUES (?, ?, ?, ?, ?);`,
+					[chunkId, params.embedding_model || "jina-embeddings-v2-base-code", f32.length, blob, now],
+				);
+			} catch (e) {
+				// Não falha a operação principal de upsert de chunk se o blob falhar
+				console.error("[hermes-mcp] embedding insert failed:", e);
+			}
+		}
+
+		db.close();
+		return `ok: upserted ${chunkId}`;
+	} catch (err: any) {
+		return `error: ${err?.message || err}`;
+	}
+}
+
 // Definição das ferramentas MCP
 const TOOLS = [
 	{
@@ -986,6 +1142,22 @@ const TOOLS = [
 			required: ["action"],
 		},
 	},
+	// escrita: upsert_chunk aceita { project, chunk_id, embedding, metadata, content }
+	{
+		name: "upsert_chunk",
+		description: "Escreve um chunk + embedding no Hermes DB (l2j_chunks + l2j_embeddings_cache) via MCP.",
+		inputSchema: {
+			type: "object",
+			properties: {
+				project: { type: "string" },
+				chunk_id: { type: "string" },
+				embedding: { type: "array", items: { type: "number" } },
+				metadata: { type: "object" },
+				content: { type: "string" },
+			},
+			required: ["chunk_id"],
+		},
+	},
 ];
 
 // Loop JSON-RPC STDIO
@@ -1042,6 +1214,17 @@ function handleMessage(req: JsonRpcRequest) {
 		case "tools/call": {
 			const toolName = req.params?.name;
 			const args = req.params?.arguments || {};
+
+			// Fast-path: upsert_chunk is a write operation; handle it directly and return immediately
+			if (toolName === "upsert_chunk") {
+				try {
+					const res = handleUpsertChunk(args.arguments || args);
+					sendResponse(req.id, { content: [{ type: "text", text: res }], isError: false });
+				} catch (e: any) {
+					sendResponse(req.id, { content: [{ type: "text", text: `Erro ao executar upsert_chunk: ${e?.message || e}` }], isError: true });
+				}
+				return;
+			}
 
 			(async () => {
 				try {

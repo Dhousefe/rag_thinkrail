@@ -1,0 +1,12 @@
+{
+  "id": "f3c44f262d2b14a956938b99a040c54fedbd95c57e2f9ee3cafdd2ff3ae94c83",
+  "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "kind": "variable",
+  "name": "isHighlight",
+  "start_line": 851,
+  "end_line": 851,
+  "content": "\t\tconst isSelected = hasActiveSelection && i === selectedNodeIndex;\n\t\tconst isRelated = hasActiveSelection && relations.directNeighbors.has(i);\n\t\tconst isUnrelated = hasActiveSelection && !isSelected && !isRelated;\n\n\t\tconst isHighlight = i === highlightedNodeIndex;\n\t\tconst isMatched = Boolean(n.isMatchedBySearch);\n\t\tconst isSearchingTarget = Boolean(searchingAnim && searchingAnim.nodeId === n.id);\n",
+  "token_estimate": 101,
+  "created_at": 1794331101037
+}

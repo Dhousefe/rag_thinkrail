@@ -1,0 +1,12 @@
+{
+  "id": "37078c7452c38aaf85a1a734c3643b66d514c5f36c1e9a1ad1a2bf8c559d9371",
+  "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "kind": "variable",
+  "name": "indices",
+  "start_line": 95,
+  "end_line": 98,
+  "content": "\t\tconst z = (vz / len) * radius;\n\t\tvertexFloats.push(x, y, z, 0.7, 0.3, 1.0, 0.85); // Magenta neural\n\t}\n\n\tconst indices = [\n\t\t0, 11, 0, 5, 0, 1, 0, 7, 0, 10, 3, 9, 3, 4, 3, 2, 3, 6, 3, 8, 1, 5, 5, 9, 9, 4, 4, 2, 2, 10, 10,\n\t\t7, 7, 8, 8, 1, 1, 9, 4, 6, 2, 6, 6, 8, 7, 10, 5, 11, 11, 2, 11, 10, 11, 4, 11, 9, 5, 1, 7, 8,\n\t];\n\n\treturn {\n\t\tvertices: new Float32Array(vertexFloats),",
+  "token_estimate": 95,
+  "created_at": 1794331100983
+}

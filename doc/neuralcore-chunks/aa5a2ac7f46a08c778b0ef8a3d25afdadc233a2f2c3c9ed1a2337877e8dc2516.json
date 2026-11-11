@@ -1,0 +1,12 @@
+{
+  "id": "aa5a2ac7f46a08c778b0ef8a3d25afdadc233a2f2c3c9ed1a2337877e8dc2516",
+  "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "kind": "variable",
+  "name": "GPU_BUFFER_USAGE",
+  "start_line": 19,
+  "end_line": 24,
+  "content": "} from \"./geometry\";\nimport { GEOMETRY_RENDER_WGSL } from \"./shaders.wgsl\";\nimport type { NeuralActivityState, NeuralTelemetryState } from \"./types\";\n\nconst GPU_BUFFER_USAGE = {\n\tUNIFORM: 0x0040,\n\tVERTEX: 0x0020,\n\tINDEX: 0x0010,\n\tCOPY_DST: 0x0008,\n};\n\nexport class NeuralCoreEngine {\n\tprivate canvas: HTMLCanvasElement;",
+  "token_estimate": 80,
+  "created_at": 1794331101092
+}

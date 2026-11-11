@@ -1,0 +1,12 @@
+{
+  "id": "53a91e9448b31cf213eb92c57326d68442923f290c1275ef8a52c734d096e2d8",
+  "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "kind": "variable",
+  "name": "mRadius",
+  "start_line": 1172,
+  "end_line": 1172,
+  "content": "\t\t\t\t\tconst totalM = node.methods.length;\n\t\t\t\t\tfor (let mIdx = 0; mIdx < totalM; mIdx++) {\n\t\t\t\t\t\tconst m = node.methods[mIdx]!;\n\t\t\t\t\t\tconst mAngle = m.orbitAngle ?? (mIdx / totalM) * Math.PI * 2;\n\t\t\t\t\t\tconst mRadius = m.orbitRadius ?? 0.16;\n\n\t\t\t\t\t\tconst mx = vx + Math.cos(mAngle) * mRadius;\n\t\t\t\t\t\tconst my = vy + Math.sin(mAngle) * 0.45 * mRadius;",
+  "token_estimate": 87,
+  "created_at": 1794331101180
+}

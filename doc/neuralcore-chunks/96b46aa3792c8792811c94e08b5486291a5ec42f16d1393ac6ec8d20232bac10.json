@@ -1,0 +1,12 @@
+{
+  "id": "96b46aa3792c8792811c94e08b5486291a5ec42f16d1393ac6ec8d20232bac10",
+  "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "kind": "variable",
+  "name": "impLower",
+  "start_line": 792,
+  "end_line": 792,
+  "content": "\t\t\t\tconst impLower = imp.toLowerCase();\n\t\t\t\treturn impLower.includes(otherBaseName) || impLower.includes(otherQName);\n\t\t\t}) ||\n\t\t\t(other.imports || []).some((imp) => {\n\t\t\t\tconst impLower = imp.toLowerCase();\n\t\t\t\treturn impLower.includes(selectedBaseName) || impLower.includes(selectedQName);\n\t\t\t});\n",
+  "token_estimate": 75,
+  "created_at": 1794331101032
+}

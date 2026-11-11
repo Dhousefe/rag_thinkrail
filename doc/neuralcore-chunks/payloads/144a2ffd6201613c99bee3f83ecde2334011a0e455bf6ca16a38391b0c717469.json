@@ -1,0 +1,13 @@
+{
+  "id": "144a2ffd6201613c99bee3f83ecde2334011a0e455bf6ca16a38391b0c717469",
+  "text": "\t\t\t: null;\n\n\t\t// Raio seguro a partir do cursor para evitar poluição visual (em pixels)\n\t\tconst cursorRadiusPx = 135;\n\t\tconst cursor = this.cursorScreenCoord;\n\n\t\t// 1. Projeção de todos os nós visíveis na tela para uso na repulsão magnética\n\t\tconst allProjectedNodes: Array<{ index: number; px: number; py: number; depth: number }> = [];",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+    "kind": "variable",
+    "name": "cursor",
+    "start_line": 860,
+    "end_line": 860,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

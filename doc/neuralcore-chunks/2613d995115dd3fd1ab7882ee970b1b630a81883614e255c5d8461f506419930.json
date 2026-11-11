@@ -1,0 +1,12 @@
+{
+  "id": "2613d995115dd3fd1ab7882ee970b1b630a81883614e255c5d8461f506419930",
+  "file": "apps\\web\\src\\panels\\neural-core\\semanticFingerprint.test.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\semanticFingerprint.test.ts",
+  "kind": "variable",
+  "name": "fpOriginal",
+  "start_line": 131,
+  "end_line": 131,
+  "content": "\t\t\texpect([\"VERIFIED_AUTHENTIC\", \"HIGH_DENSITY\"]).toContain(fp1.integrityStatus);\n\t\t});\n\n\t\tit(\"detecta adulteração ou mutação de código modificando a impressão digital\", () => {\n\t\t\tconst fpOriginal = computeSemanticFingerprint(mockNodes, mockEdges);\n\t\t\tconst tamperedNodes = [\n\t\t\t\t{\n\t\t\t\t\t...mockNodes[0]!,",
+  "token_estimate": 77,
+  "created_at": 1794331101201
+}

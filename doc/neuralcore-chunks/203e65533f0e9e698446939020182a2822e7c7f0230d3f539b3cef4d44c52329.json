@@ -1,0 +1,12 @@
+{
+  "id": "203e65533f0e9e698446939020182a2822e7c7f0230d3f539b3cef4d44c52329",
+  "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "kind": "variable",
+  "name": "cy",
+  "start_line": 840,
+  "end_line": 840,
+  "content": "\n\t\tconst w = this.canvas.clientWidth || this.canvas.width;\n\t\tconst h = this.canvas.clientHeight || this.canvas.height;\n\t\tconst cx = w / 2;\n\t\tconst cy = h / 2;\n\t\tconst scale = Math.min(w, h) * 0.22;\n\n\t\tconst cosO = Math.cos(this.cameraOrbit.theta);",
+  "token_estimate": 62,
+  "created_at": 1794331101143
+}

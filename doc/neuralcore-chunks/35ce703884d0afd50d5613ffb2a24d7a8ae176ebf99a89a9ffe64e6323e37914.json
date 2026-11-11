@@ -1,0 +1,12 @@
+{
+  "id": "35ce703884d0afd50d5613ffb2a24d7a8ae176ebf99a89a9ffe64e6323e37914",
+  "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "kind": "variable",
+  "name": "impLower",
+  "start_line": 788,
+  "end_line": 788,
+  "content": "\n\t\t// Relação de import no arquivo\n\t\tconst isImported =\n\t\t\t(selectedNode.imports || []).some((imp) => {\n\t\t\t\tconst impLower = imp.toLowerCase();\n\t\t\t\treturn impLower.includes(otherBaseName) || impLower.includes(otherQName);\n\t\t\t}) ||\n\t\t\t(other.imports || []).some((imp) => {",
+  "token_estimate": 68,
+  "created_at": 1794331101032
+}

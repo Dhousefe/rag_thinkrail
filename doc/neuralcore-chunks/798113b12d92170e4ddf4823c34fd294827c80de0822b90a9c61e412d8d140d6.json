@@ -1,0 +1,12 @@
+{
+  "id": "798113b12d92170e4ddf4823c34fd294827c80de0822b90a9c61e412d8d140d6",
+  "file": "apps\\web\\src\\panels\\neural-core\\useNeuralCoreState.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\useNeuralCoreState.ts",
+  "kind": "variable",
+  "name": "rawTarget",
+  "start_line": 76,
+  "end_line": 78,
+  "content": "\t\t\t\t\tconst fileName = activeChatFilePath.split(\"/\").pop() || \"\";\n\t\t\t\t\tactiveChatPivotClass = fileName.replace(/\\.[^.]+$/, \"\");\n\t\t\t\t}\n\n\t\t\t\tconst rawTarget = (toolArgs.target || toolArgs.symbol || toolArgs.target_path) as\n\t\t\t\t\t| string\n\t\t\t\t\t| undefined;\n\t\t\t\tif (rawTarget && typeof rawTarget === \"string\") {\n\t\t\t\t\tconst cleanTarget = rawTarget.trim();\n\t\t\t\t\tif (cleanTarget.includes(\"/\") || cleanTarget.includes(\"\\\\\")) {",
+  "token_estimate": 104,
+  "created_at": 1794331101216
+}

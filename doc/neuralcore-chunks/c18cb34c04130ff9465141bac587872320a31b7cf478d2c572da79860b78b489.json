@@ -1,0 +1,12 @@
+{
+  "id": "c18cb34c04130ff9465141bac587872320a31b7cf478d2c572da79860b78b489",
+  "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "kind": "variable",
+  "name": "rangeInv",
+  "start_line": 684,
+  "end_line": 684,
+  "content": "\t\tconst fov = Math.PI / 4;\n\t\tconst near = 0.05;\n\t\tconst far = 2000.0;\n\t\tconst f = 1.0 / Math.tan(fov / 2);\n\t\tconst rangeInv = 1.0 / (near - far);\n\n\t\t// Termos exatos da linha 2 da matriz de projeção P (sem distorção de -z0)\n\t\tconst p22 = far * rangeInv;",
+  "token_estimate": 64,
+  "created_at": 1794331101129
+}

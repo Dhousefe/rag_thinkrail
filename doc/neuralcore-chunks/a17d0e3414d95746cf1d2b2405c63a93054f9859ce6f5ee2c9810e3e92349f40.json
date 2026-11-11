@@ -1,0 +1,12 @@
+{
+  "id": "a17d0e3414d95746cf1d2b2405c63a93054f9859ce6f5ee2c9810e3e92349f40",
+  "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "kind": "variable",
+  "name": "pz",
+  "start_line": 41,
+  "end_line": 41,
+  "content": "\t\t// Projeção perspectiva 4D -> 3D\n\t\tconst perspective = 1.0 / (projDistance - w * 0.6);\n\t\tconst px = x * perspective * scale;\n\t\tconst py = y * perspective * scale;\n\t\tconst pz = z * perspective * scale;\n\n\t\t// Posição + Cor RGBA (Ciano / Azul Elétrico)\n\t\tvertexFloats.push(px, py, pz, 0.0, 0.85, 1.0, 0.9);",
+  "token_estimate": 77,
+  "created_at": 1794331100977
+}

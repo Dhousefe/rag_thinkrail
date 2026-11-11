@@ -1,0 +1,12 @@
+{
+  "id": "59c9a6cad23d6ffe4427cb4504ba8ea9ba9483f96c0cb08f84c53a58baf83542",
+  "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "kind": "variable",
+  "name": "t1",
+  "start_line": 1015,
+  "end_line": 1020,
+  "content": "\t\t\tfor (const e of dEdges) edgeIndices.push(base + e);\n\t\t} else if (polyKind === \"star_octahedron\") {\n\t\t\t// Merkaba / Octaedro Estrelado (Estilos CSS/SCSS): dois tetraedros interpenetrados\n\t\t\tconst d = s * 0.95;\n\t\t\tconst t1: [number, number, number][] = [\n\t\t\t\t[cx + d, cy + d, cz + d],\n\t\t\t\t[cx + d, cy - d, cz - d],\n\t\t\t\t[cx - d, cy + d, cz - d],\n\t\t\t\t[cx - d, cy - d, cz + d],\n\t\t\t];\n\t\t\tconst t2: [number, number, number][] = [\n\t\t\t\t[cx - d, cy - d, cz - d],\n\t\t\t\t[cx - d, cy + d, cz + d],",
+  "token_estimate": 122,
+  "created_at": 1794331101050
+}

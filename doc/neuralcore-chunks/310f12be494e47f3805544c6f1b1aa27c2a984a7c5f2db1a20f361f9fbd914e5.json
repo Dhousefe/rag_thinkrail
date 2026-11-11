@@ -1,0 +1,12 @@
+{
+  "id": "310f12be494e47f3805544c6f1b1aa27c2a984a7c5f2db1a20f361f9fbd914e5",
+  "file": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\geometry.ts",
+  "kind": "variable",
+  "name": "maxPossibleEdges",
+  "start_line": 687,
+  "end_line": 687,
+  "content": "\tconst fingerprintHash = `${part1}${part2}${part3}${part4}`.toLowerCase();\n\tconst shortHash = fingerprintHash.substring(0, 10).toUpperCase();\n\n\tconst totalRelations = edges.length;\n\tconst maxPossibleEdges = totalNodes > 1 ? (totalNodes * (totalNodes - 1)) / 2 : 1;\n\tconst density = Math.min(1.0, totalRelations / maxPossibleEdges);\n\n\tlet integrityStatus: \"VERIFIED_AUTHENTIC\" | \"HIGH_DENSITY\" | \"BALANCED\" = \"VERIFIED_AUTHENTIC\";",
+  "token_estimate": 108,
+  "created_at": 1794331101025
+}

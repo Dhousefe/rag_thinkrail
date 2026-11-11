@@ -1,0 +1,12 @@
+{
+  "id": "940f0ad860063f5826edd0f8511fb4fb0bba8e2159a06b1f40b6e29cb64083df",
+  "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+  "kind": "variable",
+  "name": "ptSize",
+  "start_line": 1160,
+  "end_line": 1160,
+  "content": "\t\t\t\t\tctx.lineTo(px, py);\n\t\t\t\t\tctx.stroke();\n\t\t\t\t}\n\n\t\t\t\tconst ptSize = Math.max(1.2, (isMatched ? 4.5 : isHighlight ? 3.5 : 2.0) * zoomFactor);\n\t\t\t\tctx.fillStyle = isMatched ? \"yellow\" : isHighlight ? \"white\" : \"skyblue\";\n\t\t\t\tctx.beginPath();\n\t\t\t\tctx.arc(px, py, ptSize, 0, Math.PI * 2);",
+  "token_estimate": 72,
+  "created_at": 1794331101178
+}

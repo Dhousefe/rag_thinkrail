@@ -1,0 +1,13 @@
+{
+  "id": "f89da8faaa3d3665ee24f64ab3b3d8189522ca72c711ee2fbf3a4bbc23acdda6",
+  "text": "\t\t\tconst ry = vy * cosPhi - rz * sinPhi;\n\t\t\tconst depth = Math.max(0.2, baseDist + (vy * sinPhi + rz * cosPhi) * 0.45);\n\n\t\t\tconst px = cx + (rx / depth) * scale * 5.6;\n\t\t\tconst py = cy - (ry / depth) * scale * 5.6;\n\n\t\t\tif (px >= 20 && px <= w - 20 && py >= 20 && py <= h - 20) {\n\t\t\t\tallProjectedNodes.push({ index: i, px, py, depth });",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\neuralEngine.ts",
+    "kind": "variable",
+    "name": "py",
+    "start_line": 881,
+    "end_line": 881,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

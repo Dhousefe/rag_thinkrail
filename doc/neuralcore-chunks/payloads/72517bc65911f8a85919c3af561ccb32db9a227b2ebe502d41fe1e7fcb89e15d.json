@@ -1,0 +1,13 @@
+{
+  "id": "72517bc65911f8a85919c3af561ccb32db9a227b2ebe502d41fe1e7fcb89e15d",
+  "text": "import { describe, expect, it } from \"bun:test\";\nimport type { HermesChunkItem, HermesVectorNode } from \"@thinkrail/contracts\";\n\ndescribe(\"Neural Core Search and Filtering logic\", () => {\n\tconst mockNodes: HermesVectorNode[] = [\n\t\t{\n\t\t\tid: \"node-1\",\n\t\t\tpath: \"apps/web/src/panels/NeuralCorePanel.tsx\",\n\t\t\trelPath: \"apps/web/src/panels/NeuralCorePanel.tsx\",\n\t\t\tqualifiedName: \"NeuralCorePanel\",\n\t\t\tchunkKind: \"function\",\n\t\t\tmodule: \"apps/web\",\n\t\t\tposition: [0, 0, 0],\n\t\t\ttokenEstimate: 400,\n\t\t\tcontentSnippet: \"const cameraRef = useRef();\",\n\t\t\tmethods: [\n\t\t\t\t{\n\t\t\t\t\tid: \"m-1\",\n\t\t\t\t\tname: \"handleCanvasClick\",\n\t\t\t\t\tkind: \"method\",\n\t\t\t\t\tsignature: \"handleCanvasClick(e)\",\n\t\t\t\t\ttokenEstimate: 50,\n\t\t\t\t\torbitAngle: 0,\n\t\t\t\t\torbitRadius: 0.2,\n\t\t\t\t},\n\t\t\t],\n\t\t},\n\t\t{\n\t\t\tid: \"node-2\",\n\t\t\tpath: \"apps/web/src/panels/neural-core/cameraController.ts\",\n\t\t\trelPath: \"apps/web/src/panels/neural-core/cameraController.ts\",\n\t\t\tqualifiedName: \"OrbitCameraController\",\n\t\t\tchunkKind: \"class\",\n\t\t\tmodule: \"apps/web\",\n\t\t\tposition: [1, 0, 1],\n\t\t\ttokenEstimate: 350,\n\t\t\tcontentSnippet: \"class OrbitCameraController { wasJustDragging() { return true; } }\",\n\t\t\tmethods: [\n\t\t\t\t{\n\t\t\t\t\tid: \"m-2\",\n\t\t\t\t\tname: \"wasJustDragging\",\n\t\t\t\t\tkind: \"method\",\n\t\t\t\t\tsignature: \"wasJustDragging()\",\n\t\t\t\t\ttokenEstimate: 20,\n\t\t\t\t\torbitAngle: 0,\n\t\t\t\t\torbitRadius: 0.2,\n\t\t\t\t},\n\t\t\t],\n\t\t},\n\t];\n\n\tit(\"encontra nós pelo nome do método contido\", () => {\n\t\tconst q = \"wasJustDragging\";",
+  "metadata": {
+    "file": "apps\\web\\src\\panels\\neural-core\\components\\searchBox.test.ts",
+    "kind": "variable",
+    "name": "mockNodes",
+    "start_line": 5,
+    "end_line": 50,
+    "commit": "af2650f",
+    "branch": "feature/neural-core"
+  }
+}

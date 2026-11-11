@@ -1,0 +1,12 @@
+{
+  "id": "cefe32cc8eeaaca7cbf49598c3508e32ad5c523f658b15ae94acd303b653a189",
+  "file": "apps\\web\\src\\panels\\neural-core\\cameraController.ts",
+  "path": "apps\\web\\src\\panels\\neural-core\\cameraController.ts",
+  "kind": "method",
+  "name": "OrbitCameraController.zoomOut",
+  "start_line": 172,
+  "end_line": 176,
+  "content": "\t\tthis.distance = Math.max(0.3, this.distance * 0.78);\n\t\tthis.onUpdate?.();\n\t}\n\n\tpublic zoomOut() {\n\t\tthis.flyTarget = null;\n\t\tthis.distance = Math.min(60.0, this.distance * 1.25);\n\t\tthis.onUpdate?.();\n\t}\n\n\tpublic focusPosition(pos: [number, number, number], targetDist = 2.0) {\n\t\tconst [x, y, z] = pos;",
+  "token_estimate": 76,
+  "created_at": 1794331100873
+}
