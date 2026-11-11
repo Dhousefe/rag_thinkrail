@@ -167,6 +167,15 @@ export function resolveTargetProjectSlug(
 	return projects[0]?.slug ?? null;
 }
 
+// Cache SWR em nível de sessão para entrega e renderização instantânea (< 16ms) do grafo
+interface SessionGraphCacheEntry {
+	nodes: HermesVectorNode[];
+	edges: any[];
+	totalAvailableNodes: number;
+	totalFiles: number;
+}
+const sessionGraphCache = new Map<string, SessionGraphCacheEntry>();
+
 export function NeuralCorePanel() {
 	const canvasRef = useRef<HTMLCanvasElement | null>(null);
 	const engineRef = useRef<NeuralCoreEngine | null>(null);
@@ -450,8 +459,24 @@ export function NeuralCorePanel() {
 				}
 				setTotalChunks(res.totalChunks);
 				setHasMoreBatches(hasMore);
-				setTotalAvailableNodes(res.totalAvailableNodes || res.totalChunks);
-				if (res.totalFiles) setTotalFilesCount(res.totalFiles);
+					const currentProjectStats = classStats?.projects?.find(
+						(p) => p.slug === (targetSlug === "all" ? undefined : targetSlug),
+					);
+					const exactProjectCount = currentProjectStats
+						? currentProjectStats.totalClasses + (currentProjectStats.totalInterfaces || 0)
+						: (res.totalAvailableNodes || res.totalClasses || normalizedNodes.length);
+					const validAvailable = exactProjectCount > 0 ? exactProjectCount : normalizedNodes.length;
+					setTotalAvailableNodes(validAvailable);
+
+					// Salva snapshot no cache SWR de sessão
+					sessionGraphCache.set(targetSlug || "all", {
+						nodes: normalizedNodes,
+						edges: res.edges || [],
+						totalAvailableNodes: validAvailable,
+						totalFiles: res.totalFiles || 0,
+					});
+
+					if (res.totalFiles) setTotalFilesCount(res.totalFiles);
 			}
 		} catch (err) {
 			console.warn("[NeuralCorePanel] Erro ao carregar grafo vetorial:", err);
@@ -579,12 +604,25 @@ export function NeuralCorePanel() {
 				return;
 			}
 			engine.start();
-			// Se nós já tiverem sido recebidos pela busca inicial, transfere imediatamente para o WebGPU
+			// Se houver dados no cache SWR de sessão, transfere imediatamente para o WebGPU (< 16ms)
+			const initialSlug = selectedProjectFilterRef.current;
+			const cached = sessionGraphCache.get(initialSlug) || sessionGraphCache.get("all");
+			if (cached && vectorNodesRef.current.length === 0) {
+				vectorNodesRef.current = cached.nodes;
+				vectorEdgesRef.current = cached.edges;
+				setVectorNodes(cached.nodes);
+				setVectorEdges(cached.edges);
+				setTotalAvailableNodes(cached.totalAvailableNodes);
+				if (cached.totalFiles) setTotalFilesCount(cached.totalFiles);
+				engine.setVectorGraphData(cached.nodes, cached.edges);
+				const positions = cached.nodes.map((n: HermesVectorNode) => n.position);
+				camera.fitBounds(positions);
+			}
+
 			if (vectorNodesRef.current.length > 0) {
 				engine.setVectorGraphData(vectorNodesRef.current, vectorEdgesRef.current);
-			} else {
-				void loadVectorGraph(true);
 			}
+			void loadVectorGraph(true);
 		});
 
 		const handleResize = () => {

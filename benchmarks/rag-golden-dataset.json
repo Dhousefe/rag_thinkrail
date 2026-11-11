@@ -571,5 +571,22 @@
       "findMainBundle"
     ],
     "ground_truth": "A SPEC apps/desktop/SPEC-cli-desktop-parity.md e o gate bun run check:parity comparam hashes SHA-256 do bundle de entrada index-*.js e a versão sufixada do executável em apps/cli/dist para assegurar paridade absoluta."
+  },
+  {
+    "id": "tc_36_web-ui_zoomspread",
+    "question": "Como funciona o sistema de espaçamento adaptativo por zoom e LOD de métodos satélites no Neural Core 3D?",
+    "query": "neural-core zoom-spread dynamic-lod geometry shaders",
+    "expected_cluster": "web-ui",
+    "expected_files": [
+      "apps/web/src/panels/neural-core/neuralEngine.ts",
+      "apps/web/src/panels/neural-core/geometry.ts",
+      "apps/web/src/panels/neural-core/shaders.wgsl.ts"
+    ],
+    "expected_symbols": [
+      "zoomSpread",
+      "shouldRenderMethods",
+      "vs_line"
+    ],
+    "ground_truth": "A modelMatrix no shader vs_line recebe zoomSpread no plano XZ expandindo polígonos adjacentes em até 48% conforme a câmera se aproxima, com LOD dinâmico em geometry.ts que suprime micro-órbitas para nós distantes em grafos com mais de 250 classes."
   }
 ]

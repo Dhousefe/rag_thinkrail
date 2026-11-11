@@ -22,23 +22,34 @@ struct VertexOutput {
 fn vs_line(input: VertexInput) -> VertexOutput {
     var output: VertexOutput;
 
-    // Posicionamento espacial geométrico estável e exato (sem distorções de onda oscilatórias)
-    let worldPos = vec4<f32>(input.position, 1.0);
-    output.position = camera.viewProjMatrix * worldPos;
+    // Aplicação da modelMatrix com suporte a dispersão dinâmica por zoom da câmera
+    let worldPos = camera.modelMatrix * vec4<f32>(input.position, 1.0);
+    let clipPos = camera.viewProjMatrix * worldPos;
+    output.position = clipPos;
 
     // Preservação pura e vívida das cores semânticas de cada módulo e tipo de nó
-    // (verde=UI, ciano=Web, azul=Server, amarelo=Contracts, vermelho=Scripts)
     var col = input.color;
 
     // Pulso senoidal contínuo e orgânico calculado 100% na GPU a partir de time
     let time = camera.glowParams.z;
-    let wavePulse = sin(time * 3.2 + input.position.x * 1.8 + input.position.z * 1.8) * 0.5 + 0.5;
+    let wavePulse = sin(time * 3.2 + worldPos.x * 1.8 + worldPos.z * 1.8) * 0.5 + 0.5;
 
     // Se houver pulso ativo de busca ou telemetria RAG, modula com a onda da GPU
     let activityIntensity = camera.glowParams.y;
     let pulseBoost = camera.glowParams.x * 0.5 + activityIntensity * 0.35 * wavePulse;
     let brightRgb = col.rgb * (1.0 + pulseBoost);
-    output.color = vec4<f32>(brightRgb, col.a);
+
+    // Névoa atmosférica e depth fade cinematográfico:
+    // clipPos.w representa a profundidade real (distância Z linear da câmera)
+    // Nós distantes no horizonte (depth > 10.0) atenuam suavemente o contraste e opacidade
+    let depth = max(0.0, clipPos.w);
+    let fogStart = 9.0;
+    let fogEnd = 28.0;
+    let fogFactor = clamp((depth - fogStart) / (fogEnd - fogStart), 0.0, 0.85);
+    let finalRgb = mix(brightRgb, brightRgb * 0.12, fogFactor);
+    let finalAlpha = col.a * (1.0 - fogFactor * 0.75);
+
+    output.color = vec4<f32>(finalRgb, finalAlpha);
 
     return output;
 }

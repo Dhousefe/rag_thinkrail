@@ -682,7 +682,22 @@ export class NeuralCoreEngine {
 			tint = [1.0, 0.15, 0.25, 1.0];
 		}
 
-		const model = this.createRotationMatrix(this.angleRotation, this.angleRingRoll * 0.5);
+		// Fator de dispersão adaptativo por zoom da câmera:
+		// Em visão orbital ampla (distance >= 12.0), zoomSpread = 1.0;
+		// Ao aproximar o zoom (distance < 12.0), expande os nós no plano XZ em até 48% para abrir espaço limpo
+		const dist = this.cameraOrbit.distance || 12.0;
+		const zoomSpread = 1.0 + Math.max(0, Math.min(0.48, (12.0 - dist) * 0.048));
+
+		let model: Float32Array;
+		if (this.showVectorConstellation) {
+			model = new Float32Array(16);
+			model[0] = zoomSpread;
+			model[5] = 1.0;
+			model[10] = zoomSpread;
+			model[15] = 1.0;
+		} else {
+			model = this.createRotationMatrix(this.angleRotation, this.angleRingRoll * 0.5);
+		}
 
 		const uniformData = new Float32Array(40);
 		uniformData.set(viewProj, 0);
@@ -884,9 +899,14 @@ export class NeuralCoreEngine {
 		const h = height ?? (this.canvas.clientHeight || this.canvas.height);
 		const vp = viewProj ?? this.calculateViewProjMatrix(w / (h || 1));
 
-		const x = pos[0];
+		const dist = this.cameraOrbit?.distance || 12.0;
+		const zoomSpread = this.showVectorConstellation
+			? 1.0 + Math.max(0, Math.min(0.48, (12.0 - dist) * 0.048))
+			: 1.0;
+
+		const x = pos[0] * zoomSpread;
 		const y = pos[1];
-		const z = pos[2];
+		const z = pos[2] * zoomSpread;
 
 		const v0 = vp[0]!;
 		const v1 = vp[1]!;

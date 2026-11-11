@@ -1417,6 +1417,27 @@ export async function getHermesClassStats(
 	};
 }
 
+interface VectorGraphCacheEntry {
+	data: HermesVectorGraphSample;
+	timestamp: number;
+	mtimeHash: string;
+}
+
+const vectorGraphMemoryCache = new Map<string, VectorGraphCacheEntry>();
+
+function getDbMtimeHash(slugs: string[], home: string): string {
+	try {
+		return slugs
+			.map((slug) => {
+				const db = join(home, "projects", slug, "hermes.db");
+				return existsSync(db) ? `${slug}:${statSync(db).mtimeMs}` : `${slug}:none`;
+			})
+			.join("|");
+	} catch {
+		return "";
+	}
+}
+
 /**
  * Retorna amostra representativa de nós e arestas semânticas do banco vetorial
  * dos projetos ativos para visualização geométrica 3D no Neural Core.
@@ -1435,6 +1456,17 @@ export async function getHermesVectorGraph(
 			: ["project-thinkrail"];
 
 	const primarySlug = targetSlugs[0] || "project-thinkrail";
+
+	// Cache SWR em memória para resposta instantânea (< 5ms) no startup
+	const offset = Math.max(0, params.offset || 0);
+	const requestedLimit = params.batchSize ?? params.limit;
+	const cacheKey = `${targetSlugs.slice().sort().join(",")}:limit=${requestedLimit}:offset=${offset}:classes=${Boolean(params.includeAllClasses)}`;
+	const mtimeHash = getDbMtimeHash(targetSlugs, hermesHome);
+	const cached = vectorGraphMemoryCache.get(cacheKey);
+
+	if (cached && cached.mtimeHash === mtimeHash && Date.now() - cached.timestamp < 60_000) {
+		return cached.data;
+	}
 
 	interface RawChunkRow {
 		id: string;
@@ -1466,8 +1498,6 @@ export async function getHermesVectorGraph(
 	let totalClassesCount = 0;
 	let totalFilesCount = 0;
 
-	const offset = Math.max(0, params.offset || 0);
-	const requestedLimit = params.batchSize ?? params.limit;
 	const targetLimit =
 		requestedLimit !== undefined
 			? Math.max(1, Math.min(4000, requestedLimit))
@@ -2177,7 +2207,7 @@ export async function getHermesVectorGraph(
 
 		const hasMore = offset + collectedRows.length < totalAvailableNodes;
 
-		return {
+		const resultSample: HermesVectorGraphSample = {
 			projectSlug: primarySlug,
 			nodes,
 			edges,
@@ -2191,6 +2221,15 @@ export async function getHermesVectorGraph(
 			totalClasses: totalClassesCount,
 			totalFiles: totalFilesCount,
 		};
+
+		// Persiste no cache em memória
+		vectorGraphMemoryCache.set(cacheKey, {
+			data: resultSample,
+			timestamp: Date.now(),
+			mtimeHash,
+		});
+
+		return resultSample;
 	} catch (err) {
 		log.warn("getHermesVectorGraph.failed", { error: String(err), projectSlug: primarySlug });
 		return {

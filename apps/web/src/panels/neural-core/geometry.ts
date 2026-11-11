@@ -1166,8 +1166,14 @@ export function createVectorConstellationWireframe(
 			for (const e of octEdges) edgeIndices.push(base + e);
 		}
 
-		// 1.1 Renderização de Sub-Órbita de Métodos/Funções para Classes AST
-		if (n.methods && n.methods.length > 0) {
+		// 1.1 Renderização de Sub-Órbita de Métodos/Funções com LOD (Level of Detail) inteligente:
+		// Em grafos densos (> 250 nós), métodos satélites são ativados dinamicamente para nós em foco, hover, seleção ou busca
+		const shouldRenderMethods =
+			n.methods &&
+			n.methods.length > 0 &&
+			(nodes.length <= 250 || isHighlight || isSelected || isRelated || isSearchingTarget || isMatched);
+
+		if (shouldRenderMethods && n.methods) {
 			const totalM = n.methods.length;
 			for (let mIdx = 0; mIdx < totalM; mIdx++) {
 				const m = n.methods[mIdx];
