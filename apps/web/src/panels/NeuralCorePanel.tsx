@@ -47,7 +47,7 @@ import {
 } from "@/store";
 import { getTransport } from "@/transport";
 import { projectRelativePath } from "../lib";
-import { OrbitCameraController } from "./neural-core/cameraController";
+import { DEFAULT_DRAG_THRESHOLD_PX, OrbitCameraController } from "./neural-core/cameraController";
 import {
 	NeuralCoreChunksView,
 	NeuralCoreFingerprintCard,
@@ -613,7 +613,7 @@ export function NeuralCorePanel() {
 	}, [effectiveQuery, vectorNodes]);
 
 	// Foco Automático do Chat / MCP em Tempo Real:
-	// Aciona animação de pulso e movimento suave de foco da câmera APENAS quando a Rotação Dinâmica estiver ativada (!isPaused)
+	// Salva snapshot da câmera antes do foco e centraliza no nó alvo
 	useEffect(() => {
 		if (!effectiveQuery || vectorNodes.length === 0) return;
 		const q = effectiveQuery.toLowerCase();
@@ -629,14 +629,15 @@ export function NeuralCorePanel() {
 				engineRef.current.triggerMcpSearchTarget(matchedNode.id);
 			}
 
-			// Somente anima o movimento de foco e centraliza a câmera se a rotação dinâmica estiver ATIVADA
-			if (!isPaused && cameraRef.current) {
+			// Salva a pose anterior da câmera para restauração posterior
+			if (cameraRef.current) {
+				cameraRef.current.saveCameraSnapshot(false);
 				cameraRef.current.focusPosition(matchedNode.position, 2.3);
 			}
 
 			setInspectedNode(matchedNode);
 		}
-	}, [effectiveQuery, vectorNodes, isPaused]);
+	}, [effectiveQuery, vectorNodes]);
 
 	// Foco e Seleção Dinâmica em Tempo Real nas ferramentas do Chat (Read, Edit, Write, AST, RAG):
 	// Interage ativamente mesmo com a Rotação Dinâmica ativada (!isPaused) ou pausada,
@@ -659,6 +660,13 @@ export function NeuralCorePanel() {
 			setSelectedNode(targetNode);
 			setInspectedNode(targetNode);
 
+			if (cameraRef.current) {
+				// Preserva pose inicial antes de voar para o nó manipulado pelo Chat
+				cameraRef.current.saveCameraSnapshot(false);
+				// Transição suave e orgânica da câmera via interpolação lerp
+				cameraRef.current.focusPosition(targetNode.position, 2.2);
+			}
+
 			if (engineRef.current) {
 				// Dispara pulso de vida no polígono sem forçar a pausa da rotação dinâmica
 				engineRef.current.triggerMcpSearchTarget(targetNode.id, false);
@@ -666,11 +674,6 @@ export function NeuralCorePanel() {
 				if (idx !== -1) {
 					engineRef.current.setSelectedNode(idx);
 				}
-			}
-
-			if (cameraRef.current) {
-				// Transição suave e orgânica da câmera via interpolação lerp
-				cameraRef.current.focusPosition(targetNode.position, 2.2);
 			}
 		};
 
@@ -1121,7 +1124,7 @@ export function NeuralCorePanel() {
 		if (pointerDownPosRef.current) {
 			const dx = e.clientX - pointerDownPosRef.current.x;
 			const dy = e.clientY - pointerDownPosRef.current.y;
-			if (Math.hypot(dx, dy) > 5) {
+			if (Math.hypot(dx, dy) > DEFAULT_DRAG_THRESHOLD_PX) {
 				hasDraggedRef.current = true;
 			}
 		}
@@ -1131,7 +1134,7 @@ export function NeuralCorePanel() {
 		if (pointerDownPosRef.current) {
 			const dx = e.clientX - pointerDownPosRef.current.x;
 			const dy = e.clientY - pointerDownPosRef.current.y;
-			if (Math.hypot(dx, dy) > 5) {
+			if (Math.hypot(dx, dy) > DEFAULT_DRAG_THRESHOLD_PX) {
 				hasDraggedRef.current = true;
 			}
 		}

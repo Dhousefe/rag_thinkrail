@@ -1,3 +1,15 @@
+export const DEFAULT_DRAG_THRESHOLD_PX = 4;
+export const DEFAULT_DRAG_TIME_THRESHOLD_MS = 250;
+
+export interface CameraPoseSnapshot {
+	targetX: number;
+	targetY: number;
+	targetZ: number;
+	theta: number;
+	phi: number;
+	distance: number;
+}
+
 export class OrbitCameraController {
 	private canvas: HTMLCanvasElement;
 	private isDragging = false;
@@ -12,22 +24,10 @@ export class OrbitCameraController {
 	public distance = 5.2;
 	public target: [number, number, number] = [0, 0, 0];
 
-	private cameraSnapshot: {
-		targetX: number;
-		targetY: number;
-		targetZ: number;
-		theta: number;
-		phi: number;
-		distance: number;
-	} | null = null;
-	private flyTarget: {
-		targetX: number;
-		targetY: number;
-		targetZ: number;
-		theta: number;
-		phi: number;
-		distance: number;
-	} | null = null;
+	private cameraSnapshot: CameraPoseSnapshot | null = null;
+	// Snapshot reservado enquanto uma restauração pendente está em progresso
+	private pendingRestoreSnapshot: CameraPoseSnapshot | null = null;
+	private flyTarget: CameraPoseSnapshot | null = null;
 	private onUpdate?: (() => void) | undefined;
 
 	constructor(canvas: HTMLCanvasElement, onUpdate?: (() => void) | undefined) {
@@ -56,44 +56,48 @@ export class OrbitCameraController {
 			}
 		});
 
-		window.addEventListener("mousemove", (e) => {
-			if (!this.isDragging) return;
-			const dx = e.clientX - this.lastMouseX;
-			const dy = e.clientY - this.lastMouseY;
-			this.totalDragDistance += Math.hypot(dx, dy);
-			this.lastMouseX = e.clientX;
-			this.lastMouseY = e.clientY;
+		if (typeof window !== "undefined" && window.addEventListener) {
+			window.addEventListener("mousemove", (e: MouseEvent) => {
+				if (!this.isDragging) return;
+				const dx = e.clientX - this.lastMouseX;
+				const dy = e.clientY - this.lastMouseY;
+				this.totalDragDistance += Math.hypot(dx, dy);
+				this.lastMouseX = e.clientX;
+				this.lastMouseY = e.clientY;
 
-			if (this.dragMode === "pan") {
-				// Pan 3D: translada o target ao longo dos vetores de câmera (Right e Up)
-				const panFactor = Math.max(0.001, this.distance * 0.0016);
+				if (this.dragMode === "pan") {
+					// Pan 3D: translada o target ao longo dos vetores de câmera (Right e Up)
+					const panFactor = Math.max(0.001, this.distance * 0.0016);
 
-				// Vetor Right da câmera
-				const rightX = Math.cos(this.theta);
-				const rightZ = -Math.sin(this.theta);
+					// Vetor Right da câmera
+					const rightX = Math.cos(this.theta);
+					const rightZ = -Math.sin(this.theta);
 
-				// Vetor Up da câmera
-				const upX = -Math.sin(this.phi) * Math.sin(this.theta);
-				const upY = Math.cos(this.phi);
-				const upZ = -Math.sin(this.phi) * Math.cos(this.theta);
+					// Vetor Up da câmera
+					const upX = -Math.sin(this.phi) * Math.sin(this.theta);
+					const upY = Math.cos(this.phi);
+					const upZ = -Math.sin(this.phi) * Math.cos(this.theta);
 
-				this.target[0] += (rightX * dx - upX * dy) * panFactor;
-				this.target[1] += -upY * dy * panFactor;
-				this.target[2] += (rightZ * dx - upZ * dy) * panFactor;
-			} else {
-				// Rotação Orbital invertida para movimentação natural solicitada pelo usuário
-				this.theta += dx * 0.008;
-				this.phi = Math.max(-1.5, Math.min(1.5, this.phi - dy * 0.008));
-			}
-			this.onUpdate?.();
-		});
+					this.target[0] += (rightX * dx - upX * dy) * panFactor;
+					this.target[1] += -upY * dy * panFactor;
+					this.target[2] += (rightZ * dx - upZ * dy) * panFactor;
+				} else {
+					// Rotação Orbital invertida para movimentação natural solicitada pelo usuário
+					this.theta += dx * 0.008;
+					this.phi = Math.max(-1.5, Math.min(1.5, this.phi - dy * 0.008));
+				}
+				this.onUpdate?.();
+			});
 
-		window.addEventListener("mouseup", () => {
-			if (this.totalDragDistance > 4) {
-				this.lastDragEndTime = Date.now();
-			}
-			this.isDragging = false;
-		});
+			window.addEventListener("mouseup", () => {
+				if (this.totalDragDistance > DEFAULT_DRAG_THRESHOLD_PX) {
+					this.lastDragEndTime = Date.now();
+				}
+				this.isDragging = false;
+			});
+		} else {
+			// Ambiente de testes sem window: não registra listeners globais
+		}
 
 		this.canvas.addEventListener(
 			"wheel",
@@ -109,10 +113,13 @@ export class OrbitCameraController {
 		);
 	}
 
-	public wasJustDragging(thresholdMs = 250): boolean {
+	public wasJustDragging(
+		thresholdMs = DEFAULT_DRAG_TIME_THRESHOLD_MS,
+		thresholdPx = DEFAULT_DRAG_THRESHOLD_PX,
+	): boolean {
 		return (
 			Date.now() - this.lastDragEndTime < thresholdMs ||
-			(this.isDragging && this.totalDragDistance > 4)
+			(this.isDragging && this.totalDragDistance > thresholdPx)
 		);
 	}
 
@@ -217,16 +224,7 @@ export class OrbitCameraController {
 			this.target[0] = this.flyTarget.targetX;
 			this.target[1] = this.flyTarget.targetY;
 			this.target[2] = this.flyTarget.targetZ;
-			// Ao concluir a animação do fly-to, limpe cameraSnapshot somente se ela corresponde ao destino
-			if (this.cameraSnapshot) {
-				const snapMatches =
-					Math.abs(this.cameraSnapshot.targetX - this.target[0]) < 0.01 &&
-					Math.abs(this.cameraSnapshot.targetY - this.target[1]) < 0.01 &&
-					Math.abs(this.cameraSnapshot.targetZ - this.target[2]) < 0.01;
-				if (snapMatches) {
-					this.cameraSnapshot = null;
-				}
-			}
+			this.pendingRestoreSnapshot = null;
 			this.flyTarget = null;
 			this.onUpdate?.();
 			return;
@@ -246,8 +244,14 @@ export class OrbitCameraController {
 	/**
 	 * Salva o estado atual da câmera (posição de foco, ângulo e distância).
 	 * Utilizado antes de selecionar/focar um nó, para permitir restaurar a visualização.
+	 * Se `overwrite` for false (padrão) e já houver snapshot salvo, preserva o snapshot anterior
+	 * (evita sobrescrever a pose panorâmica de entrada quando múltiplos nós são focados em sequência).
 	 */
-	public saveCameraSnapshot() {
+	public saveCameraSnapshot(overwrite = false) {
+		if (this.cameraSnapshot && !overwrite) {
+			return;
+		}
+		// Se estiver no meio de um flyTarget para outro nó, salva a posição real atual da câmera
 		this.cameraSnapshot = {
 			targetX: this.target[0],
 			targetY: this.target[1],
@@ -259,12 +263,27 @@ export class OrbitCameraController {
 	}
 
 	/**
+	 * Verifica se há um snapshot de pose de câmera salvo para restauração.
+	 */
+	public hasCameraSnapshot(): boolean {
+		return this.cameraSnapshot !== null || this.pendingRestoreSnapshot !== null;
+	}
+
+	/**
+	 * Retorna se a câmera está no meio de um fly-to ativo (interpolação tween).
+	 */
+	public isFlying(): boolean {
+		return this.flyTarget !== null;
+	}
+
+	/**
 	 * Restaura suavemente o estado salvo anteriormente na câmera, se existir.
 	 */
 	public restoreCameraSnapshot(): boolean {
 		if (!this.cameraSnapshot) return false;
-		// Protege a restauração colocando o flyTarget e preservando uma cópia
 		const snapshot = { ...this.cameraSnapshot };
+		this.pendingRestoreSnapshot = snapshot;
+		this.cameraSnapshot = null;
 		this.flyTarget = {
 			targetX: snapshot.targetX,
 			targetY: snapshot.targetY,
@@ -273,8 +292,6 @@ export class OrbitCameraController {
 			phi: snapshot.phi,
 			distance: snapshot.distance,
 		};
-		// Não limpe o cameraSnapshot imediatamente: somente ao concluir a animação
-		// para evitar que chamadas intermediárias (setSelectedNode etc.) descartem a restauração.
 		this.onUpdate?.();
 		return true;
 	}
@@ -284,6 +301,7 @@ export class OrbitCameraController {
 	 */
 	public clearCameraSnapshot() {
 		this.cameraSnapshot = null;
+		this.pendingRestoreSnapshot = null;
 	}
 
 	public reset() {

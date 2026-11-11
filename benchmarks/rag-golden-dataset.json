@@ -464,5 +464,23 @@
       "fitBounds"
     ],
     "ground_truth": "O Neural Core utiliza resolveTargetProjectSlug mapeando o workspace ativo no Hermes RAG para focar inicialmente no projeto em questao. Na camera orbital, updateTween normaliza o menor arco angular em theta [-PI, PI] eliminando jitter/voltas bruscas, inverte os eixos do mouse e ajusta o offset vertical em fitBounds para enquadramento na regiao superior livre."
+  },
+  {
+    "id": "tc_30_web-ui_orbitcameracontroller",
+    "question": "Como garantir persistência de snapshot e foco suave na câmera do Neural Core ao selecionar classes via Chat/MCP?",
+    "query": "cameraController saveCameraSnapshot restoreCameraSnapshot wasJustDragging NeuralCorePanel",
+    "expected_cluster": "web-ui",
+    "expected_files": [
+      "apps/web/src/panels/neural-core/cameraController.ts",
+      "apps/web/src/panels/NeuralCorePanel.tsx"
+    ],
+    "expected_symbols": [
+      "OrbitCameraController",
+      "saveCameraSnapshot",
+      "restoreCameraSnapshot",
+      "wasJustDragging",
+      "DEFAULT_DRAG_THRESHOLD_PX"
+    ],
+    "ground_truth": "No OrbitCameraController, saveCameraSnapshot suporta parâmetro overwrite=false para preservar a pose panorâmica de entrada caso múltiplos nós sejam focados em sequência. restoreCameraSnapshot aciona flyTarget com interpolação suave e limpa o snapshot após aterrissar. O NeuralCorePanel salva snapshot antes de focar classes solicitadas pelo chat/ferramentas ou busca em tempo real, e protege contra desseleção usando wasJustDragging com threshold configurável."
   }
 ]

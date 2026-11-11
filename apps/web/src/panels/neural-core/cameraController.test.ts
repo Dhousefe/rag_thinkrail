@@ -1,7 +1,11 @@
 import { describe, expect, it } from "bun:test";
-import { OrbitCameraController } from "./cameraController";
+import {
+	DEFAULT_DRAG_THRESHOLD_PX,
+	DEFAULT_DRAG_TIME_THRESHOLD_MS,
+	OrbitCameraController,
+} from "./cameraController";
 
-describe("OrbitCameraController drag protection", () => {
+describe("OrbitCameraController", () => {
 	it("identifica quando houve arraste da câmera (wasJustDragging)", () => {
 		const canvasListeners: Record<string, ((e: unknown) => void)[]> = {};
 		const canvasMock = {
@@ -49,6 +53,9 @@ describe("OrbitCameraController drag protection", () => {
 
 		// Imediatamente após mouseup (dentro da janela de 250ms), ainda reporta wasJustDragging = true
 		expect(controller.wasJustDragging()).toBe(true);
+		expect(
+			controller.wasJustDragging(DEFAULT_DRAG_TIME_THRESHOLD_MS, DEFAULT_DRAG_THRESHOLD_PX),
+		).toBe(true);
 	});
 
 	it("calcula fitBounds estável com múltiplos nós sem NaN", () => {
@@ -83,22 +90,26 @@ describe("OrbitCameraController drag protection", () => {
 
 		// Salva o snapshot da pose inicial
 		controller.saveCameraSnapshot();
+		expect(controller.hasCameraSnapshot()).toBe(true);
 
 		// Foca em um nó distante
 		controller.focusPosition([20, 0, 50], 2.5);
+		expect(controller.isFlying()).toBe(true);
 
-		// Atualiza tween para mover câmera para o novo nó focado
-		for (let i = 0; i < 30; i++) {
+		// Atualiza tween até aterrissar no nó focado
+		for (let i = 0; i < 60; i++) {
 			controller.updateTween();
 		}
 		expect(controller.distance).toBeLessThan(5.0);
+		expect(controller.isFlying()).toBe(false);
 
 		// Restaura o snapshot
 		const restored = controller.restoreCameraSnapshot();
 		expect(restored).toBe(true);
+		expect(controller.isFlying()).toBe(true);
 
 		// Executa o tween de retorno
-		for (let i = 0; i < 40; i++) {
+		for (let i = 0; i < 60; i++) {
 			controller.updateTween();
 		}
 
@@ -109,6 +120,49 @@ describe("OrbitCameraController drag protection", () => {
 		expect(controller.distance).toBeCloseTo(10.0, 1);
 
 		// Segunda restauração sem novo snapshot deve retornar false
+		expect(controller.restoreCameraSnapshot()).toBe(false);
+	});
+
+	it("preserva snapshot original quando saveCameraSnapshot é chamado com overwrite=false", () => {
+		const canvasMock = {
+			addEventListener: () => {},
+		} as unknown as HTMLCanvasElement;
+
+		const controller = new OrbitCameraController(canvasMock);
+		controller.target = [0, 0, 0];
+		controller.distance = 8.0;
+
+		// 1. Salva estado panorâmico inicial
+		controller.saveCameraSnapshot();
+
+		// 2. Foca no primeiro nó
+		controller.target = [10, 5, 2];
+		controller.distance = 2.0;
+
+		// Tentativa de salvar sem overwrite não deve sobrescrever o snapshot original [0, 0, 0]
+		controller.saveCameraSnapshot(false);
+
+		// 3. Restaura e verifica se voltou para o estado inicial [0, 0, 0]
+		expect(controller.restoreCameraSnapshot()).toBe(true);
+		for (let i = 0; i < 40; i++) {
+			controller.updateTween();
+		}
+		expect(controller.target[0]).toBeCloseTo(0, 1);
+		expect(controller.target[1]).toBeCloseTo(0, 1);
+		expect(controller.distance).toBeCloseTo(8.0, 1);
+	});
+
+	it("clearCameraSnapshot limpa os snapshots pendentes e salvos", () => {
+		const canvasMock = {
+			addEventListener: () => {},
+		} as unknown as HTMLCanvasElement;
+
+		const controller = new OrbitCameraController(canvasMock);
+		controller.saveCameraSnapshot();
+		expect(controller.hasCameraSnapshot()).toBe(true);
+
+		controller.clearCameraSnapshot();
+		expect(controller.hasCameraSnapshot()).toBe(false);
 		expect(controller.restoreCameraSnapshot()).toBe(false);
 	});
 });
